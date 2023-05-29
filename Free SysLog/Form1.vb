@@ -22,6 +22,8 @@ Public Class Form1
         Using fileStream As New StreamWriter(My.Settings.logFileLocation)
             fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
         End Using
+
+        btnSaveLogsToDisk.Enabled = False
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -200,6 +202,7 @@ askAgain:
                    logs.Items.Add(listViewItem)
                    UpdateLogCount()
                    If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
+                   btnSaveLogsToDisk.Enabled = True
                End Sub)
 
         listViewItem = Nothing
