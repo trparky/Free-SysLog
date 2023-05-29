@@ -176,14 +176,10 @@ askAgain:
 
             Dim logFileName As String = String.Format("syslog {0}.txt", Now.ToShortDateString.ToString.Replace("/", "-"))
 
-            Debug.WriteLine(sSyslog)
-
             Dim listViewItem As New ListViewItem(Now.ToLocalTime.ToString)
             listViewItem.SubItems.Add(sPriority)
             listViewItem.SubItems.Add(sFromIp)
             listViewItem.SubItems.Add(sSyslog)
-
-            Debug.WriteLine(listViewItem.ToString())
 
             Invoke(Sub()
                        logs.Items.Add(listViewItem)
