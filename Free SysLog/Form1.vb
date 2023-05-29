@@ -131,7 +131,6 @@ askAgain:
 
                 FillLog(sDataRecieve, sFromIP)
 
-                Console.WriteLine(sDataRecieve)
                 sDataRecieve = ""
             End While
         Catch e As Exception
