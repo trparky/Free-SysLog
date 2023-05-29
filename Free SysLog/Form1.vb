@@ -113,7 +113,8 @@ askAgain:
 
             sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
                 .Name = "SysLog Thread",
-                .Priority = Threading.ThreadPriority.Lowest
+                .Priority = Threading.ThreadPriority.Lowest,
+                .IsBackground = True
             }
             sysLogThreadInstance.Start()
         End If
