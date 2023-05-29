@@ -7,8 +7,7 @@ Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
     Private boolDoneLoading As Boolean = False
 
-    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        My.Settings.mainWindowSize = Size
+    Private Sub WriteLogsToDisk()
         Dim collectionOfSavedData As New List(Of SavedData)
 
         For Each listViewItem As ListViewItem In logs.Items
@@ -23,6 +22,11 @@ Public Class Form1
         Using fileStream As New StreamWriter(My.Settings.logFileLocation)
             fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
         End Using
+    End Sub
+
+    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        My.Settings.mainWindowSize = Size
+        WriteLogsToDisk()
 
         Try
             sysLogThreadInstance.Abort()
@@ -235,6 +239,10 @@ askAgain:
 
     Private Sub btnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
         logs.Items.Clear()
+    End Sub
+
+    Private Sub btnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
+        WriteLogsToDisk()
     End Sub
 #End Region
 End Class
