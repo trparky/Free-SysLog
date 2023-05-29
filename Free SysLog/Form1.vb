@@ -21,8 +21,7 @@ Public Class Form1
         Next
 
         Using fileStream As New StreamWriter(My.Settings.logFileLocation)
-            Dim json As New Web.Script.Serialization.JavaScriptSerializer()
-            fileStream.Write(json.Serialize(collectionOfSavedData))
+            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
         End Using
 
         Try
@@ -63,8 +62,7 @@ askAgain:
             Dim collectionOfSavedData As New List(Of SavedData)
 
             Using fileStream As New StreamReader(My.Settings.logFileLocation)
-                Dim json As New Web.Script.Serialization.JavaScriptSerializer()
-                collectionOfSavedData = json.Deserialize(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
             End Using
 
             Dim listOfLogEntries As New List(Of ListViewItem)
