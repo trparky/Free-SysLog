@@ -195,7 +195,7 @@ askAgain:
     End Sub
 
     Private Sub OpenLogViewerWindow()
-        Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text}
+        Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent}
         LogViewer.ShowDialog()
     End Sub
 
