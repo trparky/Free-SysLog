@@ -2,6 +2,7 @@
 Imports System.Net.Sockets
 Imports System.Net
 Imports System.Text
+Imports System.Text.RegularExpressions
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
@@ -186,6 +187,7 @@ askAgain:
                 Exit Sub
             End If
 
+            sSyslog = Regex.Replace(sSyslog, "[.0-9:T-]{20,34} L[0-9]+ ", "")
             addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
             addToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}")
