@@ -178,8 +178,6 @@ askAgain:
 
             Debug.WriteLine(sSyslog)
 
-            'swWriter.WriteLine(sFromIp & "," & Now & "," & sPriority & "," & sSyslog, Now.ToLocalTime.ToString)
-
             Dim listViewItem As New ListViewItem(Now.ToLocalTime.ToString)
             listViewItem.SubItems.Add(sPriority)
             listViewItem.SubItems.Add(sFromIp)
