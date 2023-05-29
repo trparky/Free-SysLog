@@ -14,5 +14,17 @@
     <Setting Name="mainWindowSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">1191, 485</Value>
     </Setting>
+    <Setting Name="columnTimeSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">196</Value>
+    </Setting>
+    <Setting Name="columnTypeSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">110</Value>
+    </Setting>
+    <Setting Name="columnIPSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">102</Value>
+    </Setting>
+    <Setting Name="columnLogSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">670</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

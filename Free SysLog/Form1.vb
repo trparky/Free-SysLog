@@ -5,6 +5,7 @@ Imports System.Text
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
+    Private boolDoneLoading As Boolean = False
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.mainWindowSize = Size
@@ -34,6 +35,13 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         chkAutoScroll.Checked = My.Settings.autoScroll
         Size = My.Settings.mainWindowSize
+
+        Time.Width = My.Settings.columnTimeSize
+        Type.Width = My.Settings.columnTypeSize
+        IPAddressCol.Width = My.Settings.columnIPSize
+        Log.Width = My.Settings.columnLogSize
+
+        boolDoneLoading = True
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
             MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
@@ -215,6 +223,15 @@ askAgain:
 
     Private Sub chkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
         My.Settings.autoScroll = chkAutoScroll.Checked
+    End Sub
+
+    Private Sub logs_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles logs.ColumnWidthChanged
+        If boolDoneLoading Then
+            My.Settings.columnTimeSize = Time.Width
+            My.Settings.columnTypeSize = Type.Width
+            My.Settings.columnIPSize = IPAddressCol.Width
+            My.Settings.columnLogSize = Log.Width
+        End If
     End Sub
 #End Region
 End Class

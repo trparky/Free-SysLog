@@ -101,6 +101,54 @@ Namespace My
                 Me("mainWindowSize") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("196")>  _
+        Public Property columnTimeSize() As Integer
+            Get
+                Return CType(Me("columnTimeSize"),Integer)
+            End Get
+            Set
+                Me("columnTimeSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("110")>  _
+        Public Property columnTypeSize() As Integer
+            Get
+                Return CType(Me("columnTypeSize"),Integer)
+            End Get
+            Set
+                Me("columnTypeSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("102")>  _
+        Public Property columnIPSize() As Integer
+            Get
+                Return CType(Me("columnIPSize"),Integer)
+            End Get
+            Set
+                Me("columnIPSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("670")>  _
+        Public Property columnLogSize() As Integer
+            Get
+                Return CType(Me("columnLogSize"),Integer)
+            End Get
+            Set
+                Me("columnLogSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
