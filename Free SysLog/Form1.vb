@@ -239,6 +239,8 @@ askAgain:
 
     Private Sub btnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
         logs.Items.Clear()
+        UpdateLogCount()
+        WriteLogsToDisk()
     End Sub
 
     Private Sub btnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
