@@ -137,7 +137,7 @@ askAgain:
         End Try
     End Sub
 
-    Private Function GetSyslogPriority(ByVal sSyslog As String) As String
+    Private Function GetSyslogPriority(sSyslog As String) As String
         If sSyslog.Contains("L0") Then
             Return "Emergency (0)"
         ElseIf sSyslog.Contains("L1") Then
