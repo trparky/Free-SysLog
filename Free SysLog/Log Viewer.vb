@@ -14,4 +14,8 @@
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         Close()
     End Sub
+
+    Private Sub Log_Viewer_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyData = Keys.Escape Then Close()
+    End Sub
 End Class
