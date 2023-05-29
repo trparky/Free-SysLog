@@ -86,12 +86,6 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Global Application Crash Handler.designer.vb">
-      <DependentUpon>Global Application Crash Handler.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Global Application Crash Handler.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Log Viewer.Designer.vb">
       <DependentUpon>Log Viewer.vb</DependentUpon>
     </Compile>
@@ -119,9 +113,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Global Application Crash Handler.resx">
-      <DependentUpon>Global Application Crash Handler.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Log Viewer.resx">
       <DependentUpon>Log Viewer.vb</DependentUpon>

@@ -36,7 +36,6 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         chkAutoScroll.Checked = My.Settings.autoScroll
         Size = My.Settings.mainWindowSize
-        loadExceptionHandler()
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
             MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
@@ -192,7 +191,6 @@ askAgain:
 
             listViewItem = Nothing
         Catch ex As Exception
-            manuallyLoadCrashWindow(ex)
         End Try
     End Sub
 
