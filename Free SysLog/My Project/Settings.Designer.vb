@@ -89,6 +89,18 @@ Namespace My
                 Me("autoScroll") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1191, 485")>  _
+        Public Property mainWindowSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("mainWindowSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("mainWindowSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

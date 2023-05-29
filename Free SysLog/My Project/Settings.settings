@@ -11,5 +11,8 @@
     <Setting Name="autoScroll" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="mainWindowSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1191, 485</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

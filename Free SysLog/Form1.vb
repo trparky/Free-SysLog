@@ -7,6 +7,7 @@ Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        My.Settings.mainWindowSize = Size
         Dim collectionOfSavedData As New List(Of SavedData)
 
         For Each listViewItem As ListViewItem In logs.Items
@@ -34,6 +35,7 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         chkAutoScroll.Checked = My.Settings.autoScroll
+        Size = My.Settings.mainWindowSize
         loadExceptionHandler()
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
