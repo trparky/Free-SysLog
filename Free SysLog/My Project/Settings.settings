@@ -6,7 +6,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="logViewerWindowSize" Type="System.Drawing.Size" Scope="User">
-      <Value Profile="(Default)">816, 489</Value>
+      <Value Profile="(Default)">816, 173</Value>
     </Setting>
     <Setting Name="autoScroll" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

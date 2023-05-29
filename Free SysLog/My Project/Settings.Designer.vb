@@ -68,7 +68,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("816, 489")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("816, 173")>  _
         Public Property logViewerWindowSize() As Global.System.Drawing.Size
             Get
                 Return CType(Me("logViewerWindowSize"),Global.System.Drawing.Size)

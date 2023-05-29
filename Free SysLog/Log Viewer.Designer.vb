@@ -33,16 +33,16 @@ Partial Class Log_Viewer
         Me.LogText.Location = New System.Drawing.Point(12, 12)
         Me.LogText.Multiline = True
         Me.LogText.Name = "LogText"
-        Me.LogText.Size = New System.Drawing.Size(776, 426)
+        Me.LogText.Size = New System.Drawing.Size(776, 110)
         Me.LogText.TabIndex = 0
         '
         'Log_Viewer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(800, 134)
         Me.Controls.Add(Me.LogText)
-        Me.MinimumSize = New System.Drawing.Size(816, 489)
+        Me.MinimumSize = New System.Drawing.Size(816, 173)
         Me.Name = "Log_Viewer"
         Me.Text = "Log Viewer"
         Me.ResumeLayout(False)
