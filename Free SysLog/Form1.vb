@@ -36,12 +36,12 @@ Public Class Form1
         loadExceptionHandler()
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
-            MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Me.Text)
+            MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
 askAgain:
             SaveFileDialog.ShowDialog()
 
             If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
-                MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Me.Text)
+                MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
                 GoTo askAgain
             End If
 
