@@ -178,20 +178,25 @@ askAgain:
 
             Dim logFileName As String = String.Format("syslog {0}.txt", Now.ToShortDateString.ToString.Replace("/", "-"))
 
-            Dim listViewItem As New ListViewItem(Now.ToLocalTime.ToString)
-            listViewItem.SubItems.Add(sPriority)
-            listViewItem.SubItems.Add(sFromIp)
-            listViewItem.SubItems.Add(sSyslog)
-
-            Invoke(Sub()
-                       logs.Items.Add(listViewItem)
-                       UpdateLogCount()
-                       If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
-                   End Sub)
-
-            listViewItem = Nothing
+            addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
+            addToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}")
         End Try
+    End Sub
+
+    Private Sub addToLogList(sPriority As String, sFromIp As String, sSyslog As String)
+        Dim listViewItem As New ListViewItem(Now.ToLocalTime.ToString)
+        listViewItem.SubItems.Add(sPriority)
+        listViewItem.SubItems.Add(sFromIp)
+        listViewItem.SubItems.Add(sSyslog)
+
+        Invoke(Sub()
+                   logs.Items.Add(listViewItem)
+                   UpdateLogCount()
+                   If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
+               End Sub)
+
+        listViewItem = Nothing
     End Sub
 
     Private Sub OpenLogViewerWindow()
