@@ -33,6 +33,7 @@ Partial Class Form1
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.chkAutoScroll = New System.Windows.Forms.CheckBox()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -83,9 +84,9 @@ Partial Class Form1
         Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log})
         Me.logs.FullRowSelect = True
         Me.logs.HideSelection = False
-        Me.logs.Location = New System.Drawing.Point(12, 47)
+        Me.logs.Location = New System.Drawing.Point(12, 70)
         Me.logs.Name = "logs"
-        Me.logs.Size = New System.Drawing.Size(1151, 374)
+        Me.logs.Size = New System.Drawing.Size(1151, 351)
         Me.logs.TabIndex = 3
         Me.logs.UseCompatibleStateImageBehavior = False
         Me.logs.View = System.Windows.Forms.View.Details
@@ -125,11 +126,22 @@ Partial Class Form1
         Me.NumberOfLogs.Size = New System.Drawing.Size(137, 17)
         Me.NumberOfLogs.Text = "Number of Log Entries: 0"
         '
+        'chkAutoScroll
+        '
+        Me.chkAutoScroll.AutoSize = True
+        Me.chkAutoScroll.Location = New System.Drawing.Point(12, 47)
+        Me.chkAutoScroll.Name = "chkAutoScroll"
+        Me.chkAutoScroll.Size = New System.Drawing.Size(77, 17)
+        Me.chkAutoScroll.TabIndex = 5
+        Me.chkAutoScroll.Text = "Auto Scroll"
+        Me.chkAutoScroll.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.chkAutoScroll)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.logs)
         Me.Controls.Add(Me.TableLayoutPanel1)
@@ -153,4 +165,5 @@ Partial Class Form1
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
+    Friend WithEvents chkAutoScroll As CheckBox
 End Class

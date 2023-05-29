@@ -33,6 +33,7 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        chkAutoScroll.Checked = My.Settings.autoScroll
         loadExceptionHandler()
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
@@ -184,6 +185,7 @@ askAgain:
             Invoke(Sub()
                        logs.Items.Add(listViewItem)
                        UpdateLogCount()
+                       If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
                    End Sub)
 
             listViewItem = Nothing
@@ -207,6 +209,10 @@ askAgain:
 
     Private Sub UpdateLogCount()
         NumberOfLogs.Text = "Number of Log Entries: " & logs.Items.Count.ToString("N0")
+    End Sub
+
+    Private Sub chkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
+        My.Settings.autoScroll = chkAutoScroll.Checked
     End Sub
 #End Region
 End Class
