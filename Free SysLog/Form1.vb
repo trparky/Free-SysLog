@@ -184,7 +184,7 @@ askAgain:
                 Exit Sub
             End If
 
-            Dim logFileName As String = String.Format("syslog {0}.txt", Now.ToShortDateString.ToString.Replace("/", "-"))
+            Dim logFileName As String = $"syslog {Now.ToShortDateString.ToString.Replace("/", "-")}.txt"
 
             addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
@@ -221,7 +221,7 @@ askAgain:
     End Sub
 
     Private Sub UpdateLogCount()
-        NumberOfLogs.Text = "Number of Log Entries: " & logs.Items.Count.ToString("N0")
+        NumberOfLogs.Text = $"Number of Log Entries: {logs.Items.Count.ToString("N0")}"
     End Sub
 
     Private Sub chkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
