@@ -30,9 +30,11 @@ Partial Class Log_Viewer
         Me.LogText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LogText.BackColor = System.Drawing.SystemColors.Window
         Me.LogText.Location = New System.Drawing.Point(12, 12)
         Me.LogText.Multiline = True
         Me.LogText.Name = "LogText"
+        Me.LogText.ReadOnly = True
         Me.LogText.Size = New System.Drawing.Size(776, 110)
         Me.LogText.TabIndex = 0
         '
