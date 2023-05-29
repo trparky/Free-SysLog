@@ -10,4 +10,8 @@
     Private Sub Log_Viewer_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.logViewerWindowSize = Size
     End Sub
+
+    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+        Close()
+    End Sub
 End Class
