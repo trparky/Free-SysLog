@@ -42,22 +42,24 @@ Partial Class Form1
         '
         'btnServerController
         '
-        Me.btnServerController.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.btnServerController.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnServerController.Location = New System.Drawing.Point(3, 3)
         Me.btnServerController.Name = "btnServerController"
-        Me.btnServerController.Size = New System.Drawing.Size(281, 23)
+        Me.btnServerController.Size = New System.Drawing.Size(281, 31)
         Me.btnServerController.TabIndex = 0
         Me.btnServerController.Text = "Stop SysLog Server"
         Me.btnServerController.UseVisualStyleBackColor = True
         '
         'btnOpenLogLocation
         '
-        Me.btnOpenLogLocation.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.btnOpenLogLocation.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnOpenLogLocation.Location = New System.Drawing.Point(290, 3)
         Me.btnOpenLogLocation.Name = "btnOpenLogLocation"
-        Me.btnOpenLogLocation.Size = New System.Drawing.Size(281, 23)
+        Me.btnOpenLogLocation.Size = New System.Drawing.Size(281, 31)
         Me.btnOpenLogLocation.TabIndex = 1
         Me.btnOpenLogLocation.Text = "Open Log File Location"
         Me.btnOpenLogLocation.UseVisualStyleBackColor = True
@@ -79,7 +81,7 @@ Partial Class Form1
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1151, 29)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1151, 37)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'logs
@@ -90,9 +92,9 @@ Partial Class Form1
         Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log})
         Me.logs.FullRowSelect = True
         Me.logs.HideSelection = False
-        Me.logs.Location = New System.Drawing.Point(12, 70)
+        Me.logs.Location = New System.Drawing.Point(12, 78)
         Me.logs.Name = "logs"
-        Me.logs.Size = New System.Drawing.Size(1151, 351)
+        Me.logs.Size = New System.Drawing.Size(1151, 343)
         Me.logs.TabIndex = 3
         Me.logs.UseCompatibleStateImageBehavior = False
         Me.logs.View = System.Windows.Forms.View.Details
@@ -135,7 +137,7 @@ Partial Class Form1
         'chkAutoScroll
         '
         Me.chkAutoScroll.AutoSize = True
-        Me.chkAutoScroll.Location = New System.Drawing.Point(12, 47)
+        Me.chkAutoScroll.Location = New System.Drawing.Point(12, 55)
         Me.chkAutoScroll.Name = "chkAutoScroll"
         Me.chkAutoScroll.Size = New System.Drawing.Size(77, 17)
         Me.chkAutoScroll.TabIndex = 5
@@ -149,7 +151,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClearLog.Location = New System.Drawing.Point(577, 3)
         Me.btnClearLog.Name = "btnClearLog"
-        Me.btnClearLog.Size = New System.Drawing.Size(281, 23)
+        Me.btnClearLog.Size = New System.Drawing.Size(281, 31)
         Me.btnClearLog.TabIndex = 2
         Me.btnClearLog.Text = "Clear Logs"
         Me.btnClearLog.UseVisualStyleBackColor = True
@@ -161,7 +163,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSaveLogsToDisk.Location = New System.Drawing.Point(864, 3)
         Me.btnSaveLogsToDisk.Name = "btnSaveLogsToDisk"
-        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(284, 23)
+        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(284, 31)
         Me.btnSaveLogsToDisk.TabIndex = 3
         Me.btnSaveLogsToDisk.Text = "Save Logs to Disk"
         Me.btnSaveLogsToDisk.UseVisualStyleBackColor = True
