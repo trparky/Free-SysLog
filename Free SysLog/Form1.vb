@@ -26,8 +26,6 @@ Public Class Form1
 
         Try
             sysLogThreadInstance.Abort()
-            Dim currentProcess As Process = Process.GetCurrentProcess()
-            currentProcess.Kill()
         Catch ex As Exception
             ' Does nothing.
         End Try
