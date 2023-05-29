@@ -184,8 +184,6 @@ askAgain:
                 Exit Sub
             End If
 
-            Dim logFileName As String = $"syslog {Now.ToShortDateString.ToString.Replace("/", "-")}.txt"
-
             addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
             addToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}")
