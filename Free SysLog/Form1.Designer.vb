@@ -34,6 +34,7 @@ Partial Class Form1
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.chkAutoScroll = New System.Windows.Forms.CheckBox()
+        Me.btnClearLog = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -44,7 +45,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnServerController.Location = New System.Drawing.Point(3, 3)
         Me.btnServerController.Name = "btnServerController"
-        Me.btnServerController.Size = New System.Drawing.Size(569, 23)
+        Me.btnServerController.Size = New System.Drawing.Size(377, 23)
         Me.btnServerController.TabIndex = 0
         Me.btnServerController.Text = "Stop SysLog Server"
         Me.btnServerController.UseVisualStyleBackColor = True
@@ -53,9 +54,9 @@ Partial Class Form1
         '
         Me.btnOpenLogLocation.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnOpenLogLocation.Location = New System.Drawing.Point(578, 3)
+        Me.btnOpenLogLocation.Location = New System.Drawing.Point(386, 3)
         Me.btnOpenLogLocation.Name = "btnOpenLogLocation"
-        Me.btnOpenLogLocation.Size = New System.Drawing.Size(570, 23)
+        Me.btnOpenLogLocation.Size = New System.Drawing.Size(377, 23)
         Me.btnOpenLogLocation.TabIndex = 1
         Me.btnOpenLogLocation.Text = "Open Log File Location"
         Me.btnOpenLogLocation.UseVisualStyleBackColor = True
@@ -64,15 +65,17 @@ Partial Class Form1
         '
         Me.TableLayoutPanel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnCount = 3
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
         Me.TableLayoutPanel1.Controls.Add(Me.btnServerController, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.btnOpenLogLocation, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.btnClearLog, 2, 0)
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(12, 12)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(1151, 29)
         Me.TableLayoutPanel1.TabIndex = 2
         '
@@ -136,6 +139,18 @@ Partial Class Form1
         Me.chkAutoScroll.Text = "Auto Scroll"
         Me.chkAutoScroll.UseVisualStyleBackColor = True
         '
+        'btnClearLog
+        '
+        Me.btnClearLog.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClearLog.Location = New System.Drawing.Point(769, 3)
+        Me.btnClearLog.Name = "btnClearLog"
+        Me.btnClearLog.Size = New System.Drawing.Size(379, 23)
+        Me.btnClearLog.TabIndex = 2
+        Me.btnClearLog.Text = "Clear Logs"
+        Me.btnClearLog.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -166,4 +181,5 @@ Partial Class Form1
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
     Friend WithEvents chkAutoScroll As CheckBox
+    Friend WithEvents btnClearLog As Button
 End Class

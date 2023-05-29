@@ -234,6 +234,10 @@ askAgain:
             My.Settings.columnLogSize = Log.Width
         End If
     End Sub
+
+    Private Sub btnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
+        logs.Items.Clear()
+    End Sub
 #End Region
 End Class
 
