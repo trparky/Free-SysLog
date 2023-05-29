@@ -57,6 +57,8 @@ Partial Class Log_Viewer
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.LogText)
         Me.KeyPreview = True
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(816, 173)
         Me.Name = "Log_Viewer"
         Me.Text = "Log Viewer"
