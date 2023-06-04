@@ -187,7 +187,7 @@ askAgain:
                 Exit Sub
             End If
 
-            sSyslog = Regex.Replace(sSyslog, "[.0-9:T-]{20,34} L[0-9]+ ", "")
+            sSyslog = Regex.Replace(sSyslog, "[./0-9-]{5,10}T[.0-9:]{5,8}\.[0-9]+-[0-9]+:[0-9]+ L[0-9]+ ", "").Trim
             addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
             addToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}")
