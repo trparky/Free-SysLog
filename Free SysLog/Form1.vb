@@ -187,7 +187,7 @@ askAgain:
                 Exit Sub
             End If
 
-            sSyslog = Regex.Replace(sSyslog, "[.0-9:T-]{20,34} L[0-9]+ ", "")
+            sSyslog = Regex.Replace(sSyslog, "[./0-9-]{5,10}T[.0-9:]{5,8}\.[0-9]+-[0-9]+:[0-9]+ L[0-9]+ ", "").Trim
             addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
             addToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}")
@@ -248,6 +248,13 @@ askAgain:
 
     Private Sub btnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
         WriteLogsToDisk()
+    End Sub
+
+    Private Sub btnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles btnCheckForUpdates.Click
+        Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                   Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                   checkForUpdatesClassObject.CheckForUpdates()
+                                               End Sub)
     End Sub
 #End Region
 End Class

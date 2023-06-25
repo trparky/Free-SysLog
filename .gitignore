@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Compile this thing!.bat
+/AssemblyInfo.vb.lnk
+/freesyslog_update.xml.lnk
