@@ -249,6 +249,13 @@ askAgain:
     Private Sub btnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
         WriteLogsToDisk()
     End Sub
+
+    Private Sub btnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles btnCheckForUpdates.Click
+        Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                   Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                   checkForUpdatesClassObject.CheckForUpdates()
+                                               End Sub)
+    End Sub
 #End Region
 End Class
 
