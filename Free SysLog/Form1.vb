@@ -3,6 +3,8 @@ Imports System.Net.Sockets
 Imports System.Net
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.ComponentModel
+Imports System.Threading
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
@@ -255,6 +257,12 @@ askAgain:
                                                    Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
                                                    checkForUpdatesClassObject.CheckForUpdates()
                                                End Sub)
+    End Sub
+
+    Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        My.Settings.Save()
+        WriteLogsToDisk()
+        Process.GetCurrentProcess.Kill()
     End Sub
 #End Region
 End Class
