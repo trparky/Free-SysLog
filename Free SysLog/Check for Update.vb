@@ -59,7 +59,7 @@ Namespace checkForUpdates
 
         Public windowObject As Form1
         Private ReadOnly shortBuild As Short = Short.Parse(versionInfo(VersionPieces.build).Trim)
-        Private ReadOnly dblVersionStringWithoutBuild As Double = Double.Parse($"{versionInfo(VersionPieces.major)}.{versionInfo(VersionPieces.minor)}")
+        Private ReadOnly versionStringWithoutBuild As Double = Double.Parse($"{versionInfo(VersionPieces.major)}.{versionInfo(VersionPieces.minor)}")
 
         Public Sub New(inputWindowObject As Form1)
             windowObject = inputWindowObject
@@ -100,15 +100,15 @@ Namespace checkForUpdates
                     Dim shortRemoteBuild As Short
 
                     ' This checks to see if current version and the current build matches that of the remote values in the XML document.
-                    If remoteVersion.Equals(dblVersionStringWithoutBuild) And remoteBuild.Equals(shortBuild.ToString) Then
+                    If remoteVersion.Equals(versionStringWithoutBuild) And remoteBuild.Equals(shortBuild.ToString) Then
                         ' Both the remoteVersion and the remoteBuild equals that of the current version,
                         ' therefore we return a noUpdateNeeded value indicating no update is required.
                         Return ProcessUpdateXMLResponse.noUpdateNeeded
                     Else
                         ' First we do a check of the version, if it's not equal we simply return a newVersion value.
-                        If Not remoteVersion.Equals(dblVersionStringWithoutBuild) Then
+                        If Not remoteVersion.Equals(versionStringWithoutBuild) Then
                             ' Checks to see if the remote version is less than the current version.
-                            If remoteVersion < Double.Parse(dblVersionStringWithoutBuild) Then
+                            If remoteVersion < Double.Parse(versionStringWithoutBuild) Then
                                 ' This is weird, the remote build is less than the current build so we return a newerVersionThanWebSite value.
                                 Return ProcessUpdateXMLResponse.newerVersionThanWebSite
                             End If
