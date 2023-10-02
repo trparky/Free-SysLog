@@ -16,8 +16,8 @@ Namespace checkForUpdates
         Public versionInfo As String() = Application.ProductVersion.Split(".")
 
         Sub New()
-            versionString = $"{versionInfo(0)}.{versionInfo(1)} Build {versionInfo(2)}"
-            If IsDebugBuild() And Integer.Parse(versionInfo(3)) <> 0 Then versionString &= $" (Debug Build {versionInfo(3)})"
+            versionString = $"{versionInfo(VersionPieces.major)}.{versionInfo(VersionPieces.minor)} Build {versionInfo(VersionPieces.build)}"
+            If IsDebugBuild() And Integer.Parse(versionInfo(VersionPieces.revision)) <> 0 Then versionString &= $" (Debug Build {versionInfo(VersionPieces.revision)})"
         End Sub
 
         Private Function IsDebugBuild() As Boolean
