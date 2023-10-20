@@ -9,7 +9,6 @@ Namespace checkForUpdates
         ' Change these variables whenever you import this module into a program's code to handle software updates.
         Public Const strMessageBoxTitleText As String = "Free SysLog"
         Public Const strProgramName As String = "Free SysLog"
-        Private Const strZipFileName As String = "Free SysLog.zip"
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
         Public versionString As String
@@ -27,34 +26,14 @@ Namespace checkForUpdates
             Return False
 #End If
         End Function
-
-        Public Sub DoUpdateAtStartup()
-            If File.Exists(strZipFileName) Then File.Delete(strZipFileName)
-            Dim currentProcessFileName As String = New FileInfo(Application.ExecutablePath).Name
-
-            If currentProcessFileName.CaseInsensitiveContains(".new.exe") Then
-                Dim mainEXEName As String = currentProcessFileName.Replace(".new.exe", "", StringComparison.OrdinalIgnoreCase)
-
-                SearchForProcessAndKillIt(mainEXEName, False)
-
-                File.Delete(mainEXEName)
-                File.Copy(currentProcessFileName, mainEXEName)
-
-                Process.Start(New ProcessStartInfo With {.FileName = mainEXEName})
-                Process.GetCurrentProcess.Kill()
-            Else
-                MsgBox("The environment is not ready for an update. This process will now terminate.", MsgBoxStyle.Critical, strMessageBoxTitleText)
-                Process.GetCurrentProcess.Kill()
-            End If
-        End Sub
     End Module
 
     Class CheckForUpdatesClass
         ' Change these variables whenever you import this module into a program's code to handle software updates.
-        Private Const programZipFileURL = "www.toms-world.org/download/Free SysLog.zip"
-        Private Const programZipFileSHA256URL = "www.toms-world.org/download/Free SysLog.zip.sha2"
-        Private Const programFileNameInZIP As String = "Free SysLog.exe"
+        Private Const updaterURL As String = "www.toms-world.org/download/updater.exe"
+        Private Const updaterSHA256URL As String = "www.toms-world.org/download/updater.exe.sha2"
         Private Const programUpdateCheckerXMLFile As String = "www.toms-world.org/updates/freesyslog_update.xml"
+        Private Const programCode As String = "freesyslog"
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
         Public windowObject As Form1
@@ -227,34 +206,29 @@ Namespace checkForUpdates
         End Function
 
         Private Sub DownloadAndPerformUpdate()
-            Dim newExecutableName As String = $"{New FileInfo(Application.ExecutablePath).Name}.new.exe"
-
             Dim httpHelper As HttpHelper = CreateNewHTTPHelperObject()
 
             Using memoryStream As New MemoryStream()
-                If Not httpHelper.DownloadFile(programZipFileURL, memoryStream, False) Then
+                If Not httpHelper.DownloadFile(updaterURL, memoryStream, False) Then
                     windowObject.Invoke(Sub() MsgBox("There was an error while downloading required files.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                     Exit Sub
                 End If
 
-                If Not VerifyChecksum(programZipFileSHA256URL, memoryStream, httpHelper, True) Then
+                If Not VerifyChecksum(updaterSHA256URL, memoryStream, httpHelper, True) Then
                     windowObject.Invoke(Sub() MsgBox("There was an error while downloading required files.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                     Exit Sub
                 End If
 
                 memoryStream.Position = 0
 
-                ' This checks to see if the file was extracted successfully from the downloaded ZIP file.
-                If Not ExtractFileFromZIPFile(memoryStream, programFileNameInZIP, newExecutableName) Then
-                    ' Nope, something went wrong; let's abort.
-                    windowObject.Invoke(Sub() MsgBox("There was an error while extracting required files from the downloaded ZIP file.", MsgBoxStyle.Critical, strMessageBoxTitleText))
-                    Exit Sub
-                End If
+                Using fileStream As New FileStream("updater.exe", FileMode.OpenOrCreate)
+                    memoryStream.CopyTo(fileStream)
+                End Using
             End Using
 
             Dim startInfo As New ProcessStartInfo With {
-                .FileName = newExecutableName,
-                .Arguments = "-update"
+                .FileName = "updater.exe",
+                .Arguments = $"--programcode={programCode}"
             }
             If Not CheckFolderPermissionsByACLs(New FileInfo(Application.ExecutablePath).DirectoryName) Then startInfo.Verb = "runas"
             Process.Start(startInfo)
