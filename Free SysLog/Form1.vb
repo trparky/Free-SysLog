@@ -4,7 +4,6 @@ Imports System.Net
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.ComponentModel
-Imports System.Threading
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
