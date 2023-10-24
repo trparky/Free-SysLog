@@ -16,16 +16,7 @@ Namespace checkForUpdates
 
         Sub New()
             versionString = $"{versionInfo(VersionPieces.major)}.{versionInfo(VersionPieces.minor)} Build {versionInfo(VersionPieces.build)}"
-            If IsDebugBuild() And Integer.Parse(versionInfo(VersionPieces.revision)) <> 0 Then versionString &= $" (Debug Build {versionInfo(VersionPieces.revision)})"
         End Sub
-
-        Private Function IsDebugBuild() As Boolean
-#If DEBUG Then
-            Return True
-#Else
-            Return False
-#End If
-        End Function
     End Module
 
     Class CheckForUpdatesClass
@@ -313,7 +304,7 @@ Namespace checkForUpdates
                                 windowObject.Invoke(Sub() MsgBox("The update will not be downloaded.", MsgBoxStyle.Information, strMessageBoxTitleText))
                             End If
                         ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded AndAlso boolShowMessageBox Then
-                            windowObject.Invoke(Sub() MsgBox("You already have the latest version, there is no need to update this program.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
                         ElseIf (response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError) AndAlso boolShowMessageBox Then
                             windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite AndAlso boolShowMessageBox Then
