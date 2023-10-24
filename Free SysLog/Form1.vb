@@ -49,6 +49,7 @@ Public Class Form1
         Log.Width = My.Settings.columnLogSize
 
         boolDoneLoading = True
+        SaveFileDialog.Filter = "JSON Data File|*.json"
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
             MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
