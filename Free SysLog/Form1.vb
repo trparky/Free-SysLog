@@ -37,6 +37,8 @@ Public Class Form1
         Catch ex As Exception
             ' Does nothing.
         End Try
+
+        Process.GetCurrentProcess.Kill()
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
