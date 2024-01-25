@@ -70,27 +70,30 @@ askAgain:
         pathToLogFiles = My.Settings.logFileLocation
 
         If File.Exists(My.Settings.logFileLocation) Then
-            Dim collectionOfSavedData As New List(Of SavedData)
+            Try
+                Dim collectionOfSavedData As New List(Of SavedData)
 
-            Using fileStream As New StreamReader(My.Settings.logFileLocation)
-                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
-            End Using
+                Using fileStream As New StreamReader(My.Settings.logFileLocation)
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
+                End Using
 
-            Dim listOfLogEntries As New List(Of ListViewItem)
-            Dim listViewItem As ListViewItem
+                Dim listOfLogEntries As New List(Of ListViewItem)
+                Dim listViewItem As ListViewItem
 
-            For Each item As SavedData In collectionOfSavedData
-                listViewItem = New ListViewItem(item.time)
-                listViewItem.SubItems.Add(item.type)
-                listViewItem.SubItems.Add(item.ip)
-                listViewItem.SubItems.Add(item.log)
-                listOfLogEntries.Add(listViewItem)
-            Next
+                For Each item As SavedData In collectionOfSavedData
+                    listViewItem = New ListViewItem(item.time)
+                    listViewItem.SubItems.Add(item.type)
+                    listViewItem.SubItems.Add(item.ip)
+                    listViewItem.SubItems.Add(item.log)
+                    listOfLogEntries.Add(listViewItem)
+                Next
 
-            Invoke(Sub()
-                       logs.Items.AddRange(listOfLogEntries.ToArray())
-                       UpdateLogCount()
-                   End Sub)
+                Invoke(Sub()
+                           logs.Items.AddRange(listOfLogEntries.ToArray())
+                           UpdateLogCount()
+                       End Sub)
+            Catch ex As Exception
+            End Try
         End If
 
         sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
