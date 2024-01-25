@@ -8,24 +8,27 @@ Imports System.ComponentModel
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
     Private boolDoneLoading As Boolean = False
+    Private lockObject As New Object
 
     Private Sub WriteLogsToDisk()
-        Dim collectionOfSavedData As New List(Of SavedData)
+        SyncLock lockObject
+            Dim collectionOfSavedData As New List(Of SavedData)
 
-        For Each listViewItem As ListViewItem In logs.Items
-            collectionOfSavedData.Add(New SavedData With {
-                                        .time = listViewItem.SubItems(0).Text,
-                                        .type = listViewItem.SubItems(1).Text,
-                                        .ip = listViewItem.SubItems(2).Text,
-                                        .log = listViewItem.SubItems(3).Text
-                                      })
-        Next
+            For Each listViewItem As ListViewItem In logs.Items
+                collectionOfSavedData.Add(New SavedData With {
+                                            .time = listViewItem.SubItems(0).Text,
+                                            .type = listViewItem.SubItems(1).Text,
+                                            .ip = listViewItem.SubItems(2).Text,
+                                            .log = listViewItem.SubItems(3).Text
+                                          })
+            Next
 
-        Using fileStream As New StreamWriter(My.Settings.logFileLocation)
-            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
-        End Using
+            Using fileStream As New StreamWriter(My.Settings.logFileLocation)
+                fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+            End Using
 
-        btnSaveLogsToDisk.Enabled = False
+            btnSaveLogsToDisk.Enabled = False
+        End SyncLock
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
