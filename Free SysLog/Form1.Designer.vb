@@ -43,6 +43,7 @@ Partial Class Form1
         Me.lblAutoSaveLabel = New System.Windows.Forms.Label()
         Me.NumericUpDown = New System.Windows.Forms.NumericUpDown()
         Me.lblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.chkStartAtUserStartup = New System.Windows.Forms.CheckBox()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -198,7 +199,7 @@ Partial Class Form1
         'chkAutoSave
         '
         Me.chkAutoSave.AutoSize = True
-        Me.chkAutoSave.Location = New System.Drawing.Point(95, 55)
+        Me.chkAutoSave.Location = New System.Drawing.Point(198, 55)
         Me.chkAutoSave.Name = "chkAutoSave"
         Me.chkAutoSave.Size = New System.Drawing.Size(76, 17)
         Me.chkAutoSave.TabIndex = 6
@@ -208,7 +209,7 @@ Partial Class Form1
         'lblAutoSaveLabel
         '
         Me.lblAutoSaveLabel.AutoSize = True
-        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(177, 56)
+        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(280, 56)
         Me.lblAutoSaveLabel.Name = "lblAutoSaveLabel"
         Me.lblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
         Me.lblAutoSaveLabel.TabIndex = 7
@@ -216,7 +217,7 @@ Partial Class Form1
         '
         'NumericUpDown
         '
-        Me.NumericUpDown.Location = New System.Drawing.Point(326, 54)
+        Me.NumericUpDown.Location = New System.Drawing.Point(429, 54)
         Me.NumericUpDown.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDown.Name = "NumericUpDown"
         Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
@@ -229,11 +230,22 @@ Partial Class Form1
         Me.lblAutoSaved.Size = New System.Drawing.Size(193, 17)
         Me.lblAutoSaved.Text = "Last Auto-Saved At: (Not Specified)"
         '
+        'chkStartAtUserStartup
+        '
+        Me.chkStartAtUserStartup.AutoSize = True
+        Me.chkStartAtUserStartup.Location = New System.Drawing.Point(95, 55)
+        Me.chkStartAtUserStartup.Name = "chkStartAtUserStartup"
+        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(97, 17)
+        Me.chkStartAtUserStartup.TabIndex = 9
+        Me.chkStartAtUserStartup.Text = "Start at Startup"
+        Me.chkStartAtUserStartup.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.chkStartAtUserStartup)
         Me.Controls.Add(Me.NumericUpDown)
         Me.Controls.Add(Me.lblAutoSaveLabel)
         Me.Controls.Add(Me.chkAutoSave)
@@ -271,4 +283,5 @@ Partial Class Form1
     Friend WithEvents lblAutoSaveLabel As Label
     Friend WithEvents NumericUpDown As NumericUpDown
     Friend WithEvents lblAutoSaved As ToolStripStatusLabel
+    Friend WithEvents chkStartAtUserStartup As CheckBox
 End Class

@@ -4,11 +4,28 @@ Imports System.Net
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.ComponentModel
+Imports Microsoft.Win32
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
+
+    Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
+        Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
+            If chkStartAtUserStartup.Checked Then
+                registryKey.SetValue("Free Syslog", $"""{Application.ExecutablePath}""")
+            Else
+                registryKey.DeleteValue("Free Syslog", False)
+            End If
+        End Using
+    End Sub
+
+    Private Function DoesStartupEntryExist() As Boolean
+        Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", False)
+            Return registryKey.GetValue("Free Syslog") IsNot Nothing
+        End Using
+    End Function
 
     Private Sub WriteLogsToDisk()
         SyncLock lockObject
@@ -70,6 +87,7 @@ Public Class Form1
         NumericUpDown.Visible = chkAutoSave.Checked
         lblAutoSaveLabel.Visible = chkAutoSave.Checked
         lblAutoSaved.Visible = chkAutoSave.Checked
+        chkStartAtUserStartup.Checked = DoesStartupEntryExist()
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
