@@ -225,8 +225,8 @@ Partial Class Form1
         'lblAutoSaved
         '
         Me.lblAutoSaved.Name = "lblAutoSaved"
-        Me.lblAutoSaved.Size = New System.Drawing.Size(111, 17)
-        Me.lblAutoSaved.Text = "Last Auto-Saved At:"
+        Me.lblAutoSaved.Size = New System.Drawing.Size(193, 17)
+        Me.lblAutoSaved.Text = "Last Auto-Saved At: (Not Specified)"
         '
         'Form1
         '
