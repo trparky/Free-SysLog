@@ -288,6 +288,9 @@ askAgain:
 
     Private Sub BtnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
         WriteLogsToDisk()
+        lblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
+        SaveTimer.Enabled = False
+        SaveTimer.Enabled = True
     End Sub
 
     Private Sub BtnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles btnCheckForUpdates.Click
