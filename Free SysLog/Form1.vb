@@ -136,13 +136,13 @@ askAgain:
     Public pathToLogFiles As String
 
     Public Sub ListenForSyslogs()
-        Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
-        Dim udpcUDPClient As New UdpClient(514)
-        Dim sDataRecieve As String
-        Dim bBytesRecieved() As Byte
-        Dim sFromIP As String
-
         Try
+            Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
+            Dim udpcUDPClient As New UdpClient(514)
+            Dim sDataRecieve As String
+            Dim bBytesRecieved() As Byte
+            Dim sFromIP As String
+
             While True
                 bBytesRecieved = udpcUDPClient.Receive(ipeRemoteIpEndPoint)
                 sDataRecieve = Encoding.ASCII.GetString(bBytesRecieved)
@@ -153,7 +153,7 @@ askAgain:
                 sDataRecieve = ""
             End While
         Catch e As Exception
-            ' just ignore for now
+            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text)
         End Try
     End Sub
 
