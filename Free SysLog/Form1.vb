@@ -198,7 +198,7 @@ askAgain:
         End Try
     End Sub
 
-    Private Sub addToLogList(sPriority As String, sFromIp As String, sSyslog As String)
+    Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String)
         Dim listViewItem As New ListViewItem(Now.ToLocalTime.ToString)
         listViewItem.SubItems.Add(sPriority)
         listViewItem.SubItems.Add(sFromIp)
@@ -231,11 +231,11 @@ askAgain:
         NumberOfLogs.Text = $"Number of Log Entries: {logs.Items.Count.ToString("N0")}"
     End Sub
 
-    Private Sub chkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
+    Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
         My.Settings.autoScroll = chkAutoScroll.Checked
     End Sub
 
-    Private Sub logs_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles logs.ColumnWidthChanged
+    Private Sub Logs_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles logs.ColumnWidthChanged
         If boolDoneLoading Then
             My.Settings.columnTimeSize = Time.Width
             My.Settings.columnTypeSize = Type.Width
@@ -244,17 +244,17 @@ askAgain:
         End If
     End Sub
 
-    Private Sub btnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
+    Private Sub BtnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
         logs.Items.Clear()
         UpdateLogCount()
         WriteLogsToDisk()
     End Sub
 
-    Private Sub btnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
+    Private Sub BtnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
         WriteLogsToDisk()
     End Sub
 
-    Private Sub btnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles btnCheckForUpdates.Click
+    Private Sub BtnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles btnCheckForUpdates.Click
         Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                    Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
                                                    checkForUpdatesClassObject.CheckForUpdates()
