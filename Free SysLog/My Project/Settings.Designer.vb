@@ -149,6 +149,30 @@ Namespace My
                 Me("columnLogSize") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property autoSave() As Boolean
+            Get
+                Return CType(Me("autoSave"),Boolean)
+            End Get
+            Set
+                Me("autoSave") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("5")>  _
+        Public Property autoSaveMinutes() As Short
+            Get
+                Return CType(Me("autoSaveMinutes"),Short)
+            End Get
+            Set
+                Me("autoSaveMinutes") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

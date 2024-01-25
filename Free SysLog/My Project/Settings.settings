@@ -26,5 +26,11 @@
     <Setting Name="columnLogSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">670</Value>
     </Setting>
+    <Setting Name="autoSave" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="autoSaveMinutes" Type="System.Int16" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

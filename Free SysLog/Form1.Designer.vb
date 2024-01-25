@@ -22,6 +22,7 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.btnServerController = New System.Windows.Forms.Button()
         Me.btnOpenLogLocation = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
@@ -37,8 +38,13 @@ Partial Class Form1
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.chkAutoScroll = New System.Windows.Forms.CheckBox()
         Me.btnCheckForUpdates = New System.Windows.Forms.Button()
+        Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
+        Me.chkAutoSave = New System.Windows.Forms.CheckBox()
+        Me.lblAutoSaveLabel = New System.Windows.Forms.Label()
+        Me.NumericUpDown = New System.Windows.Forms.NumericUpDown()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
+        CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnServerController
@@ -184,11 +190,45 @@ Partial Class Form1
         Me.btnCheckForUpdates.Text = "Check for Updates"
         Me.btnCheckForUpdates.UseVisualStyleBackColor = True
         '
+        'SaveTimer
+        '
+        Me.SaveTimer.Interval = 300000
+        '
+        'chkAutoSave
+        '
+        Me.chkAutoSave.AutoSize = True
+        Me.chkAutoSave.Location = New System.Drawing.Point(95, 55)
+        Me.chkAutoSave.Name = "chkAutoSave"
+        Me.chkAutoSave.Size = New System.Drawing.Size(76, 17)
+        Me.chkAutoSave.TabIndex = 6
+        Me.chkAutoSave.Text = "Auto Save"
+        Me.chkAutoSave.UseVisualStyleBackColor = True
+        '
+        'lblAutoSaveLabel
+        '
+        Me.lblAutoSaveLabel.AutoSize = True
+        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(177, 56)
+        Me.lblAutoSaveLabel.Name = "lblAutoSaveLabel"
+        Me.lblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
+        Me.lblAutoSaveLabel.TabIndex = 7
+        Me.lblAutoSaveLabel.Text = "Auto save every (in minutes):"
+        '
+        'NumericUpDown
+        '
+        Me.NumericUpDown.Location = New System.Drawing.Point(326, 54)
+        Me.NumericUpDown.Name = "NumericUpDown"
+        Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
+        Me.NumericUpDown.TabIndex = 8
+        Me.NumericUpDown.Value = New Decimal(New Integer() {5, 0, 0, 0})
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.NumericUpDown)
+        Me.Controls.Add(Me.lblAutoSaveLabel)
+        Me.Controls.Add(Me.chkAutoSave)
         Me.Controls.Add(Me.chkAutoScroll)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.logs)
@@ -198,6 +238,7 @@ Partial Class Form1
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
+        CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -217,4 +258,8 @@ Partial Class Form1
     Friend WithEvents btnClearLog As Button
     Friend WithEvents btnSaveLogsToDisk As Button
     Friend WithEvents btnCheckForUpdates As Button
+    Friend WithEvents SaveTimer As Timer
+    Friend WithEvents chkAutoSave As CheckBox
+    Friend WithEvents lblAutoSaveLabel As Label
+    Friend WithEvents NumericUpDown As NumericUpDown
 End Class

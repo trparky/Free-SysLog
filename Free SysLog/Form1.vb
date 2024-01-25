@@ -44,8 +44,35 @@ Public Class Form1
         Process.GetCurrentProcess.Kill()
     End Sub
 
+    Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles chkAutoSave.Click
+        SaveTimer.Enabled = chkAutoSave.Checked
+        NumericUpDown.Visible = chkAutoSave.Checked
+        lblAutoSaveLabel.Visible = chkAutoSave.Checked
+    End Sub
+
+    Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
+        WriteLogsToDisk()
+    End Sub
+
+    Private Sub NumericUpDown_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown.ValueChanged
+        If boolDoneLoading Then
+            SaveTimer.Interval = TimeSpan.FromMinutes(NumericUpDown.Value).TotalMilliseconds
+            My.Settings.autoSaveMinutes = NumericUpDown.Value
+        End If
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         chkAutoScroll.Checked = My.Settings.autoScroll
+        chkAutoSave.Checked = My.Settings.autoSave
+        NumericUpDown.Value = My.Settings.autoSaveMinutes
+        NumericUpDown.Visible = chkAutoSave.Checked
+        lblAutoSaveLabel.Visible = chkAutoSave.Checked
+
+        If My.Settings.autoSave Then
+            SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
+            SaveTimer.Enabled = True
+        End If
+
         Size = My.Settings.mainWindowSize
 
         Time.Width = My.Settings.columnTimeSize

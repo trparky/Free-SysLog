@@ -148,6 +148,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Log Viewer.resx">
       <DependentUpon>Log Viewer.vb</DependentUpon>
