@@ -175,7 +175,7 @@ askAgain:
         ElseIf sSyslog.Contains("L7") Then
             Return "Debug (7)"
         Else
-            Return "UNKNOWN"
+            Return ""
         End If
     End Function
 
