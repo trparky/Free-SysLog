@@ -261,7 +261,7 @@ askAgain:
     End Sub
 
     Private Sub UpdateLogCount()
-        NumberOfLogs.Text = $"Number of Log Entries: {logs.Items.Count.ToString("N0")}"
+        NumberOfLogs.Text = $"Number of Log Entries: {logs.Items.Count:N0}"
     End Sub
 
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
