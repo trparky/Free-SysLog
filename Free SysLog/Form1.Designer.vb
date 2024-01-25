@@ -42,6 +42,7 @@ Partial Class Form1
         Me.chkAutoSave = New System.Windows.Forms.CheckBox()
         Me.lblAutoSaveLabel = New System.Windows.Forms.Label()
         Me.NumericUpDown = New System.Windows.Forms.NumericUpDown()
+        Me.lblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -155,7 +156,7 @@ Partial Class Form1
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.lblAutoSaved})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1175, 22)
@@ -221,6 +222,12 @@ Partial Class Form1
         Me.NumericUpDown.TabIndex = 8
         Me.NumericUpDown.Value = New Decimal(New Integer() {5, 0, 0, 0})
         '
+        'lblAutoSaved
+        '
+        Me.lblAutoSaved.Name = "lblAutoSaved"
+        Me.lblAutoSaved.Size = New System.Drawing.Size(111, 17)
+        Me.lblAutoSaved.Text = "Last Auto-Saved At:"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -262,4 +269,5 @@ Partial Class Form1
     Friend WithEvents chkAutoSave As CheckBox
     Friend WithEvents lblAutoSaveLabel As Label
     Friend WithEvents NumericUpDown As NumericUpDown
+    Friend WithEvents lblAutoSaved As ToolStripStatusLabel
 End Class

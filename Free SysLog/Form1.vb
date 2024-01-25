@@ -52,6 +52,7 @@ Public Class Form1
 
     Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
         WriteLogsToDisk()
+        lblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
     End Sub
 
     Private Sub NumericUpDown_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown.ValueChanged
