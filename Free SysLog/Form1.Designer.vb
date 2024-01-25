@@ -217,6 +217,7 @@ Partial Class Form1
         'NumericUpDown
         '
         Me.NumericUpDown.Location = New System.Drawing.Point(326, 54)
+        Me.NumericUpDown.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDown.Name = "NumericUpDown"
         Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
         Me.NumericUpDown.TabIndex = 8
