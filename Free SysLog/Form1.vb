@@ -48,6 +48,7 @@ Public Class Form1
         SaveTimer.Enabled = chkAutoSave.Checked
         NumericUpDown.Visible = chkAutoSave.Checked
         lblAutoSaveLabel.Visible = chkAutoSave.Checked
+        lblAutoSaved.Visible = chkAutoSave.Checked
     End Sub
 
     Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
@@ -68,6 +69,7 @@ Public Class Form1
         NumericUpDown.Value = My.Settings.autoSaveMinutes
         NumericUpDown.Visible = chkAutoSave.Checked
         lblAutoSaveLabel.Visible = chkAutoSave.Checked
+        lblAutoSaved.Visible = chkAutoSave.Checked
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
