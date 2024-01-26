@@ -143,19 +143,19 @@ Public Class Form1
         boolDoneLoading = True
         SaveFileDialog.Filter = "JSON Data File|*.json"
 
-        If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
-            MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
-askAgain:
-            SaveFileDialog.ShowDialog()
+		If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
+		    Do
+		        SaveFileDialog.ShowDialog()
 
-            If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
-                MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
-                GoTo askAgain
-            End If
-
-            My.Settings.logFileLocation = SaveFileDialog.FileName
-            My.Settings.Save()
-        End If
+		        If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
+		            MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
+		        Else
+		            My.Settings.logFileLocation = SaveFileDialog.FileName
+		            My.Settings.Save()
+		            Exit Do
+		        End If
+		    Loop While True
+		End If
 
         pathToLogFiles = My.Settings.logFileLocation
 
