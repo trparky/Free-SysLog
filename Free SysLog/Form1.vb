@@ -44,6 +44,8 @@ Public Class Form1
                 fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
             End Using
 
+            lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+
             btnSaveLogsToDisk.Enabled = False
         End SyncLock
     End Sub
@@ -79,6 +81,40 @@ Public Class Form1
             My.Settings.autoSaveMinutes = NumericUpDown.Value
         End If
     End Sub
+
+    Private Function FileSizeToHumanSize(size As Long, Optional roundToNearestWholeNumber As Boolean = False) As String
+        Dim result As String
+        Dim shortRoundNumber As Short = If(roundToNearestWholeNumber, 0, 2)
+
+        If size <= (2 ^ 10) Then
+            result = $"{size} Bytes"
+        ElseIf size > (2 ^ 10) And size <= (2 ^ 20) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 10), shortRoundNumber)} KBs"
+        ElseIf size > (2 ^ 20) And size <= (2 ^ 30) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 20), shortRoundNumber)} MBs"
+        ElseIf size > (2 ^ 30) And size <= (2 ^ 40) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 30), shortRoundNumber)} GBs"
+        ElseIf size > (2 ^ 40) And size <= (2 ^ 50) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 40), shortRoundNumber)} TBs"
+        ElseIf size > (2 ^ 50) And size <= (2 ^ 60) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 50), shortRoundNumber)} PBs"
+        ElseIf size > (2 ^ 60) And size <= (2 ^ 70) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 50), shortRoundNumber)} EBs"
+        Else
+            result = "(None)"
+        End If
+
+        Return result
+    End Function
+
+    Private Function MyRoundingFunction(value As Double, digits As Integer) As String
+        If digits = 0 Then
+            Return Math.Round(value, digits).ToString
+        Else
+            Dim strFormatString As String = "{0:0." & New String("0", digits) & "}"
+            Return String.Format(strFormatString, Math.Round(value, digits))
+        End If
+    End Function
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
@@ -125,6 +161,8 @@ askAgain:
 
         If File.Exists(My.Settings.logFileLocation) Then
             Try
+                lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+
                 Dim collectionOfSavedData As New List(Of SavedData)
 
                 Using fileStream As New StreamReader(My.Settings.logFileLocation)

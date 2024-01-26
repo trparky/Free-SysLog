@@ -44,6 +44,7 @@ Partial Class Form1
         Me.NumericUpDown = New System.Windows.Forms.NumericUpDown()
         Me.lblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
         Me.chkStartAtUserStartup = New System.Windows.Forms.CheckBox()
+        Me.lblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -157,7 +158,7 @@ Partial Class Form1
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.lblAutoSaved})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.lblAutoSaved, Me.lblLogFileSize})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1175, 22)
@@ -240,6 +241,12 @@ Partial Class Form1
         Me.chkStartAtUserStartup.Text = "Start at Startup"
         Me.chkStartAtUserStartup.UseVisualStyleBackColor = True
         '
+        'lblLogFileSize
+        '
+        Me.lblLogFileSize.Name = "lblLogFileSize"
+        Me.lblLogFileSize.Size = New System.Drawing.Size(156, 17)
+        Me.lblLogFileSize.Text = "Log File Size: (Not Specified)"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -284,4 +291,5 @@ Partial Class Form1
     Friend WithEvents NumericUpDown As NumericUpDown
     Friend WithEvents lblAutoSaved As ToolStripStatusLabel
     Friend WithEvents chkStartAtUserStartup As CheckBox
+    Friend WithEvents lblLogFileSize As ToolStripStatusLabel
 End Class
