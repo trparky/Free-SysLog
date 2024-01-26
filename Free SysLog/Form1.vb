@@ -88,6 +88,7 @@ Public Class Form1
         lblAutoSaveLabel.Visible = chkAutoSave.Checked
         lblAutoSaved.Visible = chkAutoSave.Checked
         chkStartAtUserStartup.Checked = DoesStartupEntryExist()
+        Icon = Icon.ExtractAssociatedIcon(AppDomain.CurrentDomain.FriendlyName)
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
