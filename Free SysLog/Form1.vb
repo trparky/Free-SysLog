@@ -14,7 +14,7 @@ Public Class Form1
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
             If chkStartAtUserStartup.Checked Then
-                registryKey.SetValue("Free Syslog", $"""{Application.ExecutablePath}""")
+                registryKey.SetValue("Free Syslog", $"""{Application.ExecutablePath}"" /background")
             Else
                 registryKey.DeleteValue("Free Syslog", False)
             End If
@@ -81,6 +81,8 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
+
         chkAutoScroll.Checked = My.Settings.autoScroll
         chkAutoSave.Checked = My.Settings.autoSave
         NumericUpDown.Value = My.Settings.autoSaveMinutes
