@@ -167,6 +167,7 @@ Partial Class Form1
         '
         'NumberOfLogs
         '
+        Me.NumberOfLogs.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.NumberOfLogs.Name = "NumberOfLogs"
         Me.NumberOfLogs.Size = New System.Drawing.Size(138, 17)
         Me.NumberOfLogs.Text = "Number of Log Entries: 0"
@@ -227,6 +228,7 @@ Partial Class Form1
         '
         'lblAutoSaved
         '
+        Me.lblAutoSaved.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.lblAutoSaved.Name = "lblAutoSaved"
         Me.lblAutoSaved.Size = New System.Drawing.Size(193, 17)
         Me.lblAutoSaved.Text = "Last Auto-Saved At: (Not Specified)"
