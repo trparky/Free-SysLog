@@ -146,19 +146,19 @@ Public Class Form1
         boolDoneLoading = True
         SaveFileDialog.Filter = "JSON Data File|*.json"
 
-		If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
-		    Do
-		        SaveFileDialog.ShowDialog()
+        If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
+            Do
+                SaveFileDialog.ShowDialog()
 
-		        If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
-		            MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
-		        Else
-		            My.Settings.logFileLocation = SaveFileDialog.FileName
-		            My.Settings.Save()
-		            Exit Do
-		        End If
-		    Loop While True
-		End If
+                If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
+                    MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
+                Else
+                    My.Settings.logFileLocation = SaveFileDialog.FileName
+                    My.Settings.Save()
+                    Exit Do
+                End If
+            Loop While True
+        End If
 
         pathToLogFiles = My.Settings.logFileLocation
 
@@ -207,7 +207,21 @@ Public Class Form1
     End Sub
 
     Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles btnOpenLogLocation.Click
-        Process.Start("Explorer.exe", Chr(34) & My.Settings.logFileLocation & Chr(34))
+        SelectFileInWindowsExplorer(My.Settings.logFileLocation)
+    End Sub
+
+    Private Sub SelectFileInWindowsExplorer(strFullPath As String)
+        If Not String.IsNullOrEmpty(strFullPath) AndAlso IO.File.Exists(strFullPath) Then
+            Dim pidlList As IntPtr = NativeMethod.NativeMethods.ILCreateFromPathW(strFullPath)
+
+            If Not pidlList.Equals(IntPtr.Zero) Then
+                Try
+                    NativeMethod.NativeMethods.SHOpenFolderAndSelectItems(pidlList, 0, IntPtr.Zero, 0)
+                Finally
+                    NativeMethod.NativeMethods.ILFree(pidlList)
+                End Try
+            End If
+        End If
     End Sub
 
     Private Sub BtnServerController_Click(sender As Object, e As EventArgs) Handles btnServerController.Click
