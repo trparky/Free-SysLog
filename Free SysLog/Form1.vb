@@ -170,7 +170,7 @@ Public Class Form1
                 SaveFileDialog.ShowDialog()
 
                 If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
-                    MsgBox("You must set a location to save the syslog data to.", MsgBoxStyle.Information, Text)
+                    MsgBox("You must set a location to save the syslog data file to.", MsgBoxStyle.Information, Text)
                 Else
                     My.Settings.logFileLocation = SaveFileDialog.FileName
                     My.Settings.Save()
