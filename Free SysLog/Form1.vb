@@ -31,11 +31,7 @@ Public Class Form1
         SaveFileDialog.Filter = "JSON Data File|*.json"
 
         Do
-            SaveFileDialog.ShowDialog()
-
-            If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
-                MsgBox("You must set a location to move the syslog data file to.", MsgBoxStyle.Information, Text)
-            Else
+            If SaveFileDialog.ShowDialog() = DialogResult.OK Then
                 SyncLock lockObject
                     If File.Exists(SaveFileDialog.FileName) Then File.Delete(SaveFileDialog.FileName)
                     File.Move(My.Settings.logFileLocation, SaveFileDialog.FileName)
@@ -169,14 +165,12 @@ Public Class Form1
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
             Do
-                SaveFileDialog.ShowDialog()
-
-                If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
-                    MsgBox("You must set a location to save the syslog data file to.", MsgBoxStyle.Information, Text)
-                Else
+                If SaveFileDialog.ShowDialog() = DialogResult.OK Then
                     My.Settings.logFileLocation = SaveFileDialog.FileName
                     My.Settings.Save()
                     Exit Do
+                Else
+                    MsgBox("You must set a location to save the syslog data file to.", MsgBoxStyle.Information, Text)
                 End If
             Loop While True
         End If
