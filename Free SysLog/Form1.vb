@@ -27,6 +27,25 @@ Public Class Form1
         End Using
     End Function
 
+    Private Sub btnMoveLogFile_Click(sender As Object, e As EventArgs) Handles btnMoveLogFile.Click
+        SaveFileDialog.Filter = "JSON Data File|*.json"
+
+        Do
+            SaveFileDialog.ShowDialog()
+
+            If String.IsNullOrWhiteSpace(SaveFileDialog.FileName) Then
+                MsgBox("You must set a location to move the syslog data file to.", MsgBoxStyle.Information, Text)
+            Else
+                SyncLock lockObject
+                    File.Move(My.Settings.logFileLocation, SaveFileDialog.FileName)
+                    My.Settings.logFileLocation = SaveFileDialog.FileName
+                    My.Settings.Save()
+                    Exit Do
+                End SyncLock
+            End If
+        Loop While True
+    End Sub
+
     Private Sub WriteLogsToDisk()
         SyncLock lockObject
             Dim collectionOfSavedData As New List(Of SavedData)

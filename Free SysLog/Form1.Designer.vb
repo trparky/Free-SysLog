@@ -45,6 +45,7 @@ Partial Class Form1
         Me.lblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
         Me.chkStartAtUserStartup = New System.Windows.Forms.CheckBox()
         Me.lblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.btnMoveLogFile = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -57,7 +58,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnServerController.Location = New System.Drawing.Point(3, 3)
         Me.btnServerController.Name = "btnServerController"
-        Me.btnServerController.Size = New System.Drawing.Size(224, 31)
+        Me.btnServerController.Size = New System.Drawing.Size(185, 31)
         Me.btnServerController.TabIndex = 0
         Me.btnServerController.Text = "Stop SysLog Server"
         Me.btnServerController.UseVisualStyleBackColor = True
@@ -67,9 +68,9 @@ Partial Class Form1
         Me.btnOpenLogLocation.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnOpenLogLocation.Location = New System.Drawing.Point(233, 3)
+        Me.btnOpenLogLocation.Location = New System.Drawing.Point(194, 3)
         Me.btnOpenLogLocation.Name = "btnOpenLogLocation"
-        Me.btnOpenLogLocation.Size = New System.Drawing.Size(224, 31)
+        Me.btnOpenLogLocation.Size = New System.Drawing.Size(185, 31)
         Me.btnOpenLogLocation.TabIndex = 1
         Me.btnOpenLogLocation.Text = "Open Log File Location"
         Me.btnOpenLogLocation.UseVisualStyleBackColor = True
@@ -78,17 +79,19 @@ Partial Class Form1
         '
         Me.TableLayoutPanel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanel1.ColumnCount = 5
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+        Me.TableLayoutPanel1.ColumnCount = 6
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
         Me.TableLayoutPanel1.Controls.Add(Me.btnServerController, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.btnCheckForUpdates, 5, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.btnSaveLogsToDisk, 4, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.btnClearLog, 3, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.btnOpenLogLocation, 1, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnClearLog, 2, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnSaveLogsToDisk, 3, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnCheckForUpdates, 4, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.btnMoveLogFile, 2, 0)
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(12, 12)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
@@ -101,9 +104,9 @@ Partial Class Form1
         Me.btnClearLog.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClearLog.Location = New System.Drawing.Point(463, 3)
+        Me.btnClearLog.Location = New System.Drawing.Point(576, 3)
         Me.btnClearLog.Name = "btnClearLog"
-        Me.btnClearLog.Size = New System.Drawing.Size(224, 31)
+        Me.btnClearLog.Size = New System.Drawing.Size(185, 31)
         Me.btnClearLog.TabIndex = 2
         Me.btnClearLog.Text = "Clear Logs"
         Me.btnClearLog.UseVisualStyleBackColor = True
@@ -114,9 +117,9 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSaveLogsToDisk.Enabled = False
-        Me.btnSaveLogsToDisk.Location = New System.Drawing.Point(693, 3)
+        Me.btnSaveLogsToDisk.Location = New System.Drawing.Point(767, 3)
         Me.btnSaveLogsToDisk.Name = "btnSaveLogsToDisk"
-        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(224, 31)
+        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(185, 31)
         Me.btnSaveLogsToDisk.TabIndex = 3
         Me.btnSaveLogsToDisk.Text = "Save Logs to Disk"
         Me.btnSaveLogsToDisk.UseVisualStyleBackColor = True
@@ -187,9 +190,9 @@ Partial Class Form1
         Me.btnCheckForUpdates.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCheckForUpdates.Location = New System.Drawing.Point(923, 3)
+        Me.btnCheckForUpdates.Location = New System.Drawing.Point(958, 3)
         Me.btnCheckForUpdates.Name = "btnCheckForUpdates"
-        Me.btnCheckForUpdates.Size = New System.Drawing.Size(225, 31)
+        Me.btnCheckForUpdates.Size = New System.Drawing.Size(190, 31)
         Me.btnCheckForUpdates.TabIndex = 4
         Me.btnCheckForUpdates.Text = "Check for Updates"
         Me.btnCheckForUpdates.UseVisualStyleBackColor = True
@@ -249,6 +252,18 @@ Partial Class Form1
         Me.lblLogFileSize.Size = New System.Drawing.Size(156, 17)
         Me.lblLogFileSize.Text = "Log File Size: (Not Specified)"
         '
+        'btnMoveLogFile
+        '
+        Me.btnMoveLogFile.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnMoveLogFile.Location = New System.Drawing.Point(385, 3)
+        Me.btnMoveLogFile.Name = "btnMoveLogFile"
+        Me.btnMoveLogFile.Size = New System.Drawing.Size(185, 31)
+        Me.btnMoveLogFile.TabIndex = 5
+        Me.btnMoveLogFile.Text = "Move Log File"
+        Me.btnMoveLogFile.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -294,4 +309,5 @@ Partial Class Form1
     Friend WithEvents lblAutoSaved As ToolStripStatusLabel
     Friend WithEvents chkStartAtUserStartup As CheckBox
     Friend WithEvents lblLogFileSize As ToolStripStatusLabel
+    Friend WithEvents btnMoveLogFile As Button
 End Class
