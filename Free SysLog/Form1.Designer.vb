@@ -23,11 +23,10 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.btnServerController = New System.Windows.Forms.Button()
-        Me.btnOpenLogLocation = New System.Windows.Forms.Button()
-        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.btnClearLog = New System.Windows.Forms.Button()
-        Me.btnSaveLogsToDisk = New System.Windows.Forms.Button()
+        Me.btnServerController = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnClearLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
         Me.logs = New System.Windows.Forms.ListView()
         Me.Time = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Type = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -36,96 +35,52 @@ Partial Class Form1
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.chkAutoScroll = New System.Windows.Forms.CheckBox()
-        Me.btnCheckForUpdates = New System.Windows.Forms.Button()
+        Me.lblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.chkAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.chkAutoSave = New System.Windows.Forms.CheckBox()
+        Me.chkAutoSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblAutoSaveLabel = New System.Windows.Forms.Label()
         Me.NumericUpDown = New System.Windows.Forms.NumericUpDown()
-        Me.lblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.chkStartAtUserStartup = New System.Windows.Forms.CheckBox()
-        Me.lblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.btnMoveLogFile = New System.Windows.Forms.Button()
+        Me.chkStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnMoveLogFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblSyslogServerPortLabel = New System.Windows.Forms.Label()
         Me.txtSysLogServerPort = New System.Windows.Forms.TextBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.TableLayoutPanel1.SuspendLayout()
+        Me.MenuStrip = New System.Windows.Forms.MenuStrip()
+        Me.MainMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogFunctionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.MenuStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnServerController
         '
-        Me.btnServerController.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnServerController.Location = New System.Drawing.Point(3, 3)
         Me.btnServerController.Name = "btnServerController"
-        Me.btnServerController.Size = New System.Drawing.Size(185, 31)
-        Me.btnServerController.TabIndex = 0
+        Me.btnServerController.Size = New System.Drawing.Size(173, 22)
         Me.btnServerController.Text = "Stop SysLog Server"
-        Me.btnServerController.UseVisualStyleBackColor = True
         '
         'btnOpenLogLocation
         '
-        Me.btnOpenLogLocation.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnOpenLogLocation.Location = New System.Drawing.Point(194, 3)
         Me.btnOpenLogLocation.Name = "btnOpenLogLocation"
-        Me.btnOpenLogLocation.Size = New System.Drawing.Size(185, 31)
-        Me.btnOpenLogLocation.TabIndex = 1
+        Me.btnOpenLogLocation.Size = New System.Drawing.Size(196, 22)
         Me.btnOpenLogLocation.Text = "Open Log File Location"
-        Me.btnOpenLogLocation.UseVisualStyleBackColor = True
-        '
-        'TableLayoutPanel1
-        '
-        Me.TableLayoutPanel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanel1.ColumnCount = 6
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667!))
-        Me.TableLayoutPanel1.Controls.Add(Me.btnServerController, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnCheckForUpdates, 5, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnSaveLogsToDisk, 4, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnClearLog, 3, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnOpenLogLocation, 1, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.btnMoveLogFile, 2, 0)
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(12, 12)
-        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 1
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1151, 37)
-        Me.TableLayoutPanel1.TabIndex = 2
         '
         'btnClearLog
         '
-        Me.btnClearLog.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClearLog.Location = New System.Drawing.Point(576, 3)
         Me.btnClearLog.Name = "btnClearLog"
-        Me.btnClearLog.Size = New System.Drawing.Size(185, 31)
-        Me.btnClearLog.TabIndex = 2
+        Me.btnClearLog.Size = New System.Drawing.Size(196, 22)
         Me.btnClearLog.Text = "Clear Logs"
-        Me.btnClearLog.UseVisualStyleBackColor = True
         '
         'btnSaveLogsToDisk
         '
-        Me.btnSaveLogsToDisk.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSaveLogsToDisk.Enabled = False
-        Me.btnSaveLogsToDisk.Location = New System.Drawing.Point(767, 3)
         Me.btnSaveLogsToDisk.Name = "btnSaveLogsToDisk"
-        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(185, 31)
-        Me.btnSaveLogsToDisk.TabIndex = 3
+        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(196, 22)
         Me.btnSaveLogsToDisk.Text = "Save Logs to Disk"
-        Me.btnSaveLogsToDisk.UseVisualStyleBackColor = True
         '
         'logs
         '
@@ -135,9 +90,9 @@ Partial Class Form1
         Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log})
         Me.logs.FullRowSelect = True
         Me.logs.HideSelection = False
-        Me.logs.Location = New System.Drawing.Point(12, 78)
+        Me.logs.Location = New System.Drawing.Point(12, 52)
         Me.logs.Name = "logs"
-        Me.logs.Size = New System.Drawing.Size(1151, 343)
+        Me.logs.Size = New System.Drawing.Size(1151, 369)
         Me.logs.TabIndex = 3
         Me.logs.UseCompatibleStateImageBehavior = False
         Me.logs.View = System.Windows.Forms.View.Details
@@ -180,25 +135,16 @@ Partial Class Form1
         '
         'chkAutoScroll
         '
-        Me.chkAutoScroll.AutoSize = True
-        Me.chkAutoScroll.Location = New System.Drawing.Point(12, 55)
+        Me.chkAutoScroll.CheckOnClick = True
         Me.chkAutoScroll.Name = "chkAutoScroll"
-        Me.chkAutoScroll.Size = New System.Drawing.Size(77, 17)
-        Me.chkAutoScroll.TabIndex = 5
+        Me.chkAutoScroll.Size = New System.Drawing.Size(180, 22)
         Me.chkAutoScroll.Text = "Auto Scroll"
-        Me.chkAutoScroll.UseVisualStyleBackColor = True
         '
         'btnCheckForUpdates
         '
-        Me.btnCheckForUpdates.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCheckForUpdates.Location = New System.Drawing.Point(958, 3)
         Me.btnCheckForUpdates.Name = "btnCheckForUpdates"
-        Me.btnCheckForUpdates.Size = New System.Drawing.Size(190, 31)
-        Me.btnCheckForUpdates.TabIndex = 4
+        Me.btnCheckForUpdates.Size = New System.Drawing.Size(173, 22)
         Me.btnCheckForUpdates.Text = "Check for Updates"
-        Me.btnCheckForUpdates.UseVisualStyleBackColor = True
         '
         'SaveTimer
         '
@@ -206,18 +152,15 @@ Partial Class Form1
         '
         'chkAutoSave
         '
-        Me.chkAutoSave.AutoSize = True
-        Me.chkAutoSave.Location = New System.Drawing.Point(198, 55)
+        Me.chkAutoSave.CheckOnClick = True
         Me.chkAutoSave.Name = "chkAutoSave"
-        Me.chkAutoSave.Size = New System.Drawing.Size(76, 17)
-        Me.chkAutoSave.TabIndex = 6
+        Me.chkAutoSave.Size = New System.Drawing.Size(180, 22)
         Me.chkAutoSave.Text = "Auto Save"
-        Me.chkAutoSave.UseVisualStyleBackColor = True
         '
         'lblAutoSaveLabel
         '
         Me.lblAutoSaveLabel.AutoSize = True
-        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(280, 56)
+        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(12, 28)
         Me.lblAutoSaveLabel.Name = "lblAutoSaveLabel"
         Me.lblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
         Me.lblAutoSaveLabel.TabIndex = 7
@@ -225,7 +168,7 @@ Partial Class Form1
         '
         'NumericUpDown
         '
-        Me.NumericUpDown.Location = New System.Drawing.Point(429, 54)
+        Me.NumericUpDown.Location = New System.Drawing.Point(161, 26)
         Me.NumericUpDown.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDown.Name = "NumericUpDown"
         Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
@@ -241,13 +184,10 @@ Partial Class Form1
         '
         'chkStartAtUserStartup
         '
-        Me.chkStartAtUserStartup.AutoSize = True
-        Me.chkStartAtUserStartup.Location = New System.Drawing.Point(95, 55)
+        Me.chkStartAtUserStartup.CheckOnClick = True
         Me.chkStartAtUserStartup.Name = "chkStartAtUserStartup"
-        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(97, 17)
-        Me.chkStartAtUserStartup.TabIndex = 9
+        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(180, 22)
         Me.chkStartAtUserStartup.Text = "Start at Startup"
-        Me.chkStartAtUserStartup.UseVisualStyleBackColor = True
         '
         'lblLogFileSize
         '
@@ -257,20 +197,14 @@ Partial Class Form1
         '
         'btnMoveLogFile
         '
-        Me.btnMoveLogFile.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnMoveLogFile.Location = New System.Drawing.Point(385, 3)
         Me.btnMoveLogFile.Name = "btnMoveLogFile"
-        Me.btnMoveLogFile.Size = New System.Drawing.Size(185, 31)
-        Me.btnMoveLogFile.TabIndex = 5
+        Me.btnMoveLogFile.Size = New System.Drawing.Size(196, 22)
         Me.btnMoveLogFile.Text = "Move Log File"
-        Me.btnMoveLogFile.UseVisualStyleBackColor = True
         '
         'lblSyslogServerPortLabel
         '
         Me.lblSyslogServerPortLabel.AutoSize = True
-        Me.lblSyslogServerPortLabel.Location = New System.Drawing.Point(506, 56)
+        Me.lblSyslogServerPortLabel.Location = New System.Drawing.Point(238, 28)
         Me.lblSyslogServerPortLabel.Name = "lblSyslogServerPortLabel"
         Me.lblSyslogServerPortLabel.Size = New System.Drawing.Size(97, 13)
         Me.lblSyslogServerPortLabel.TabIndex = 10
@@ -278,40 +212,68 @@ Partial Class Form1
         '
         'txtSysLogServerPort
         '
-        Me.txtSysLogServerPort.Location = New System.Drawing.Point(609, 53)
+        Me.txtSysLogServerPort.Location = New System.Drawing.Point(341, 25)
         Me.txtSysLogServerPort.Name = "txtSysLogServerPort"
         Me.txtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
         Me.txtSysLogServerPort.TabIndex = 11
         Me.ToolTip.SetToolTip(Me.txtSysLogServerPort, "Default Port: 514")
+        '
+        'MenuStrip
+        '
+        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MainMenuToolStripMenuItem, Me.LogFunctionsToolStripMenuItem, Me.SettingsToolStripMenuItem})
+        Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
+        Me.MenuStrip.Name = "MenuStrip"
+        Me.MenuStrip.Size = New System.Drawing.Size(1175, 24)
+        Me.MenuStrip.TabIndex = 12
+        Me.MenuStrip.Text = "MenuStrip1"
+        '
+        'MainMenuToolStripMenuItem
+        '
+        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnServerController, Me.btnCheckForUpdates})
+        Me.MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem"
+        Me.MainMenuToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
+        Me.MainMenuToolStripMenuItem.Text = "Main Menu"
+        '
+        'LogFunctionsToolStripMenuItem
+        '
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnOpenLogLocation, Me.btnMoveLogFile, Me.btnClearLog, Me.btnSaveLogsToDisk})
+        Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
+        Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
+        Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
+        '
+        'SettingsToolStripMenuItem
+        '
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoScroll, Me.chkAutoSave, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
+        Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
+        Me.SettingsToolStripMenuItem.Text = "Settings"
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
-        Me.Controls.Add(Me.chkStartAtUserStartup)
         Me.Controls.Add(Me.NumericUpDown)
         Me.Controls.Add(Me.lblAutoSaveLabel)
-        Me.Controls.Add(Me.chkAutoSave)
-        Me.Controls.Add(Me.chkAutoScroll)
         Me.Controls.Add(Me.StatusStrip1)
+        Me.Controls.Add(Me.MenuStrip)
         Me.Controls.Add(Me.logs)
-        Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.txtSysLogServerPort)
         Me.Controls.Add(Me.lblSyslogServerPortLabel)
+        Me.MainMenuStrip = Me.MenuStrip
         Me.Name = "Form1"
         Me.Text = "Free SysLog Server"
-        Me.TableLayoutPanel1.ResumeLayout(False)
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.MenuStrip.ResumeLayout(False)
+        Me.MenuStrip.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents btnServerController As System.Windows.Forms.Button
-    Friend WithEvents btnOpenLogLocation As System.Windows.Forms.Button
-    Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents btnServerController As ToolStripMenuItem
+    Friend WithEvents btnOpenLogLocation As ToolStripMenuItem
     Friend WithEvents logs As System.Windows.Forms.ListView
     Friend WithEvents Time As System.Windows.Forms.ColumnHeader
     Friend WithEvents Type As System.Windows.Forms.ColumnHeader
@@ -320,19 +282,23 @@ Partial Class Form1
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
-    Friend WithEvents chkAutoScroll As CheckBox
-    Friend WithEvents btnClearLog As Button
-    Friend WithEvents btnSaveLogsToDisk As Button
-    Friend WithEvents btnCheckForUpdates As Button
+    Friend WithEvents chkAutoScroll As ToolStripMenuItem
+    Friend WithEvents btnClearLog As ToolStripMenuItem
+    Friend WithEvents btnSaveLogsToDisk As ToolStripMenuItem
+    Friend WithEvents btnCheckForUpdates As ToolStripMenuItem
     Friend WithEvents SaveTimer As Timer
-    Friend WithEvents chkAutoSave As CheckBox
+    Friend WithEvents chkAutoSave As ToolStripMenuItem
     Friend WithEvents lblAutoSaveLabel As Label
     Friend WithEvents NumericUpDown As NumericUpDown
     Friend WithEvents lblAutoSaved As ToolStripStatusLabel
-    Friend WithEvents chkStartAtUserStartup As CheckBox
+    Friend WithEvents chkStartAtUserStartup As ToolStripMenuItem
     Friend WithEvents lblLogFileSize As ToolStripStatusLabel
-    Friend WithEvents btnMoveLogFile As Button
+    Friend WithEvents btnMoveLogFile As ToolStripMenuItem
     Friend WithEvents lblSyslogServerPortLabel As Label
     Friend WithEvents txtSysLogServerPort As TextBox
     Friend WithEvents ToolTip As ToolTip
+    Friend WithEvents MenuStrip As MenuStrip
+    Friend WithEvents MainMenuToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LogFunctionsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
 End Class
