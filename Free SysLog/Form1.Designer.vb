@@ -48,6 +48,7 @@ Partial Class Form1
         Me.btnMoveLogFile = New System.Windows.Forms.Button()
         Me.lblSyslogServerPortLabel = New System.Windows.Forms.Label()
         Me.txtSysLogServerPort = New System.Windows.Forms.TextBox()
+        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -279,8 +280,9 @@ Partial Class Form1
         '
         Me.txtSysLogServerPort.Location = New System.Drawing.Point(609, 53)
         Me.txtSysLogServerPort.Name = "txtSysLogServerPort"
-        Me.txtSysLogServerPort.Size = New System.Drawing.Size(46, 20)
+        Me.txtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
         Me.txtSysLogServerPort.TabIndex = 11
+        Me.ToolTip.SetToolTip(Me.txtSysLogServerPort, "Default Port: 514")
         '
         'Form1
         '
@@ -332,4 +334,5 @@ Partial Class Form1
     Friend WithEvents btnMoveLogFile As Button
     Friend WithEvents lblSyslogServerPortLabel As Label
     Friend WithEvents txtSysLogServerPort As TextBox
+    Friend WithEvents ToolTip As ToolTip
 End Class
