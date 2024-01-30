@@ -46,6 +46,8 @@ Partial Class Form1
         Me.chkStartAtUserStartup = New System.Windows.Forms.CheckBox()
         Me.lblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.btnMoveLogFile = New System.Windows.Forms.Button()
+        Me.lblSyslogServerPortLabel = New System.Windows.Forms.Label()
+        Me.txtSysLogServerPort = New System.Windows.Forms.TextBox()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -264,6 +266,22 @@ Partial Class Form1
         Me.btnMoveLogFile.Text = "Move Log File"
         Me.btnMoveLogFile.UseVisualStyleBackColor = True
         '
+        'lblSyslogServerPortLabel
+        '
+        Me.lblSyslogServerPortLabel.AutoSize = True
+        Me.lblSyslogServerPortLabel.Location = New System.Drawing.Point(506, 56)
+        Me.lblSyslogServerPortLabel.Name = "lblSyslogServerPortLabel"
+        Me.lblSyslogServerPortLabel.Size = New System.Drawing.Size(97, 13)
+        Me.lblSyslogServerPortLabel.TabIndex = 10
+        Me.lblSyslogServerPortLabel.Text = "Syslog Server Port:"
+        '
+        'txtSysLogServerPort
+        '
+        Me.txtSysLogServerPort.Location = New System.Drawing.Point(609, 53)
+        Me.txtSysLogServerPort.Name = "txtSysLogServerPort"
+        Me.txtSysLogServerPort.Size = New System.Drawing.Size(46, 20)
+        Me.txtSysLogServerPort.TabIndex = 11
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -277,6 +295,8 @@ Partial Class Form1
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.logs)
         Me.Controls.Add(Me.TableLayoutPanel1)
+        Me.Controls.Add(Me.txtSysLogServerPort)
+        Me.Controls.Add(Me.lblSyslogServerPortLabel)
         Me.Name = "Form1"
         Me.Text = "Free SysLog Server"
         Me.TableLayoutPanel1.ResumeLayout(False)
@@ -310,4 +330,6 @@ Partial Class Form1
     Friend WithEvents chkStartAtUserStartup As CheckBox
     Friend WithEvents lblLogFileSize As ToolStripStatusLabel
     Friend WithEvents btnMoveLogFile As Button
+    Friend WithEvents lblSyslogServerPortLabel As Label
+    Friend WithEvents txtSysLogServerPort As TextBox
 End Class

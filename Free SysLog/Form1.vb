@@ -149,6 +149,7 @@ Public Class Form1
         lblAutoSaved.Visible = chkAutoSave.Checked
         chkStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
+        txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
@@ -266,7 +267,7 @@ Public Class Form1
     Public Sub ListenForSyslogs()
         Try
             Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
-            Dim udpcUDPClient As New UdpClient(514)
+            Dim udpcUDPClient As New UdpClient(My.Settings.sysLogPort)
             Dim sDataRecieve As String
             Dim bBytesRecieved() As Byte
             Dim sFromIP As String
@@ -399,6 +400,34 @@ Public Class Form1
         My.Settings.Save()
         WriteLogsToDisk()
         Process.GetCurrentProcess.Kill()
+    End Sub
+
+    Private Sub txtSysLogServerPort_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSysLogServerPort.KeyUp
+        If e.KeyCode = Keys.Enter Then
+            Dim newPortNumber As Integer
+
+            If Integer.TryParse(txtSysLogServerPort.Text, newPortNumber) Then
+                If newPortNumber < 1 Or newPortNumber > 65535 Then
+                    MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
+                Else
+                    MsgBox("New port number accepted. The program will need to be restarted in order for the new port number to be used by the program.", MsgBoxStyle.Information, Text)
+                    My.Settings.sysLogPort = newPortNumber
+                    My.Settings.Save()
+
+                    WriteLogsToDisk()
+
+                    Try
+                        sysLogThreadInstance.Abort()
+                    Catch ex As Exception
+                        ' Does nothing.
+                    End Try
+
+                    Process.GetCurrentProcess.Kill()
+                End If
+            Else
+                MsgBox("You must input a valid integer.", MsgBoxStyle.Critical, Text)
+            End If
+        End If
     End Sub
 #End Region
 End Class

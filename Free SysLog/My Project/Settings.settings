@@ -32,5 +32,8 @@
     <Setting Name="autoSaveMinutes" Type="System.Int16" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
+    <Setting Name="sysLogPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">514</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
