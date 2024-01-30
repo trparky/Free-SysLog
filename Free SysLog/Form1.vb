@@ -180,8 +180,6 @@ Public Class Form1
             Loop While True
         End If
 
-        pathToLogFiles = My.Settings.logFileLocation
-
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
@@ -259,31 +257,6 @@ Public Class Form1
             }
             sysLogThreadInstance.Start()
         End If
-    End Sub
-
-#Region "-- SysLog Server Code --"
-    Public pathToLogFiles As String
-
-    Public Sub ListenForSyslogs()
-        Try
-            Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
-            Dim udpcUDPClient As New UdpClient(My.Settings.sysLogPort)
-            Dim sDataRecieve As String
-            Dim bBytesRecieved() As Byte
-            Dim sFromIP As String
-
-            While True
-                bBytesRecieved = udpcUDPClient.Receive(ipeRemoteIpEndPoint)
-                sDataRecieve = Encoding.ASCII.GetString(bBytesRecieved)
-                sFromIP = ipeRemoteIpEndPoint.Address.ToString
-
-                FillLog(sDataRecieve, sFromIP)
-
-                sDataRecieve = ""
-            End While
-        Catch e As Exception
-            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text)
-        End Try
     End Sub
 
     Private Function GetSyslogPriority(sSyslog As String) As String
@@ -428,6 +401,29 @@ Public Class Form1
                 MsgBox("You must input a valid integer.", MsgBoxStyle.Critical, Text)
             End If
         End If
+    End Sub
+
+#Region "-- SysLog Server Code --"
+    Public Sub ListenForSyslogs()
+        Try
+            Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
+            Dim udpcUDPClient As New UdpClient(My.Settings.sysLogPort)
+            Dim sDataRecieve As String
+            Dim bBytesRecieved() As Byte
+            Dim sFromIP As String
+
+            While True
+                bBytesRecieved = udpcUDPClient.Receive(ipeRemoteIpEndPoint)
+                sDataRecieve = Encoding.ASCII.GetString(bBytesRecieved)
+                sFromIP = ipeRemoteIpEndPoint.Address.ToString
+
+                FillLog(sDataRecieve, sFromIP)
+
+                sDataRecieve = ""
+            End While
+        Catch e As Exception
+            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text)
+        End Try
     End Sub
 #End Region
 End Class
