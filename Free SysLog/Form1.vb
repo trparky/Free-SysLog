@@ -27,7 +27,7 @@ Public Class Form1
         End Using
     End Function
 
-    Private Sub btnMoveLogFile_Click(sender As Object, e As EventArgs) Handles btnMoveLogFile.Click
+    Private Sub BtnMoveLogFile_Click(sender As Object, e As EventArgs) Handles btnMoveLogFile.Click
         SaveFileDialog.Filter = "JSON Data File|*.json"
 
         Do
@@ -402,7 +402,7 @@ Public Class Form1
         Process.GetCurrentProcess.Kill()
     End Sub
 
-    Private Sub txtSysLogServerPort_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSysLogServerPort.KeyUp
+    Private Sub TxtSysLogServerPort_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSysLogServerPort.KeyUp
         If e.KeyCode = Keys.Enter Then
             Dim newPortNumber As Integer
 
