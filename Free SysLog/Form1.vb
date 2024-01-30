@@ -37,6 +37,7 @@ Public Class Form1
                 MsgBox("You must set a location to move the syslog data file to.", MsgBoxStyle.Information, Text)
             Else
                 SyncLock lockObject
+                    If File.Exists(SaveFileDialog.FileName) Then File.Delete(SaveFileDialog.FileName)
                     File.Move(My.Settings.logFileLocation, SaveFileDialog.FileName)
                     My.Settings.logFileLocation = SaveFileDialog.FileName
                     My.Settings.Save()
