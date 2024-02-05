@@ -315,7 +315,7 @@ Public Class Form1
     End Sub
 
     Private Sub OpenLogViewerWindow()
-        Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent}
+        Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
         LogViewer.ShowDialog()
     End Sub
 
