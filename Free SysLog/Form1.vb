@@ -348,17 +348,23 @@ Public Class Form1
     Private Sub BtnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
         logs.Items.Clear()
         UpdateLogCount()
-        WriteLogsToDisk()
+        SaveLogsToDiskSub()
     End Sub
 
-    Private Sub BtnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
+    Private Sub SaveLogsToDiskSub()
         WriteLogsToDisk()
         lblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
         SaveTimer.Enabled = False
         SaveTimer.Enabled = True
     End Sub
 
+    Private Sub BtnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
+        SaveLogsToDiskSub()
+    End Sub
+
     Private Sub BtnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles btnCheckForUpdates.Click
+        SaveLogsToDiskSub()
+
         Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                    Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
                                                    checkForUpdatesClassObject.CheckForUpdates()
