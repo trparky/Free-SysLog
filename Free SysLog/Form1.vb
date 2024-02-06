@@ -428,6 +428,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub txtSearchTerms_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyUp
+        If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try
