@@ -413,6 +413,7 @@ Public Class Form1
 
             If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
                 boolFound = True
+                logs.TopItem = item
                 intPreviousSearchIndex = item.Index
                 item.Selected = True
                 logs.Focus()
