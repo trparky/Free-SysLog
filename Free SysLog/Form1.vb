@@ -438,6 +438,15 @@ Public Class Form1
         If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
     End Sub
 
+    Private Sub txtSearchTerms_TextChanged(sender As Object, e As EventArgs) Handles txtSearchTerms.TextChanged
+        btnSearch.Text = "Search"
+        intPreviousSearchIndex = -1
+
+        For Each selectedItem As ListViewItem In logs.SelectedItems
+            selectedItem.Selected = False
+        Next
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try
