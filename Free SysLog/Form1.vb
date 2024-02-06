@@ -10,6 +10,7 @@ Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
+    Private intPreviousSearchIndex As Integer = -1
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
@@ -395,6 +396,34 @@ Public Class Form1
             Else
                 MsgBox("You must input a valid integer.", MsgBoxStyle.Critical, Text)
             End If
+        End If
+    End Sub
+
+    Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
+        btnSearch.Text = "Search Next"
+        Dim strLogText As String
+        Dim boolFound As Boolean = False
+
+        For Each selectedItem As ListViewItem In logs.SelectedItems
+            selectedItem.Selected = False
+        Next
+
+        For Each item As ListViewItem In logs.Items
+            strLogText = item.SubItems(3).Text
+
+            If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
+                boolFound = True
+                intPreviousSearchIndex = item.Index
+                item.Selected = True
+                logs.Focus()
+                Exit For
+            End If
+        Next
+
+        If Not boolFound Then
+            intPreviousSearchIndex = -1
+            btnSearch.Text = "Search"
+            MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 

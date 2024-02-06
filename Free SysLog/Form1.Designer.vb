@@ -52,6 +52,9 @@ Partial Class Form1
         Me.MainMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogFunctionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.lblSearchLabel = New System.Windows.Forms.Label()
+        Me.txtSearchTerms = New System.Windows.Forms.TextBox()
+        Me.btnSearch = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -248,11 +251,42 @@ Partial Class Form1
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
         '
+        'lblSearchLabel
+        '
+        Me.lblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lblSearchLabel.AutoSize = True
+        Me.lblSearchLabel.Location = New System.Drawing.Point(836, 32)
+        Me.lblSearchLabel.Name = "lblSearchLabel"
+        Me.lblSearchLabel.Size = New System.Drawing.Size(67, 13)
+        Me.lblSearchLabel.TabIndex = 13
+        Me.lblSearchLabel.Text = "Search Logs"
+        '
+        'txtSearchTerms
+        '
+        Me.txtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtSearchTerms.Location = New System.Drawing.Point(909, 29)
+        Me.txtSearchTerms.Name = "txtSearchTerms"
+        Me.txtSearchTerms.Size = New System.Drawing.Size(148, 20)
+        Me.txtSearchTerms.TabIndex = 14
+        '
+        'btnSearch
+        '
+        Me.btnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnSearch.Location = New System.Drawing.Point(1063, 27)
+        Me.btnSearch.Name = "btnSearch"
+        Me.btnSearch.Size = New System.Drawing.Size(100, 23)
+        Me.btnSearch.TabIndex = 15
+        Me.btnSearch.Text = "Search"
+        Me.btnSearch.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.btnSearch)
+        Me.Controls.Add(Me.txtSearchTerms)
+        Me.Controls.Add(Me.lblSearchLabel)
         Me.Controls.Add(Me.NumericUpDown)
         Me.Controls.Add(Me.lblAutoSaveLabel)
         Me.Controls.Add(Me.StatusStrip1)
@@ -301,4 +335,7 @@ Partial Class Form1
     Friend WithEvents MainMenuToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LogFunctionsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents lblSearchLabel As Label
+    Friend WithEvents txtSearchTerms As TextBox
+    Friend WithEvents btnSearch As Button
 End Class
