@@ -137,7 +137,7 @@ Partial Class Form1
         '
         Me.chkAutoScroll.CheckOnClick = True
         Me.chkAutoScroll.Name = "chkAutoScroll"
-        Me.chkAutoScroll.Size = New System.Drawing.Size(180, 22)
+        Me.chkAutoScroll.Size = New System.Drawing.Size(152, 22)
         Me.chkAutoScroll.Text = "Auto Scroll"
         '
         'btnCheckForUpdates
@@ -154,13 +154,13 @@ Partial Class Form1
         '
         Me.chkAutoSave.CheckOnClick = True
         Me.chkAutoSave.Name = "chkAutoSave"
-        Me.chkAutoSave.Size = New System.Drawing.Size(180, 22)
+        Me.chkAutoSave.Size = New System.Drawing.Size(152, 22)
         Me.chkAutoSave.Text = "Auto Save"
         '
         'lblAutoSaveLabel
         '
         Me.lblAutoSaveLabel.AutoSize = True
-        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(12, 28)
+        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(202, 28)
         Me.lblAutoSaveLabel.Name = "lblAutoSaveLabel"
         Me.lblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
         Me.lblAutoSaveLabel.TabIndex = 7
@@ -168,7 +168,7 @@ Partial Class Form1
         '
         'NumericUpDown
         '
-        Me.NumericUpDown.Location = New System.Drawing.Point(161, 26)
+        Me.NumericUpDown.Location = New System.Drawing.Point(351, 26)
         Me.NumericUpDown.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDown.Name = "NumericUpDown"
         Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
@@ -186,7 +186,7 @@ Partial Class Form1
         '
         Me.chkStartAtUserStartup.CheckOnClick = True
         Me.chkStartAtUserStartup.Name = "chkStartAtUserStartup"
-        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(180, 22)
+        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(152, 22)
         Me.chkStartAtUserStartup.Text = "Start at Startup"
         '
         'lblLogFileSize
@@ -204,7 +204,7 @@ Partial Class Form1
         'lblSyslogServerPortLabel
         '
         Me.lblSyslogServerPortLabel.AutoSize = True
-        Me.lblSyslogServerPortLabel.Location = New System.Drawing.Point(238, 28)
+        Me.lblSyslogServerPortLabel.Location = New System.Drawing.Point(12, 28)
         Me.lblSyslogServerPortLabel.Name = "lblSyslogServerPortLabel"
         Me.lblSyslogServerPortLabel.Size = New System.Drawing.Size(97, 13)
         Me.lblSyslogServerPortLabel.TabIndex = 10
@@ -212,7 +212,7 @@ Partial Class Form1
         '
         'txtSysLogServerPort
         '
-        Me.txtSysLogServerPort.Location = New System.Drawing.Point(341, 25)
+        Me.txtSysLogServerPort.Location = New System.Drawing.Point(115, 25)
         Me.txtSysLogServerPort.Name = "txtSysLogServerPort"
         Me.txtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
         Me.txtSysLogServerPort.TabIndex = 11
