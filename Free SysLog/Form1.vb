@@ -283,10 +283,6 @@ Public Class Form1
 
             sPriority = GetSyslogPriority(sSyslog)
 
-            If sSyslog.Contains("dsldevice") And sSyslog.Contains("dhcpd") Then
-                Exit Sub
-            End If
-
             sSyslog = Regex.Replace(sSyslog, "[./0-9-]{5,10}T[.0-9:]{5,8}\.[0-9]+-[0-9]+:[0-9]+ L[0-9]+ ", "").Trim
             addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
