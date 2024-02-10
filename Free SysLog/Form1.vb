@@ -187,14 +187,9 @@ Public Class Form1
                 End Using
 
                 Dim listOfLogEntries As New List(Of ListViewItem)
-                Dim listViewItem As ListViewItem
 
                 For Each item As SavedData In collectionOfSavedData
-                    listViewItem = New ListViewItem(item.time)
-                    listViewItem.SubItems.Add(item.type)
-                    listViewItem.SubItems.Add(item.ip)
-                    listViewItem.SubItems.Add(item.log)
-                    listOfLogEntries.Add(listViewItem)
+                    listOfLogEntries.Add(item.ToListViewItem())
                 Next
 
                 Invoke(Sub()
@@ -474,4 +469,12 @@ End Class
 
 Public Class SavedData
     Public time, type, ip, log As String
+
+    Public Function ToListViewItem() As ListViewItem
+        Dim listViewItem As New ListViewItem(time)
+        listViewItem.SubItems.Add(type)
+        listViewItem.SubItems.Add(ip)
+        listViewItem.SubItems.Add(log)
+        Return listViewItem
+    End Function
 End Class
