@@ -316,7 +316,17 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles logs.KeyUp
-        If e.KeyValue = Keys.Enter Then OpenLogViewerWindow()
+        If e.KeyValue = Keys.Enter Then
+            OpenLogViewerWindow()
+        ElseIf e.KeyValue = Keys.Delete Then
+            logs.BeginUpdate()
+
+            For Each item As ListViewItem In logs.SelectedItems
+                logs.Items.Remove(item)
+            Next
+
+            logs.EndUpdate()
+        End If
     End Sub
 
     Private Sub UpdateLogCount()
