@@ -48,6 +48,7 @@ Partial Class Form1
         Me.lblSyslogServerPortLabel = New System.Windows.Forms.Label()
         Me.txtSysLogServerPort = New System.Windows.Forms.TextBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.btnClearSearch = New System.Windows.Forms.Button()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.MainMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogFunctionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -222,6 +223,18 @@ Partial Class Form1
         Me.txtSysLogServerPort.TabIndex = 11
         Me.ToolTip.SetToolTip(Me.txtSysLogServerPort, "Default Port: 514")
         '
+        'btnClearSearch
+        '
+        Me.btnClearSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClearSearch.Location = New System.Drawing.Point(1140, 27)
+        Me.btnClearSearch.Name = "btnClearSearch"
+        Me.btnClearSearch.Size = New System.Drawing.Size(23, 23)
+        Me.btnClearSearch.TabIndex = 16
+        Me.btnClearSearch.Text = "X"
+        Me.ToolTip.SetToolTip(Me.btnClearSearch, "Clear search terms")
+        Me.btnClearSearch.UseVisualStyleBackColor = True
+        Me.btnClearSearch.Visible = False
+        '
         'MenuStrip
         '
         Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MainMenuToolStripMenuItem, Me.LogFunctionsToolStripMenuItem, Me.SettingsToolStripMenuItem})
@@ -275,7 +288,7 @@ Partial Class Form1
         Me.btnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSearch.Location = New System.Drawing.Point(1063, 27)
         Me.btnSearch.Name = "btnSearch"
-        Me.btnSearch.Size = New System.Drawing.Size(100, 23)
+        Me.btnSearch.Size = New System.Drawing.Size(77, 23)
         Me.btnSearch.TabIndex = 15
         Me.btnSearch.Text = "Search"
         Me.btnSearch.UseVisualStyleBackColor = True
@@ -283,12 +296,14 @@ Partial Class Form1
         'SelectedHeader
         '
         Me.SelectedHeader.Text = "*"
+        Me.SelectedHeader.Width = 20
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.btnClearSearch)
         Me.Controls.Add(Me.btnSearch)
         Me.Controls.Add(Me.txtSearchTerms)
         Me.Controls.Add(Me.lblSearchLabel)
@@ -344,4 +359,5 @@ Partial Class Form1
     Friend WithEvents txtSearchTerms As TextBox
     Friend WithEvents btnSearch As Button
     Friend WithEvents SelectedHeader As ColumnHeader
+    Friend WithEvents btnClearSearch As Button
 End Class

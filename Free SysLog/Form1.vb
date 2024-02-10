@@ -413,6 +413,7 @@ Public Class Form1
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
         btnSearch.Text = "Search Next"
+        btnClearSearch.Visible = True
         Dim strLogText As String
         Dim boolFound As Boolean = False
 
@@ -440,17 +441,6 @@ Public Class Form1
 
     Private Sub TxtSearchTerms_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyUp
         If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
-    End Sub
-
-    Private Sub TxtSearchTerms_TextChanged(sender As Object, e As EventArgs) Handles txtSearchTerms.TextChanged
-        btnSearch.Text = "Search"
-        intPreviousSearchIndex = -1
-
-        For Each item As ListViewItem In logs.Items
-            item.SubItems(4).Text = ""
-        Next
-
-        ApplyTimeSort()
     End Sub
 
     Private Sub Logs_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles logs.ColumnClick
@@ -517,6 +507,19 @@ Public Class Form1
 
         logs.ListViewItemSorter = New ListViewComparer(4, sort_order)
         logs.Sort()
+    End Sub
+
+    Private Sub BtnClearSearch_Click(sender As Object, e As EventArgs) Handles btnClearSearch.Click
+        btnSearch.Text = "Search"
+        btnClearSearch.Visible = False
+        txtSearchTerms.Text = ""
+        intPreviousSearchIndex = -1
+
+        For Each item As ListViewItem In logs.Items
+            item.SubItems(4).Text = ""
+        Next
+
+        ApplyTimeSort()
     End Sub
 
 #Region "-- SysLog Server Code --"
