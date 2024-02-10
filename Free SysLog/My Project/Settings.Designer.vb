@@ -185,6 +185,17 @@ Namespace My
                 Me("sysLogPort") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property ignored() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("ignored"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("ignored") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

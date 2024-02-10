@@ -284,6 +284,12 @@ Public Class Form1
 
             sPriority = GetSyslogPriority(sSyslog)
 
+            If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count <> 0 Then
+                For Each word As String In My.Settings.ignored
+                    If sSyslog.CaseInsensitiveContains(word) Then Exit Sub
+                Next
+            End If
+
             sSyslog = Regex.Replace(sSyslog, "[./0-9-]{5,10}T[.0-9:]{5,8}\.[0-9]+-[0-9]+:[0-9]+ L[0-9]+ ", "").Trim
             addToLogList(sPriority, sFromIp, sSyslog)
         Catch ex As Exception
@@ -520,6 +526,11 @@ Public Class Form1
         Next
 
         ApplyTimeSort()
+    End Sub
+
+    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
+        Dim ignored As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+        ignored.Show()
     End Sub
 
 #Region "-- SysLog Server Code --"

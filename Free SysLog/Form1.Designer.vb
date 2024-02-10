@@ -57,6 +57,7 @@ Partial Class Form1
         Me.txtSearchTerms = New System.Windows.Forms.TextBox()
         Me.btnSearch = New System.Windows.Forms.Button()
         Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -71,20 +72,20 @@ Partial Class Form1
         'btnOpenLogLocation
         '
         Me.btnOpenLogLocation.Name = "btnOpenLogLocation"
-        Me.btnOpenLogLocation.Size = New System.Drawing.Size(196, 22)
+        Me.btnOpenLogLocation.Size = New System.Drawing.Size(218, 22)
         Me.btnOpenLogLocation.Text = "Open Log File Location"
         '
         'btnClearLog
         '
         Me.btnClearLog.Name = "btnClearLog"
-        Me.btnClearLog.Size = New System.Drawing.Size(196, 22)
+        Me.btnClearLog.Size = New System.Drawing.Size(218, 22)
         Me.btnClearLog.Text = "Clear Logs"
         '
         'btnSaveLogsToDisk
         '
         Me.btnSaveLogsToDisk.Enabled = False
         Me.btnSaveLogsToDisk.Name = "btnSaveLogsToDisk"
-        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(196, 22)
+        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(218, 22)
         Me.btnSaveLogsToDisk.Text = "Save Logs to Disk"
         '
         'logs
@@ -203,7 +204,7 @@ Partial Class Form1
         'btnMoveLogFile
         '
         Me.btnMoveLogFile.Name = "btnMoveLogFile"
-        Me.btnMoveLogFile.Size = New System.Drawing.Size(196, 22)
+        Me.btnMoveLogFile.Size = New System.Drawing.Size(218, 22)
         Me.btnMoveLogFile.Text = "Move Log File"
         '
         'lblSyslogServerPortLabel
@@ -253,7 +254,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnOpenLogLocation, Me.btnMoveLogFile, Me.btnClearLog, Me.btnSaveLogsToDisk})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnOpenLogLocation, Me.btnMoveLogFile, Me.btnClearLog, Me.btnSaveLogsToDisk, Me.IgnoredWordsAndPhrasesToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -297,6 +298,12 @@ Partial Class Form1
         '
         Me.SelectedHeader.Text = "*"
         Me.SelectedHeader.Width = 20
+        '
+        'IgnoredWordsAndPhrasesToolStripMenuItem
+        '
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Name = "IgnoredWordsAndPhrasesToolStripMenuItem"
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
         '
         'Form1
         '
@@ -360,4 +367,5 @@ Partial Class Form1
     Friend WithEvents btnSearch As Button
     Friend WithEvents SelectedHeader As ColumnHeader
     Friend WithEvents btnClearSearch As Button
+    Friend WithEvents IgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
 End Class
