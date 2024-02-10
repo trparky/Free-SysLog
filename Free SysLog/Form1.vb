@@ -326,6 +326,9 @@ Public Class Form1
             Next
 
             logs.EndUpdate()
+
+            UpdateLogCount()
+            btnSaveLogsToDisk.PerformClick()
         End If
     End Sub
 
