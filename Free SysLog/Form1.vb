@@ -434,11 +434,11 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub txtSearchTerms_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyUp
+    Private Sub TxtSearchTerms_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyUp
         If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
     End Sub
 
-    Private Sub txtSearchTerms_TextChanged(sender As Object, e As EventArgs) Handles txtSearchTerms.TextChanged
+    Private Sub TxtSearchTerms_TextChanged(sender As Object, e As EventArgs) Handles txtSearchTerms.TextChanged
         btnSearch.Text = "Search"
         intPreviousSearchIndex = -1
 
