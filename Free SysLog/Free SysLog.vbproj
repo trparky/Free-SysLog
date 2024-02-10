@@ -121,6 +121,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HTTPHelper.vb" />
+    <Compile Include="listViewSorter.vb" />
     <Compile Include="Log Viewer.Designer.vb">
       <DependentUpon>Log Viewer.vb</DependentUpon>
     </Compile>

@@ -11,6 +11,7 @@ Public Class Form1
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
     Private intPreviousSearchIndex As Integer = -1
+    Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
@@ -449,6 +450,40 @@ Public Class Form1
         For Each selectedItem As ListViewItem In logs.SelectedItems
             selectedItem.Selected = False
         Next
+    End Sub
+
+    Private Sub Logs_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles logs.ColumnClick
+        Dim new_sorting_column As ColumnHeader = logs.Columns(e.Column)
+
+        ' Figure out the new sorting order.
+        Dim sort_order As SortOrder
+
+        If m_SortingColumn2 Is Nothing Then
+            ' New column. Sort ascending.
+            sort_order = SortOrder.Ascending
+        Else
+            ' See if this is the same column.
+            If new_sorting_column.Equals(m_SortingColumn2) Then
+                ' Same column. Switch the sort order.
+                sort_order = If(m_SortingColumn2.Text.StartsWith("> "), SortOrder.Descending, SortOrder.Ascending)
+            Else
+                ' New column. Sort ascending.
+                sort_order = SortOrder.Ascending
+            End If
+
+            ' Remove the old sort indicator.
+            m_SortingColumn2.Text = m_SortingColumn2.Text.Substring(2)
+        End If
+
+        ' Display the new sort order.
+        m_SortingColumn2 = new_sorting_column
+        m_SortingColumn2.Text = If(sort_order = SortOrder.Ascending, $"> {m_SortingColumn2.Text}", $"< {m_SortingColumn2.Text}")
+
+        ' Create a comparer.
+        logs.ListViewItemSorter = New ListViewComparer(e.Column, sort_order)
+
+        ' Sort.
+        logs.Sort()
     End Sub
 
 #Region "-- SysLog Server Code --"

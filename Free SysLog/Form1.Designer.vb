@@ -55,6 +55,7 @@ Partial Class Form1
         Me.lblSearchLabel = New System.Windows.Forms.Label()
         Me.txtSearchTerms = New System.Windows.Forms.TextBox()
         Me.btnSearch = New System.Windows.Forms.Button()
+        Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -90,7 +91,7 @@ Partial Class Form1
         Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log})
+        Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log, Me.SelectedHeader})
         Me.logs.FullRowSelect = True
         Me.logs.HideSelection = False
         Me.logs.Location = New System.Drawing.Point(12, 52)
@@ -279,6 +280,10 @@ Partial Class Form1
         Me.btnSearch.Text = "Search"
         Me.btnSearch.UseVisualStyleBackColor = True
         '
+        'SelectedHeader
+        '
+        Me.SelectedHeader.Text = "*"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -338,4 +343,5 @@ Partial Class Form1
     Friend WithEvents lblSearchLabel As Label
     Friend WithEvents txtSearchTerms As TextBox
     Friend WithEvents btnSearch As Button
+    Friend WithEvents SelectedHeader As ColumnHeader
 End Class
