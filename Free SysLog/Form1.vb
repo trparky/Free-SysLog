@@ -296,6 +296,7 @@ Public Class Form1
         listViewItem.SubItems.Add(sPriority)
         listViewItem.SubItems.Add(sFromIp)
         listViewItem.SubItems.Add(sSyslog)
+        listViewItem.SubItems.Add("")
 
         Invoke(Sub()
                    logs.Items.Add(listViewItem)
@@ -424,15 +425,13 @@ Public Class Form1
 
             If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
                 boolFound = True
-                logs.TopItem = item
-                intPreviousSearchIndex = item.Index
-                item.Selected = True
-                logs.Focus()
-                Exit For
+                item.SubItems(4).Text = "*"
             End If
         Next
 
-        If Not boolFound Then
+        If boolFound Then
+            ApplySelectedSort()
+        Else
             intPreviousSearchIndex = -1
             btnSearch.Text = "Search"
             MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -447,9 +446,11 @@ Public Class Form1
         btnSearch.Text = "Search"
         intPreviousSearchIndex = -1
 
-        For Each selectedItem As ListViewItem In logs.SelectedItems
-            selectedItem.Selected = False
+        For Each item As ListViewItem In logs.Items
+            item.SubItems(4).Text = ""
         Next
+
+        ApplyTimeSort()
     End Sub
 
     Private Sub Logs_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles logs.ColumnClick
@@ -486,6 +487,38 @@ Public Class Form1
         logs.Sort()
     End Sub
 
+    Private Sub ApplyTimeSort()
+        Time.Text = "> Time"
+        Type.Text = "Type"
+        IPAddressCol.Text = "IP Address"
+        Log.Text = "Log"
+        SelectedHeader.Text = "*"
+
+        Dim new_sorting_column As ColumnHeader = logs.Columns(0)
+        Dim sort_order As SortOrder = SortOrder.Ascending
+
+        m_SortingColumn2 = new_sorting_column
+
+        logs.ListViewItemSorter = New ListViewComparer(0, sort_order)
+        logs.Sort()
+    End Sub
+
+    Private Sub ApplySelectedSort()
+        Time.Text = "Time"
+        Type.Text = "Type"
+        IPAddressCol.Text = "IP Address"
+        Log.Text = "Log"
+        SelectedHeader.Text = "< *"
+
+        Dim new_sorting_column As ColumnHeader = logs.Columns(4)
+        Dim sort_order As SortOrder = SortOrder.Descending
+
+        m_SortingColumn2 = new_sorting_column
+
+        logs.ListViewItemSorter = New ListViewComparer(4, sort_order)
+        logs.Sort()
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try
@@ -519,6 +552,7 @@ Public Class SavedData
         listViewItem.SubItems.Add(type)
         listViewItem.SubItems.Add(ip)
         listViewItem.SubItems.Add(log)
+        listViewItem.SubItems.Add("")
         Return listViewItem
     End Function
 End Class
