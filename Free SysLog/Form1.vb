@@ -432,6 +432,8 @@ Public Class Form1
         Dim strLogText As String
         Dim boolFound As Boolean = False
 
+        logs.BeginUpdate()
+
         For Each selectedItem As MyListViewItem In logs.SelectedItems
             selectedItem.Selected = False
         Next
@@ -445,6 +447,8 @@ Public Class Form1
             End If
         Next
 
+        logs.Items(0).EnsureVisible()
+        logs.EndUpdate()
         If boolFound Then
             ApplySelectedSort()
         Else
@@ -530,9 +534,13 @@ Public Class Form1
         txtSearchTerms.Text = ""
         intPreviousSearchIndex = -1
 
+        logs.BeginUpdate()
+
         For Each item As MyListViewItem In logs.Items
             item.SubItems(4).Text = ""
         Next
+
+        logs.EndUpdate()
 
         ApplyTimeSort()
     End Sub
