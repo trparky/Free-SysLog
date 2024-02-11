@@ -25,8 +25,8 @@ Class ListViewComparer
         If lvFirstListView.ListView IsNot Nothing Then
             ' Compare them.
             If intColumnNumber = 0 Then
-                date1 = Date.Parse(strFirstString)
-                date2 = Date.Parse(strSecondString)
+                date1 = DirectCast(lvFirstListView, MyListViewItem).DateObject
+                date2 = DirectCast(lvSecondListView, MyListViewItem).DateObject
 
                 Return If(soSortOrder = SortOrder.Ascending, String.Compare(date1, date2), String.Compare(date2, date1))
             Else

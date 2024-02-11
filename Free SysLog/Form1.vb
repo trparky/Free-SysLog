@@ -50,12 +50,13 @@ Public Class Form1
         SyncLock lockObject
             Dim collectionOfSavedData As New List(Of SavedData)
 
-            For Each listViewItem As ListViewItem In logs.Items
+            For Each listViewItem As MyListViewItem In logs.Items
                 collectionOfSavedData.Add(New SavedData With {
                                             .time = listViewItem.SubItems(0).Text,
                                             .type = listViewItem.SubItems(1).Text,
                                             .ip = listViewItem.SubItems(2).Text,
-                                            .log = listViewItem.SubItems(3).Text
+                                            .log = listViewItem.SubItems(3).Text,
+                                            .DateObject = listViewItem.DateObject
                                           })
             Next
 
@@ -188,7 +189,7 @@ Public Class Form1
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
                 End Using
 
-                Dim listOfLogEntries As New List(Of ListViewItem)
+                Dim listOfLogEntries As New List(Of MyListViewItem)
 
                 For Each item As SavedData In collectionOfSavedData
                     listOfLogEntries.Add(item.ToListViewItem())
@@ -303,11 +304,14 @@ Public Class Form1
     End Sub
 
     Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String)
-        Dim listViewItem As New ListViewItem(Now.ToLocalTime.ToString)
+        Dim currentDate As Date = Now.ToLocalTime
+
+        Dim listViewItem As New MyListViewItem(currentDate.ToString)
         listViewItem.SubItems.Add(sPriority)
         listViewItem.SubItems.Add(sFromIp)
         listViewItem.SubItems.Add(sSyslog)
         listViewItem.SubItems.Add("")
+        listViewItem.DateObject = currentDate
 
         Invoke(Sub()
                    logs.Items.Add(listViewItem)
@@ -334,7 +338,7 @@ Public Class Form1
         ElseIf e.KeyValue = Keys.Delete Then
             logs.BeginUpdate()
 
-            For Each item As ListViewItem In logs.SelectedItems
+            For Each item As MyListViewItem In logs.SelectedItems
                 logs.Items.Remove(item)
             Next
 
@@ -428,11 +432,11 @@ Public Class Form1
         Dim strLogText As String
         Dim boolFound As Boolean = False
 
-        For Each selectedItem As ListViewItem In logs.SelectedItems
+        For Each selectedItem As MyListViewItem In logs.SelectedItems
             selectedItem.Selected = False
         Next
 
-        For Each item As ListViewItem In logs.Items
+        For Each item As MyListViewItem In logs.Items
             strLogText = item.SubItems(3).Text
 
             If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
@@ -526,7 +530,7 @@ Public Class Form1
         txtSearchTerms.Text = ""
         intPreviousSearchIndex = -1
 
-        For Each item As ListViewItem In logs.Items
+        For Each item As MyListViewItem In logs.Items
             item.SubItems(4).Text = ""
         Next
 
@@ -565,13 +569,15 @@ End Class
 
 Public Class SavedData
     Public time, type, ip, log As String
+    Public DateObject As Date
 
-    Public Function ToListViewItem() As ListViewItem
-        Dim listViewItem As New ListViewItem(time)
+    Public Function ToListViewItem() As MyListViewItem
+        Dim listViewItem As New MyListViewItem(time)
         listViewItem.SubItems.Add(type)
         listViewItem.SubItems.Add(ip)
         listViewItem.SubItems.Add(log)
         listViewItem.SubItems.Add("")
+        listViewItem.DateObject = DateObject
         Return listViewItem
     End Function
 End Class
