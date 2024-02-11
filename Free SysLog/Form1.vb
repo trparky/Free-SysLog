@@ -444,11 +444,13 @@ Public Class Form1
             If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
                 boolFound = True
                 item.SubItems(4).Text = "*"
+                item.BackColor = Color.LightBlue
             End If
         Next
 
         logs.Items(0).EnsureVisible()
         logs.EndUpdate()
+
         If boolFound Then
             ApplySelectedSort()
         Else
@@ -538,6 +540,7 @@ Public Class Form1
 
         For Each item As MyListViewItem In logs.Items
             item.SubItems(4).Text = ""
+            item.BackColor = SystemColors.Window
         Next
 
         logs.EndUpdate()
