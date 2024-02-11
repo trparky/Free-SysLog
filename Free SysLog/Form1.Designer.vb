@@ -58,6 +58,7 @@ Partial Class Form1
         Me.btnSearch = New System.Windows.Forms.Button()
         Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.lblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -125,7 +126,7 @@ Partial Class Form1
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.lblAutoSaved, Me.lblLogFileSize})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.lblAutoSaved, Me.lblLogFileSize, Me.lblNumberOfIgnoredIncomingLogs})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1175, 22)
@@ -197,6 +198,7 @@ Partial Class Form1
         '
         'lblLogFileSize
         '
+        Me.lblLogFileSize.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.lblLogFileSize.Name = "lblLogFileSize"
         Me.lblLogFileSize.Size = New System.Drawing.Size(156, 17)
         Me.lblLogFileSize.Text = "Log File Size: (Not Specified)"
@@ -305,6 +307,12 @@ Partial Class Form1
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
         '
+        'lblNumberOfIgnoredIncomingLogs
+        '
+        Me.lblNumberOfIgnoredIncomingLogs.Name = "lblNumberOfIgnoredIncomingLogs"
+        Me.lblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
+        Me.lblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -368,4 +376,5 @@ Partial Class Form1
     Friend WithEvents SelectedHeader As ColumnHeader
     Friend WithEvents btnClearSearch As Button
     Friend WithEvents IgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents lblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
 End Class

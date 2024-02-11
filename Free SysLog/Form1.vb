@@ -12,6 +12,7 @@ Public Class Form1
     Private lockObject As New Object
     Private intPreviousSearchIndex As Integer = -1
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
+    Private longNumberOfIgnoredLogs As Long = 0
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
@@ -286,7 +287,11 @@ Public Class Form1
 
             If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count <> 0 Then
                 For Each word As String In My.Settings.ignored
-                    If sSyslog.CaseInsensitiveContains(word) Then Exit Sub
+                    If sSyslog.CaseInsensitiveContains(word) Then
+                        longNumberOfIgnoredLogs += 1
+                        lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                        Exit Sub
+                    End If
                 Next
             End If
 
