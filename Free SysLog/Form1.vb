@@ -195,10 +195,8 @@ Public Class Form1
                     listOfLogEntries.Add(item.ToListViewItem())
                 Next
 
-                Invoke(Sub()
-                           logs.Items.AddRange(listOfLogEntries.ToArray())
-                           UpdateLogCount()
-                       End Sub)
+                logs.Items.AddRange(listOfLogEntries.ToArray())
+                UpdateLogCount()
             Catch ex As Exception
             End Try
         End If
