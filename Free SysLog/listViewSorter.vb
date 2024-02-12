@@ -28,7 +28,7 @@ Class ListViewComparer
                 date1 = DirectCast(lvFirstListView, MyListViewItem).DateObject
                 date2 = DirectCast(lvSecondListView, MyListViewItem).DateObject
 
-                Return If(soSortOrder = SortOrder.Ascending, String.Compare(date1, date2), String.Compare(date2, date1))
+                Return If(soSortOrder = SortOrder.Ascending, Date.Compare(date1, date2), Date.Compare(date2, date1))
             Else
                 Return If(soSortOrder = SortOrder.Ascending, String.Compare(strFirstString, strSecondString), String.Compare(strSecondString, strFirstString))
             End If
