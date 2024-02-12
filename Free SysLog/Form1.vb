@@ -427,36 +427,55 @@ Public Class Form1
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
-        btnSearch.Text = "Search Next"
-        btnClearSearch.Visible = True
-        Dim strLogText As String
-        Dim boolFound As Boolean = False
+        If btnSearch.Text = "Search" Then
+            btnSearch.Text = "Clear Search"
 
-        logs.BeginUpdate()
+            Dim strLogText As String
+            Dim boolFound As Boolean = False
 
-        For Each selectedItem As MyListViewItem In logs.SelectedItems
-            selectedItem.Selected = False
-        Next
+            logs.BeginUpdate()
 
-        For Each item As MyListViewItem In logs.Items
-            strLogText = item.SubItems(3).Text
+            For Each selectedItem As MyListViewItem In logs.SelectedItems
+                selectedItem.Selected = False
+            Next
 
-            If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
-                boolFound = True
-                item.SubItems(4).Text = "*"
-                item.BackColor = Color.LightBlue
+            For Each item As MyListViewItem In logs.Items
+                strLogText = item.SubItems(3).Text
+
+                If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
+                    boolFound = True
+                    item.SubItems(4).Text = "*"
+                    item.BackColor = Color.LightBlue
+                End If
+            Next
+
+            logs.Items(0).EnsureVisible()
+            logs.EndUpdate()
+
+            If boolFound Then
+                ApplySelectedSort()
+            Else
+                intPreviousSearchIndex = -1
+                btnSearch.Text = "Search"
+                MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
             End If
-        Next
-
-        logs.Items(0).EnsureVisible()
-        logs.EndUpdate()
-
-        If boolFound Then
-            ApplySelectedSort()
         Else
-            intPreviousSearchIndex = -1
             btnSearch.Text = "Search"
-            MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+
+            btnSearch.Text = "Search"
+            txtSearchTerms.Text = ""
+            intPreviousSearchIndex = -1
+
+            logs.BeginUpdate()
+
+            For Each item As MyListViewItem In logs.Items
+                item.SubItems(4).Text = ""
+                item.BackColor = SystemColors.Window
+            Next
+
+            logs.EndUpdate()
+
+            ApplyTimeSort()
         End If
     End Sub
 
@@ -528,24 +547,6 @@ Public Class Form1
 
         logs.ListViewItemSorter = New ListViewComparer(4, sort_order)
         logs.Sort()
-    End Sub
-
-    Private Sub BtnClearSearch_Click(sender As Object, e As EventArgs) Handles btnClearSearch.Click
-        btnSearch.Text = "Search"
-        btnClearSearch.Visible = False
-        txtSearchTerms.Text = ""
-        intPreviousSearchIndex = -1
-
-        logs.BeginUpdate()
-
-        For Each item As MyListViewItem In logs.Items
-            item.SubItems(4).Text = ""
-            item.BackColor = SystemColors.Window
-        Next
-
-        logs.EndUpdate()
-
-        ApplyTimeSort()
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
