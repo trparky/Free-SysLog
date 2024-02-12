@@ -196,6 +196,7 @@ Public Class Form1
                 Next
 
                 logs.Items.AddRange(listOfLogEntries.ToArray())
+                If logs.Items.Count > 0 Then logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
                 UpdateLogCount()
             Catch ex As Exception
             End Try
