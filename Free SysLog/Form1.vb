@@ -12,6 +12,7 @@ Public Class Form1
     Private intPreviousSearchIndex As Integer = -1
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private longNumberOfIgnoredLogs As Long = 0
+    Private IgnoredLogs As New List(Of MyListViewItem)
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
@@ -276,6 +277,7 @@ Public Class Form1
     Private Sub FillLog(sSyslog As String, sFromIp As String)
         Try
             Dim sPriority As String
+            Dim boolIgnored As Boolean = False
 
             sSyslog = sSyslog.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
             sSyslog = sSyslog.Replace(vbCrLf, "")
@@ -289,18 +291,18 @@ Public Class Form1
                     If sSyslog.CaseInsensitiveContains(word) Then
                         longNumberOfIgnoredLogs += 1
                         lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
-                        Exit Sub
+                        boolIgnored = True
                     End If
                 Next
             End If
 
-            addToLogList(sPriority, sFromIp, sSyslog)
+            AddToLogList(sPriority, sFromIp, sSyslog, boolIgnored)
         Catch ex As Exception
-            addToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}")
+            AddToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}", False)
         End Try
     End Sub
 
-    Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String)
+    Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String, boolIgnored As Boolean)
         Dim currentDate As Date = Now.ToLocalTime
 
         Dim listViewItem As New MyListViewItem(currentDate.ToString)
@@ -310,12 +312,16 @@ Public Class Form1
         listViewItem.SubItems.Add("")
         listViewItem.DateObject = currentDate
 
-        Invoke(Sub()
-                   logs.Items.Add(listViewItem)
-                   UpdateLogCount()
-                   If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
-                   btnSaveLogsToDisk.Enabled = True
-               End Sub)
+        If boolIgnored Then
+            IgnoredLogs.Add(listViewItem)
+        Else
+            Invoke(Sub()
+                       logs.Items.Add(listViewItem)
+                       UpdateLogCount()
+                       If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
+                       btnSaveLogsToDisk.Enabled = True
+                   End Sub)
+        End If
 
         listViewItem = Nothing
     End Sub
@@ -551,6 +557,15 @@ Public Class Form1
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
         Dim ignored As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
         ignored.ShowDialog(Me)
+    End Sub
+
+    Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
+        If IgnoredLogs.Count = 0 Then
+            MsgBox("There are no recorded ignored log entries to be shown.", MsgBoxStyle.Information, Text)
+        Else
+            Dim ignoredLogsWindow As New Ignored_Logs With {.Icon = Icon, .IgnoredLogs = IgnoredLogs}
+            ignoredLogsWindow.Show(Me)
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

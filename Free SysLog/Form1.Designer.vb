@@ -58,6 +58,7 @@ Partial Class Form1
         Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ViewIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -243,7 +244,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnOpenLogLocation, Me.btnMoveLogFile, Me.btnClearLog, Me.btnSaveLogsToDisk, Me.IgnoredWordsAndPhrasesToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnOpenLogLocation, Me.btnMoveLogFile, Me.btnClearLog, Me.btnSaveLogsToDisk, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ViewIgnoredLogsToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -299,6 +300,12 @@ Partial Class Form1
         Me.lblNumberOfIgnoredIncomingLogs.Name = "lblNumberOfIgnoredIncomingLogs"
         Me.lblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
         Me.lblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+        '
+        'ViewIgnoredLogsToolStripMenuItem
+        '
+        Me.ViewIgnoredLogsToolStripMenuItem.Name = "ViewIgnoredLogsToolStripMenuItem"
+        Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.ViewIgnoredLogsToolStripMenuItem.Text = "View Ignored Logs"
         '
         'Form1
         '
@@ -362,4 +369,5 @@ Partial Class Form1
     Friend WithEvents SelectedHeader As ColumnHeader
     Friend WithEvents IgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
+    Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
 End Class
