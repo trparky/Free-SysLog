@@ -24,10 +24,12 @@ Partial Class Ignored_Words_and_Phrases
     Private Sub InitializeComponent()
         Me.listOfWords = New System.Windows.Forms.ListView()
         Me.btnAdd = New System.Windows.Forms.Button()
+        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'listOfWords
         '
+        Me.listOfWords.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
         Me.listOfWords.FullRowSelect = True
         Me.listOfWords.HideSelection = False
         Me.listOfWords.Location = New System.Drawing.Point(12, 12)
@@ -35,7 +37,7 @@ Partial Class Ignored_Words_and_Phrases
         Me.listOfWords.Size = New System.Drawing.Size(457, 218)
         Me.listOfWords.TabIndex = 0
         Me.listOfWords.UseCompatibleStateImageBehavior = False
-        Me.listOfWords.View = System.Windows.Forms.View.List
+        Me.listOfWords.View = System.Windows.Forms.View.Details
         '
         'btnAdd
         '
@@ -45,6 +47,11 @@ Partial Class Ignored_Words_and_Phrases
         Me.btnAdd.TabIndex = 1
         Me.btnAdd.Text = "Add"
         Me.btnAdd.UseVisualStyleBackColor = True
+        '
+        'ColumnHeader1
+        '
+        Me.ColumnHeader1.Text = "Ignored Word/Phrase"
+        Me.ColumnHeader1.Width = 425
         '
         'Ignored_Words_and_Phrases
         '
@@ -61,4 +68,5 @@ Partial Class Ignored_Words_and_Phrases
 
     Friend WithEvents listOfWords As ListView
     Friend WithEvents btnAdd As Button
+    Friend WithEvents ColumnHeader1 As ColumnHeader
 End Class
