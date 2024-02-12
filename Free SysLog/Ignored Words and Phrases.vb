@@ -26,6 +26,6 @@
     End Sub
 
     Private Sub ListOfWords_KeyUp(sender As Object, e As KeyEventArgs) Handles listOfWords.KeyUp
-        If e.KeyCode = Keys.Delete Then listOfWords.Items.Remove(listOfWords.SelectedItems(0))
+        If e.KeyCode = Keys.Delete And listOfWords.SelectedItems().Count > 0 Then listOfWords.Items.Remove(listOfWords.SelectedItems(0))
     End Sub
 End Class
