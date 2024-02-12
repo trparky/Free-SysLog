@@ -457,6 +457,7 @@ Public Class Form1
             Else
                 intPreviousSearchIndex = -1
                 btnSearch.Text = "Search"
+                logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
                 MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
             End If
         Else
