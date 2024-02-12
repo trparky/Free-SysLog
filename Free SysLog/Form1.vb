@@ -2,7 +2,6 @@
 Imports System.Net.Sockets
 Imports System.Net
 Imports System.Text
-Imports System.Text.RegularExpressions
 Imports System.ComponentModel
 Imports Microsoft.Win32
 
