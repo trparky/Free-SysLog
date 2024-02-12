@@ -476,6 +476,7 @@ Public Class Form1
             logs.EndUpdate()
 
             ApplyTimeSort()
+            logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
         End If
     End Sub
 
