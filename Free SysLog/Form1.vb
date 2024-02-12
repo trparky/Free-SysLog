@@ -431,6 +431,11 @@ Public Class Form1
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
         If btnSearch.Text = "Search" Then
+            If String.IsNullOrWhiteSpace(txtSearchTerms.Text) Then
+                MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
+                Exit Sub
+            End If
+
             btnSearch.Text = "Clear Search"
 
             Dim strLogText As String
