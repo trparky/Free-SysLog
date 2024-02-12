@@ -28,4 +28,15 @@
     Private Sub ListOfWords_KeyUp(sender As Object, e As KeyEventArgs) Handles listOfWords.KeyUp
         If e.KeyCode = Keys.Delete And listOfWords.SelectedItems().Count > 0 Then listOfWords.Items.Remove(listOfWords.SelectedItems(0))
     End Sub
+
+    Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
+        If listOfWords.SelectedItems().Count > 0 Then
+            listOfWords.Items.Remove(listOfWords.SelectedItems(0))
+            btnDelete.Enabled = False
+        End If
+    End Sub
+
+    Private Sub ListOfWords_Click(sender As Object, e As EventArgs) Handles listOfWords.Click
+        btnDelete.Enabled = listOfWords.SelectedItems().Count > 0
+    End Sub
 End Class

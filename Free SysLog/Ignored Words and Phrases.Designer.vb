@@ -25,6 +25,7 @@ Partial Class Ignored_Words_and_Phrases
         Me.listOfWords = New System.Windows.Forms.ListView()
         Me.btnAdd = New System.Windows.Forms.Button()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.btnDelete = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'listOfWords
@@ -53,11 +54,22 @@ Partial Class Ignored_Words_and_Phrases
         Me.ColumnHeader1.Text = "Ignored Word/Phrase"
         Me.ColumnHeader1.Width = 425
         '
+        'btnDelete
+        '
+        Me.btnDelete.Enabled = False
+        Me.btnDelete.Location = New System.Drawing.Point(83, 236)
+        Me.btnDelete.Name = "btnDelete"
+        Me.btnDelete.Size = New System.Drawing.Size(65, 23)
+        Me.btnDelete.TabIndex = 2
+        Me.btnDelete.Text = "Delete"
+        Me.btnDelete.UseVisualStyleBackColor = True
+        '
         'Ignored_Words_and_Phrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(479, 265)
+        Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnAdd)
         Me.Controls.Add(Me.listOfWords)
         Me.Name = "Ignored_Words_and_Phrases"
@@ -69,4 +81,5 @@ Partial Class Ignored_Words_and_Phrases
     Friend WithEvents listOfWords As ListView
     Friend WithEvents btnAdd As Button
     Friend WithEvents ColumnHeader1 As ColumnHeader
+    Friend WithEvents btnDelete As Button
 End Class
