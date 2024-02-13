@@ -461,6 +461,7 @@ Public Class Form1
             logs.EndUpdate()
 
             If boolFound Then
+                chkAutoScroll.Checked = False
                 ApplySelectedSort()
             Else
                 intPreviousSearchIndex = -1
@@ -485,6 +486,7 @@ Public Class Form1
             logs.EndUpdate()
 
             ApplyTimeSort()
+            chkAutoScroll.Checked = True
             logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
         End If
     End Sub
