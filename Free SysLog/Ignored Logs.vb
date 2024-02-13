@@ -2,7 +2,12 @@
     Public IgnoredLogs As List(Of MyListViewItem)
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
 
+    Private Sub Ignored_Logs_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        My.Settings.ignoredWindowSize = Size
+    End Sub
+
     Private Sub Ignored_Logs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Size = My.Settings.ignoredWindowSize
         Time.Width = My.Settings.columnTimeSize
         Type.Width = My.Settings.columnTypeSize
         IPAddressCol.Width = My.Settings.columnIPSize

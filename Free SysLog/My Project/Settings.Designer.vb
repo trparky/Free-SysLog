@@ -208,6 +208,18 @@ Namespace My
                 Me("searchColor") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1168, 464")>  _
+        Public Property ignoredWindowSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("ignoredWindowSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("ignoredWindowSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
