@@ -151,6 +151,7 @@ Public Class Form1
         chkStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
+        Location = VerifyWindowLocation(My.Settings.windowLocation)
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
@@ -607,6 +608,10 @@ Public Class Form1
         Catch e As Exception
             MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text)
         End Try
+    End Sub
+
+    Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+        If boolDoneLoading Then My.Settings.windowLocation = Location
     End Sub
 #End Region
 End Class

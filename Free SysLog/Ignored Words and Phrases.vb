@@ -1,4 +1,6 @@
 ﻿Public Class Ignored_Words_and_Phrases
+    Private boolDoneLoading As Boolean = False
+
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         Dim input As String = InputBox("Provide a word or phrase that Free SysLog will ignore...", "Add Ignored Word or Phrase")
 
@@ -18,11 +20,15 @@
     End Sub
 
     Private Sub Ignored_Words_and_Phrases_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation)
+
         If My.Settings.ignored IsNot Nothing Then
             For Each word As String In My.Settings.ignored
                 listOfWords.Items.Add(word)
             Next
         End If
+
+        boolDoneLoading = True
     End Sub
 
     Private Sub ListOfWords_KeyUp(sender As Object, e As KeyEventArgs) Handles listOfWords.KeyUp
@@ -38,5 +44,9 @@
 
     Private Sub ListOfWords_Click(sender As Object, e As EventArgs) Handles listOfWords.Click
         btnDelete.Enabled = listOfWords.SelectedItems().Count > 0
+    End Sub
+
+    Private Sub Ignored_Words_and_Phrases_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+        If boolDoneLoading Then My.Settings.ignoredWordsLocation = Location
     End Sub
 End Class

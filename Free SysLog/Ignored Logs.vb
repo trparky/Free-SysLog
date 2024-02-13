@@ -1,6 +1,7 @@
 ﻿Public Class Ignored_Logs
     Public IgnoredLogs As List(Of MyListViewItem)
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
+    Private boolDoneLoading As Boolean = False
 
     Private Sub Ignored_Logs_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.ignoredWindowSize = Size
@@ -8,12 +9,15 @@
 
     Private Sub Ignored_Logs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Size = My.Settings.ignoredWindowSize
+        Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation)
         Time.Width = My.Settings.columnTimeSize
         Type.Width = My.Settings.columnTypeSize
         IPAddressCol.Width = My.Settings.columnIPSize
         Log.Width = My.Settings.columnLogSize
 
         logs.Items.AddRange(IgnoredLogs.ToArray())
+
+        boolDoneLoading = True
     End Sub
 
     Private Sub Logs_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles logs.ColumnClick
@@ -48,5 +52,9 @@
 
         ' Sort.
         logs.Sort()
+    End Sub
+
+    Private Sub Ignored_Logs_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+        If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
     End Sub
 End Class
