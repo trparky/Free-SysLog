@@ -575,6 +575,12 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
+        IgnoredLogs.Clear()
+        longNumberOfIgnoredLogs = 0
+        lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try

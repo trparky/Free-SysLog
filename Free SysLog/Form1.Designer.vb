@@ -55,6 +55,7 @@ Partial Class Form1
         Me.lblSearchLabel = New System.Windows.Forms.Label()
         Me.txtSearchTerms = New System.Windows.Forms.TextBox()
         Me.btnSearch = New System.Windows.Forms.Button()
+        Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
@@ -244,7 +245,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnOpenLogLocation, Me.btnMoveLogFile, Me.btnClearLog, Me.btnSaveLogsToDisk, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ViewIgnoredLogsToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnOpenLogLocation, Me.btnMoveLogFile, Me.btnClearLog, Me.btnSaveLogsToDisk, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ViewIgnoredLogsToolStripMenuItem, Me.ClearIgnoredLogsToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -306,6 +307,12 @@ Partial Class Form1
         Me.ViewIgnoredLogsToolStripMenuItem.Name = "ViewIgnoredLogsToolStripMenuItem"
         Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
         Me.ViewIgnoredLogsToolStripMenuItem.Text = "View Ignored Logs"
+        '
+        'ClearIgnoredLogsToolStripMenuItem
+        '
+        Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
+        Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear Ignored Logs"
         '
         'Form1
         '
@@ -370,4 +377,5 @@ Partial Class Form1
     Friend WithEvents IgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ClearIgnoredLogsToolStripMenuItem As ToolStripMenuItem
 End Class
