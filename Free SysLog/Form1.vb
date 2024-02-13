@@ -563,8 +563,8 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
-        Dim ignored As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-        ignored.ShowDialog(Me)
+        Dim ignored As New Ignored_Words_and_Phrases With {.Icon = Icon}
+        ignored.Show()
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
