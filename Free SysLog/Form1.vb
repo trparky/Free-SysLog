@@ -453,7 +453,7 @@ Public Class Form1
                 If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
                     boolFound = True
                     item.SubItems(4).Text = "*"
-                    item.BackColor = Color.LightBlue
+                    item.BackColor = My.Settings.searchColor
                 End If
             Next
 
@@ -579,6 +579,11 @@ Public Class Form1
         IgnoredLogs.Clear()
         longNumberOfIgnoredLogs = 0
         lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+    End Sub
+
+    Private Sub ChangeSearchHighlightColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSearchHighlightColorToolStripMenuItem.Click
+        ColorDialog.Color = My.Settings.searchColor
+        If ColorDialog.ShowDialog() = DialogResult.OK Then My.Settings.searchColor = ColorDialog.Color
     End Sub
 
 #Region "-- SysLog Server Code --"

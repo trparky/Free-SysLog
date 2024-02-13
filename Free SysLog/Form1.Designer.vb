@@ -55,6 +55,8 @@ Partial Class Form1
         Me.lblSearchLabel = New System.Windows.Forms.Label()
         Me.txtSearchTerms = New System.Windows.Forms.TextBox()
         Me.btnSearch = New System.Windows.Forms.Button()
+        Me.ChangeSearchHighlightColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ColorDialog = New System.Windows.Forms.ColorDialog()
         Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -145,7 +147,7 @@ Partial Class Form1
         '
         Me.chkAutoScroll.CheckOnClick = True
         Me.chkAutoScroll.Name = "chkAutoScroll"
-        Me.chkAutoScroll.Size = New System.Drawing.Size(152, 22)
+        Me.chkAutoScroll.Size = New System.Drawing.Size(238, 22)
         Me.chkAutoScroll.Text = "Auto Scroll"
         '
         'btnCheckForUpdates
@@ -162,7 +164,7 @@ Partial Class Form1
         '
         Me.chkAutoSave.CheckOnClick = True
         Me.chkAutoSave.Name = "chkAutoSave"
-        Me.chkAutoSave.Size = New System.Drawing.Size(152, 22)
+        Me.chkAutoSave.Size = New System.Drawing.Size(238, 22)
         Me.chkAutoSave.Text = "Auto Save"
         '
         'lblAutoSaveLabel
@@ -194,7 +196,7 @@ Partial Class Form1
         '
         Me.chkStartAtUserStartup.CheckOnClick = True
         Me.chkStartAtUserStartup.Name = "chkStartAtUserStartup"
-        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(152, 22)
+        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(238, 22)
         Me.chkStartAtUserStartup.Text = "Start at Startup"
         '
         'lblLogFileSize
@@ -252,7 +254,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoScroll, Me.chkAutoSave, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoScroll, Me.chkAutoSave, Me.chkStartAtUserStartup, Me.ChangeSearchHighlightColorToolStripMenuItem})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -313,6 +315,12 @@ Partial Class Form1
         Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
         Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
         Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear Ignored Logs"
+        '
+        'ChangeSearchHighlightColorToolStripMenuItem
+        '
+        Me.ChangeSearchHighlightColorToolStripMenuItem.Name = "ChangeSearchHighlightColorToolStripMenuItem"
+        Me.ChangeSearchHighlightColorToolStripMenuItem.Size = New System.Drawing.Size(238, 22)
+        Me.ChangeSearchHighlightColorToolStripMenuItem.Text = "Change Search Highlight Color"
         '
         'Form1
         '
@@ -378,4 +386,6 @@ Partial Class Form1
     Friend WithEvents lblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClearIgnoredLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChangeSearchHighlightColorToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ColorDialog As ColorDialog
 End Class
