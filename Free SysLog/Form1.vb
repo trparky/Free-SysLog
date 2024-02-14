@@ -591,6 +591,10 @@ Public Class Form1
         If ColorDialog.ShowDialog() = DialogResult.OK Then My.Settings.searchColor = ColorDialog.Color
     End Sub
 
+    Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+        If boolDoneLoading Then My.Settings.windowLocation = Location
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try
@@ -612,10 +616,6 @@ Public Class Form1
         Catch e As Exception
             MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text)
         End Try
-    End Sub
-
-    Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.windowLocation = Location
     End Sub
 #End Region
 End Class
