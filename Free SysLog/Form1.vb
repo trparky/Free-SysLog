@@ -574,8 +574,12 @@ Public Class Form1
         If IgnoredLogs.Count = 0 Then
             MsgBox("There are no recorded ignored log entries to be shown.", MsgBoxStyle.Information, Text)
         Else
-            Dim ignoredLogsWindow As New Ignored_Logs With {.Icon = Icon, .IgnoredLogs = IgnoredLogs}
-            ignoredLogsWindow.Show(Me)
+            If ignoredLogsWindow Is Nothing Then
+                ignoredLogsWindow = New Ignored_Logs With {.Icon = Icon, .IgnoredLogs = IgnoredLogs}
+                ignoredLogsWindow.Show(Me)
+            Else
+                ignoredLogsWindow.BringToFront()
+            End If
         End If
     End Sub
 

@@ -1,4 +1,6 @@
-﻿Public Class Ignored_Logs
+﻿Imports System.ComponentModel
+
+Public Class Ignored_Logs
     Public IgnoredLogs As List(Of MyListViewItem)
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
@@ -65,5 +67,9 @@
 
     Private Sub Ignored_Logs_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
         If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
+    End Sub
+
+    Private Sub Ignored_Logs_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        ignoredLogsWindow = Nothing
     End Sub
 End Class
