@@ -3,6 +3,15 @@
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
 
+    Private Sub OpenLogViewerWindow()
+        Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        LogViewer.ShowDialog()
+    End Sub
+
+    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
+        OpenLogViewerWindow()
+    End Sub
+
     Private Sub Ignored_Logs_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.ignoredWindowSize = Size
     End Sub
