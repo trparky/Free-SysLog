@@ -371,9 +371,11 @@ Public Class Form1
     End Sub
 
     Private Sub BtnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
-        logs.Items.Clear()
-        UpdateLogCount()
-        SaveLogsToDiskSub()
+        If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+            logs.Items.Clear()
+            UpdateLogCount()
+            SaveLogsToDiskSub()
+        End If
     End Sub
 
     Private Sub SaveLogsToDiskSub()
@@ -577,9 +579,11 @@ Public Class Form1
     End Sub
 
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
-        IgnoredLogs.Clear()
-        longNumberOfIgnoredLogs = 0
-        lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+            IgnoredLogs.Clear()
+            longNumberOfIgnoredLogs = 0
+            lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        End If
     End Sub
 
     Private Sub ChangeSearchHighlightColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSearchHighlightColorToolStripMenuItem.Click
