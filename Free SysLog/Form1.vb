@@ -291,6 +291,7 @@ Public Class Form1
                 For Each word As String In My.Settings.ignored
                     If sSyslog.CaseInsensitiveContains(word) Then
                         longNumberOfIgnoredLogs += 1
+                        IgnoredLogsToolStripMenuItem.Enabled = True
                         lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                         boolIgnored = True
                     End If
@@ -582,6 +583,7 @@ Public Class Form1
         If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             IgnoredLogs.Clear()
             longNumberOfIgnoredLogs = 0
+            IgnoredLogsToolStripMenuItem.Enabled = False
             lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         End If
     End Sub

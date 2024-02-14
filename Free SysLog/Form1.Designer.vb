@@ -256,6 +256,7 @@ Partial Class Form1
         'IgnoredLogsToolStripMenuItem
         '
         Me.IgnoredLogsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClearIgnoredLogsToolStripMenuItem, Me.ViewIgnoredLogsToolStripMenuItem})
+        Me.IgnoredLogsToolStripMenuItem.Enabled = False
         Me.IgnoredLogsToolStripMenuItem.Name = "IgnoredLogsToolStripMenuItem"
         Me.IgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
         Me.IgnoredLogsToolStripMenuItem.Text = "Ignored Logs"
