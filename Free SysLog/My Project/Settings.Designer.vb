@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -183,6 +183,89 @@ Namespace My
             End Get
             Set
                 Me("sysLogPort") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property ignored() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("ignored"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("ignored") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("LightBlue")>  _
+        Public Property searchColor() As Global.System.Drawing.Color
+            Get
+                Return CType(Me("searchColor"),Global.System.Drawing.Color)
+            End Get
+            Set
+                Me("searchColor") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1168, 464")>  _
+        Public Property ignoredWindowSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("ignoredWindowSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("ignoredWindowSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property windowLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("windowLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("windowLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property ignoredWindowLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("ignoredWindowLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("ignoredWindowLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property ignoredWordsLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("ignoredWordsLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("ignoredWordsLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property recordIgnoredLogs() As Boolean
+            Get
+                Return CType(Me("recordIgnoredLogs"),Boolean)
+            End Get
+            Set
+                Me("recordIgnoredLogs") = value
             End Set
         End Property
     End Class

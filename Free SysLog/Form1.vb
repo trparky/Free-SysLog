@@ -2,7 +2,6 @@
 Imports System.Net.Sockets
 Imports System.Net
 Imports System.Text
-Imports System.Text.RegularExpressions
 Imports System.ComponentModel
 Imports Microsoft.Win32
 
@@ -11,6 +10,9 @@ Public Class Form1
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
     Private intPreviousSearchIndex As Integer = -1
+    Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
+    Private longNumberOfIgnoredLogs As Long = 0
+    Private IgnoredLogs As New List(Of MyListViewItem)
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
@@ -48,12 +50,13 @@ Public Class Form1
         SyncLock lockObject
             Dim collectionOfSavedData As New List(Of SavedData)
 
-            For Each listViewItem As ListViewItem In logs.Items
+            For Each listViewItem As MyListViewItem In logs.Items
                 collectionOfSavedData.Add(New SavedData With {
                                             .time = listViewItem.SubItems(0).Text,
                                             .type = listViewItem.SubItems(1).Text,
                                             .ip = listViewItem.SubItems(2).Text,
-                                            .log = listViewItem.SubItems(3).Text
+                                            .log = listViewItem.SubItems(3).Text,
+                                            .DateObject = listViewItem.DateObject
                                           })
             Next
 
@@ -139,6 +142,8 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
 
+        chkRecordIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
+        IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
         chkAutoScroll.Checked = My.Settings.autoScroll
         chkAutoSave.Checked = My.Settings.autoSave
         NumericUpDown.Value = My.Settings.autoSaveMinutes
@@ -148,6 +153,7 @@ Public Class Form1
         chkStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
+        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
@@ -186,16 +192,15 @@ Public Class Form1
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
                 End Using
 
-                Dim listOfLogEntries As New List(Of ListViewItem)
+                Dim listOfLogEntries As New List(Of MyListViewItem)
 
                 For Each item As SavedData In collectionOfSavedData
                     listOfLogEntries.Add(item.ToListViewItem())
                 Next
 
-                Invoke(Sub()
-                           logs.Items.AddRange(listOfLogEntries.ToArray())
-                           UpdateLogCount()
-                       End Sub)
+                logs.Items.AddRange(listOfLogEntries.ToArray())
+                If logs.Items.Count > 0 Then logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
+                UpdateLogCount()
             Catch ex As Exception
             End Try
         End If
@@ -275,6 +280,7 @@ Public Class Form1
     Private Sub FillLog(sSyslog As String, sFromIp As String)
         Try
             Dim sPriority As String
+            Dim boolIgnored As Boolean = False
 
             sSyslog = sSyslog.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
             sSyslog = sSyslog.Replace(vbCrLf, "")
@@ -283,32 +289,50 @@ Public Class Form1
 
             sPriority = GetSyslogPriority(sSyslog)
 
-            sSyslog = Regex.Replace(sSyslog, "[./0-9-]{5,10}T[.0-9:]{5,8}\.[0-9]+-[0-9]+:[0-9]+ L[0-9]+ ", "").Trim
-            addToLogList(sPriority, sFromIp, sSyslog)
+            If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count <> 0 Then
+                For Each word As String In My.Settings.ignored
+                    If sSyslog.CaseInsensitiveContains(word) Then
+                        longNumberOfIgnoredLogs += 1
+                        IgnoredLogsToolStripMenuItem.Enabled = True
+                        lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                        boolIgnored = True
+                    End If
+                Next
+            End If
+
+            AddToLogList(sPriority, sFromIp, sSyslog, boolIgnored)
         Catch ex As Exception
-            addToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}")
+            AddToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}", False)
         End Try
     End Sub
 
-    Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String)
-        Dim listViewItem As New ListViewItem(Now.ToLocalTime.ToString)
+    Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String, boolIgnored As Boolean)
+        Dim currentDate As Date = Now.ToLocalTime
+
+        Dim listViewItem As New MyListViewItem(currentDate.ToString)
         listViewItem.SubItems.Add(sPriority)
         listViewItem.SubItems.Add(sFromIp)
         listViewItem.SubItems.Add(sSyslog)
+        listViewItem.SubItems.Add("")
+        listViewItem.DateObject = currentDate
 
-        Invoke(Sub()
-                   logs.Items.Add(listViewItem)
-                   UpdateLogCount()
-                   If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
-                   btnSaveLogsToDisk.Enabled = True
-               End Sub)
+        If boolIgnored AndAlso chkRecordIgnoredLogs.Checked Then
+            IgnoredLogs.Add(listViewItem)
+        Else
+            Invoke(Sub()
+                       logs.Items.Add(listViewItem)
+                       UpdateLogCount()
+                       If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
+                       btnSaveLogsToDisk.Enabled = True
+                   End Sub)
+        End If
 
         listViewItem = Nothing
     End Sub
 
     Private Sub OpenLogViewerWindow()
         Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-        LogViewer.ShowDialog()
+        LogViewer.ShowDialog(Me)
     End Sub
 
     Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
@@ -321,7 +345,7 @@ Public Class Form1
         ElseIf e.KeyValue = Keys.Delete Then
             logs.BeginUpdate()
 
-            For Each item As ListViewItem In logs.SelectedItems
+            For Each item As MyListViewItem In logs.SelectedItems
                 logs.Items.Remove(item)
             Next
 
@@ -350,9 +374,11 @@ Public Class Form1
     End Sub
 
     Private Sub BtnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
-        logs.Items.Clear()
-        UpdateLogCount()
-        SaveLogsToDiskSub()
+        If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+            logs.Items.Clear()
+            UpdateLogCount()
+            SaveLogsToDiskSub()
+        End If
     End Sub
 
     Private Sub SaveLogsToDiskSub()
@@ -410,31 +436,64 @@ Public Class Form1
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
-        btnSearch.Text = "Search Next"
-        Dim strLogText As String
-        Dim boolFound As Boolean = False
-
-        For Each selectedItem As ListViewItem In logs.SelectedItems
-            selectedItem.Selected = False
-        Next
-
-        For Each item As ListViewItem In logs.Items
-            strLogText = item.SubItems(3).Text
-
-            If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
-                boolFound = True
-                logs.TopItem = item
-                intPreviousSearchIndex = item.Index
-                item.Selected = True
-                logs.Focus()
-                Exit For
+        If btnSearch.Text = "Search" Then
+            If String.IsNullOrWhiteSpace(txtSearchTerms.Text) Then
+                MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
+                Exit Sub
             End If
-        Next
 
-        If Not boolFound Then
-            intPreviousSearchIndex = -1
+            btnSearch.Text = "Clear Search"
+
+            Dim strLogText As String
+            Dim boolFound As Boolean = False
+
+            logs.BeginUpdate()
+
+            For Each selectedItem As MyListViewItem In logs.SelectedItems
+                selectedItem.Selected = False
+            Next
+
+            For Each item As MyListViewItem In logs.Items
+                strLogText = item.SubItems(3).Text
+
+                If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
+                    boolFound = True
+                    item.SubItems(4).Text = "*"
+                    item.BackColor = My.Settings.searchColor
+                End If
+            Next
+
+            logs.Items(0).EnsureVisible()
+            logs.EndUpdate()
+
+            If boolFound Then
+                chkAutoScroll.Checked = False
+                ApplySelectedSort()
+            Else
+                intPreviousSearchIndex = -1
+                btnSearch.Text = "Search"
+                logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
+                MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+            End If
+        Else
             btnSearch.Text = "Search"
-            MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+
+            btnSearch.Text = "Search"
+            txtSearchTerms.Text = ""
+            intPreviousSearchIndex = -1
+
+            logs.BeginUpdate()
+
+            For Each item As MyListViewItem In logs.Items
+                item.SubItems(4).Text = ""
+                item.BackColor = SystemColors.Window
+            Next
+
+            logs.EndUpdate()
+
+            ApplyTimeSort()
+            chkAutoScroll.Checked = True
+            logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
         End If
     End Sub
 
@@ -442,13 +501,111 @@ Public Class Form1
         If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
     End Sub
 
-    Private Sub TxtSearchTerms_TextChanged(sender As Object, e As EventArgs) Handles txtSearchTerms.TextChanged
-        btnSearch.Text = "Search"
-        intPreviousSearchIndex = -1
+    Private Sub Logs_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles logs.ColumnClick
+        Dim new_sorting_column As ColumnHeader = logs.Columns(e.Column)
 
-        For Each selectedItem As ListViewItem In logs.SelectedItems
-            selectedItem.Selected = False
-        Next
+        ' Figure out the new sorting order.
+        Dim sort_order As SortOrder
+
+        If m_SortingColumn2 Is Nothing Then
+            ' New column. Sort ascending.
+            sort_order = SortOrder.Ascending
+        Else
+            ' See if this is the same column.
+            If new_sorting_column.Equals(m_SortingColumn2) Then
+                ' Same column. Switch the sort order.
+                sort_order = If(m_SortingColumn2.Text.StartsWith("> "), SortOrder.Descending, SortOrder.Ascending)
+            Else
+                ' New column. Sort ascending.
+                sort_order = SortOrder.Ascending
+            End If
+
+            ' Remove the old sort indicator.
+            m_SortingColumn2.Text = m_SortingColumn2.Text.Substring(2)
+        End If
+
+        ' Display the new sort order.
+        m_SortingColumn2 = new_sorting_column
+        m_SortingColumn2.Text = If(sort_order = SortOrder.Ascending, $"> {m_SortingColumn2.Text}", $"< {m_SortingColumn2.Text}")
+
+        ' Create a comparer.
+        logs.ListViewItemSorter = New ListViewComparer(e.Column, sort_order)
+
+        ' Sort.
+        logs.Sort()
+    End Sub
+
+    Private Sub ApplyTimeSort()
+        Time.Text = "> Time"
+        Type.Text = "Type"
+        IPAddressCol.Text = "IP Address"
+        Log.Text = "Log"
+        SelectedHeader.Text = "*"
+
+        Dim new_sorting_column As ColumnHeader = logs.Columns(0)
+        Dim sort_order As SortOrder = SortOrder.Ascending
+
+        m_SortingColumn2 = new_sorting_column
+
+        logs.ListViewItemSorter = New ListViewComparer(0, sort_order)
+        logs.Sort()
+    End Sub
+
+    Private Sub ApplySelectedSort()
+        Time.Text = "Time"
+        Type.Text = "Type"
+        IPAddressCol.Text = "IP Address"
+        Log.Text = "Log"
+        SelectedHeader.Text = "< *"
+
+        Dim new_sorting_column As ColumnHeader = logs.Columns(4)
+        Dim sort_order As SortOrder = SortOrder.Descending
+
+        m_SortingColumn2 = new_sorting_column
+
+        logs.ListViewItemSorter = New ListViewComparer(4, sort_order)
+        logs.Sort()
+    End Sub
+
+    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
+        Dim ignored As New Ignored_Words_and_Phrases With {.Icon = Icon}
+        ignored.Show()
+    End Sub
+
+    Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
+        If IgnoredLogs.Count = 0 Then
+            MsgBox("There are no recorded ignored log entries to be shown.", MsgBoxStyle.Information, Text)
+        Else
+            If ignoredLogsWindow Is Nothing Then
+                ignoredLogsWindow = New Ignored_Logs With {.Icon = Icon, .IgnoredLogs = IgnoredLogs}
+                ignoredLogsWindow.Show(Me)
+            Else
+                ignoredLogsWindow.BringToFront()
+            End If
+        End If
+    End Sub
+
+    Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
+        If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+            IgnoredLogs.Clear()
+            longNumberOfIgnoredLogs = 0
+            IgnoredLogsToolStripMenuItem.Enabled = False
+            lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        End If
+    End Sub
+
+    Private Sub ChangeSearchHighlightColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSearchHighlightColorToolStripMenuItem.Click
+        ColorDialog.Color = My.Settings.searchColor
+        If ColorDialog.ShowDialog() = DialogResult.OK Then My.Settings.searchColor = ColorDialog.Color
+    End Sub
+
+    Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+        If boolDoneLoading Then My.Settings.windowLocation = Location
+    End Sub
+
+    Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles chkRecordIgnoredLogs.Click
+        My.Settings.recordIgnoredLogs = chkRecordIgnoredLogs.Checked
+        IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
@@ -478,12 +635,15 @@ End Class
 
 Public Class SavedData
     Public time, type, ip, log As String
+    Public DateObject As Date
 
-    Public Function ToListViewItem() As ListViewItem
-        Dim listViewItem As New ListViewItem(time)
+    Public Function ToListViewItem() As MyListViewItem
+        Dim listViewItem As New MyListViewItem(time)
         listViewItem.SubItems.Add(type)
         listViewItem.SubItems.Add(ip)
         listViewItem.SubItems.Add(log)
+        listViewItem.SubItems.Add("")
+        listViewItem.DateObject = DateObject
         Return listViewItem
     End Function
 End Class

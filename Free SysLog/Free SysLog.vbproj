@@ -121,6 +121,19 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HTTPHelper.vb" />
+    <Compile Include="Ignored Logs.Designer.vb">
+      <DependentUpon>Ignored Logs.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Ignored Logs.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ignored Words and Phrases.Designer.vb">
+      <DependentUpon>Ignored Words and Phrases.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Ignored Words and Phrases.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="listViewSorter.vb" />
     <Compile Include="Log Viewer.Designer.vb">
       <DependentUpon>Log Viewer.vb</DependentUpon>
     </Compile>
@@ -143,15 +156,23 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="MyListViewItem.vb" />
     <Compile Include="NativeMethod.vb" />
     <Compile Include="Search for Process and Kill It.vb" />
     <Compile Include="StringExtensions.vb" />
+    <Compile Include="SupportCode.vb" />
     <Compile Include="SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ignored Logs.resx">
+      <DependentUpon>Ignored Logs.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ignored Words and Phrases.resx">
+      <DependentUpon>Ignored Words and Phrases.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Log Viewer.resx">
       <DependentUpon>Log Viewer.vb</DependentUpon>
