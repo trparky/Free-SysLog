@@ -316,13 +316,13 @@ Partial Class Form1
         'ViewIgnoredLogsToolStripMenuItem
         '
         Me.ViewIgnoredLogsToolStripMenuItem.Name = "ViewIgnoredLogsToolStripMenuItem"
-        Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ViewIgnoredLogsToolStripMenuItem.Text = "View"
         '
         'ClearIgnoredLogsToolStripMenuItem
         '
         Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
-        Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear"
         '
         'ChangeSearchHighlightColorToolStripMenuItem
