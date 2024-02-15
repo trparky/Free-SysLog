@@ -20,7 +20,7 @@
     End Sub
 
     Private Sub Ignored_Words_and_Phrases_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation)
+        Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
 
         If My.Settings.ignored IsNot Nothing Then
             For Each word As String In My.Settings.ignored

@@ -20,7 +20,7 @@ Public Class Ignored_Logs
 
     Private Sub Ignored_Logs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Size = My.Settings.ignoredWindowSize
-        Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation)
+        Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
         Time.Width = My.Settings.columnTimeSize
         Type.Width = My.Settings.columnTypeSize
         IPAddressCol.Width = My.Settings.columnIPSize

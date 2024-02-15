@@ -151,7 +151,7 @@ Public Class Form1
         chkStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
-        Location = VerifyWindowLocation(My.Settings.windowLocation)
+        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
