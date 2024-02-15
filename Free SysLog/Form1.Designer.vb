@@ -52,6 +52,7 @@ Partial Class Form1
         Me.MainMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogFunctionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.chkRecordIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblSearchLabel = New System.Windows.Forms.Label()
         Me.txtSearchTerms = New System.Windows.Forms.TextBox()
         Me.btnSearch = New System.Windows.Forms.Button()
@@ -263,10 +264,17 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeSearchHighlightColorToolStripMenuItem, Me.chkAutoSave, Me.chkAutoScroll, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeSearchHighlightColorToolStripMenuItem, Me.chkAutoSave, Me.chkAutoScroll, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
+        '
+        'chkRecordIgnoredLogs
+        '
+        Me.chkRecordIgnoredLogs.CheckOnClick = True
+        Me.chkRecordIgnoredLogs.Name = "RecordIgnoredLogsToolStripMenuItem"
+        Me.chkRecordIgnoredLogs.Size = New System.Drawing.Size(238, 22)
+        Me.chkRecordIgnoredLogs.Text = "Record Ignored Logs"
         '
         'lblSearchLabel
         '
@@ -398,4 +406,5 @@ Partial Class Form1
     Friend WithEvents ChangeSearchHighlightColorToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents IgnoredLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents chkRecordIgnoredLogs As ToolStripMenuItem
 End Class

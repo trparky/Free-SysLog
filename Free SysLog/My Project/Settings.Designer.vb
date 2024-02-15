@@ -256,6 +256,18 @@ Namespace My
                 Me("ignoredWordsLocation") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property recordIgnoredLogs() As Boolean
+            Get
+                Return CType(Me("recordIgnoredLogs"),Boolean)
+            End Get
+            Set
+                Me("recordIgnoredLogs") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

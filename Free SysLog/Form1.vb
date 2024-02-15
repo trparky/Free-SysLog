@@ -142,6 +142,8 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
 
+        chkRecordIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
+        IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
         chkAutoScroll.Checked = My.Settings.autoScroll
         chkAutoSave.Checked = My.Settings.autoSave
         NumericUpDown.Value = My.Settings.autoSaveMinutes
@@ -314,7 +316,7 @@ Public Class Form1
         listViewItem.SubItems.Add("")
         listViewItem.DateObject = currentDate
 
-        If boolIgnored Then
+        If boolIgnored AndAlso chkRecordIgnoredLogs.Checked Then
             IgnoredLogs.Add(listViewItem)
         Else
             Invoke(Sub()
@@ -599,6 +601,11 @@ Public Class Form1
 
     Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
         If boolDoneLoading Then My.Settings.windowLocation = Location
+    End Sub
+
+    Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles chkRecordIgnoredLogs.Click
+        My.Settings.recordIgnoredLogs = chkRecordIgnoredLogs.Checked
+        IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
