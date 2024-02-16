@@ -316,8 +316,8 @@ Public Class Form1
         listViewItem.SubItems.Add("")
         listViewItem.DateObject = currentDate
 
-        If boolIgnored AndAlso chkRecordIgnoredLogs.Checked Then
-            IgnoredLogs.Add(listViewItem)
+        If boolIgnored Then
+            If chkRecordIgnoredLogs.Checked Then IgnoredLogs.Add(listViewItem)
         Else
             Invoke(Sub()
                        logs.Items.Add(listViewItem)
