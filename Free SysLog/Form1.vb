@@ -292,10 +292,15 @@ Public Class Form1
             If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count <> 0 Then
                 For Each word As String In My.Settings.ignored
                     If sSyslog.CaseInsensitiveContains(word) Then
+
+                        Invoke(Sub()
                         longNumberOfIgnoredLogs += 1
                         IgnoredLogsToolStripMenuItem.Enabled = True
                         lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                               End Sub)
+
                         boolIgnored = True
+                        Exit For
                     End If
                 Next
             End If
@@ -316,15 +321,15 @@ Public Class Form1
         listViewItem.SubItems.Add("")
         listViewItem.DateObject = currentDate
 
-        If Not boolIgnored AndAlso chkRecordIgnoredLogs.Checked Then
-            IgnoredLogs.Add(listViewItem)
-        ElseIf Not boolIgnored Then
+        If Not boolIgnored Then
             Invoke(Sub()
                        logs.Items.Add(listViewItem)
                        UpdateLogCount()
                        If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
                        btnSaveLogsToDisk.Enabled = True
                    End Sub)
+        ElseIf boolIgnored And chkRecordIgnoredLogs.Checked Then
+            IgnoredLogs.Add(listViewItem)
         End If
 
         listViewItem = Nothing
