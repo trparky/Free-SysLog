@@ -1,6 +1,7 @@
 ﻿Public Class Clear_logs_older_than
     Public longLogCount As Long
     Public dateChosenDate As Date
+    Public boolSuccess As Boolean = False
 
     Private Sub Clear_logs_older_than_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         lblLogCount.Text = $"Number of Log Entries: {longLogCount:N0}"
@@ -16,5 +17,6 @@
 
     Private Sub DateTimePicker_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker.ValueChanged
         btnClearLogs.Enabled = True
+        boolSuccess = True
     End Sub
 End Class

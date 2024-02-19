@@ -619,20 +619,23 @@ Public Class Form1
     Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
         Using clearLogsOlderThanObject As New Clear_logs_older_than With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             clearLogsOlderThanObject.ShowDialog(Me)
-            Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
 
-            logs.BeginUpdate()
+            If clearLogsOlderThanObject.boolSuccess Then
+                Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
 
-            For Each item As MyListViewItem In logs.Items
-                If item.DateObject.Date < dateChosenDate Then
-                    item.Remove()
-                End If
-            Next
+                logs.BeginUpdate()
 
-            logs.EndUpdate()
+                For Each item As MyListViewItem In logs.Items
+                    If item.DateObject.Date < dateChosenDate Then
+                        item.Remove()
+                    End If
+                Next
 
-            UpdateLogCount()
-            SaveLogsToDiskSub()
+                logs.EndUpdate()
+
+                UpdateLogCount()
+                SaveLogsToDiskSub()
+            End If
         End Using
     End Sub
 #Region "-- SysLog Server Code --"
