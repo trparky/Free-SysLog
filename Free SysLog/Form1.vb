@@ -337,8 +337,9 @@ Public Class Form1
 
     Private Sub OpenLogViewerWindow()
         If logs.SelectedItems.Count > 0 Then
-            Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            LogViewer.ShowDialog(Me)
+            Using LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewer.ShowDialog(Me)
+            End Using
         End If
     End Sub
 
@@ -576,8 +577,9 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
-        Dim ignored As New Ignored_Words_and_Phrases With {.Icon = Icon}
-        ignored.Show()
+        Using ignored As New Ignored_Words_and_Phrases With {.Icon = Icon}
+            ignored.Show()
+        End Using
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
