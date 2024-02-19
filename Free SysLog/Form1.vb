@@ -364,6 +364,7 @@ Public Class Form1
     End Sub
 
     Private Sub UpdateLogCount()
+        btnClearLog.Enabled = logs.Items.Count <> 0
         NumberOfLogs.Text = $"Number of Log Entries: {logs.Items.Count:N0}"
     End Sub
 
