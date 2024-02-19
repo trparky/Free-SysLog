@@ -294,9 +294,9 @@ Public Class Form1
                     If sSyslog.CaseInsensitiveContains(word) Then
 
                         Invoke(Sub()
-                        longNumberOfIgnoredLogs += 1
-                        IgnoredLogsToolStripMenuItem.Enabled = True
-                        lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                                   longNumberOfIgnoredLogs += 1
+                                   IgnoredLogsToolStripMenuItem.Enabled = True
+                                   lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                                End Sub)
 
                         boolIgnored = True
@@ -337,8 +337,8 @@ Public Class Form1
 
     Private Sub OpenLogViewerWindow()
         If logs.SelectedItems.Count > 0 Then
-        Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-        LogViewer.ShowDialog(Me)
+            Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            LogViewer.ShowDialog(Me)
         End If
     End Sub
 
@@ -616,6 +616,25 @@ Public Class Form1
         IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
     End Sub
 
+    Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
+        Using clearLogsOlderThanObject As New Clear_logs_older_than With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            clearLogsOlderThanObject.ShowDialog(Me)
+            Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
+
+            logs.BeginUpdate()
+
+            For Each item As MyListViewItem In logs.Items
+                If item.DateObject.Date < dateChosenDate Then
+                    item.Remove()
+                End If
+            Next
+
+            logs.EndUpdate()
+
+            UpdateLogCount()
+            SaveLogsToDiskSub()
+        End Using
+    End Sub
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try

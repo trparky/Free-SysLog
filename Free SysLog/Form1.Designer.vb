@@ -26,6 +26,8 @@ Partial Class Form1
         Me.btnServerController = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnClearLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
         Me.logs = New System.Windows.Forms.ListView()
         Me.Time = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -83,9 +85,23 @@ Partial Class Form1
         '
         'btnClearLog
         '
+        Me.btnClearLog.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearAllLogs, Me.LogsOlderThanToolStripMenuItem})
+        Me.btnClearLog.Enabled = False
         Me.btnClearLog.Name = "btnClearLog"
         Me.btnClearLog.Size = New System.Drawing.Size(218, 22)
         Me.btnClearLog.Text = "Clear Logs"
+        '
+        'btnClearAllLogs
+        '
+        Me.btnClearAllLogs.Name = "btnClearAllLogs"
+        Me.btnClearAllLogs.Size = New System.Drawing.Size(180, 22)
+        Me.btnClearAllLogs.Text = "All Logs"
+        '
+        'LogsOlderThanToolStripMenuItem
+        '
+        Me.LogsOlderThanToolStripMenuItem.Name = "LogsOlderThanToolStripMenuItem"
+        Me.LogsOlderThanToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.LogsOlderThanToolStripMenuItem.Text = "Logs older than..."
         '
         'btnSaveLogsToDisk
         '
@@ -407,4 +423,6 @@ Partial Class Form1
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents IgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chkRecordIgnoredLogs As ToolStripMenuItem
+    Friend WithEvents btnClearAllLogs As ToolStripMenuItem
+    Friend WithEvents LogsOlderThanToolStripMenuItem As ToolStripMenuItem
 End Class

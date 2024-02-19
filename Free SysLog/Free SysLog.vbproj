@@ -113,6 +113,12 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Check for Update.vb" />
+    <Compile Include="Clear logs older than.Designer.vb">
+      <DependentUpon>Clear logs older than.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Clear logs older than.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +170,9 @@
     <Compile Include="SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Clear logs older than.resx">
+      <DependentUpon>Clear logs older than.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Designer</SubType>
