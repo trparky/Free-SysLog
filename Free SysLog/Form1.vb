@@ -381,7 +381,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub BtnClearLog_Click(sender As Object, e As EventArgs) Handles btnClearLog.Click
+    Private Sub BtnClearAllLogs_Click(sender As Object, e As EventArgs) Handles btnClearAllLogs.Click
         If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             logs.Items.Clear()
             UpdateLogCount()
