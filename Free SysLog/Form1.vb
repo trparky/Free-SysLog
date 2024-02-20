@@ -605,7 +605,7 @@ Public Class Form1
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
         Using ignored As New Ignored_Words_and_Phrases With {.Icon = Icon}
-            ignored.Show()
+            ignored.ShowDialog()
         End Using
     End Sub
 
