@@ -355,6 +355,10 @@ Partial Class Form1
         Me.ChangeSearchHighlightColorToolStripMenuItem.Size = New System.Drawing.Size(238, 22)
         Me.ChangeSearchHighlightColorToolStripMenuItem.Text = "Change Search Highlight Color"
         '
+        'SaveFileDialog
+        '
+        SaveFileDialog.OverwritePrompt = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
