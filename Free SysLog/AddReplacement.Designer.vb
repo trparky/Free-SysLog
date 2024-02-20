@@ -106,6 +106,7 @@ Partial Class AddReplacement
         Me.Controls.Add(Me.txtReplace)
         Me.Controls.Add(Me.Label1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "AddReplacement"

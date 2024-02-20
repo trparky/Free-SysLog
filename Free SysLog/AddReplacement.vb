@@ -30,4 +30,8 @@
     Private Sub ChkCaseSensitive_Click(sender As Object, e As EventArgs) Handles chkCaseSensitive.Click
         chkRegex.Checked = False
     End Sub
+
+    Private Sub AddReplacement_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(txtReplace.Text) Then btnAdd.PerformClick()
+    End Sub
 End Class
