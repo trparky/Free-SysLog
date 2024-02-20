@@ -17,6 +17,7 @@
         Next
 
         My.Settings.ignored = strings
+        My.Settings.Save()
     End Sub
 
     Private Sub Ignored_Words_and_Phrases_Load(sender As Object, e As EventArgs) Handles Me.Load

@@ -41,6 +41,7 @@ Public Class Replacements
         Next
 
         My.Settings.replacements = tempReplacements
+        My.Settings.Save()
     End Sub
 
     Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles replacementsListView.KeyUp
