@@ -2,7 +2,7 @@
 
 Public Class Replacements
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
-        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Replacement"}
             AddReplacement.ShowDialog(Me)
 
             If AddReplacement.boolSuccess Then
