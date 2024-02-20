@@ -4,6 +4,7 @@ Imports System.Net
 Imports System.Text
 Imports System.ComponentModel
 Imports Microsoft.Win32
+Imports System.Text.RegularExpressions
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
@@ -139,6 +140,23 @@ Public Class Form1
         End If
     End Function
 
+    Private Function ProcessReplacements(input As String) As String
+        If replacementsList.Count > 0 Then
+            For Each item As ReplacementsClass In replacementsList
+                If item.BoolRegex Then
+                    Try
+                        input = Regex.Replace(input, item.StrReplace, item.StrReplaceWith)
+                    Catch ex As Exception
+                    End Try
+                Else
+                    input = input.Replace(item.StrReplace, item.StrReplaceWith, StringComparison.OrdinalIgnoreCase)
+                End If
+            Next
+        End If
+
+        Return input
+    End Function
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
 
@@ -155,6 +173,8 @@ Public Class Form1
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
+
+        If Not String.IsNullOrWhiteSpace(My.Settings.replacements) Then replacementsList = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ReplacementsClass))(My.Settings.replacements)
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
@@ -324,7 +344,7 @@ Public Class Form1
         Dim listViewItem As New MyListViewItem(currentDate.ToString)
         listViewItem.SubItems.Add(sPriority)
         listViewItem.SubItems.Add(sFromIp)
-        listViewItem.SubItems.Add(sSyslog)
+        listViewItem.SubItems.Add(ProcessReplacements(sSyslog))
         listViewItem.SubItems.Add("")
         listViewItem.DateObject = currentDate
 
@@ -654,6 +674,12 @@ Public Class Form1
         longNumberOfIgnoredLogs = 0
         lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = False
+    End Sub
+
+    Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
+        Using ReplacementsWindow As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            ReplacementsWindow.ShowDialog(Me)
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"

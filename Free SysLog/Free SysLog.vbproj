@@ -111,6 +111,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddReplacement.Designer.vb">
+      <DependentUpon>AddReplacement.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AddReplacement.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Check for Update.vb" />
     <Compile Include="Clear logs older than.Designer.vb">
@@ -164,12 +170,21 @@
     </Compile>
     <Compile Include="MyListViewItem.vb" />
     <Compile Include="NativeMethod.vb" />
+    <Compile Include="Replacements.Designer.vb">
+      <DependentUpon>Replacements.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Replacements.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Search for Process and Kill It.vb" />
     <Compile Include="StringExtensions.vb" />
     <Compile Include="SupportCode.vb" />
     <Compile Include="SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AddReplacement.resx">
+      <DependentUpon>AddReplacement.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Clear logs older than.resx">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
     </EmbeddedResource>
@@ -191,6 +206,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Replacements.resx">
+      <DependentUpon>Replacements.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

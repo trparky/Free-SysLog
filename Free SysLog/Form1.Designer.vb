@@ -60,6 +60,7 @@ Partial Class Form1
         Me.btnSearch = New System.Windows.Forms.Button()
         Me.ChangeSearchHighlightColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ColorDialog = New System.Windows.Forms.ColorDialog()
+        Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -281,7 +282,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeSearchHighlightColorToolStripMenuItem, Me.chkAutoSave, Me.chkAutoScroll, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeSearchHighlightColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.chkAutoSave, Me.chkAutoScroll, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -341,13 +342,13 @@ Partial Class Form1
         'ViewIgnoredLogsToolStripMenuItem
         '
         Me.ViewIgnoredLogsToolStripMenuItem.Name = "ViewIgnoredLogsToolStripMenuItem"
-        Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ViewIgnoredLogsToolStripMenuItem.Text = "View"
         '
         'ClearIgnoredLogsToolStripMenuItem
         '
         Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
-        Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear"
         '
         'ChangeSearchHighlightColorToolStripMenuItem
@@ -367,6 +368,12 @@ Partial Class Form1
         'SaveFileDialog
         '
         SaveFileDialog.OverwritePrompt = True
+        '
+        'ConfigureReplacementsToolStripMenuItem
+        '
+        Me.ConfigureReplacementsToolStripMenuItem.Name = "ConfigureReplacementsToolStripMenuItem"
+        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(238, 22)
+        Me.ConfigureReplacementsToolStripMenuItem.Text = "Configure Replacements"
         '
         'Form1
         '
@@ -439,4 +446,5 @@ Partial Class Form1
     Friend WithEvents btnClearAllLogs As ToolStripMenuItem
     Friend WithEvents LogsOlderThanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ZerooutIgnoredLogsCounterToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ConfigureReplacementsToolStripMenuItem As ToolStripMenuItem
 End Class

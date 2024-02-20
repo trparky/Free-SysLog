@@ -268,6 +268,18 @@ Namespace My
                 Me("recordIgnoredLogs") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property replacements() As String
+            Get
+                Return CType(Me("replacements"),String)
+            End Get
+            Set
+                Me("replacements") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
