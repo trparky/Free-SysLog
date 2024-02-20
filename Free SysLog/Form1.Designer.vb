@@ -267,7 +267,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearLog, Me.IgnoredLogsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.btnOpenLogLocation, Me.btnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearLog, Me.IgnoredLogsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnOpenLogLocation, Me.btnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -282,7 +282,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeSearchHighlightColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.chkAutoSave, Me.chkAutoScroll, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ChangeSearchHighlightColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
