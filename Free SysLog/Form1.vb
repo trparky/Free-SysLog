@@ -144,6 +144,7 @@ Public Class Form1
 
         chkRecordIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not chkRecordIgnoredLogs.Checked
         chkAutoScroll.Checked = My.Settings.autoScroll
         chkAutoSave.Checked = My.Settings.autoSave
         NumericUpDown.Value = My.Settings.autoSaveMinutes
@@ -295,7 +296,13 @@ Public Class Form1
 
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
-                                   IgnoredLogsToolStripMenuItem.Enabled = True
+
+                                   If chkRecordIgnoredLogs.Checked Then
+                                       IgnoredLogsToolStripMenuItem.Enabled = True
+                                   Else
+                                       ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                                   End If
+
                                    lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                                End Sub)
 
@@ -616,6 +623,8 @@ Public Class Form1
     Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles chkRecordIgnoredLogs.Click
         My.Settings.recordIgnoredLogs = chkRecordIgnoredLogs.Checked
         IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not chkRecordIgnoredLogs.Checked
+        If Not chkRecordIgnoredLogs.Checked Then IgnoredLogs.Clear()
     End Sub
 
     Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
@@ -640,6 +649,13 @@ Public Class Form1
             End If
         End Using
     End Sub
+
+    Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
+        longNumberOfIgnoredLogs = 0
+        lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = False
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try

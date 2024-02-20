@@ -61,6 +61,7 @@ Partial Class Form1
         Me.ChangeSearchHighlightColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ColorDialog = New System.Windows.Forms.ColorDialog()
         Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
@@ -80,7 +81,7 @@ Partial Class Form1
         'btnOpenLogLocation
         '
         Me.btnOpenLogLocation.Name = "btnOpenLogLocation"
-        Me.btnOpenLogLocation.Size = New System.Drawing.Size(218, 22)
+        Me.btnOpenLogLocation.Size = New System.Drawing.Size(239, 22)
         Me.btnOpenLogLocation.Text = "Open Log File Location"
         '
         'btnClearLog
@@ -88,26 +89,26 @@ Partial Class Form1
         Me.btnClearLog.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearAllLogs, Me.LogsOlderThanToolStripMenuItem})
         Me.btnClearLog.Enabled = False
         Me.btnClearLog.Name = "btnClearLog"
-        Me.btnClearLog.Size = New System.Drawing.Size(218, 22)
+        Me.btnClearLog.Size = New System.Drawing.Size(239, 22)
         Me.btnClearLog.Text = "Clear Logs"
         '
         'btnClearAllLogs
         '
         Me.btnClearAllLogs.Name = "btnClearAllLogs"
-        Me.btnClearAllLogs.Size = New System.Drawing.Size(180, 22)
+        Me.btnClearAllLogs.Size = New System.Drawing.Size(165, 22)
         Me.btnClearAllLogs.Text = "All Logs"
         '
         'LogsOlderThanToolStripMenuItem
         '
         Me.LogsOlderThanToolStripMenuItem.Name = "LogsOlderThanToolStripMenuItem"
-        Me.LogsOlderThanToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.LogsOlderThanToolStripMenuItem.Size = New System.Drawing.Size(165, 22)
         Me.LogsOlderThanToolStripMenuItem.Text = "Logs older than..."
         '
         'btnSaveLogsToDisk
         '
         Me.btnSaveLogsToDisk.Enabled = False
         Me.btnSaveLogsToDisk.Name = "btnSaveLogsToDisk"
-        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(218, 22)
+        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(239, 22)
         Me.btnSaveLogsToDisk.Text = "Save Logs to Disk"
         '
         'logs
@@ -227,7 +228,7 @@ Partial Class Form1
         'btnMoveLogFile
         '
         Me.btnMoveLogFile.Name = "btnMoveLogFile"
-        Me.btnMoveLogFile.Size = New System.Drawing.Size(218, 22)
+        Me.btnMoveLogFile.Size = New System.Drawing.Size(239, 22)
         Me.btnMoveLogFile.Text = "Move Log File"
         '
         'lblSyslogServerPortLabel
@@ -265,7 +266,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearLog, Me.IgnoredLogsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.btnOpenLogLocation, Me.btnSaveLogsToDisk})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearLog, Me.IgnoredLogsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.btnOpenLogLocation, Me.btnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -275,7 +276,7 @@ Partial Class Form1
         Me.IgnoredLogsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClearIgnoredLogsToolStripMenuItem, Me.ViewIgnoredLogsToolStripMenuItem})
         Me.IgnoredLogsToolStripMenuItem.Enabled = False
         Me.IgnoredLogsToolStripMenuItem.Name = "IgnoredLogsToolStripMenuItem"
-        Me.IgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.IgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
         Me.IgnoredLogsToolStripMenuItem.Text = "Ignored Logs"
         '
         'SettingsToolStripMenuItem
@@ -288,7 +289,7 @@ Partial Class Form1
         'chkRecordIgnoredLogs
         '
         Me.chkRecordIgnoredLogs.CheckOnClick = True
-        Me.chkRecordIgnoredLogs.Name = "RecordIgnoredLogsToolStripMenuItem"
+        Me.chkRecordIgnoredLogs.Name = "chkRecordIgnoredLogs"
         Me.chkRecordIgnoredLogs.Size = New System.Drawing.Size(238, 22)
         Me.chkRecordIgnoredLogs.Text = "Record Ignored Logs"
         '
@@ -328,7 +329,7 @@ Partial Class Form1
         'IgnoredWordsAndPhrasesToolStripMenuItem
         '
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Name = "IgnoredWordsAndPhrasesToolStripMenuItem"
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
         '
         'lblNumberOfIgnoredIncomingLogs
@@ -340,13 +341,13 @@ Partial Class Form1
         'ViewIgnoredLogsToolStripMenuItem
         '
         Me.ViewIgnoredLogsToolStripMenuItem.Name = "ViewIgnoredLogsToolStripMenuItem"
-        Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
+        Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ViewIgnoredLogsToolStripMenuItem.Text = "View"
         '
         'ClearIgnoredLogsToolStripMenuItem
         '
         Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
-        Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
+        Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear"
         '
         'ChangeSearchHighlightColorToolStripMenuItem
@@ -354,6 +355,14 @@ Partial Class Form1
         Me.ChangeSearchHighlightColorToolStripMenuItem.Name = "ChangeSearchHighlightColorToolStripMenuItem"
         Me.ChangeSearchHighlightColorToolStripMenuItem.Size = New System.Drawing.Size(238, 22)
         Me.ChangeSearchHighlightColorToolStripMenuItem.Text = "Change Search Highlight Color"
+        '
+        'ZerooutIgnoredLogsCounterToolStripMenuItem
+        '
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Name = "ZerooutIgnoredLogsCounterToolStripMenuItem"
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = False
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Text = "Zero-out Ignored Logs Counter"
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = False
         '
         'SaveFileDialog
         '
@@ -429,4 +438,5 @@ Partial Class Form1
     Friend WithEvents chkRecordIgnoredLogs As ToolStripMenuItem
     Friend WithEvents btnClearAllLogs As ToolStripMenuItem
     Friend WithEvents LogsOlderThanToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ZerooutIgnoredLogsCounterToolStripMenuItem As ToolStripMenuItem
 End Class
