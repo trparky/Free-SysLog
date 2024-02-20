@@ -270,11 +270,10 @@ Namespace My
         End Property
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
-        Public Property replacements() As String
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property replacements() As Global.System.Collections.Specialized.StringCollection
             Get
-                Return CType(Me("replacements"),String)
+                Return CType(Me("replacements"),Global.System.Collections.Specialized.StringCollection)
             End Get
             Set
                 Me("replacements") = value

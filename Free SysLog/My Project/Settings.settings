@@ -56,7 +56,7 @@
     <Setting Name="recordIgnoredLogs" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="replacements" Type="System.String" Scope="User">
+    <Setting Name="replacements" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

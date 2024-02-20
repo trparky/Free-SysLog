@@ -19,9 +19,9 @@ Public Class Replacements
     Private Sub Replacements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim listOfReplacementsToAdd As New List(Of MyReplacementsListViewItem)
 
-        If Not String.IsNullOrWhiteSpace(My.Settings.replacements) Then
-            For Each item As ReplacementsClass In replacementsList
-                listOfReplacementsToAdd.Add(item.ToListViewItem())
+        If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
+            For Each strJSONString As String In My.Settings.replacements
+                listOfReplacementsToAdd.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString).ToListViewItem())
             Next
         End If
 
@@ -31,11 +31,16 @@ Public Class Replacements
     Private Sub Replacements_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         replacementsList.Clear()
 
+        Dim replacementsClass As ReplacementsClass
+        Dim tempReplacements As New Specialized.StringCollection()
+
         For Each item As MyReplacementsListViewItem In replacementsListView.Items
-            replacementsList.Add(New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text})
+            replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text}
+            replacementsList.Add(replacementsClass)
+            tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
         Next
 
-        My.Settings.replacements = Newtonsoft.Json.JsonConvert.SerializeObject(replacementsList)
+        My.Settings.replacements = tempReplacements
     End Sub
 
     Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles replacementsListView.KeyUp

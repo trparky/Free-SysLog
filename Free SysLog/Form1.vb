@@ -174,7 +174,11 @@ Public Class Form1
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
 
-        If Not String.IsNullOrWhiteSpace(My.Settings.replacements) Then replacementsList = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ReplacementsClass))(My.Settings.replacements)
+        If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
+            For Each strJSONString As String In My.Settings.replacements
+                replacementsList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString))
+            Next
+        End If
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
