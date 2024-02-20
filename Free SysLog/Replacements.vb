@@ -47,10 +47,56 @@ Public Class Replacements
     End Sub
 
     Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles replacementsListView.KeyUp
-        If e.KeyCode = Keys.Delete AndAlso replacementsListView.SelectedItems.Count > 0 Then replacementsListView.Items.Remove(replacementsListView.SelectedItems(0))
+        If replacementsListView.SelectedItems.Count > 0 Then
+            If e.KeyCode = Keys.Delete Then
+                replacementsListView.Items.Remove(replacementsListView.SelectedItems(0))
+            ElseIf e.KeyCode = Keys.Enter Then
+                EditItem()
+            End If
+        End If
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
-        If replacementsListView.SelectedItems.Count > 0 Then replacementsListView.Items.Remove(replacementsListView.SelectedItems(0))
+        replacementsListView.Items.Remove(replacementsListView.SelectedItems(0))
+    End Sub
+
+    Private Sub EditItem()
+        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = "Edit Replacement"}
+            Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(replacementsListView.SelectedItems(0), MyReplacementsListViewItem)
+
+            AddReplacement.strReplace = selectedItemObject.SubItems(0).Text
+            AddReplacement.strReplaceWith = selectedItemObject.SubItems(1).Text
+            AddReplacement.boolRegex = selectedItemObject.BoolRegex
+            AddReplacement.boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+
+            AddReplacement.ShowDialog(Me)
+
+            If AddReplacement.boolSuccess Then
+                selectedItemObject.SubItems(0).Text = AddReplacement.strReplace
+                selectedItemObject.SubItems(1).Text = AddReplacement.strReplaceWith
+                selectedItemObject.SubItems(2).Text = AddReplacement.boolRegex.ToString
+                selectedItemObject.SubItems(3).Text = AddReplacement.boolCaseSensitive.ToString
+                selectedItemObject.BoolRegex = AddReplacement.boolRegex
+                selectedItemObject.BoolCaseSensitive = AddReplacement.boolCaseSensitive
+            End If
+        End Using
+    End Sub
+
+    Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
+        EditItem()
+    End Sub
+
+    Private Sub ReplacementsListView_Click(sender As Object, e As EventArgs) Handles replacementsListView.Click
+        If replacementsListView.SelectedItems.Count > 0 Then
+            btnDelete.Enabled = True
+            btnEdit.Enabled = True
+        Else
+            btnDelete.Enabled = False
+            btnEdit.Enabled = False
+        End If
+    End Sub
+
+    Private Sub replacementsListView_DoubleClick(sender As Object, e As EventArgs) Handles replacementsListView.DoubleClick
+        EditItem()
     End Sub
 End Class
