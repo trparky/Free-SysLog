@@ -149,7 +149,11 @@ Public Class Form1
                     Catch ex As Exception
                     End Try
                 Else
-                    input = input.Replace(item.StrReplace, item.StrReplaceWith, StringComparison.OrdinalIgnoreCase)
+                    If item.BoolCaseSensitive Then
+                        input = input.Replace(item.StrReplace, item.StrReplaceWith)
+                    Else
+                        input = input.Replace(item.StrReplace, item.StrReplaceWith, StringComparison.OrdinalIgnoreCase)
+                    End If
                 End If
             Next
         End If

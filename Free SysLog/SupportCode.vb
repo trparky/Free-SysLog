@@ -14,13 +14,16 @@ End Module
 
 Public Class ReplacementsClass
     Public BoolRegex As Boolean
+    Public BoolCaseSensitive As Boolean
     Public StrReplace, StrReplaceWith As String
 
     Public Function ToListViewItem() As MyReplacementsListViewItem
         Dim listViewItem As New MyReplacementsListViewItem(StrReplace)
         listViewItem.SubItems.Add(StrReplaceWith)
         listViewItem.SubItems.Add(BoolRegex.ToString)
+        listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
         listViewItem.BoolRegex = BoolRegex
+        listViewItem.BoolCaseSensitive = BoolCaseSensitive
         Return listViewItem
     End Function
 End Class

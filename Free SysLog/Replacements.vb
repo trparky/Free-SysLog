@@ -9,7 +9,9 @@ Public Class Replacements
                 Dim MyReplacementsListViewItem As New MyReplacementsListViewItem(AddReplacement.strReplace)
                 MyReplacementsListViewItem.SubItems.Add(AddReplacement.strReplaceWith)
                 MyReplacementsListViewItem.SubItems.Add(AddReplacement.boolRegex.ToString)
+                MyReplacementsListViewItem.SubItems.Add(AddReplacement.boolCaseSensitive.ToString)
                 MyReplacementsListViewItem.BoolRegex = AddReplacement.boolRegex
+                MyReplacementsListViewItem.BoolCaseSensitive = AddReplacement.boolCaseSensitive
 
                 replacementsListView.Items.Add(MyReplacementsListViewItem)
             End If
@@ -35,7 +37,7 @@ Public Class Replacements
         Dim tempReplacements As New Specialized.StringCollection()
 
         For Each item As MyReplacementsListViewItem In replacementsListView.Items
-            replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text}
+            replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive}
             replacementsList.Add(replacementsClass)
             tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
         Next

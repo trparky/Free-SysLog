@@ -28,6 +28,7 @@ Partial Class Replacements
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.btnAdd = New System.Windows.Forms.Button()
         Me.btnDelete = New System.Windows.Forms.Button()
+        Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'replacementsListView
@@ -35,12 +36,12 @@ Partial Class Replacements
         Me.replacementsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.replacementsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.ReplaceWith, Me.Regex})
+        Me.replacementsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.ReplaceWith, Me.Regex, Me.CaseSensitive})
         Me.replacementsListView.FullRowSelect = True
         Me.replacementsListView.HideSelection = False
         Me.replacementsListView.Location = New System.Drawing.Point(12, 12)
         Me.replacementsListView.Name = "replacementsListView"
-        Me.replacementsListView.Size = New System.Drawing.Size(791, 397)
+        Me.replacementsListView.Size = New System.Drawing.Size(877, 397)
         Me.replacementsListView.TabIndex = 4
         Me.replacementsListView.UseCompatibleStateImageBehavior = False
         Me.replacementsListView.View = System.Windows.Forms.View.Details
@@ -77,11 +78,16 @@ Partial Class Replacements
         Me.btnDelete.Text = "Delete"
         Me.btnDelete.UseVisualStyleBackColor = True
         '
+        'CaseSensitive
+        '
+        Me.CaseSensitive.Text = "Case Sensitive"
+        Me.CaseSensitive.Width = 91
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(815, 450)
+        Me.ClientSize = New System.Drawing.Size(901, 450)
         Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnAdd)
         Me.Controls.Add(Me.replacementsListView)
@@ -97,4 +103,5 @@ Partial Class Replacements
     Friend WithEvents Regex As ColumnHeader
     Friend WithEvents btnAdd As Button
     Friend WithEvents btnDelete As Button
+    Friend WithEvents CaseSensitive As ColumnHeader
 End Class

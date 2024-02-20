@@ -28,6 +28,7 @@ Partial Class AddReplacement
         Me.txtReplaceWith = New System.Windows.Forms.TextBox()
         Me.chkRegex = New System.Windows.Forms.CheckBox()
         Me.btnAdd = New System.Windows.Forms.Button()
+        Me.chkCaseSensitive = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'Label1
@@ -82,11 +83,22 @@ Partial Class AddReplacement
         Me.btnAdd.Text = "Add"
         Me.btnAdd.UseVisualStyleBackColor = True
         '
+        'chkCaseSensitive
+        '
+        Me.chkCaseSensitive.AutoSize = True
+        Me.chkCaseSensitive.Location = New System.Drawing.Point(542, 58)
+        Me.chkCaseSensitive.Name = "chkCaseSensitive"
+        Me.chkCaseSensitive.Size = New System.Drawing.Size(102, 17)
+        Me.chkCaseSensitive.TabIndex = 6
+        Me.chkCaseSensitive.Text = "Case Sensitive?"
+        Me.chkCaseSensitive.UseVisualStyleBackColor = True
+        '
         'AddReplacement
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 112)
+        Me.Controls.Add(Me.chkCaseSensitive)
         Me.Controls.Add(Me.btnAdd)
         Me.Controls.Add(Me.chkRegex)
         Me.Controls.Add(Me.txtReplaceWith)
@@ -109,4 +121,5 @@ Partial Class AddReplacement
     Friend WithEvents txtReplaceWith As TextBox
     Friend WithEvents chkRegex As CheckBox
     Friend WithEvents btnAdd As Button
+    Friend WithEvents chkCaseSensitive As CheckBox
 End Class

@@ -14,6 +14,7 @@ Public Class MyReplacementsListViewItem
     Inherits ListViewItem
     Implements ICloneable
     Public Property BoolRegex As Boolean
+    Public Property BoolCaseSensitive As Boolean
 
     Public Sub New(strInput As String)
         Me.Text = strInput
