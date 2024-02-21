@@ -1,11 +1,22 @@
 ﻿Imports System.ComponentModel
 
 Public Class Replacements
+    Private Function CheckForExistingItem(strReplace As String, strReplaceWith As String) As Boolean
+        Return replacementsListView.Items.Cast(Of MyReplacementsListViewItem).Any(Function(item As MyReplacementsListViewItem)
+                                                                                      Return item.SubItems(0).Text.Equals(strReplace, StringComparison.OrdinalIgnoreCase) And item.SubItems(1).Text.Equals(strReplaceWith, StringComparison.OrdinalIgnoreCase)
+                                                                                  End Function)
+    End Function
+
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Replacement"}
             AddReplacement.ShowDialog(Me)
 
             If AddReplacement.boolSuccess Then
+                If CheckForExistingItem(AddReplacement.strReplace, AddReplacement.strReplaceWith) Then
+                    MsgBox("A similar item has already been found in your replacements list.", MsgBoxStyle.Critical, Text)
+                    Exit Sub
+                End If
+
                 Dim MyReplacementsListViewItem As New MyReplacementsListViewItem(AddReplacement.strReplace)
                 MyReplacementsListViewItem.SubItems.Add(AddReplacement.strReplaceWith)
                 MyReplacementsListViewItem.SubItems.Add(AddReplacement.boolRegex.ToString)
