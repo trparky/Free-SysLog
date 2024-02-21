@@ -107,7 +107,7 @@ Public Class Replacements
         End If
     End Sub
 
-    Private Sub replacementsListView_DoubleClick(sender As Object, e As EventArgs) Handles replacementsListView.DoubleClick
+    Private Sub ReplacementsListView_DoubleClick(sender As Object, e As EventArgs) Handles replacementsListView.DoubleClick
         EditItem()
     End Sub
 End Class
