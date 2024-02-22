@@ -1,7 +1,7 @@
 ﻿Imports System.ComponentModel
 
 Public Class Ignored_Logs_and_Search_Results
-    Public IgnoredLogs As List(Of MyListViewItem)
+    Public LogsToBeDisplayed As List(Of MyListViewItem)
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
 
@@ -26,7 +26,7 @@ Public Class Ignored_Logs_and_Search_Results
         IPAddressCol.Width = My.Settings.columnIPSize
         Log.Width = My.Settings.columnLogSize
 
-        logs.Items.AddRange(IgnoredLogs.ToArray())
+        logs.Items.AddRange(LogsToBeDisplayed.ToArray())
 
         boolDoneLoading = True
     End Sub
@@ -70,6 +70,6 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        ignoredLogsWindow = Nothing
+        searchResultsWindow = Nothing
     End Sub
 End Class

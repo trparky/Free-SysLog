@@ -63,7 +63,6 @@ Partial Class Form1
         Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SelectedHeader = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ViewIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -117,7 +116,7 @@ Partial Class Form1
         Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log, Me.SelectedHeader})
+        Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log})
         Me.logs.FullRowSelect = True
         Me.logs.HideSelection = False
         Me.logs.Location = New System.Drawing.Point(12, 52)
@@ -322,11 +321,6 @@ Partial Class Form1
         Me.btnSearch.Text = "Search"
         Me.btnSearch.UseVisualStyleBackColor = True
         '
-        'SelectedHeader
-        '
-        Me.SelectedHeader.Text = "*"
-        Me.SelectedHeader.Width = 20
-        '
         'IgnoredWordsAndPhrasesToolStripMenuItem
         '
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Name = "IgnoredWordsAndPhrasesToolStripMenuItem"
@@ -434,7 +428,6 @@ Partial Class Form1
     Friend WithEvents lblSearchLabel As Label
     Friend WithEvents txtSearchTerms As TextBox
     Friend WithEvents btnSearch As Button
-    Friend WithEvents SelectedHeader As ColumnHeader
     Friend WithEvents IgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem

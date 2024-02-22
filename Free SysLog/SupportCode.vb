@@ -1,5 +1,5 @@
 ﻿Module SupportCode
-    Public ignoredLogsWindow As Ignored_Logs_and_Search_Results = Nothing
+    Public searchResultsWindow As Ignored_Logs_and_Search_Results = Nothing
     Public replacementsList As New List(Of ReplacementsClass)
 
     Public Function VerifyWindowLocation(point As Point, ByRef window As Form) As Point

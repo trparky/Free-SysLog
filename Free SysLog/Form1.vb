@@ -486,58 +486,26 @@ Public Class Form1
                 Exit Sub
             End If
 
-            btnSearch.Text = "Clear Search"
-
             Dim strLogText As String
             Dim boolFound As Boolean = False
-
-            logs.BeginUpdate()
-
-            For Each selectedItem As MyListViewItem In logs.SelectedItems
-                selectedItem.Selected = False
-            Next
+            Dim listOfSearchResults As New List(Of MyListViewItem)
 
             For Each item As MyListViewItem In logs.Items
                 strLogText = item.SubItems(3).Text
 
                 If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
                     boolFound = True
-                    item.SubItems(4).Text = "*"
-                    item.BackColor = My.Settings.searchColor
+                    listOfSearchResults.Add(item.Clone())
+                    Debug.WriteLine("found")
                 End If
             Next
 
-            logs.Items(0).EnsureVisible()
-            logs.EndUpdate()
-
             If boolFound Then
-                chkAutoScroll.Checked = False
-                ApplySelectedSort()
+                Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
+                searchResultsWindow.ShowDialog(Me)
             Else
-                intPreviousSearchIndex = -1
-                btnSearch.Text = "Search"
-                logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
                 MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
             End If
-        Else
-            btnSearch.Text = "Search"
-
-            btnSearch.Text = "Search"
-            txtSearchTerms.Text = ""
-            intPreviousSearchIndex = -1
-
-            logs.BeginUpdate()
-
-            For Each item As MyListViewItem In logs.Items
-                item.SubItems(4).Text = ""
-                item.BackColor = SystemColors.Window
-            Next
-
-            logs.EndUpdate()
-
-            ApplyTimeSort()
-            chkAutoScroll.Checked = True
-            logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
         End If
     End Sub
 
@@ -579,38 +547,6 @@ Public Class Form1
         logs.Sort()
     End Sub
 
-    Private Sub ApplyTimeSort()
-        Time.Text = "> Time"
-        Type.Text = "Type"
-        IPAddressCol.Text = "IP Address"
-        Log.Text = "Log"
-        SelectedHeader.Text = "*"
-
-        Dim new_sorting_column As ColumnHeader = logs.Columns(0)
-        Dim sort_order As SortOrder = SortOrder.Ascending
-
-        m_SortingColumn2 = new_sorting_column
-
-        logs.ListViewItemSorter = New ListViewComparer(0, sort_order)
-        logs.Sort()
-    End Sub
-
-    Private Sub ApplySelectedSort()
-        Time.Text = "Time"
-        Type.Text = "Type"
-        IPAddressCol.Text = "IP Address"
-        Log.Text = "Log"
-        SelectedHeader.Text = "< *"
-
-        Dim new_sorting_column As ColumnHeader = logs.Columns(4)
-        Dim sort_order As SortOrder = SortOrder.Descending
-
-        m_SortingColumn2 = new_sorting_column
-
-        logs.ListViewItemSorter = New ListViewComparer(4, sort_order)
-        logs.Sort()
-    End Sub
-
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
         Using ignored As New Ignored_Words_and_Phrases With {.Icon = Icon}
             ignored.ShowDialog()
@@ -621,11 +557,11 @@ Public Class Form1
         If IgnoredLogs.Count = 0 Then
             MsgBox("There are no recorded ignored log entries to be shown.", MsgBoxStyle.Information, Text)
         Else
-            If ignoredLogsWindow Is Nothing Then
-                ignoredLogsWindow = New Ignored_Logs_and_Search_Results With {.Icon = Icon, .IgnoredLogs = IgnoredLogs, .Text = "Ignored Logs"}
-                ignoredLogsWindow.Show(Me)
+            If searchResultsWindow Is Nothing Then
+                searchResultsWindow = New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
+                searchResultsWindow.Show(Me)
             Else
-                ignoredLogsWindow.BringToFront()
+                searchResultsWindow.BringToFront()
             End If
         End If
     End Sub
