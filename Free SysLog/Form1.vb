@@ -502,6 +502,7 @@ Public Class Form1
 
             If boolFound Then
                 Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
+                searchResultsWindow.lblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
                 searchResultsWindow.ShowDialog(Me)
             Else
                 MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -559,7 +560,7 @@ Public Class Form1
         Else
             If ignoredLogsWindow Is Nothing Then
                 ignoredLogsWindow = New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
-                searchResultsWindow.Show(Me)
+                ignoredLogsWindow.lblCount.Text = $"Number of ignored logs: {IgnoredLogs.Count:N0}"
                 ignoredLogsWindow.Show(Me)
             Else
                 ignoredLogsWindow.BringToFront()

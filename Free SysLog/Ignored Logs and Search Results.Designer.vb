@@ -27,6 +27,9 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.Type = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.IPAddressCol = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Log = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.lblCount = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'logs
@@ -64,15 +67,34 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.Log.Text = "Log"
         Me.Log.Width = 670
         '
+        'StatusStrip1
+        '
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCount})
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 403)
+        Me.StatusStrip1.Name = "StatusStrip1"
+        Me.StatusStrip1.Size = New System.Drawing.Size(1152, 22)
+        Me.StatusStrip1.TabIndex = 5
+        Me.StatusStrip1.Text = "StatusStrip1"
+        '
+        'lblCount
+        '
+        Me.lblCount.Name = "lblCount"
+        Me.lblCount.Size = New System.Drawing.Size(53, 17)
+        Me.lblCount.Text = "lblCount"
+        '
         'Ignored_Logs_and_Search_Results
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 425)
+        Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.logs)
         Me.Name = "Ignored_Logs_and_Search_Results"
         Me.Text = "Ignored Logs"
+        Me.StatusStrip1.ResumeLayout(False)
+        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -81,4 +103,6 @@ Partial Class Ignored_Logs_and_Search_Results
     Friend WithEvents Type As ColumnHeader
     Friend WithEvents IPAddressCol As ColumnHeader
     Friend WithEvents Log As ColumnHeader
+    Friend WithEvents StatusStrip1 As StatusStrip
+    Friend WithEvents lblCount As ToolStripStatusLabel
 End Class
