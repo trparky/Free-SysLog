@@ -70,6 +70,6 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        searchResultsWindow = Nothing
+        ignoredLogsWindow = Nothing
     End Sub
 End Class
