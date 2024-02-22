@@ -622,7 +622,7 @@ Public Class Form1
             MsgBox("There are no recorded ignored log entries to be shown.", MsgBoxStyle.Information, Text)
         Else
             If ignoredLogsWindow Is Nothing Then
-                ignoredLogsWindow = New Ignored_Logs With {.Icon = Icon, .IgnoredLogs = IgnoredLogs}
+                ignoredLogsWindow = New Ignored_Logs_and_Search_Results With {.Icon = Icon, .IgnoredLogs = IgnoredLogs, .Text = "Ignored Logs"}
                 ignoredLogsWindow.Show(Me)
             Else
                 ignoredLogsWindow.BringToFront()

@@ -1,6 +1,6 @@
 ﻿Imports System.ComponentModel
 
-Public Class Ignored_Logs
+Public Class Ignored_Logs_and_Search_Results
     Public IgnoredLogs As List(Of MyListViewItem)
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
@@ -14,11 +14,11 @@ Public Class Ignored_Logs
         OpenLogViewerWindow()
     End Sub
 
-    Private Sub Ignored_Logs_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+    Private Sub Ignored_Logs_and_Search_Results_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.ignoredWindowSize = Size
     End Sub
 
-    Private Sub Ignored_Logs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Size = My.Settings.ignoredWindowSize
         Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
         Time.Width = My.Settings.columnTimeSize
@@ -65,11 +65,11 @@ Public Class Ignored_Logs
         logs.Sort()
     End Sub
 
-    Private Sub Ignored_Logs_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+    Private Sub Ignored_Logs_and_Search_Results_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
         If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
     End Sub
 
-    Private Sub Ignored_Logs_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         ignoredLogsWindow = Nothing
     End Sub
 End Class

@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Ignored_Logs
+Partial Class Ignored_Logs_and_Search_Results
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
