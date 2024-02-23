@@ -5,6 +5,7 @@ Imports System.Text
 Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
+Imports System.Data.SqlClient
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
@@ -50,15 +51,21 @@ Public Class Form1
     Private Sub WriteLogsToDisk()
         SyncLock lockObject
             Dim collectionOfSavedData As New List(Of SavedData)
+            Dim myItem As MyDataGridViewRow
 
-            For Each listViewItem As MyListViewItem In logs.Items
-                collectionOfSavedData.Add(New SavedData With {
-                                            .time = listViewItem.SubItems(0).Text,
-                                            .type = listViewItem.SubItems(1).Text,
-                                            .ip = listViewItem.SubItems(2).Text,
-                                            .log = listViewItem.SubItems(3).Text,
-                                            .DateObject = listViewItem.DateObject
+            For Each item As DataGridViewRow In logs.Rows
+                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    myItem = DirectCast(item, MyDataGridViewRow)
+
+                    collectionOfSavedData.Add(New SavedData With {
+                                            .time = myItem.Cells(0).Value,
+                                            .type = myItem.Cells(1).Value,
+                                            .ip = myItem.Cells(2).Value,
+                                            .log = myItem.Cells(3).Value,
+                                            .DateObject = myItem.DateObject
                                           })
+                End If
+
             Next
 
             Using fileStream As New StreamWriter(My.Settings.logFileLocation)
@@ -191,10 +198,10 @@ Public Class Form1
 
         Size = My.Settings.mainWindowSize
 
-        Time.Width = My.Settings.columnTimeSize
-        Type.Width = My.Settings.columnTypeSize
-        IPAddressCol.Width = My.Settings.columnIPSize
-        Log.Width = My.Settings.columnLogSize
+        colTime.Width = My.Settings.columnTimeSize
+        colType.Width = My.Settings.columnTypeSize
+        colIPAddress.Width = My.Settings.columnIPSize
+        colLog.Width = My.Settings.columnLogSize
 
         boolDoneLoading = True
         SaveFileDialog.Filter = "JSON Data File|*.json"
@@ -221,14 +228,26 @@ Public Class Form1
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
                 End Using
 
-                Dim listOfLogEntries As New List(Of MyListViewItem)
+                Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+                Dim DataGridViewRowObject As MyDataGridViewRow
 
                 For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(item.ToListViewItem())
+                    DataGridViewRowObject = New MyDataGridViewRow
+                    DataGridViewRowObject.CreateCells(logs)
+                    DataGridViewRowObject.Cells(0).Value = item.time
+                    DataGridViewRowObject.Cells(1).Value = item.type
+                    DataGridViewRowObject.Cells(2).Value = item.ip
+                    DataGridViewRowObject.Cells(3).Value = item.log
+                    DataGridViewRowObject.DateObject = item.DateObject
+
+                    listOfLogEntries.Add(DataGridViewRowObject)
+                    'DataGridViewRowObject.Dispose()
                 Next
 
-                logs.Items.AddRange(listOfLogEntries.ToArray())
-                If logs.Items.Count > 0 Then logs.Items.Item(logs.Items.Count - 1).EnsureVisible()
+                SyncLock dataGridLockObject
+                    logs.Rows.AddRange(listOfLogEntries.ToArray)
+                End SyncLock
+
                 UpdateLogCount()
             Catch ex As Exception
             End Try
@@ -349,50 +368,58 @@ Public Class Form1
     Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String, boolIgnored As Boolean)
         Dim currentDate As Date = Now.ToLocalTime
 
-        Dim listViewItem As New MyListViewItem(currentDate.ToString)
-        listViewItem.SubItems.Add(sPriority)
-        listViewItem.SubItems.Add(sFromIp)
-        listViewItem.SubItems.Add(ProcessReplacements(sSyslog))
-        listViewItem.SubItems.Add("")
-        listViewItem.DateObject = currentDate
-
         If Not boolIgnored Then
             Invoke(Sub()
-                       logs.Items.Add(listViewItem)
+                       SyncLock dataGridLockObject
+                           Dim DataGridViewRowObject As New MyDataGridViewRow
+                           DataGridViewRowObject.CreateCells(logs)
+                           DataGridViewRowObject.Cells(0).Value = currentDate.ToString
+                           DataGridViewRowObject.Cells(1).Value = sPriority
+                           DataGridViewRowObject.Cells(2).Value = sFromIp
+                           DataGridViewRowObject.Cells(3).Value = ProcessReplacements(sSyslog)
+                           DataGridViewRowObject.DateObject = currentDate
+
+                           logs.Rows.Add(DataGridViewRowObject)
+                       End SyncLock
+
                        UpdateLogCount()
-                       If chkAutoScroll.Checked Then logs.EnsureVisible(logs.Items.Count - 1)
                        btnSaveLogsToDisk.Enabled = True
                    End Sub)
         ElseIf boolIgnored And chkRecordIgnoredLogs.Checked Then
-            IgnoredLogs.Add(listViewItem)
-        End If
+            Dim listViewItem As New MyListViewItem(currentDate.ToString)
+            listViewItem.SubItems.Add(sPriority)
+            listViewItem.SubItems.Add(sFromIp)
+            listViewItem.SubItems.Add(ProcessReplacements(sSyslog))
+            listViewItem.SubItems.Add("")
+            listViewItem.DateObject = currentDate
 
-        listViewItem = Nothing
+            IgnoredLogs.Add(listViewItem)
+
+            listViewItem = Nothing
+        End If
     End Sub
 
     Private Sub OpenLogViewerWindow()
-        If logs.SelectedItems.Count > 0 Then
-            Using LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        If logs.Rows.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = logs.Rows(logs.SelectedCells(0).RowIndex)
+
+            Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
                 LogViewer.ShowDialog(Me)
             End Using
         End If
     End Sub
 
-    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
+    Private Sub logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
         OpenLogViewerWindow()
     End Sub
 
-    Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles logs.KeyUp
+    Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs)
         If e.KeyValue = Keys.Enter Then
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
-            logs.BeginUpdate()
-
-            For Each item As MyListViewItem In logs.SelectedItems
-                logs.Items.Remove(item)
+            For Each item As MyListViewItem In logs.SelectedRows
+                item.Remove()
             Next
-
-            logs.EndUpdate()
 
             UpdateLogCount()
             SaveLogsToDiskSub()
@@ -400,26 +427,29 @@ Public Class Form1
     End Sub
 
     Private Sub UpdateLogCount()
-        btnClearLog.Enabled = logs.Items.Count <> 0
-        NumberOfLogs.Text = $"Number of Log Entries: {logs.Items.Count:N0}"
+        btnClearLog.Enabled = logs.Rows.Count <> 0
+        NumberOfLogs.Text = $"Number of Log Entries: {logs.Rows.Count:N0}"
     End Sub
 
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
         My.Settings.autoScroll = chkAutoScroll.Checked
     End Sub
 
-    Private Sub Logs_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles logs.ColumnWidthChanged
+    Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles logs.ColumnWidthChanged
         If boolDoneLoading Then
-            My.Settings.columnTimeSize = Time.Width
-            My.Settings.columnTypeSize = Type.Width
-            My.Settings.columnIPSize = IPAddressCol.Width
-            My.Settings.columnLogSize = Log.Width
+            My.Settings.columnTimeSize = colTime.Width
+            My.Settings.columnTypeSize = colType.Width
+            My.Settings.columnIPSize = colIPAddress.Width
+            My.Settings.columnLogSize = colLog.Width
         End If
     End Sub
 
     Private Sub BtnClearAllLogs_Click(sender As Object, e As EventArgs) Handles btnClearAllLogs.Click
         If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
-            logs.Items.Clear()
+            SyncLock dataGridLockObject
+                logs.Rows.Clear()
+            End SyncLock
+
             UpdateLogCount()
             SaveLogsToDiskSub()
         End If
@@ -500,8 +530,8 @@ Public Class Form1
                     End If
                 End If
 
-                For Each item As MyListViewItem In logs.Items
-                    strLogText = item.SubItems(3).Text
+                For Each item As DataGridViewRow In logs.Rows
+                    strLogText = item.Cells(3).Value
 
                     If chkRegExSearch.Checked Then
                         If regexCompiledObject.IsMatch(strLogText) Then
@@ -533,38 +563,43 @@ Public Class Form1
         If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
     End Sub
 
-    Private Sub Logs_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles logs.ColumnClick
-        Dim new_sorting_column As ColumnHeader = logs.Columns(e.Column)
+    Private intColumnNumber As Integer ' Define intColumnNumber at class level
+    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
+    Private ReadOnly dataGridLockObject As New Object
 
-        ' Figure out the new sorting order.
-        Dim sort_order As SortOrder
+    Private Sub DataGridView1_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
+        ' Disable user sorting
+        logs.AllowUserToOrderColumns = False
 
-        If m_SortingColumn2 Is Nothing Then
-            ' New column. Sort ascending.
-            sort_order = SortOrder.Ascending
-        Else
-            ' See if this is the same column.
-            If new_sorting_column.Equals(m_SortingColumn2) Then
-                ' Same column. Switch the sort order.
-                sort_order = If(m_SortingColumn2.Text.StartsWith("> "), SortOrder.Descending, SortOrder.Ascending)
-            Else
-                ' New column. Sort ascending.
-                sort_order = SortOrder.Ascending
+        Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
+
+        If e.ColumnIndex = 0 Then
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
             End If
 
-            ' Remove the old sort indicator.
-            m_SortingColumn2.Text = m_SortingColumn2.Text.Substring(2)
+            SortLogsByDateObject(column.Index, sortOrder)
         End If
+    End Sub
 
-        ' Display the new sort order.
-        m_SortingColumn2 = new_sorting_column
-        m_SortingColumn2.Text = If(sort_order = SortOrder.Ascending, $"> {m_SortingColumn2.Text}", $"< {m_SortingColumn2.Text}")
+    Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
+        SyncLock dataGridLockObject
+            logs.AllowUserToOrderColumns = False
+            logs.Enabled = False
 
-        ' Create a comparer.
-        logs.ListViewItemSorter = New ListViewComparer(e.Column, sort_order)
+            Dim comparer As New DataGridViewComparer(columnIndex, order)
+            Dim rows As MyDataGridViewRow() = logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
 
-        ' Sort.
-        logs.Sort()
+            Array.Sort(rows, Function(row1, row2) comparer.Compare(row1, row2))
+
+            logs.Rows.Clear()
+            logs.Rows.AddRange(rows)
+
+            logs.Enabled = True
+            logs.AllowUserToOrderColumns = True
+        End SyncLock
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
@@ -614,15 +649,9 @@ Public Class Form1
             If clearLogsOlderThanObject.boolSuccess Then
                 Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
 
-                logs.BeginUpdate()
-
-                For Each item As MyListViewItem In logs.Items
-                    If item.DateObject.Date < dateChosenDate Then
-                        item.Remove()
-                    End If
+                For Each item As MyDataGridViewRow In logs.Rows
+                    If item.DateObject.Date < dateChosenDate Then logs.Rows.Remove(item)
                 Next
-
-                logs.EndUpdate()
 
                 UpdateLogCount()
                 SaveLogsToDiskSub()
@@ -684,5 +713,39 @@ Public Class SavedData
         listViewItem.SubItems.Add("")
         listViewItem.DateObject = DateObject
         Return listViewItem
+    End Function
+End Class
+
+Public Class DataGridViewComparer
+    Implements IComparer(Of DataGridViewRow)
+
+    Private ReadOnly intColumnNumber As Integer
+    Private ReadOnly soSortOrder As SortOrder
+
+    Public Sub New(columnNumber As Integer, sortOrder As SortOrder)
+        intColumnNumber = columnNumber
+        soSortOrder = sortOrder
+    End Sub
+
+    Public Function Compare(row1 As DataGridViewRow, row2 As DataGridViewRow) As Integer Implements IComparer(Of DataGridViewRow).Compare
+        Dim strFirstString, strSecondString As String
+        Dim date1, date2 As Date
+
+        ' Get the cell values.
+        strFirstString = If(row1.Cells.Count <= intColumnNumber, "", row1.Cells(intColumnNumber).Value?.ToString())
+        strSecondString = If(row2.Cells.Count <= intColumnNumber, "", row2.Cells(intColumnNumber).Value?.ToString())
+
+        ' Compare them.
+        If intColumnNumber = 0 Then
+            If TypeOf row1 Is MyDataGridViewRow AndAlso TypeOf row2 Is MyDataGridViewRow Then
+                date1 = DirectCast(row1, MyDataGridViewRow).DateObject
+                date2 = DirectCast(row2, MyDataGridViewRow).DateObject
+                Return If(soSortOrder = SortOrder.Ascending, Date.Compare(date1, date2), Date.Compare(date2, date1))
+            End If
+        Else
+            Return If(soSortOrder = SortOrder.Ascending, String.Compare(strFirstString, strSecondString), String.Compare(strSecondString, strFirstString))
+        End If
+
+        Return 0
     End Function
 End Class
