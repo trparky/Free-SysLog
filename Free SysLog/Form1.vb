@@ -598,11 +598,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ChangeSearchHighlightColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSearchHighlightColorToolStripMenuItem.Click
-        ColorDialog.Color = My.Settings.searchColor
-        If ColorDialog.ShowDialog() = DialogResult.OK Then My.Settings.searchColor = ColorDialog.Color
-    End Sub
-
     Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
         If boolDoneLoading Then My.Settings.windowLocation = Location
     End Sub

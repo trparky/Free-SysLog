@@ -58,8 +58,6 @@ Partial Class Form1
         Me.lblSearchLabel = New System.Windows.Forms.Label()
         Me.txtSearchTerms = New System.Windows.Forms.TextBox()
         Me.btnSearch = New System.Windows.Forms.Button()
-        Me.ChangeSearchHighlightColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ColorDialog = New System.Windows.Forms.ColorDialog()
         Me.chkRegExSearch = New System.Windows.Forms.CheckBox()
         Me.chkRegexCaseInsensitive = New System.Windows.Forms.CheckBox()
         Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -283,7 +281,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ChangeSearchHighlightColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ConfigureReplacementsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -372,12 +370,6 @@ Partial Class Form1
         Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear"
         '
-        'ChangeSearchHighlightColorToolStripMenuItem
-        '
-        Me.ChangeSearchHighlightColorToolStripMenuItem.Name = "ChangeSearchHighlightColorToolStripMenuItem"
-        Me.ChangeSearchHighlightColorToolStripMenuItem.Size = New System.Drawing.Size(238, 22)
-        Me.ChangeSearchHighlightColorToolStripMenuItem.Text = "Change Search Highlight Color"
-        '
         'ZerooutIgnoredLogsCounterToolStripMenuItem
         '
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Name = "ZerooutIgnoredLogsCounterToolStripMenuItem"
@@ -461,8 +453,6 @@ Partial Class Form1
     Friend WithEvents lblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClearIgnoredLogsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ChangeSearchHighlightColorToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents IgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chkRecordIgnoredLogs As ToolStripMenuItem
     Friend WithEvents btnClearAllLogs As ToolStripMenuItem
