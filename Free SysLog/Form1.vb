@@ -507,13 +507,11 @@ Public Class Form1
                         If regexCompiledObject.IsMatch(strLogText) Then
                             boolFound = True
                             listOfSearchResults.Add(item.Clone())
-                            Debug.WriteLine("found")
                         End If
                     Else
                         If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
                             boolFound = True
                             listOfSearchResults.Add(item.Clone())
-                            Debug.WriteLine("found")
                         End If
                     End If
                 Next
