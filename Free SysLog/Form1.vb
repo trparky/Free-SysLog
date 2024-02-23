@@ -489,24 +489,45 @@ Public Class Form1
             Dim strLogText As String
             Dim boolFound As Boolean = False
             Dim listOfSearchResults As New List(Of MyListViewItem)
+            Dim regexCompiledObject As Regex = Nothing
 
-            For Each item As MyListViewItem In logs.Items
-                strLogText = item.SubItems(3).Text
-
-                If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
-                    boolFound = True
-                    listOfSearchResults.Add(item.Clone())
-                    Debug.WriteLine("found")
+            Try
+                If chkRegExSearch.Checked Then
+                    If chkRegexCaseInsensitive.Enabled Then
+                        regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled + RegexOptions.IgnoreCase)
+                    Else
+                        regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled)
+                    End If
                 End If
-            Next
 
-            If boolFound Then
-                Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
-                searchResultsWindow.lblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
-                searchResultsWindow.ShowDialog(Me)
-            Else
-                MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
-            End If
+                For Each item As MyListViewItem In logs.Items
+                    strLogText = item.SubItems(3).Text
+
+                    If chkRegExSearch.Checked Then
+                        If regexCompiledObject.IsMatch(strLogText) Then
+                            boolFound = True
+                            listOfSearchResults.Add(item.Clone())
+                            Debug.WriteLine("found")
+                        End If
+                    Else
+                        If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
+                            boolFound = True
+                            listOfSearchResults.Add(item.Clone())
+                            Debug.WriteLine("found")
+                        End If
+                    End If
+                Next
+
+                If boolFound Then
+                    Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
+                    searchResultsWindow.lblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
+                    searchResultsWindow.ShowDialog(Me)
+                Else
+                    MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                End If
+            Catch ex As ArgumentException
+                MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
+            End Try
         End If
     End Sub
 
@@ -626,6 +647,11 @@ Public Class Form1
         Using ReplacementsWindow As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsWindow.ShowDialog(Me)
         End Using
+    End Sub
+
+    Private Sub chkRegExSearch_Click(sender As Object, e As EventArgs) Handles chkRegExSearch.Click
+        chkRegexCaseInsensitive.Enabled = chkRegExSearch.Checked
+        chkRegexCaseInsensitive.Checked = False
     End Sub
 
 #Region "-- SysLog Server Code --"

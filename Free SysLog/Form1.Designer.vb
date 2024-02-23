@@ -60,6 +60,8 @@ Partial Class Form1
         Me.btnSearch = New System.Windows.Forms.Button()
         Me.ChangeSearchHighlightColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ColorDialog = New System.Windows.Forms.ColorDialog()
+        Me.chkRegExSearch = New System.Windows.Forms.CheckBox()
+        Me.chkRegexCaseInsensitive = New System.Windows.Forms.CheckBox()
         Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -297,7 +299,7 @@ Partial Class Form1
         '
         Me.lblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblSearchLabel.AutoSize = True
-        Me.lblSearchLabel.Location = New System.Drawing.Point(836, 32)
+        Me.lblSearchLabel.Location = New System.Drawing.Point(707, 32)
         Me.lblSearchLabel.Name = "lblSearchLabel"
         Me.lblSearchLabel.Size = New System.Drawing.Size(67, 13)
         Me.lblSearchLabel.TabIndex = 13
@@ -306,7 +308,7 @@ Partial Class Form1
         'txtSearchTerms
         '
         Me.txtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtSearchTerms.Location = New System.Drawing.Point(909, 29)
+        Me.txtSearchTerms.Location = New System.Drawing.Point(780, 29)
         Me.txtSearchTerms.Name = "txtSearchTerms"
         Me.txtSearchTerms.Size = New System.Drawing.Size(148, 20)
         Me.txtSearchTerms.TabIndex = 14
@@ -314,9 +316,9 @@ Partial Class Form1
         'btnSearch
         '
         Me.btnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSearch.Location = New System.Drawing.Point(1063, 27)
+        Me.btnSearch.Location = New System.Drawing.Point(1111, 27)
         Me.btnSearch.Name = "btnSearch"
-        Me.btnSearch.Size = New System.Drawing.Size(100, 23)
+        Me.btnSearch.Size = New System.Drawing.Size(52, 23)
         Me.btnSearch.TabIndex = 15
         Me.btnSearch.Text = "Search"
         Me.btnSearch.UseVisualStyleBackColor = True
@@ -338,6 +340,31 @@ Partial Class Form1
         Me.ViewIgnoredLogsToolStripMenuItem.Name = "ViewIgnoredLogsToolStripMenuItem"
         Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ViewIgnoredLogsToolStripMenuItem.Text = "View"
+        '
+        'chkRegExSearch
+        '
+        Me.chkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.chkRegExSearch.AutoSize = True
+        Me.chkRegExSearch.Location = New System.Drawing.Point(934, 31)
+        Me.chkRegExSearch.Name = "chkRegExSearch"
+        Me.chkRegExSearch.Size = New System.Drawing.Size(63, 17)
+        Me.chkRegExSearch.TabIndex = 16
+        Me.chkRegExSearch.Text = "Regex?"
+        Me.ToolTip.SetToolTip(Me.chkRegExSearch, "Be careful with regex searches, a malformed regex pattern may cause the program t" &
+        "o malfunction.")
+        Me.chkRegExSearch.UseVisualStyleBackColor = True
+        '
+        'chkRegexCaseInsensitive
+        '
+        Me.chkRegexCaseInsensitive.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.chkRegexCaseInsensitive.AutoSize = True
+        Me.chkRegexCaseInsensitive.Enabled = False
+        Me.chkRegexCaseInsensitive.Location = New System.Drawing.Point(1003, 31)
+        Me.chkRegexCaseInsensitive.Name = "chkRegexCaseInsensitive"
+        Me.chkRegexCaseInsensitive.Size = New System.Drawing.Size(109, 17)
+        Me.chkRegexCaseInsensitive.TabIndex = 17
+        Me.chkRegexCaseInsensitive.Text = "Case Insensitive?"
+        Me.chkRegexCaseInsensitive.UseVisualStyleBackColor = True
         '
         'ClearIgnoredLogsToolStripMenuItem
         '
@@ -374,6 +401,8 @@ Partial Class Form1
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.chkRegexCaseInsensitive)
+        Me.Controls.Add(Me.chkRegExSearch)
         Me.Controls.Add(Me.btnSearch)
         Me.Controls.Add(Me.txtSearchTerms)
         Me.Controls.Add(Me.lblSearchLabel)
@@ -440,4 +469,6 @@ Partial Class Form1
     Friend WithEvents LogsOlderThanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ZerooutIgnoredLogsCounterToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureReplacementsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents chkRegExSearch As CheckBox
+    Friend WithEvents chkRegexCaseInsensitive As CheckBox
 End Class
