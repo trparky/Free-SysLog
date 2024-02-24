@@ -644,6 +644,7 @@ Public Class Form1
 
     Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
         Using clearLogsOlderThanObject As New Clear_logs_older_than With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            clearLogsOlderThanObject.lblLogCount.Text = $"Number of Log Entries: {logs.Rows.Count:N0}"
             clearLogsOlderThanObject.ShowDialog(Me)
 
             If clearLogsOlderThanObject.boolSuccess Then
