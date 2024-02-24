@@ -647,14 +647,17 @@ Public Class Form1
             clearLogsOlderThanObject.ShowDialog(Me)
 
             If clearLogsOlderThanObject.boolSuccess Then
-                Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
+                Try
+                    Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
 
-                For Each item As MyDataGridViewRow In logs.Rows
-                    If item.DateObject.Date < dateChosenDate Then logs.Rows.Remove(item)
-                Next
+                    For Each item As MyDataGridViewRow In logs.Rows
+                        If item.DateObject.Date < dateChosenDate Then logs.Rows.Remove(item)
+                    Next
 
-                UpdateLogCount()
-                SaveLogsToDiskSub()
+                    UpdateLogCount()
+                    SaveLogsToDiskSub()
+                Catch ex As ArgumentOutOfRangeException
+                End Try
             End If
         End Using
     End Sub
