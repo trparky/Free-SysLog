@@ -404,6 +404,8 @@ Public Class Form1
             Dim selectedRow As MyDataGridViewRow = logs.Rows(logs.SelectedCells(0).RowIndex)
 
             Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewer.lblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
+                LogViewer.lblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
                 LogViewer.ShowDialog(Me)
             End Using
         End If
@@ -564,7 +566,7 @@ Public Class Form1
     End Sub
 
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
-    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
+    Private sortOrder As SortOrder = sortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
 
     Private Sub DataGridView1_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
@@ -574,10 +576,10 @@ Public Class Form1
         Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
 
         If e.ColumnIndex = 0 Then
-            If sortOrder = SortOrder.Descending Then
-                sortOrder = SortOrder.Ascending
-            ElseIf sortOrder = SortOrder.Ascending Then
-                sortOrder = SortOrder.Descending
+            If sortOrder = sortOrder.Descending Then
+                sortOrder = sortOrder.Ascending
+            ElseIf sortOrder = sortOrder.Ascending Then
+                sortOrder = sortOrder.Descending
             End If
 
             SortLogsByDateObject(column.Index, sortOrder)

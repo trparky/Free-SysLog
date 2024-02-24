@@ -6,8 +6,11 @@ Public Class Ignored_Logs_and_Search_Results
     Private boolDoneLoading As Boolean = False
 
     Private Sub OpenLogViewerWindow()
-        Dim LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-        LogViewer.ShowDialog(Me)
+        Using LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            LogViewer.lblLogDate.Text = $"Log Date: {logs.SelectedItems(0).SubItems(0).Text}"
+            LogViewer.lblSource.Text = $"Source IP Address: {logs.SelectedItems(0).SubItems(2).Text}"
+            LogViewer.ShowDialog(Me)
+        End Using
     End Sub
 
     Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
