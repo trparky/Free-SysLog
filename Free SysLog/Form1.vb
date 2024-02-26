@@ -185,6 +185,9 @@ Public Class Form1
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
 
+        Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        logs.AlternatingRowsDefaultCellStyle = rowStyle
+
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
             For Each strJSONString As String In My.Settings.replacements
                 replacementsList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString))
@@ -688,6 +691,15 @@ Public Class Form1
     Private Sub chkRegExSearch_Click(sender As Object, e As EventArgs) Handles chkRegExSearch.Click
         chkRegexCaseInsensitive.Enabled = chkRegExSearch.Checked
         chkRegexCaseInsensitive.Checked = False
+    End Sub
+
+    Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlternatingColorToolStripMenuItem.Click
+        If ColorDialog.ShowDialog() = DialogResult.OK Then
+            My.Settings.searchColor = ColorDialog.Color
+
+            Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color}
+            logs.AlternatingRowsDefaultCellStyle = rowStyle
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

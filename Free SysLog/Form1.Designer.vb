@@ -23,7 +23,6 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.btnServerController = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnClearLog = New System.Windows.Forms.ToolStripMenuItem()
@@ -68,6 +67,8 @@ Partial Class Form1
         Me.colType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColorDialog = New System.Windows.Forms.ColorDialog()
+        Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -287,7 +288,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ConfigureReplacementsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -353,8 +354,6 @@ Partial Class Form1
         '
         'logs
         '
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.logs.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -391,6 +390,12 @@ Partial Class Form1
         Me.colLog.HeaderText = "Log"
         Me.colLog.Name = "colLog"
         Me.colLog.ReadOnly = True
+        '
+        'ConfigureAlternatingColorToolStripMenuItem
+        '
+        Me.ConfigureAlternatingColorToolStripMenuItem.Name = "ConfigureAlternatingColorToolStripMenuItem"
+        Me.ConfigureAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
+        Me.ConfigureAlternatingColorToolStripMenuItem.Text = "Configure Alternating Color"
         '
         'Form1
         '
@@ -466,4 +471,6 @@ Partial Class Form1
     Friend WithEvents colType As DataGridViewTextBoxColumn
     Friend WithEvents colIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents colLog As DataGridViewTextBoxColumn
+    Friend WithEvents ColorDialog As ColorDialog
+    Friend WithEvents ConfigureAlternatingColorToolStripMenuItem As ToolStripMenuItem
 End Class
