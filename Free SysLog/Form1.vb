@@ -523,41 +523,49 @@ Public Class Form1
             Dim listOfSearchResults As New List(Of MyListViewItem)
             Dim regexCompiledObject As Regex = Nothing
 
-            Try
-                If chkRegExSearch.Checked Then
-                    If chkRegexCaseInsensitive.Enabled Then
-                        regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled + RegexOptions.IgnoreCase)
-                    Else
-                        regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled)
-                    End If
-                End If
+            Dim worker As New BackgroundWorker()
 
-                For Each item As DataGridViewRow In logs.Rows
-                    strLogText = item.Cells(3).Value
+            AddHandler worker.DoWork, Sub()
+                                          Try
+                                              If chkRegExSearch.Checked Then
+                                                  If chkRegexCaseInsensitive.Enabled Then
+                                                      regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled + RegexOptions.IgnoreCase)
+                                                  Else
+                                                      regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled)
+                                                  End If
+                                              End If
 
-                    If chkRegExSearch.Checked Then
-                        If regexCompiledObject.IsMatch(strLogText) Then
-                            boolFound = True
-                            listOfSearchResults.Add(item.Clone())
-                        End If
-                    Else
-                        If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
-                            boolFound = True
-                            listOfSearchResults.Add(item.Clone())
-                        End If
-                    End If
-                Next
+                                              For Each item As MyDataGridViewRow In logs.Rows
+                                                  strLogText = item.Cells(3).Value
 
-                If boolFound Then
-                    Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
-                    searchResultsWindow.lblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
-                    searchResultsWindow.ShowDialog(Me)
-                Else
-                    MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
-                End If
-            Catch ex As ArgumentException
-                MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
-            End Try
+                                                  If chkRegExSearch.Checked Then
+                                                      If regexCompiledObject.IsMatch(strLogText) Then
+                                                          boolFound = True
+                                                          listOfSearchResults.Add(item.Clone())
+                                                      End If
+                                                  Else
+                                                      If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
+                                                          boolFound = True
+                                                          listOfSearchResults.Add(item.Clone())
+                                                      End If
+                                                  End If
+                                              Next
+                                          Catch ex As ArgumentException
+                                              MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
+                                          End Try
+                                      End Sub
+
+            AddHandler worker.RunWorkerCompleted, Sub()
+                                                      If boolFound Then
+                                                          Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
+                                                          searchResultsWindow.lblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
+                                                          searchResultsWindow.ShowDialog(Me)
+                                                      Else
+                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                      End If
+                                                  End Sub
+
+            worker.RunWorkerAsync()
         End If
     End Sub
 
@@ -566,7 +574,7 @@ Public Class Form1
     End Sub
 
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
-    Private sortOrder As SortOrder = sortOrder.Descending ' Define soSortOrder at class level
+    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
 
     Private Sub DataGridView1_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
@@ -576,10 +584,10 @@ Public Class Form1
         Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
 
         If e.ColumnIndex = 0 Then
-            If sortOrder = sortOrder.Descending Then
-                sortOrder = sortOrder.Ascending
-            ElseIf sortOrder = sortOrder.Ascending Then
-                sortOrder = sortOrder.Descending
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
             End If
 
             SortLogsByDateObject(column.Index, sortOrder)
