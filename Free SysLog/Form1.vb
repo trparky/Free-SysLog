@@ -249,6 +249,7 @@ Public Class Form1
 
                 SyncLock dataGridLockObject
                     logs.Rows.AddRange(listOfLogEntries.ToArray)
+                    logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
                 End SyncLock
 
                 UpdateLogCount()
@@ -387,6 +388,8 @@ Public Class Form1
 
                        UpdateLogCount()
                        btnSaveLogsToDisk.Enabled = True
+
+                       If chkAutoScroll.Checked Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
                    End Sub)
         ElseIf boolIgnored And chkRecordIgnoredLogs.Checked Then
             Dim listViewItem As New MyListViewItem(currentDate.ToString)
