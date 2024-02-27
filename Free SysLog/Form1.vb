@@ -679,11 +679,16 @@ Public Class Form1
             If clearLogsOlderThanObject.boolSuccess Then
                 Try
                     Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
-                    Dim MyDataGridViewRow As MyDataGridViewRow
+                    Dim itemsToRemove As New List(Of MyDataGridViewRow)
 
-                    For Each item As DataGridViewRow In logs.Rows
-                        MyDataGridViewRow = TryCast(item, MyDataGridViewRow)
-                        If MyDataGridViewRow IsNot Nothing AndAlso MyDataGridViewRow.DateObject.Date < dateChosenDate Then logs.Rows.Remove(item)
+                    For Each item As MyDataGridViewRow In logs.Rows
+                        If item.DateObject < dateChosenDate Then
+                            itemsToRemove.Add(item)
+                        End If
+                    Next
+
+                    For Each itemToRemove As MyDataGridViewRow In itemsToRemove
+                        logs.Rows.Remove(itemToRemove)
                     Next
 
                     UpdateLogCount()
