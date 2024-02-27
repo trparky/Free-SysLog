@@ -154,7 +154,7 @@ Partial Class Form1
         '
         Me.chkAutoScroll.CheckOnClick = True
         Me.chkAutoScroll.Name = "chkAutoScroll"
-        Me.chkAutoScroll.Size = New System.Drawing.Size(218, 22)
+        Me.chkAutoScroll.Size = New System.Drawing.Size(221, 22)
         Me.chkAutoScroll.Text = "Auto Scroll"
         '
         'btnCheckForUpdates
@@ -171,7 +171,7 @@ Partial Class Form1
         '
         Me.chkAutoSave.CheckOnClick = True
         Me.chkAutoSave.Name = "chkAutoSave"
-        Me.chkAutoSave.Size = New System.Drawing.Size(218, 22)
+        Me.chkAutoSave.Size = New System.Drawing.Size(221, 22)
         Me.chkAutoSave.Text = "Auto Save"
         '
         'lblAutoSaveLabel
@@ -196,13 +196,13 @@ Partial Class Form1
         '
         Me.chkStartAtUserStartup.CheckOnClick = True
         Me.chkStartAtUserStartup.Name = "chkStartAtUserStartup"
-        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(218, 22)
+        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(221, 22)
         Me.chkStartAtUserStartup.Text = "Start at Startup"
         '
         'btnMoveLogFile
         '
         Me.btnMoveLogFile.Name = "btnMoveLogFile"
-        Me.btnMoveLogFile.Size = New System.Drawing.Size(218, 22)
+        Me.btnMoveLogFile.Size = New System.Drawing.Size(221, 22)
         Me.btnMoveLogFile.Text = "Move Log File"
         '
         'lblSyslogServerPortLabel
@@ -296,20 +296,20 @@ Partial Class Form1
         'ConfigureReplacementsToolStripMenuItem
         '
         Me.ConfigureReplacementsToolStripMenuItem.Name = "ConfigureReplacementsToolStripMenuItem"
-        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
         Me.ConfigureReplacementsToolStripMenuItem.Text = "Configure Replacements"
         '
         'IgnoredWordsAndPhrasesToolStripMenuItem
         '
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Name = "IgnoredWordsAndPhrasesToolStripMenuItem"
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
         '
         'chkRecordIgnoredLogs
         '
         Me.chkRecordIgnoredLogs.CheckOnClick = True
         Me.chkRecordIgnoredLogs.Name = "chkRecordIgnoredLogs"
-        Me.chkRecordIgnoredLogs.Size = New System.Drawing.Size(218, 22)
+        Me.chkRecordIgnoredLogs.Size = New System.Drawing.Size(221, 22)
         Me.chkRecordIgnoredLogs.Text = "Record Ignored Logs"
         '
         'lblSearchLabel
@@ -354,6 +354,7 @@ Partial Class Form1
         '
         'logs
         '
+        Me.logs.AllowUserToAddRows = False
         Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
