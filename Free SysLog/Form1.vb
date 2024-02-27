@@ -417,7 +417,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
+    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
         OpenLogViewerWindow()
     End Sub
 
@@ -704,7 +704,7 @@ Public Class Form1
         End Using
     End Sub
 
-    Private Sub chkRegExSearch_Click(sender As Object, e As EventArgs) Handles chkRegExSearch.Click
+    Private Sub ChkRegExSearch_Click(sender As Object, e As EventArgs) Handles chkRegExSearch.Click
         chkRegexCaseInsensitive.Enabled = chkRegExSearch.Checked
         chkRegexCaseInsensitive.Checked = False
     End Sub
