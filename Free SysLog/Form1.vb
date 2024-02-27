@@ -596,7 +596,7 @@ Public Class Form1
     Private sortOrder As SortOrder = sortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
 
-    Private Sub DataGridView1_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
+    Private Sub logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
         ' Disable user sorting
         logs.AllowUserToOrderColumns = False
 
