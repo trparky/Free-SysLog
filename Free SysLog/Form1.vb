@@ -528,6 +528,7 @@ Public Class Form1
             Dim boolFound As Boolean = False
             Dim listOfSearchResults As New List(Of MyListViewItem)
             Dim regexCompiledObject As Regex = Nothing
+            Dim MyListViewItem As MyListViewItem
 
             Dim worker As New BackgroundWorker()
 
@@ -541,18 +542,30 @@ Public Class Form1
                                                   End If
                                               End If
 
-                                              For Each item As MyDataGridViewRow In logs.Rows
+                                              For Each item As DataGridViewRow In logs.Rows
                                                   strLogText = item.Cells(3).Value
 
                                                   If chkRegExSearch.Checked Then
                                                       If regexCompiledObject.IsMatch(strLogText) Then
                                                           boolFound = True
-                                                          listOfSearchResults.Add(item.Clone())
+
+                                                          MyListViewItem = New MyListViewItem(item.Cells(0).Value)
+                                                          MyListViewItem.SubItems.Add(item.Cells(1).Value)
+                                                          MyListViewItem.SubItems.Add(item.Cells(2).Value)
+                                                          MyListViewItem.SubItems.Add(item.Cells(3).Value)
+
+                                                          listOfSearchResults.Add(MyListViewItem)
                                                       End If
                                                   Else
                                                       If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
                                                           boolFound = True
-                                                          listOfSearchResults.Add(item.Clone())
+
+                                                          MyListViewItem = New MyListViewItem(item.Cells(0).Value)
+                                                          MyListViewItem.SubItems.Add(item.Cells(1).Value)
+                                                          MyListViewItem.SubItems.Add(item.Cells(2).Value)
+                                                          MyListViewItem.SubItems.Add(item.Cells(3).Value)
+
+                                                          listOfSearchResults.Add(MyListViewItem)
                                                       End If
                                                   End If
                                               Next
