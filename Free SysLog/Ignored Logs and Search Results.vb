@@ -1,19 +1,62 @@
 ﻿Imports System.ComponentModel
 
 Public Class Ignored_Logs_and_Search_Results
-    Public LogsToBeDisplayed As List(Of MyListViewItem)
+    Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
 
+    Private intColumnNumber As Integer ' Define intColumnNumber at class level
+    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
+    Private ReadOnly dataGridLockObject As New Object
+
     Private Sub OpenLogViewerWindow()
-        Using LogViewer As New Log_Viewer With {.strLogText = logs.SelectedItems(0).SubItems(3).Text, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            LogViewer.lblLogDate.Text = $"Log Date: {logs.SelectedItems(0).SubItems(0).Text}"
-            LogViewer.lblSource.Text = $"Source IP Address: {logs.SelectedItems(0).SubItems(2).Text}"
-            LogViewer.ShowDialog(Me)
-        End Using
+        If logs.Rows.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = logs.Rows(logs.SelectedCells(0).RowIndex)
+
+            Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewer.lblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
+                LogViewer.lblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
+                LogViewer.ShowDialog(Me)
+            End Using
+        End If
     End Sub
 
-    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
+    Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
+        ' Disable user sorting
+        logs.AllowUserToOrderColumns = False
+
+        Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
+
+        If e.ColumnIndex = 0 Then
+            If SortOrder = SortOrder.Descending Then
+                SortOrder = SortOrder.Ascending
+            ElseIf SortOrder = SortOrder.Ascending Then
+                SortOrder = SortOrder.Descending
+            End If
+
+            SortLogsByDateObject(column.Index, SortOrder)
+        End If
+    End Sub
+
+    Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
+        SyncLock dataGridLockObject
+            logs.AllowUserToOrderColumns = False
+            logs.Enabled = False
+
+            Dim comparer As New DataGridViewComparer(columnIndex, order)
+            Dim rows As MyDataGridViewRow() = logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
+
+            Array.Sort(rows, Function(row1, row2) comparer.Compare(row1, row2))
+
+            logs.Rows.Clear()
+            logs.Rows.AddRange(rows)
+
+            logs.Enabled = True
+            logs.AllowUserToOrderColumns = True
+        End SyncLock
+    End Sub
+
+    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs)
         OpenLogViewerWindow()
     End Sub
 
@@ -24,48 +67,17 @@ Public Class Ignored_Logs_and_Search_Results
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Size = My.Settings.ignoredWindowSize
         Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
-        Time.Width = My.Settings.columnTimeSize
-        Type.Width = My.Settings.columnTypeSize
-        IPAddressCol.Width = My.Settings.columnIPSize
-        Log.Width = My.Settings.columnLogSize
+        colTime.Width = My.Settings.columnTimeSize
+        colType.Width = My.Settings.columnTypeSize
+        colIPAddress.Width = My.Settings.columnIPSize
+        colLog.Width = My.Settings.columnLogSize
 
-        logs.Items.AddRange(LogsToBeDisplayed.ToArray())
+        Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        logs.AlternatingRowsDefaultCellStyle = rowStyle
+
+        logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
 
         boolDoneLoading = True
-    End Sub
-
-    Private Sub Logs_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles logs.ColumnClick
-        Dim new_sorting_column As ColumnHeader = logs.Columns(e.Column)
-
-        ' Figure out the new sorting order.
-        Dim sort_order As SortOrder
-
-        If m_SortingColumn2 Is Nothing Then
-            ' New column. Sort ascending.
-            sort_order = SortOrder.Ascending
-        Else
-            ' See if this is the same column.
-            If new_sorting_column.Equals(m_SortingColumn2) Then
-                ' Same column. Switch the sort order.
-                sort_order = If(m_SortingColumn2.Text.StartsWith("> "), SortOrder.Descending, SortOrder.Ascending)
-            Else
-                ' New column. Sort ascending.
-                sort_order = SortOrder.Ascending
-            End If
-
-            ' Remove the old sort indicator.
-            m_SortingColumn2.Text = m_SortingColumn2.Text.Substring(2)
-        End If
-
-        ' Display the new sort order.
-        m_SortingColumn2 = new_sorting_column
-        m_SortingColumn2.Text = If(sort_order = SortOrder.Ascending, $"> {m_SortingColumn2.Text}", $"< {m_SortingColumn2.Text}")
-
-        ' Create a comparer.
-        logs.ListViewItemSorter = New ListViewComparer(e.Column, sort_order)
-
-        ' Sort.
-        logs.Sort()
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged

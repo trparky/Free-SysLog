@@ -14,7 +14,7 @@ Public Class Form1
     Private intPreviousSearchIndex As Integer = -1
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private longNumberOfIgnoredLogs As Long = 0
-    Private IgnoredLogs As New List(Of MyListViewItem)
+    Private IgnoredLogs As New List(Of MyDataGridViewRow)
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
@@ -392,16 +392,17 @@ Public Class Form1
                        If chkAutoScroll.Checked Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
                    End Sub)
         ElseIf boolIgnored And chkRecordIgnoredLogs.Checked Then
-            Dim listViewItem As New MyListViewItem(currentDate.ToString)
-            listViewItem.SubItems.Add(sPriority)
-            listViewItem.SubItems.Add(sFromIp)
-            listViewItem.SubItems.Add(ProcessReplacements(sSyslog))
-            listViewItem.SubItems.Add("")
-            listViewItem.DateObject = currentDate
+            Dim MyNewDataGridItem As New MyDataGridViewRow
+            MyNewDataGridItem.CreateCells(logs)
+            MyNewDataGridItem.Cells(0).Value = currentDate.ToString
+            MyNewDataGridItem.Cells(1).Value = sPriority
+            MyNewDataGridItem.Cells(2).Value = sFromIp
+            MyNewDataGridItem.Cells(3).Value = ProcessReplacements(sSyslog)
+            MyNewDataGridItem.DateObject = currentDate
 
-            IgnoredLogs.Add(listViewItem)
+            IgnoredLogs.Add(MyNewDataGridItem)
 
-            listViewItem = Nothing
+            MyNewDataGridItem = Nothing
         End If
     End Sub
 
@@ -526,9 +527,9 @@ Public Class Form1
 
             Dim strLogText As String
             Dim boolFound As Boolean = False
-            Dim listOfSearchResults As New List(Of MyListViewItem)
+            Dim listOfSearchResults As New List(Of MyDataGridViewRow)
             Dim regexCompiledObject As Regex = Nothing
-            Dim MyListViewItem As MyListViewItem
+            Dim MyNewDataGridItem, MyDataGridRowItem As MyDataGridViewRow
 
             Dim worker As New BackgroundWorker()
 
@@ -543,29 +544,28 @@ Public Class Form1
                                               End If
 
                                               For Each item As DataGridViewRow In logs.Rows
-                                                  strLogText = item.Cells(3).Value
+                                                  boolFound = False
+                                                  MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
-                                                  If chkRegExSearch.Checked Then
-                                                      If regexCompiledObject.IsMatch(strLogText) Then
-                                                          boolFound = True
+                                                  If MyDataGridRowItem IsNot Nothing Then
+                                                      strLogText = MyDataGridRowItem.Cells(3).Value
 
-                                                          MyListViewItem = New MyListViewItem(item.Cells(0).Value)
-                                                          MyListViewItem.SubItems.Add(item.Cells(1).Value)
-                                                          MyListViewItem.SubItems.Add(item.Cells(2).Value)
-                                                          MyListViewItem.SubItems.Add(item.Cells(3).Value)
-
-                                                          listOfSearchResults.Add(MyListViewItem)
+                                                      If chkRegExSearch.Checked Then
+                                                          If regexCompiledObject.IsMatch(strLogText) Then boolFound = True
+                                                      Else
+                                                          If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then boolFound = True
                                                       End If
-                                                  Else
-                                                      If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then
-                                                          boolFound = True
 
-                                                          MyListViewItem = New MyListViewItem(item.Cells(0).Value)
-                                                          MyListViewItem.SubItems.Add(item.Cells(1).Value)
-                                                          MyListViewItem.SubItems.Add(item.Cells(2).Value)
-                                                          MyListViewItem.SubItems.Add(item.Cells(3).Value)
+                                                      If boolFound Then
+                                                          MyNewDataGridItem = New MyDataGridViewRow
+                                                          MyNewDataGridItem.CreateCells(logs)
+                                                          MyNewDataGridItem.Cells(0).Value = MyDataGridRowItem.Cells(0).Value
+                                                          MyNewDataGridItem.Cells(1).Value = MyDataGridRowItem.Cells(1).Value
+                                                          MyNewDataGridItem.Cells(2).Value = MyDataGridRowItem.Cells(2).Value
+                                                          MyNewDataGridItem.Cells(3).Value = MyDataGridRowItem.Cells(3).Value
+                                                          MyNewDataGridItem.DateObject = MyDataGridRowItem.DateObject
 
-                                                          listOfSearchResults.Add(MyListViewItem)
+                                                          listOfSearchResults.Add(MyNewDataGridItem)
                                                       End If
                                                   End If
                                               Next
@@ -575,7 +575,7 @@ Public Class Form1
                                       End Sub
 
             AddHandler worker.RunWorkerCompleted, Sub()
-                                                      If boolFound Then
+                                                      If listOfSearchResults.Count > 0 Then
                                                           Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                           searchResultsWindow.lblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
                                                           searchResultsWindow.ShowDialog(Me)

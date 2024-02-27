@@ -22,50 +22,16 @@ Partial Class Ignored_Logs_and_Search_Results
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.logs = New System.Windows.Forms.ListView()
-        Me.Time = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.Type = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.IPAddressCol = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.Log = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.logs = New System.Windows.Forms.DataGridView()
+        Me.colTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
+        CType(Me.logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'logs
-        '
-        Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.logs.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Time, Me.Type, Me.IPAddressCol, Me.Log})
-        Me.logs.FullRowSelect = True
-        Me.logs.HideSelection = False
-        Me.logs.Location = New System.Drawing.Point(12, 12)
-        Me.logs.Name = "logs"
-        Me.logs.Size = New System.Drawing.Size(1128, 401)
-        Me.logs.TabIndex = 4
-        Me.logs.UseCompatibleStateImageBehavior = False
-        Me.logs.View = System.Windows.Forms.View.Details
-        '
-        'Time
-        '
-        Me.Time.Text = "Time"
-        Me.Time.Width = 196
-        '
-        'Type
-        '
-        Me.Type.Text = "Type"
-        Me.Type.Width = 110
-        '
-        'IPAddressCol
-        '
-        Me.IPAddressCol.Text = "IP Address"
-        Me.IPAddressCol.Width = 102
-        '
-        'Log
-        '
-        Me.Log.Text = "Log"
-        Me.Log.Width = 670
         '
         'StatusStrip1
         '
@@ -82,27 +48,68 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.lblCount.Size = New System.Drawing.Size(53, 17)
         Me.lblCount.Text = "lblCount"
         '
+        'logs
+        '
+        Me.logs.AllowUserToAddRows = False
+        Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colTime, Me.colType, Me.colIPAddress, Me.colLog})
+        Me.logs.Location = New System.Drawing.Point(12, 12)
+        Me.logs.Name = "logs"
+        Me.logs.ReadOnly = True
+        Me.logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.logs.Size = New System.Drawing.Size(1128, 388)
+        Me.logs.TabIndex = 19
+        '
+        'colTime
+        '
+        Me.colTime.HeaderText = "Time"
+        Me.colTime.Name = "colTime"
+        Me.colTime.ReadOnly = True
+        Me.colTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        '
+        'colType
+        '
+        Me.colType.HeaderText = "Type"
+        Me.colType.Name = "colType"
+        Me.colType.ReadOnly = True
+        '
+        'colIPAddress
+        '
+        Me.colIPAddress.HeaderText = "IP Address"
+        Me.colIPAddress.Name = "colIPAddress"
+        Me.colIPAddress.ReadOnly = True
+        '
+        'colLog
+        '
+        Me.colLog.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colLog.HeaderText = "Log"
+        Me.colLog.Name = "colLog"
+        Me.colLog.ReadOnly = True
+        '
         'Ignored_Logs_and_Search_Results
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 425)
-        Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.logs)
+        Me.Controls.Add(Me.StatusStrip1)
         Me.Name = "Ignored_Logs_and_Search_Results"
         Me.Text = "Ignored Logs"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
+        CType(Me.logs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents logs As ListView
-    Friend WithEvents Time As ColumnHeader
-    Friend WithEvents Type As ColumnHeader
-    Friend WithEvents IPAddressCol As ColumnHeader
-    Friend WithEvents Log As ColumnHeader
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents lblCount As ToolStripStatusLabel
+    Friend WithEvents logs As DataGridView
+    Friend WithEvents colTime As DataGridViewTextBoxColumn
+    Friend WithEvents colType As DataGridViewTextBoxColumn
+    Friend WithEvents colIPAddress As DataGridViewTextBoxColumn
+    Friend WithEvents colLog As DataGridViewTextBoxColumn
 End Class
