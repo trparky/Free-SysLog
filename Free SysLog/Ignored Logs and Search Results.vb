@@ -64,7 +64,7 @@ Public Class Ignored_Logs_and_Search_Results
         End SyncLock
     End Sub
 
-    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs)
+    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
         OpenLogViewerWindow()
     End Sub
 
