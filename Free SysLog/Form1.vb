@@ -596,17 +596,17 @@ Public Class Form1
     Private sortOrder As SortOrder = sortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
 
-    Private Sub logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
+    Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
         ' Disable user sorting
         logs.AllowUserToOrderColumns = False
 
         Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
 
         If e.ColumnIndex = 0 Then
-            If sortOrder = sortOrder.Descending Then
-                sortOrder = sortOrder.Ascending
-            ElseIf sortOrder = sortOrder.Ascending Then
-                sortOrder = sortOrder.Descending
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
             End If
 
             SortLogsByDateObject(column.Index, sortOrder)
@@ -720,8 +720,13 @@ Public Class Form1
         End If
     End Sub
 
-    Dim sDataRecieve As String
-    Dim bBytesRecieved() As Byte
+#Region "-- SysLog Server Code --"
+    Public Sub ListenForSyslogs()
+        Try
+            Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
+            Dim udpcUDPClient As New UdpClient(My.Settings.sysLogPort)
+            Dim sDataRecieve As String
+            Dim bBytesRecieved() As Byte
             Dim sFromIP As String
 
             While True
