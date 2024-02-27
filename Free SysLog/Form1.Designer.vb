@@ -362,6 +362,7 @@ Partial Class Form1
         Me.logs.Location = New System.Drawing.Point(12, 52)
         Me.logs.Name = "logs"
         Me.logs.ReadOnly = True
+        Me.logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.logs.Size = New System.Drawing.Size(1151, 369)
         Me.logs.TabIndex = 18
         '
