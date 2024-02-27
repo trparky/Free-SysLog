@@ -5,7 +5,6 @@ Imports System.Text
 Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
-Imports System.Data.SqlClient
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
@@ -607,9 +606,17 @@ Public Class Form1
                 sortOrder = SortOrder.Ascending
             ElseIf sortOrder = SortOrder.Ascending Then
                 sortOrder = SortOrder.Descending
+            Else
+                sortOrder = SortOrder.Ascending
             End If
 
+            colIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
+            colLog.HeaderCell.SortGlyphDirection = SortOrder.None
+            colType.HeaderCell.SortGlyphDirection = SortOrder.None
+
             SortLogsByDateObject(column.Index, sortOrder)
+        Else
+            sortOrder = SortOrder.None
         End If
     End Sub
 

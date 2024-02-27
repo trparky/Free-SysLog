@@ -28,13 +28,21 @@ Public Class Ignored_Logs_and_Search_Results
         Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
 
         If e.ColumnIndex = 0 Then
-            If SortOrder = SortOrder.Descending Then
-                SortOrder = SortOrder.Ascending
-            ElseIf SortOrder = SortOrder.Ascending Then
-                SortOrder = SortOrder.Descending
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
+            Else
+                sortOrder = SortOrder.Ascending
             End If
 
-            SortLogsByDateObject(column.Index, SortOrder)
+            colIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
+            colLog.HeaderCell.SortGlyphDirection = SortOrder.None
+            colType.HeaderCell.SortGlyphDirection = SortOrder.None
+
+            SortLogsByDateObject(column.Index, sortOrder)
+        Else
+            sortOrder = SortOrder.None
         End If
     End Sub
 
