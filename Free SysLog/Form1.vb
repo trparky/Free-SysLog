@@ -67,6 +67,7 @@ Public Class Form1
             Dim collectionOfSavedData As New List(Of SavedData)
             Dim myItem As MyDataGridViewRow
 
+            SyncLock dataGridLockObject
             For Each item As DataGridViewRow In logs.Rows
                 If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
@@ -79,8 +80,8 @@ Public Class Form1
                                             .DateObject = myItem.DateObject
                                           })
                 End If
-
             Next
+            End SyncLock
 
             Using fileStream As New StreamWriter(My.Settings.logFileLocation)
                 fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
