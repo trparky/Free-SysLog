@@ -530,6 +530,7 @@ Public Class Form1
                                                   End If
                                               End If
 
+                                              SyncLock dataGridLockObject
                                               For Each item As DataGridViewRow In logs.Rows
                                                   boolFound = False
                                                   MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
@@ -550,6 +551,7 @@ Public Class Form1
                                                       End If
                                                   End If
                                               Next
+                                              End SyncLock
                                           Catch ex As ArgumentException
                                               MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
                                           End Try
