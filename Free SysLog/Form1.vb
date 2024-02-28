@@ -667,17 +667,22 @@ Public Class Form1
             If clearLogsOlderThanObject.boolSuccess Then
                 Try
                     Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
-                    Dim itemsToRemove As New List(Of MyDataGridViewRow)
 
-                    For Each item As MyDataGridViewRow In logs.Rows
-                        If item.DateObject < dateChosenDate Then
-                            itemsToRemove.Add(item)
-                        End If
-                    Next
+                    SyncLock dataGridLockObject
+                        logs.AllowUserToOrderColumns = False
+                        logs.Enabled = False
 
-                    For Each itemToRemove As MyDataGridViewRow In itemsToRemove
-                        logs.Rows.Remove(itemToRemove)
-                    Next
+                        For i As Integer = logs.Rows.Count - 1 To 0 Step -1
+                            Dim item As MyDataGridViewRow = CType(logs.Rows(i), MyDataGridViewRow)
+
+                            If item.DateObject.Date <= dateChosenDate.Date Then
+                                logs.Rows.RemoveAt(i)
+                            End If
+                        Next
+
+                        logs.Enabled = True
+                        logs.AllowUserToOrderColumns = True
+                    End SyncLock
 
                     UpdateLogCount()
                     SaveLogsToDiskSub()
