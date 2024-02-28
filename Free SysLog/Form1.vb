@@ -15,6 +15,21 @@ Public Class Form1
     Private longNumberOfIgnoredLogs As Long = 0
     Private IgnoredLogs As New List(Of MyDataGridViewRow)
 
+    Private Function MakeDataGridRow(dateObject As Date, strTime As String, strType As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+        Dim MyDataGridViewRow As New MyDataGridViewRow
+
+        With MyDataGridViewRow
+            .CreateCells(dataGrid)
+            .Cells(0).Value = strTime
+            .Cells(1).Value = strType
+            .Cells(2).Value = strSourceAddress
+            .Cells(3).Value = strLog
+            .DateObject = dateObject
+        End With
+
+        Return MyDataGridViewRow
+    End Function
+
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
             If chkStartAtUserStartup.Checked Then
@@ -231,19 +246,9 @@ Public Class Form1
                 End Using
 
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
-                Dim DataGridViewRowObject As MyDataGridViewRow
 
                 For Each item As SavedData In collectionOfSavedData
-                    DataGridViewRowObject = New MyDataGridViewRow
-                    DataGridViewRowObject.CreateCells(logs)
-                    DataGridViewRowObject.Cells(0).Value = item.time
-                    DataGridViewRowObject.Cells(1).Value = item.type
-                    DataGridViewRowObject.Cells(2).Value = item.ip
-                    DataGridViewRowObject.Cells(3).Value = item.log
-                    DataGridViewRowObject.DateObject = item.DateObject
-
-                    listOfLogEntries.Add(DataGridViewRowObject)
-                    'DataGridViewRowObject.Dispose()
+                    listOfLogEntries.Add(MakeDataGridRow(item.DateObject, item.time, item.type, item.ip, item.log, logs))
                 Next
 
                 SyncLock dataGridLockObject
@@ -374,15 +379,7 @@ Public Class Form1
         If Not boolIgnored Then
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Dim DataGridViewRowObject As New MyDataGridViewRow
-                           DataGridViewRowObject.CreateCells(logs)
-                           DataGridViewRowObject.Cells(0).Value = currentDate.ToString
-                           DataGridViewRowObject.Cells(1).Value = sPriority
-                           DataGridViewRowObject.Cells(2).Value = sFromIp
-                           DataGridViewRowObject.Cells(3).Value = ProcessReplacements(sSyslog)
-                           DataGridViewRowObject.DateObject = currentDate
-
-                           logs.Rows.Add(DataGridViewRowObject)
+                           logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), logs))
                        End SyncLock
 
                        UpdateLogCount()
@@ -391,17 +388,7 @@ Public Class Form1
                        If chkAutoScroll.Checked Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
                    End Sub)
         ElseIf boolIgnored And chkRecordIgnoredLogs.Checked Then
-            Dim MyNewDataGridItem As New MyDataGridViewRow
-            MyNewDataGridItem.CreateCells(logs)
-            MyNewDataGridItem.Cells(0).Value = currentDate.ToString
-            MyNewDataGridItem.Cells(1).Value = sPriority
-            MyNewDataGridItem.Cells(2).Value = sFromIp
-            MyNewDataGridItem.Cells(3).Value = ProcessReplacements(sSyslog)
-            MyNewDataGridItem.DateObject = currentDate
-
-            IgnoredLogs.Add(MyNewDataGridItem)
-
-            MyNewDataGridItem = Nothing
+            IgnoredLogs.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), logs))
         End If
     End Sub
 
@@ -528,7 +515,7 @@ Public Class Form1
             Dim boolFound As Boolean = False
             Dim listOfSearchResults As New List(Of MyDataGridViewRow)
             Dim regexCompiledObject As Regex = Nothing
-            Dim MyNewDataGridItem, MyDataGridRowItem As MyDataGridViewRow
+            Dim MyDataGridRowItem As MyDataGridViewRow
 
             Dim worker As New BackgroundWorker()
 
@@ -556,15 +543,9 @@ Public Class Form1
                                                       End If
 
                                                       If boolFound Then
-                                                          MyNewDataGridItem = New MyDataGridViewRow
-                                                          MyNewDataGridItem.CreateCells(logs)
-                                                          MyNewDataGridItem.Cells(0).Value = MyDataGridRowItem.Cells(0).Value
-                                                          MyNewDataGridItem.Cells(1).Value = MyDataGridRowItem.Cells(1).Value
-                                                          MyNewDataGridItem.Cells(2).Value = MyDataGridRowItem.Cells(2).Value
-                                                          MyNewDataGridItem.Cells(3).Value = MyDataGridRowItem.Cells(3).Value
-                                                          MyNewDataGridItem.DateObject = MyDataGridRowItem.DateObject
-
-                                                          listOfSearchResults.Add(MyNewDataGridItem)
+                                                          With MyDataGridRowItem
+                                                              listOfSearchResults.Add(MakeDataGridRow(.DateObject, .Cells(0).Value.ToString, .Cells(1).Value, .Cells(2).Value, .Cells(3).Value, logs))
+                                                          End With
                                                       End If
                                                   End If
                                               Next
