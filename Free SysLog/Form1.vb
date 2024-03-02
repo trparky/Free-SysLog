@@ -21,8 +21,11 @@ Public Class Form1
         With MyDataGridViewRow
             .CreateCells(dataGrid)
             .Cells(0).Value = strTime
+            .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(1).Value = strType
+            .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(2).Value = strSourceAddress
+            .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(3).Value = strLog
             .DateObject = dateObject
         End With

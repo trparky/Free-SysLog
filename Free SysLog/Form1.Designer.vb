@@ -369,6 +369,8 @@ Partial Class Form1
         '
         'colTime
         '
+        Me.colTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        Me.colTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         Me.colTime.HeaderText = "Time"
         Me.colTime.Name = "colTime"
         Me.colTime.ReadOnly = True
@@ -376,12 +378,16 @@ Partial Class Form1
         '
         'colType
         '
+        Me.colType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        Me.colType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
         Me.colType.HeaderText = "Type"
         Me.colType.Name = "colType"
         Me.colType.ReadOnly = True
         '
         'colIPAddress
         '
+        Me.colIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        Me.colIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
         Me.colIPAddress.HeaderText = "IP Address"
         Me.colIPAddress.Name = "colIPAddress"
         Me.colIPAddress.ReadOnly = True
