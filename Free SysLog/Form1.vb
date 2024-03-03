@@ -425,6 +425,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub logs_UserDeletingRow(sender As Object, e As DataGridViewRowCancelEventArgs) Handles logs.UserDeletingRow
+        e.Cancel = True
+    End Sub
+
     Private Sub UpdateLogCount()
         btnClearLog.Enabled = logs.Rows.Count <> 0
         NumberOfLogs.Text = $"Number of Log Entries: {logs.Rows.Count:N0}"
