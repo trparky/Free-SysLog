@@ -412,7 +412,7 @@ Public Class Form1
         OpenLogViewerWindow()
     End Sub
 
-    Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs)
+    Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles logs.KeyUp
         If e.KeyValue = Keys.Enter Then
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
