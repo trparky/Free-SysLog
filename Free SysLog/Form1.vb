@@ -427,6 +427,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub logs_KeyDown(sender As Object, e As KeyEventArgs) Handles logs.KeyDown
+        If e.KeyCode = Keys.Enter Then e.Handled = True
+    End Sub
+
     Private Sub logs_UserDeletingRow(sender As Object, e As DataGridViewRowCancelEventArgs) Handles logs.UserDeletingRow
         e.Cancel = True
     End Sub
