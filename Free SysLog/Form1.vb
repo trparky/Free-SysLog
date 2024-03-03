@@ -416,9 +416,11 @@ Public Class Form1
         If e.KeyValue = Keys.Enter Then
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
-            For Each item As MyListViewItem In logs.SelectedRows
-                item.Remove()
-            Next
+            SyncLock dataGridLockObject
+                For Each item As DataGridViewRow In logs.SelectedRows
+                    logs.Rows.Remove(item)
+                Next
+            End SyncLock
 
             UpdateLogCount()
             SaveLogsToDiskSub()
