@@ -71,19 +71,19 @@ Public Class Form1
             Dim myItem As MyDataGridViewRow
 
             SyncLock dataGridLockObject
-            For Each item As DataGridViewRow In logs.Rows
-                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
-                    myItem = DirectCast(item, MyDataGridViewRow)
+                For Each item As DataGridViewRow In logs.Rows
+                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                        myItem = DirectCast(item, MyDataGridViewRow)
 
-                    collectionOfSavedData.Add(New SavedData With {
+                        collectionOfSavedData.Add(New SavedData With {
                                             .time = myItem.Cells(0).Value,
                                             .type = myItem.Cells(1).Value,
                                             .ip = myItem.Cells(2).Value,
                                             .log = myItem.Cells(3).Value,
                                             .DateObject = myItem.DateObject
                                           })
-                End If
-            Next
+                    End If
+                Next
             End SyncLock
 
             Using fileStream As New StreamWriter(My.Settings.logFileLocation)
@@ -427,11 +427,11 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub logs_KeyDown(sender As Object, e As KeyEventArgs) Handles logs.KeyDown
+    Private Sub Logs_KeyDown(sender As Object, e As KeyEventArgs) Handles logs.KeyDown
         If e.KeyCode = Keys.Enter Then e.Handled = True
     End Sub
 
-    Private Sub logs_UserDeletingRow(sender As Object, e As DataGridViewRowCancelEventArgs) Handles logs.UserDeletingRow
+    Private Sub Logs_UserDeletingRow(sender As Object, e As DataGridViewRowCancelEventArgs) Handles logs.UserDeletingRow
         e.Cancel = True
     End Sub
 
