@@ -762,16 +762,6 @@ End Class
 Public Class SavedData
     Public time, type, ip, log As String
     Public DateObject As Date
-
-    Public Function ToListViewItem() As MyListViewItem
-        Dim listViewItem As New MyListViewItem(time)
-        listViewItem.SubItems.Add(type)
-        listViewItem.SubItems.Add(ip)
-        listViewItem.SubItems.Add(log)
-        listViewItem.SubItems.Add("")
-        listViewItem.DateObject = DateObject
-        Return listViewItem
-    End Function
 End Class
 
 Public Class DataGridViewComparer
