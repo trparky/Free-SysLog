@@ -239,6 +239,16 @@ Public Class Form1
             Loop While True
         End If
 
+        loadDataFile()
+
+        sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
+            .Name = "SysLog Thread",
+            .Priority = Threading.ThreadPriority.Lowest
+        }
+        sysLogThreadInstance.Start()
+    End Sub
+
+    Private Sub loadDataFile()
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
@@ -264,12 +274,6 @@ Public Class Form1
             Catch ex As Exception
             End Try
         End If
-
-        sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
-            .Name = "SysLog Thread",
-            .Priority = Threading.ThreadPriority.Lowest
-        }
-        sysLogThreadInstance.Start()
     End Sub
 
     Sub SysLogThread()
