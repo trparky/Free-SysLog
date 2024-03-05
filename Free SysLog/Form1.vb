@@ -281,7 +281,7 @@ Public Class Form1
                     Invoke(Sub()
                                logs.Rows.Clear()
                                logs.Rows.AddRange(listOfLogEntries.ToArray)
-                               logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+                               If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
                                UpdateLogCount()
                            End Sub)
                 End SyncLock
