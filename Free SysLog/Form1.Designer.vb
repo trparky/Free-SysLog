@@ -69,6 +69,7 @@ Partial Class Form1
         Me.colLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColorDialog = New System.Windows.Forms.ColorDialog()
         Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -78,7 +79,7 @@ Partial Class Form1
         'btnServerController
         '
         Me.btnServerController.Name = "btnServerController"
-        Me.btnServerController.Size = New System.Drawing.Size(173, 22)
+        Me.btnServerController.Size = New System.Drawing.Size(180, 22)
         Me.btnServerController.Text = "Stop SysLog Server"
         '
         'btnOpenLogLocation
@@ -160,7 +161,7 @@ Partial Class Form1
         'btnCheckForUpdates
         '
         Me.btnCheckForUpdates.Name = "btnCheckForUpdates"
-        Me.btnCheckForUpdates.Size = New System.Drawing.Size(173, 22)
+        Me.btnCheckForUpdates.Size = New System.Drawing.Size(180, 22)
         Me.btnCheckForUpdates.Text = "Check for Updates"
         '
         'SaveTimer
@@ -246,7 +247,7 @@ Partial Class Form1
         '
         'MainMenuToolStripMenuItem
         '
-        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnCheckForUpdates, Me.btnServerController})
+        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnCheckForUpdates, Me.btnServerController, Me.AboutToolStripMenuItem})
         Me.MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem"
         Me.MainMenuToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
         Me.MainMenuToolStripMenuItem.Text = "Main Menu"
@@ -405,6 +406,12 @@ Partial Class Form1
         Me.ConfigureAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
         Me.ConfigureAlternatingColorToolStripMenuItem.Text = "Configure Alternating Color"
         '
+        'AboutToolStripMenuItem
+        '
+        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AboutToolStripMenuItem.Text = "About"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -481,4 +488,5 @@ Partial Class Form1
     Friend WithEvents colLog As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents ConfigureAlternatingColorToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
 End Class

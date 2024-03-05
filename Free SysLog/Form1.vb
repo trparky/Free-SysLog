@@ -742,6 +742,14 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+#If DEBUG Then
+        MsgBox($"Free SysLog.{vbCrLf}{vbCrLf}Version {checkForUpdates.versionString} (Debug Build)", MsgBoxStyle.Information, Text)
+#Else
+        MsgBox($"Free SysLog.{vbCrLf}{vbCrLf}Version {checkForUpdates.versionString}", MsgBoxStyle.Information, Text)
+#End If
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try
