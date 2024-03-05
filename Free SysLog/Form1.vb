@@ -254,7 +254,10 @@ Public Class Form1
     Private Sub loadDataFile()
         If File.Exists(My.Settings.logFileLocation) Then
             Try
-                Invoke(Sub() lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}")
+                Invoke(Sub()
+                           logs.Rows.Add(MakeDataGridRow(Now, "", "", "", "Loading data and populating data grid... Please Wait.", logs))
+                           lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+                       End Sub)
 
                 Dim collectionOfSavedData As New List(Of SavedData)
 
@@ -270,6 +273,7 @@ Public Class Form1
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
+                               logs.Rows.Clear()
                                logs.Rows.AddRange(listOfLogEntries.ToArray)
                                logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
                                UpdateLogCount()
