@@ -239,19 +239,22 @@ Public Class Form1
             Loop While True
         End If
 
-        loadDataFile()
-
-        sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
-            .Name = "SysLog Thread",
-            .Priority = Threading.ThreadPriority.Lowest
-        }
-        sysLogThreadInstance.Start()
+        Dim worker As New BackgroundWorker()
+        AddHandler worker.DoWork, Sub() loadDataFile()
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
+                                                      .Name = "SysLog Thread",
+                                                      .Priority = Threading.ThreadPriority.Lowest
+                                                  }
+                                                  sysLogThreadInstance.Start()
+                                              End Sub
+        worker.RunWorkerAsync()
     End Sub
 
     Private Sub loadDataFile()
         If File.Exists(My.Settings.logFileLocation) Then
             Try
-                lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+                Invoke(Sub() lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}")
 
                 Dim collectionOfSavedData As New List(Of SavedData)
 
@@ -266,11 +269,12 @@ Public Class Form1
                 Next
 
                 SyncLock dataGridLockObject
-                    logs.Rows.AddRange(listOfLogEntries.ToArray)
-                    logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+                    Invoke(Sub()
+                               logs.Rows.AddRange(listOfLogEntries.ToArray)
+                               logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+                               UpdateLogCount()
+                           End Sub)
                 End SyncLock
-
-                UpdateLogCount()
             Catch ex As Exception
             End Try
         End If
