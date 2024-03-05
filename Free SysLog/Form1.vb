@@ -246,7 +246,7 @@ Public Class Form1
         End If
 
         Dim worker As New BackgroundWorker()
-        AddHandler worker.DoWork, Sub() loadDataFile()
+        AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
                                                       .Name = "SysLog Thread",
@@ -257,7 +257,7 @@ Public Class Form1
         worker.RunWorkerAsync()
     End Sub
 
-    Private Sub loadDataFile()
+    Private Sub LoadDataFile()
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 Invoke(Sub()
