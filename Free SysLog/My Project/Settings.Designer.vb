@@ -279,6 +279,18 @@ Namespace My
                 Me("replacements") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property boolMaximized() As Boolean
+            Get
+                Return CType(Me("boolMaximized"),Boolean)
+            End Get
+            Set
+                Me("boolMaximized") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

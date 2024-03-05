@@ -5,6 +5,7 @@ Imports System.Text
 Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
+Imports System.ComponentModel.Design
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
@@ -98,6 +99,10 @@ Public Class Form1
 
     Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.mainWindowSize = Size
+    End Sub
+
+    Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
+        If boolDoneLoading Then My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -202,6 +207,7 @@ Public Class Form1
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
+        If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
 
         Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
         logs.AlternatingRowsDefaultCellStyle = rowStyle
