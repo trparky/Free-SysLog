@@ -6,6 +6,7 @@ Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 Imports System.ComponentModel.Design
+Imports System.Reflection
 
 Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
@@ -208,6 +209,10 @@ Public Class Form1
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
+
+        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
+        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
+        propInfo?.SetValue(logs, True, Nothing)
 
         Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
         logs.AlternatingRowsDefaultCellStyle = rowStyle
@@ -562,26 +567,25 @@ Public Class Form1
                                               End If
 
                                               SyncLock dataGridLockObject
-                                              For Each item As DataGridViewRow In logs.Rows
-                                                  boolFound = False
-                                                  MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+                                                  For Each item As DataGridViewRow In logs.Rows
+                                                      boolFound = False
+                                                      MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
-                                                  If MyDataGridRowItem IsNot Nothing Then
-                                                      strLogText = MyDataGridRowItem.Cells(3).Value
+                                                      If MyDataGridRowItem IsNot Nothing Then
+                                                          strLogText = MyDataGridRowItem.Cells(3).Value
 
-                                                      If chkRegExSearch.Checked Then
-                                                          If regexCompiledObject.IsMatch(strLogText) Then boolFound = True
-                                                      Else
-                                                          If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then boolFound = True
+                                                          If chkRegExSearch.Checked Then
+                                                              If regexCompiledObject.IsMatch(strLogText) Then boolFound = True
+                                                          Else
+                                                              If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then boolFound = True
+                                                          End If
+                                                          If boolFound Then
+                                                              With MyDataGridRowItem
+                                                                  listOfSearchResults.Add(MakeDataGridRow(.DateObject, .Cells(0).Value.ToString, .Cells(1).Value, .Cells(2).Value, .Cells(3).Value, logs))
+                                                              End With
+                                                          End If
                                                       End If
-
-                                                      If boolFound Then
-                                                          With MyDataGridRowItem
-                                                              listOfSearchResults.Add(MakeDataGridRow(.DateObject, .Cells(0).Value.ToString, .Cells(1).Value, .Cells(2).Value, .Cells(3).Value, logs))
-                                                          End With
-                                                      End If
-                                                  End If
-                                              Next
+                                                  Next
                                               End SyncLock
                                           Catch ex As ArgumentException
                                               MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
@@ -607,7 +611,7 @@ Public Class Form1
     End Sub
 
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
-    Private sortOrder As SortOrder = sortOrder.Descending ' Define soSortOrder at class level
+    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
