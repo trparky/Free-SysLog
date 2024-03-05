@@ -757,7 +757,7 @@ Public Class Form1
                 sDataRecieve = ""
             End While
         Catch e As Exception
-            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text)
+            Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text))
         End Try
     End Sub
 #End Region
