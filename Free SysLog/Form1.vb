@@ -5,7 +5,6 @@ Imports System.Text
 Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
-Imports System.ComponentModel.Design
 Imports System.Reflection
 
 Public Class Form1
