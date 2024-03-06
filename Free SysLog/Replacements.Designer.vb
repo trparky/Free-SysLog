@@ -104,6 +104,7 @@ Partial Class Replacements
         Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnAdd)
         Me.Controls.Add(Me.replacementsListView)
+        Me.MinimumSize = New System.Drawing.Size(917, 489)
         Me.Name = "Replacements"
         Me.Text = "Replacements"
         Me.ResumeLayout(False)

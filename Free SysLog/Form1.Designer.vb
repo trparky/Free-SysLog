@@ -430,6 +430,7 @@ Partial Class Form1
         Me.Controls.Add(Me.txtSysLogServerPort)
         Me.Controls.Add(Me.lblSyslogServerPortLabel)
         Me.MainMenuStrip = Me.MenuStrip
+        Me.MinimumSize = New System.Drawing.Size(1191, 485)
         Me.Name = "Form1"
         Me.Text = "Free SysLog Server"
         Me.StatusStrip1.ResumeLayout(False)

@@ -72,6 +72,7 @@ Partial Class Ignored_Words_and_Phrases
         Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnAdd)
         Me.Controls.Add(Me.listOfWords)
+        Me.MinimumSize = New System.Drawing.Size(495, 304)
         Me.Name = "Ignored_Words_and_Phrases"
         Me.Text = "Ignored Words and Phrases"
         Me.ResumeLayout(False)
