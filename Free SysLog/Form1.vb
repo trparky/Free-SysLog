@@ -14,6 +14,7 @@ Public Class Form1
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private longNumberOfIgnoredLogs As Long = 0
     Private IgnoredLogs As New List(Of MyDataGridViewRow)
+    Private regexCache As New Dictionary(Of String, Regex)
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strType As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -174,7 +175,7 @@ Public Class Form1
             For Each item As ReplacementsClass In replacementsList
                 If item.BoolRegex Then
                     Try
-                        input = Regex.Replace(input, item.StrReplace, item.StrReplaceWith)
+                        input = GetCachedRegex(item.StrReplace, False).Replace(input, item.StrReplaceWith)
                     Catch ex As Exception
                     End Try
                 Else
@@ -365,6 +366,15 @@ Public Class Form1
         End If
     End Function
 
+    Private Function GetCachedRegex(pattern As String, Optional boolCaseInsensitive As Boolean = True) As Regex
+        If Not regexCache.ContainsKey(pattern) Then
+            Dim options As RegexOptions = If(boolCaseInsensitive, RegexOptions.Compiled Or RegexOptions.IgnoreCase, RegexOptions.Compiled)
+            regexCache(pattern) = New Regex(pattern, options)
+        End If
+
+        Return regexCache(pattern)
+    End Function
+
     Private Sub FillLog(sSyslog As String, sFromIp As String)
         Try
             Dim sPriority As String
@@ -379,8 +389,7 @@ Public Class Form1
 
             If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count <> 0 Then
                 For Each word As String In My.Settings.ignored
-                    If sSyslog.CaseInsensitiveContains(word) Then
-
+                    If GetCachedRegex(Regex.Escape(word)).IsMatch(sSyslog) Then
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
@@ -554,7 +563,6 @@ Public Class Form1
             End If
 
             Dim strLogText As String
-            Dim boolFound As Boolean = False
             Dim listOfSearchResults As New List(Of MyDataGridViewRow)
             Dim regexCompiledObject As Regex = Nothing
             Dim MyDataGridRowItem As MyDataGridViewRow
