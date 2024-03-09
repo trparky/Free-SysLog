@@ -11,7 +11,6 @@ Public Class Form1
     Private sysLogThreadInstance As Threading.Thread
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
-    Private intPreviousSearchIndex As Integer = -1
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private longNumberOfIgnoredLogs As Long = 0
     Private IgnoredLogs As New List(Of MyDataGridViewRow)
@@ -572,22 +571,18 @@ Public Class Form1
                                                   Else
                                                       regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled)
                                                   End If
+                                              Else
+                                                  regexCompiledObject = New Regex(Regex.Escape(txtSearchTerms.Text), RegexOptions.Compiled + RegexOptions.IgnoreCase)
                                               End If
 
                                               SyncLock dataGridLockObject
                                                   For Each item As DataGridViewRow In logs.Rows
-                                                      boolFound = False
                                                       MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                       If MyDataGridRowItem IsNot Nothing Then
                                                           strLogText = MyDataGridRowItem.Cells(3).Value
 
-                                                          If chkRegExSearch.Checked Then
-                                                              If regexCompiledObject.IsMatch(strLogText) Then boolFound = True
-                                                          Else
-                                                              If strLogText.CaseInsensitiveContains(txtSearchTerms.Text) And item.Index > intPreviousSearchIndex Then boolFound = True
-                                                          End If
-                                                          If boolFound Then
+                                                          If regexCompiledObject.IsMatch(strLogText) Then
                                                               With MyDataGridRowItem
                                                                   listOfSearchResults.Add(MakeDataGridRow(.DateObject, .Cells(0).Value.ToString, .Cells(1).Value, .Cells(2).Value, .Cells(3).Value, logs))
                                                               End With
