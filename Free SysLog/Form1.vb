@@ -194,6 +194,13 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
 
+        colTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        colTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
+        colType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        colType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+        colIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        colIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+
         chkRecordIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not chkRecordIgnoredLogs.Checked
