@@ -553,6 +553,8 @@ Public Class Form1
             Dim regexCompiledObject As Regex = Nothing
             Dim MyDataGridRowItem As MyDataGridViewRow
 
+            btnSearch.Enabled = False
+
             Dim worker As New BackgroundWorker()
 
             AddHandler worker.DoWork, Sub()
@@ -599,6 +601,8 @@ Public Class Form1
                                                       Else
                                                           MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
                                                       End If
+
+                                                      Invoke(Sub() btnSearch.Enabled = True)
                                                   End Sub
 
             worker.RunWorkerAsync()
