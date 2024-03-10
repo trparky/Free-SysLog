@@ -673,6 +673,7 @@ Public Class Form1
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
         Using ignored As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ignored.ShowDialog(Me)
+            regexCache.Clear()
         End Using
     End Sub
 
@@ -752,6 +753,7 @@ Public Class Form1
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
         Using ReplacementsWindow As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsWindow.ShowDialog(Me)
+            regexCache.Clear()
         End Using
     End Sub
 
