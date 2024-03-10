@@ -175,7 +175,7 @@ Public Class Form1
             For Each item As ReplacementsClass In replacementsList
                 If item.BoolRegex Then
                     Try
-                        input = GetCachedRegex(item.StrReplace, False).Replace(input, item.StrReplaceWith)
+                        input = GetCachedRegex(item.StrReplace, item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
                     Catch ex As Exception
                     End Try
                 Else
