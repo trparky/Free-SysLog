@@ -10,6 +10,20 @@
 
         Return If(screenBounds.Contains(windowBounds), point, New Point(0, 0))
     End Function
+
+    Public Sub SelectFileInWindowsExplorer(strFullPath As String)
+        If Not String.IsNullOrEmpty(strFullPath) AndAlso IO.File.Exists(strFullPath) Then
+            Dim pidlList As IntPtr = NativeMethod.NativeMethods.ILCreateFromPathW(strFullPath)
+
+            If Not pidlList.Equals(IntPtr.Zero) Then
+                Try
+                    NativeMethod.NativeMethods.SHOpenFolderAndSelectItems(pidlList, 0, IntPtr.Zero, 0)
+                Finally
+                    NativeMethod.NativeMethods.ILFree(pidlList)
+                End Try
+            End If
+        End If
+    End Sub
 End Module
 
 Public Class ReplacementsClass
