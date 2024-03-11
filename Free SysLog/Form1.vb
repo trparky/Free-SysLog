@@ -51,19 +51,21 @@ Public Class Form1
     End Function
 
     Private Sub BtnMoveLogFile_Click(sender As Object, e As EventArgs) Handles btnMoveLogFile.Click
-        SaveFileDialog.Filter = "JSON Data File|*.json"
+        Using SaveFileDialog As New SaveFileDialog()
+            SaveFileDialog.Filter = "JSON Data File|*.json"
 
-        Do
-            If SaveFileDialog.ShowDialog() = DialogResult.OK Then
-                SyncLock lockObject
-                    If File.Exists(SaveFileDialog.FileName) Then File.Delete(SaveFileDialog.FileName)
-                    File.Move(My.Settings.logFileLocation, SaveFileDialog.FileName)
-                    My.Settings.logFileLocation = SaveFileDialog.FileName
-                    My.Settings.Save()
-                    Exit Do
-                End SyncLock
-            End If
-        Loop While True
+            Do
+                If SaveFileDialog.ShowDialog() = DialogResult.OK Then
+                    SyncLock lockObject
+                        If File.Exists(SaveFileDialog.FileName) Then File.Delete(SaveFileDialog.FileName)
+                        File.Move(My.Settings.logFileLocation, SaveFileDialog.FileName)
+                        My.Settings.logFileLocation = SaveFileDialog.FileName
+                        My.Settings.Save()
+                        Exit Do
+                    End SyncLock
+                End If
+            Loop While True
+        End Using
     End Sub
 
     Private Sub WriteLogsToDisk()
@@ -242,18 +244,21 @@ Public Class Form1
         colLog.Width = My.Settings.columnLogSize
 
         boolDoneLoading = True
-        SaveFileDialog.Filter = "JSON Data File|*.json"
 
         If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
-            Do
-                If SaveFileDialog.ShowDialog() = DialogResult.OK Then
-                    My.Settings.logFileLocation = SaveFileDialog.FileName
-                    My.Settings.Save()
-                    Exit Do
-                Else
-                    MsgBox("You must set a location to save the syslog data file to.", MsgBoxStyle.Information, Text)
-                End If
-            Loop While True
+            Using SaveFileDialog As New SaveFileDialog()
+                SaveFileDialog.Filter = "JSON Data File|*.json"
+
+                Do
+                    If SaveFileDialog.ShowDialog() = DialogResult.OK Then
+                        My.Settings.logFileLocation = SaveFileDialog.FileName
+                        My.Settings.Save()
+                        Exit Do
+                    Else
+                        MsgBox("You must set a location to save the syslog data file to.", MsgBoxStyle.Information, Text)
+                    End If
+                Loop While True
+            End Using
         End If
 
         Dim worker As New BackgroundWorker()
@@ -749,12 +754,14 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlternatingColorToolStripMenuItem.Click
-        If ColorDialog.ShowDialog() = DialogResult.OK Then
-            My.Settings.searchColor = ColorDialog.Color
+        Using ColorDialog As New ColorDialog()
+            If ColorDialog.ShowDialog() = DialogResult.OK Then
+                My.Settings.searchColor = ColorDialog.Color
 
-            Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color}
-            logs.AlternatingRowsDefaultCellStyle = rowStyle
-        End If
+                Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color}
+                logs.AlternatingRowsDefaultCellStyle = rowStyle
+            End If
+        End Using
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
@@ -766,29 +773,33 @@ Public Class Form1
     End Sub
 
     Private Sub ExportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportToolStripMenuItem.Click
-        SaveFileDialog.Title = "Safe Program Settings..."
-        SaveFileDialog.Filter = "JSON File|*.json"
+        Using SaveFileDialog As New SaveFileDialog()
+            SaveFileDialog.Title = "Safe Program Settings..."
+            SaveFileDialog.Filter = "JSON File|*.json"
 
-        If SaveFileDialog.ShowDialog() = DialogResult.OK Then
-            Try
-                SaveApplicationSettingsToFile(SaveFileDialog.FileName)
-                If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
-            Catch ex As Exception
-                MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
-            End Try
-        End If
+            If SaveFileDialog.ShowDialog() = DialogResult.OK Then
+                Try
+                    SaveApplicationSettingsToFile(SaveFileDialog.FileName)
+                    If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+                Catch ex As Exception
+                    MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
+                End Try
+            End If
+        End Using
     End Sub
 
     Private Sub ImportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportToolStripMenuItem.Click
-        OpenFileDialog.Title = "Import Program Settings..."
-        OpenFileDialog.Filter = "JSON File|*.json"
+        Using OpenFileDialog As New OpenFileDialog()
+            OpenFileDialog.Title = "Import Program Settings..."
+            OpenFileDialog.Filter = "JSON File|*.json"
 
-        If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
-            My.Settings.Save()
-            MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
-            Process.Start(Application.ExecutablePath)
-            Process.GetCurrentProcess.Kill()
-        End If
+            If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
+                My.Settings.Save()
+                MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
+                Process.Start(Application.ExecutablePath)
+                Process.GetCurrentProcess.Kill()
+            End If
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"
