@@ -51,21 +51,21 @@ Public Class Form1
     End Function
 
     Private Sub BtnMoveLogFile_Click(sender As Object, e As EventArgs) Handles btnMoveLogFile.Click
-        Using SaveFileDialog As New SaveFileDialog()
-            SaveFileDialog.Filter = "JSON Data File|*.json"
+        SyncLock lockObject
+            Using SaveFileDialog As New SaveFileDialog()
+                SaveFileDialog.Filter = "JSON Data File|*.json"
 
-            Do
-                If SaveFileDialog.ShowDialog() = DialogResult.OK Then
-                    SyncLock lockObject
+                Do
+                    If SaveFileDialog.ShowDialog() = DialogResult.OK Then
                         If File.Exists(SaveFileDialog.FileName) Then File.Delete(SaveFileDialog.FileName)
                         File.Move(My.Settings.logFileLocation, SaveFileDialog.FileName)
                         My.Settings.logFileLocation = SaveFileDialog.FileName
                         My.Settings.Save()
                         Exit Do
-                    End SyncLock
-                End If
-            Loop While True
-        End Using
+                    End If
+                Loop While True
+            End Using
+        End SyncLock
     End Sub
 
     Private Sub WriteLogsToDisk()
