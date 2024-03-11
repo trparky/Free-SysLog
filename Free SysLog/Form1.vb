@@ -765,6 +765,32 @@ Public Class Form1
 #End If
     End Sub
 
+    Private Sub ExportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportToolStripMenuItem.Click
+        SaveFileDialog.Title = "Safe Program Settings..."
+        SaveFileDialog.Filter = "JSON File|*.json"
+
+        If SaveFileDialog.ShowDialog() = DialogResult.OK Then
+            Try
+                SaveApplicationSettingsToFile(SaveFileDialog.FileName)
+                If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+            Catch ex As Exception
+                MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
+            End Try
+        End If
+    End Sub
+
+    Private Sub ImportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportToolStripMenuItem.Click
+        OpenFileDialog.Title = "Import Program Settings..."
+        OpenFileDialog.Filter = "JSON File|*.json"
+
+        If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
+            My.Settings.Save()
+            MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
+            Process.Start(Application.ExecutablePath)
+            Process.GetCurrentProcess.Kill()
+        End If
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Public Sub ListenForSyslogs()
         Try

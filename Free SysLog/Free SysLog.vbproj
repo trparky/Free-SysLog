@@ -176,6 +176,7 @@
     <Compile Include="Replacements.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="SaveAppSettings.vb" />
     <Compile Include="Search for Process and Kill It.vb" />
     <Compile Include="StringExtensions.vb" />
     <Compile Include="SupportCode.vb" />
