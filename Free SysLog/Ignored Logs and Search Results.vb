@@ -1,4 +1,6 @@
 ﻿Imports System.ComponentModel
+Imports System.IO
+Imports System.Xml.Serialization
 
 Public Class Ignored_Logs_and_Search_Results
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
@@ -90,6 +92,45 @@ Public Class Ignored_Logs_and_Search_Results
 
     Private Sub Ignored_Logs_and_Search_Results_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
         If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
+    End Sub
+
+    Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        SaveFileDialog.Filter = "XML File|*.xml|JSON File|*.json"
+        SaveFileDialog.Title = "Export..."
+
+        If SaveFileDialog.ShowDialog() = DialogResult.OK Then
+            Dim fileInfo As New IO.FileInfo(SaveFileDialog.FileName)
+
+            Dim collectionOfSavedData As New List(Of SavedData)
+            Dim myItem As MyDataGridViewRow
+
+            For Each item As DataGridViewRow In logs.Rows
+                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    myItem = DirectCast(item, MyDataGridViewRow)
+
+                    collectionOfSavedData.Add(New SavedData With {
+                                            .time = myItem.Cells(0).Value,
+                                            .type = myItem.Cells(1).Value,
+                                            .ip = myItem.Cells(2).Value,
+                                            .log = myItem.Cells(3).Value,
+                                            .DateObject = myItem.DateObject
+                                          })
+                End If
+            Next
+
+            Using fileStream As New StreamWriter(SaveFileDialog.FileName)
+                If fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) Then
+                    Dim xmlSerializerObject As New XmlSerializer(collectionOfSavedData.GetType)
+                    xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
+                ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
+                    fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                End If
+            End Using
+
+            If MsgBox($"Data exported to ""{SaveFileDialog.FileName}"" successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+                SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+            End If
+        End If
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing

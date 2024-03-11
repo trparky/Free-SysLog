@@ -30,6 +30,8 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
+        Me.BtnExport = New System.Windows.Forms.Button()
+        Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         CType(Me.logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -60,7 +62,7 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.logs.Name = "logs"
         Me.logs.ReadOnly = True
         Me.logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.logs.Size = New System.Drawing.Size(1128, 388)
+        Me.logs.Size = New System.Drawing.Size(1128, 359)
         Me.logs.TabIndex = 19
         '
         'colTime
@@ -95,11 +97,22 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.colLog.Name = "colLog"
         Me.colLog.ReadOnly = True
         '
+        'BtnExport
+        '
+        Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnExport.Location = New System.Drawing.Point(1065, 377)
+        Me.BtnExport.Name = "BtnExport"
+        Me.BtnExport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnExport.TabIndex = 20
+        Me.BtnExport.Text = "Export"
+        Me.BtnExport.UseVisualStyleBackColor = True
+        '
         'Ignored_Logs_and_Search_Results
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 425)
+        Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.logs)
         Me.Controls.Add(Me.StatusStrip1)
         Me.MinimumSize = New System.Drawing.Size(1168, 464)
@@ -119,4 +132,6 @@ Partial Class Ignored_Logs_and_Search_Results
     Friend WithEvents colType As DataGridViewTextBoxColumn
     Friend WithEvents colIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents colLog As DataGridViewTextBoxColumn
+    Friend WithEvents BtnExport As Button
+    Friend WithEvents SaveFileDialog As SaveFileDialog
 End Class
