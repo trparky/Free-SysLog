@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
+Imports System.Reflection
 Imports System.Xml.Serialization
 
 Public Class Ignored_Logs_and_Search_Results
@@ -81,6 +82,10 @@ Public Class Ignored_Logs_and_Search_Results
         colType.Width = My.Settings.columnTypeSize
         colIPAddress.Width = My.Settings.columnIPSize
         colLog.Width = My.Settings.columnLogSize
+
+        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
+        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
+        propInfo?.SetValue(logs, True, Nothing)
 
         Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
         logs.AlternatingRowsDefaultCellStyle = rowStyle
