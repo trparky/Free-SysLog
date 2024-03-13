@@ -318,23 +318,6 @@ Public Class Form1
         SelectFileInWindowsExplorer(My.Settings.logFileLocation)
     End Sub
 
-    Private Sub BtnServerController_Click(sender As Object, e As EventArgs) Handles btnServerController.Click
-        If btnServerController.Text = "Stop SysLog Server" Then
-            sysLogThreadInstance.Abort()
-            btnServerController.Text = "Start SysLog Server"
-            sysLogThreadInstance = Nothing
-        Else
-            btnServerController.Text = "Stop SysLog Server"
-
-            sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
-                .Name = "SysLog Thread",
-                .Priority = Threading.ThreadPriority.Lowest,
-                .IsBackground = True
-            }
-            sysLogThreadInstance.Start()
-        End If
-    End Sub
-
     Private Function GetSyslogPriority(sSyslog As String) As String
         If sSyslog.Contains("L0") Then
             Return "Emergency (0)"

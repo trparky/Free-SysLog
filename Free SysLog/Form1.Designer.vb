@@ -23,7 +23,6 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.btnServerController = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnClearLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
@@ -76,12 +75,6 @@ Partial Class Form1
         Me.MenuStrip.SuspendLayout()
         CType(Me.logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'btnServerController
-        '
-        Me.btnServerController.Name = "btnServerController"
-        Me.btnServerController.Size = New System.Drawing.Size(180, 22)
-        Me.btnServerController.Text = "Stop SysLog Server"
         '
         'btnOpenLogLocation
         '
@@ -248,7 +241,7 @@ Partial Class Form1
         '
         'MainMenuToolStripMenuItem
         '
-        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnCheckForUpdates, Me.btnServerController, Me.AboutToolStripMenuItem})
+        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnCheckForUpdates, Me.AboutToolStripMenuItem})
         Me.MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem"
         Me.MainMenuToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
         Me.MainMenuToolStripMenuItem.Text = "Main Menu"
@@ -457,7 +450,6 @@ Partial Class Form1
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents btnServerController As ToolStripMenuItem
     Friend WithEvents btnOpenLogLocation As ToolStripMenuItem
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents StatusStrip1 As StatusStrip
