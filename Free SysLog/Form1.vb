@@ -8,7 +8,6 @@ Imports System.Text.RegularExpressions
 Imports System.Reflection
 
 Public Class Form1
-    Private sysLogThreadInstance As Threading.Thread
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
@@ -109,13 +108,6 @@ Public Class Form1
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         WriteLogsToDisk()
-
-        Try
-            sysLogThreadInstance.Abort()
-        Catch ex As Exception
-            ' Does nothing.
-        End Try
-
         Process.GetCurrentProcess.Kill()
     End Sub
 
@@ -264,11 +256,8 @@ Public Class Form1
         Dim worker As New BackgroundWorker()
         AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, Sub()
-                                                  sysLogThreadInstance = New Threading.Thread(AddressOf SysLogThread) With {
-                                                      .Name = "SysLog Thread",
-                                                      .Priority = Threading.ThreadPriority.Lowest
-                                                  }
-                                                  sysLogThreadInstance.Start()
+                                                  Dim serverThread As New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
+                                                  serverThread.Start()
                                               End Sub
         worker.RunWorkerAsync()
     End Sub
@@ -304,14 +293,6 @@ Public Class Form1
             Catch ex As Exception
             End Try
         End If
-    End Sub
-
-    Sub SysLogThread()
-        Try
-            ListenForSyslogs()
-        Catch ex As Threading.ThreadAbortException
-            ' Does nothing
-        End Try
     End Sub
 
     Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles btnOpenLogLocation.Click
@@ -514,12 +495,6 @@ Public Class Form1
                     My.Settings.Save()
 
                     WriteLogsToDisk()
-
-                    Try
-                        sysLogThreadInstance.Abort()
-                    Catch ex As Exception
-                        ' Does nothing.
-                    End Try
 
                     Process.GetCurrentProcess.Kill()
                 End If
@@ -786,7 +761,7 @@ Public Class Form1
     End Sub
 
 #Region "-- SysLog Server Code --"
-    Public Sub ListenForSyslogs()
+    Sub SysLogThread()
         Try
             Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
             Dim udpcUDPClient As New UdpClient(My.Settings.sysLogPort)
@@ -803,6 +778,8 @@ Public Class Form1
 
                 sDataRecieve = ""
             End While
+        Catch ex As Threading.ThreadAbortException
+            ' Does nothing
         Catch e As Exception
             Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text))
         End Try
