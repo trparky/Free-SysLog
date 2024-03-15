@@ -322,11 +322,7 @@ Public Class Form1
     End Function
 
     Private Function GetCachedRegex(pattern As String, Optional boolCaseInsensitive As Boolean = True) As Regex
-        If Not regexCache.ContainsKey(pattern) Then
-            Dim options As RegexOptions = If(boolCaseInsensitive, RegexOptions.Compiled Or RegexOptions.IgnoreCase, RegexOptions.Compiled)
-            regexCache(pattern) = New Regex(pattern, options)
-        End If
-
+        If Not regexCache.ContainsKey(pattern) Then regexCache(pattern) = New Regex(pattern, If(boolCaseInsensitive, RegexOptions.Compiled Or RegexOptions.IgnoreCase, RegexOptions.Compiled))
         Return regexCache(pattern)
     End Function
 
