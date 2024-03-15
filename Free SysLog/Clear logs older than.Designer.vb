@@ -73,6 +73,7 @@ Partial Class Clear_logs_older_than
         Me.Controls.Add(Me.DateTimePicker)
         Me.Controls.Add(Me.lblLogCount)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "Clear_logs_older_than"

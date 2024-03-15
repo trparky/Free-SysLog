@@ -16,4 +16,8 @@
         btnClearLogs.Enabled = True
         boolSuccess = True
     End Sub
+
+    Private Sub Clear_logs_older_than_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Escape Then Close()
+    End Sub
 End Class
