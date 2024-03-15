@@ -523,11 +523,7 @@ Public Class Form1
             AddHandler worker.DoWork, Sub()
                                           Try
                                               If chkRegExSearch.Checked Then
-                                                  If chkRegexCaseInsensitive.Enabled Then
-                                                      regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled + RegexOptions.IgnoreCase)
-                                                  Else
-                                                      regexCompiledObject = New Regex(txtSearchTerms.Text, RegexOptions.Compiled)
-                                                  End If
+                                                  regexCompiledObject = New Regex(txtSearchTerms.Text, If(chkRegexCaseInsensitive.Enabled, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled))
                                               Else
                                                   regexCompiledObject = New Regex(Regex.Escape(txtSearchTerms.Text), RegexOptions.Compiled + RegexOptions.IgnoreCase)
                                               End If
