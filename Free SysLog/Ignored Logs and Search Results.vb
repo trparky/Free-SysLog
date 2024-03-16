@@ -99,8 +99,14 @@ Public Class Ignored_Logs_and_Search_Results
         If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
     End Sub
 
+    Private Function SanitizeForCSV(input As String) As String
+        If input.Contains(Chr(34)) Then input = input.Replace(Chr(34), Chr(34) & Chr(34))
+        If input.Contains(",") Then input = $"{Chr(34)}{input}{Chr(34)}"
+        Return input
+    End Function
+
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
-        SaveFileDialog.Filter = "XML File|*.xml|JSON File|*.json"
+        SaveFileDialog.Filter = "XML File|*.xml|JSON File|*.json|CSV (Comma Separated Value)|*.csv"
         SaveFileDialog.Title = "Export..."
 
         If SaveFileDialog.ShowDialog() = DialogResult.OK Then
@@ -108,18 +114,33 @@ Public Class Ignored_Logs_and_Search_Results
 
             Dim collectionOfSavedData As New List(Of SavedData)
             Dim myItem As MyDataGridViewRow
+            Dim csvStringBuilder As New Text.StringBuilder
+            Dim strTime, strType, strSourceIP, strLogText As String
+
+            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Type,Source IP,Log Text")
 
             For Each item As DataGridViewRow In logs.Rows
                 If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 
-                    collectionOfSavedData.Add(New SavedData With {
-                                            .time = myItem.Cells(0).Value,
-                                            .type = myItem.Cells(1).Value,
-                                            .ip = myItem.Cells(2).Value,
-                                            .log = myItem.Cells(3).Value,
-                                            .DateObject = myItem.DateObject
-                                          })
+                    If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                        With myItem
+                            strTime = SanitizeForCSV(.Cells(0).Value)
+                            strType = SanitizeForCSV(.Cells(1).Value)
+                            strSourceIP = SanitizeForCSV(.Cells(2).Value)
+                            strLogText = SanitizeForCSV(.Cells(3).Value)
+                        End With
+
+                        csvStringBuilder.AppendLine($"{strTime},{strType},{strSourceIP},{strLogText}")
+                    Else
+                        collectionOfSavedData.Add(New SavedData With {
+                                                .time = myItem.Cells(0).Value,
+                                                .type = myItem.Cells(1).Value,
+                                                .ip = myItem.Cells(2).Value,
+                                                .log = myItem.Cells(3).Value,
+                                                .DateObject = myItem.DateObject
+                                              })
+                    End If
                 End If
             Next
 
@@ -129,6 +150,8 @@ Public Class Ignored_Logs_and_Search_Results
                     xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
                 ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
                     fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                    fileStream.Write(csvStringBuilder.ToString.Trim)
                 End If
             End Using
 
