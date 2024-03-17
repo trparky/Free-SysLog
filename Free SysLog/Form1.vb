@@ -753,6 +753,49 @@ Public Class Form1
         End Using
     End Sub
 
+    Private Sub ClearLogsOlderThan(daysToKeep As Integer)
+        Try
+            Dim dateChosenDate As Date = Date.Today.AddDays(-daysToKeep)
+
+            SyncLock dataGridLockObject
+                logs.AllowUserToOrderColumns = False
+                logs.Enabled = False
+
+                For i As Integer = logs.Rows.Count - 1 To 0 Step -1
+                    Dim item As MyDataGridViewRow = CType(logs.Rows(i), MyDataGridViewRow)
+
+                    If item.DateObject.Date <= dateChosenDate.Date Then
+                        logs.Rows.RemoveAt(i)
+                    End If
+                Next
+
+                logs.Enabled = True
+                logs.AllowUserToOrderColumns = True
+            End SyncLock
+
+            UpdateLogCount()
+            SaveLogsToDiskSub()
+        Catch ex As ArgumentOutOfRangeException
+            ' Handle exception if necessary
+        End Try
+    End Sub
+
+    Private Sub OlderThan1DayToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OlderThan1DayToolStripMenuItem.Click
+        ClearLogsOlderThan(1)
+    End Sub
+
+    Private Sub OlderThan2DaysToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OlderThan2DaysToolStripMenuItem.Click
+        ClearLogsOlderThan(2)
+    End Sub
+
+    Private Sub OlderThan3DaysToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OlderThan3DaysToolStripMenuItem.Click
+        ClearLogsOlderThan(3)
+    End Sub
+
+    Private Sub OlderThanAWeekToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OlderThanAWeekToolStripMenuItem.Click
+        ClearLogsOlderThan(7)
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try

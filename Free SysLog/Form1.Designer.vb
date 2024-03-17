@@ -70,6 +70,10 @@ Partial Class Form1
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThan1DayToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThan2DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -98,6 +102,7 @@ Partial Class Form1
         '
         'LogsOlderThanToolStripMenuItem
         '
+        Me.LogsOlderThanToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OlderThan1DayToolStripMenuItem, Me.OlderThan2DaysToolStripMenuItem, Me.OlderThan3DaysToolStripMenuItem, Me.OlderThanAWeekToolStripMenuItem})
         Me.LogsOlderThanToolStripMenuItem.Name = "LogsOlderThanToolStripMenuItem"
         Me.LogsOlderThanToolStripMenuItem.Size = New System.Drawing.Size(165, 22)
         Me.LogsOlderThanToolStripMenuItem.Text = "Logs older than..."
@@ -149,13 +154,13 @@ Partial Class Form1
         '
         Me.chkAutoScroll.CheckOnClick = True
         Me.chkAutoScroll.Name = "chkAutoScroll"
-        Me.chkAutoScroll.Size = New System.Drawing.Size(221, 22)
+        Me.chkAutoScroll.Size = New System.Drawing.Size(243, 22)
         Me.chkAutoScroll.Text = "Auto Scroll"
         '
         'btnCheckForUpdates
         '
         Me.btnCheckForUpdates.Name = "btnCheckForUpdates"
-        Me.btnCheckForUpdates.Size = New System.Drawing.Size(180, 22)
+        Me.btnCheckForUpdates.Size = New System.Drawing.Size(171, 22)
         Me.btnCheckForUpdates.Text = "Check for Updates"
         '
         'SaveTimer
@@ -166,7 +171,7 @@ Partial Class Form1
         '
         Me.chkAutoSave.CheckOnClick = True
         Me.chkAutoSave.Name = "chkAutoSave"
-        Me.chkAutoSave.Size = New System.Drawing.Size(221, 22)
+        Me.chkAutoSave.Size = New System.Drawing.Size(243, 22)
         Me.chkAutoSave.Text = "Auto Save"
         '
         'lblAutoSaveLabel
@@ -180,7 +185,7 @@ Partial Class Form1
         '
         'NumericUpDown
         '
-        Me.NumericUpDown.Location = New System.Drawing.Point(351, 26)
+        Me.NumericUpDown.Location = New System.Drawing.Point(351, 25)
         Me.NumericUpDown.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.NumericUpDown.Name = "NumericUpDown"
         Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
@@ -191,13 +196,13 @@ Partial Class Form1
         '
         Me.chkStartAtUserStartup.CheckOnClick = True
         Me.chkStartAtUserStartup.Name = "chkStartAtUserStartup"
-        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(221, 22)
+        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(243, 22)
         Me.chkStartAtUserStartup.Text = "Start at Startup"
         '
         'btnMoveLogFile
         '
         Me.btnMoveLogFile.Name = "btnMoveLogFile"
-        Me.btnMoveLogFile.Size = New System.Drawing.Size(221, 22)
+        Me.btnMoveLogFile.Size = New System.Drawing.Size(243, 22)
         Me.btnMoveLogFile.Text = "Move Log File"
         '
         'lblSyslogServerPortLabel
@@ -291,20 +296,20 @@ Partial Class Form1
         'ConfigureReplacementsToolStripMenuItem
         '
         Me.ConfigureReplacementsToolStripMenuItem.Name = "ConfigureReplacementsToolStripMenuItem"
-        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
+        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
         Me.ConfigureReplacementsToolStripMenuItem.Text = "Configure Replacements"
         '
         'IgnoredWordsAndPhrasesToolStripMenuItem
         '
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Name = "IgnoredWordsAndPhrasesToolStripMenuItem"
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
         '
         'chkRecordIgnoredLogs
         '
         Me.chkRecordIgnoredLogs.CheckOnClick = True
         Me.chkRecordIgnoredLogs.Name = "chkRecordIgnoredLogs"
-        Me.chkRecordIgnoredLogs.Size = New System.Drawing.Size(221, 22)
+        Me.chkRecordIgnoredLogs.Size = New System.Drawing.Size(243, 22)
         Me.chkRecordIgnoredLogs.Text = "Record Ignored Logs"
         '
         'lblSearchLabel
@@ -391,33 +396,57 @@ Partial Class Form1
         'ConfigureAlternatingColorToolStripMenuItem
         '
         Me.ConfigureAlternatingColorToolStripMenuItem.Name = "ConfigureAlternatingColorToolStripMenuItem"
-        Me.ConfigureAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
+        Me.ConfigureAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
         Me.ConfigureAlternatingColorToolStripMenuItem.Text = "Configure Alternating Color"
         '
         'AboutToolStripMenuItem
         '
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(171, 22)
         Me.AboutToolStripMenuItem.Text = "About"
         '
         'ImportExportSettingsToolStripMenuItem
         '
         Me.ImportExportSettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExportToolStripMenuItem, Me.ImportToolStripMenuItem})
         Me.ImportExportSettingsToolStripMenuItem.Name = "ImportExportSettingsToolStripMenuItem"
-        Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
+        Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
         Me.ImportExportSettingsToolStripMenuItem.Text = "Import/Export Program Settings"
         '
         'ExportToolStripMenuItem
         '
         Me.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem"
-        Me.ExportToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ExportToolStripMenuItem.Size = New System.Drawing.Size(110, 22)
         Me.ExportToolStripMenuItem.Text = "Export"
         '
         'ImportToolStripMenuItem
         '
         Me.ImportToolStripMenuItem.Name = "ImportToolStripMenuItem"
-        Me.ImportToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ImportToolStripMenuItem.Size = New System.Drawing.Size(110, 22)
         Me.ImportToolStripMenuItem.Text = "Import"
+        '
+        'OlderThan1DayToolStripMenuItem
+        '
+        Me.OlderThan1DayToolStripMenuItem.Name = "OlderThan1DayToolStripMenuItem"
+        Me.OlderThan1DayToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThan1DayToolStripMenuItem.Text = "Older than 1 day"
+        '
+        'OlderThan2DaysToolStripMenuItem
+        '
+        Me.OlderThan2DaysToolStripMenuItem.Name = "OlderThan2DaysToolStripMenuItem"
+        Me.OlderThan2DaysToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThan2DaysToolStripMenuItem.Text = "Older than 2 days"
+        '
+        'OlderThan3DaysToolStripMenuItem
+        '
+        Me.OlderThan3DaysToolStripMenuItem.Name = "OlderThan3DaysToolStripMenuItem"
+        Me.OlderThan3DaysToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThan3DaysToolStripMenuItem.Text = "Older than 3 days"
+        '
+        'OlderThanAWeekToolStripMenuItem
+        '
+        Me.OlderThanAWeekToolStripMenuItem.Name = "OlderThanAWeekToolStripMenuItem"
+        Me.OlderThanAWeekToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThanAWeekToolStripMenuItem.Text = "Older than a week"
         '
         'Form1
         '
@@ -500,4 +529,8 @@ Partial Class Form1
     Friend WithEvents ExportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenFileDialog As OpenFileDialog
+    Friend WithEvents OlderThan1DayToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OlderThan2DaysToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OlderThan3DaysToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OlderThanAWeekToolStripMenuItem As ToolStripMenuItem
 End Class
