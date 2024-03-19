@@ -280,7 +280,7 @@ Public Class Form1
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
                 For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(MakeDataGridRow(item.DateObject, item.time, item.type, item.ip, item.log, logs))
+                    listOfLogEntries.Add(item.MakeDataGridRow(logs))
                 Next
 
                 SyncLock dataGridLockObject
