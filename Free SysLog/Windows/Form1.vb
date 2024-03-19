@@ -559,8 +559,11 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub TxtSearchTerms_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyUp
-        If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
+    Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            btnSearch.PerformClick()
+        End If
     End Sub
 
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
