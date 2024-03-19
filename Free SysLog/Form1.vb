@@ -533,9 +533,7 @@ Public Class Form1
                                                           strLogText = MyDataGridRowItem.Cells(3).Value
 
                                                           If regexCompiledObject.IsMatch(strLogText) Then
-                                                              With MyDataGridRowItem
-                                                                  listOfSearchResults.Add(MakeDataGridRow(.DateObject, .Cells(0).Value.ToString, .Cells(1).Value, .Cells(2).Value, .Cells(3).Value, logs))
-                                                              End With
+                                                              listOfSearchResults.Add(MyDataGridRowItem.Clone())
                                                           End If
                                                       End If
                                                   Next
