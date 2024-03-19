@@ -168,7 +168,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="MyDataGridViewRow.vb" />
-    <Compile Include="MyListViewItem.vb" />
+    <Compile Include="MyReplacementsListViewItem.vb" />
     <Compile Include="NativeMethod.vb" />
     <Compile Include="Replacements.Designer.vb">
       <DependentUpon>Replacements.vb</DependentUpon>
