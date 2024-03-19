@@ -118,7 +118,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="Check for Update.vb" />
+    <Compile Include="Support Code\Check for Update.vb" />
     <Compile Include="Clear logs older than.Designer.vb">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
     </Compile>
@@ -132,7 +132,7 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HTTPHelper.vb" />
+    <Compile Include="Support Code\HTTPHelper.vb" />
     <Compile Include="Ignored Logs and Search Results.Designer.vb">
       <DependentUpon>Ignored Logs and Search Results.vb</DependentUpon>
     </Compile>
@@ -167,21 +167,21 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="MyDataGridViewRow.vb" />
-    <Compile Include="MyReplacementsListViewItem.vb" />
-    <Compile Include="NativeMethod.vb" />
+    <Compile Include="Support Code\MyDataGridViewRow.vb" />
+    <Compile Include="Support Code\MyReplacementsListViewItem.vb" />
+    <Compile Include="Support Code\NativeMethod.vb" />
     <Compile Include="Replacements.Designer.vb">
       <DependentUpon>Replacements.vb</DependentUpon>
     </Compile>
     <Compile Include="Replacements.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SaveAppSettings.vb" />
-    <Compile Include="SavedData.vb" />
-    <Compile Include="Search for Process and Kill It.vb" />
-    <Compile Include="StringExtensions.vb" />
-    <Compile Include="SupportCode.vb" />
-    <Compile Include="SysLog.vb" />
+    <Compile Include="Support Code\SaveAppSettings.vb" />
+    <Compile Include="Support Code\SavedData.vb" />
+    <Compile Include="Support Code\Search for Process and Kill It.vb" />
+    <Compile Include="Support Code\StringExtensions.vb" />
+    <Compile Include="Support Code\SupportCode.vb" />
+    <Compile Include="Support Code\SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AddReplacement.resx">
