@@ -823,11 +823,6 @@ Public Class Form1
 #End Region
 End Class
 
-Public Class SavedData
-    Public time, type, ip, log As String
-    Public DateObject As Date
-End Class
-
 Public Class DataGridViewComparer
     Implements IComparer(Of DataGridViewRow)
 
