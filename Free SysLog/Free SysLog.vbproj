@@ -111,44 +111,44 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddReplacement.Designer.vb">
+    <Compile Include="Windows\AddReplacement.Designer.vb">
       <DependentUpon>AddReplacement.vb</DependentUpon>
     </Compile>
-    <Compile Include="AddReplacement.vb">
+    <Compile Include="Windows\AddReplacement.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Support Code\Check for Update.vb" />
-    <Compile Include="Clear logs older than.Designer.vb">
+    <Compile Include="Windows\Clear logs older than.Designer.vb">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
     </Compile>
-    <Compile Include="Clear logs older than.vb">
+    <Compile Include="Windows\Clear logs older than.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.vb">
+    <Compile Include="Windows\Form1.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.vb">
+    <Compile Include="Windows\Form1.Designer.vb">
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Support Code\HTTPHelper.vb" />
-    <Compile Include="Ignored Logs and Search Results.Designer.vb">
+    <Compile Include="Windows\Ignored Logs and Search Results.Designer.vb">
       <DependentUpon>Ignored Logs and Search Results.vb</DependentUpon>
     </Compile>
-    <Compile Include="Ignored Logs and Search Results.vb">
+    <Compile Include="Windows\Ignored Logs and Search Results.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ignored Words and Phrases.Designer.vb">
+    <Compile Include="Windows\Ignored Words and Phrases.Designer.vb">
       <DependentUpon>Ignored Words and Phrases.vb</DependentUpon>
     </Compile>
-    <Compile Include="Ignored Words and Phrases.vb">
+    <Compile Include="Windows\Ignored Words and Phrases.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Log Viewer.Designer.vb">
+    <Compile Include="Windows\Log Viewer.Designer.vb">
       <DependentUpon>Log Viewer.vb</DependentUpon>
     </Compile>
-    <Compile Include="Log Viewer.vb">
+    <Compile Include="Windows\Log Viewer.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -170,10 +170,10 @@
     <Compile Include="Support Code\MyDataGridViewRow.vb" />
     <Compile Include="Support Code\MyReplacementsListViewItem.vb" />
     <Compile Include="Support Code\NativeMethod.vb" />
-    <Compile Include="Replacements.Designer.vb">
+    <Compile Include="Windows\Replacements.Designer.vb">
       <DependentUpon>Replacements.vb</DependentUpon>
     </Compile>
-    <Compile Include="Replacements.vb">
+    <Compile Include="Windows\Replacements.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Support Code\SaveAppSettings.vb" />
@@ -184,23 +184,23 @@
     <Compile Include="Support Code\SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AddReplacement.resx">
+    <EmbeddedResource Include="Windows\AddReplacement.resx">
       <DependentUpon>AddReplacement.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Clear logs older than.resx">
+    <EmbeddedResource Include="Windows\Clear logs older than.resx">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="Windows\Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ignored Logs and Search Results.resx">
+    <EmbeddedResource Include="Windows\Ignored Logs and Search Results.resx">
       <DependentUpon>Ignored Logs and Search Results.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ignored Words and Phrases.resx">
+    <EmbeddedResource Include="Windows\Ignored Words and Phrases.resx">
       <DependentUpon>Ignored Words and Phrases.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Log Viewer.resx">
+    <EmbeddedResource Include="Windows\Log Viewer.resx">
       <DependentUpon>Log Viewer.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -209,7 +209,7 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Replacements.resx">
+    <EmbeddedResource Include="Windows\Replacements.resx">
       <DependentUpon>Replacements.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
