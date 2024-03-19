@@ -9,9 +9,3 @@ Public Class MyReplacementsListViewItem
         Me.Text = strInput
     End Sub
 End Class
-
-Public Class MyDataGridViewRow
-    Inherits DataGridViewRow
-    Implements ICloneable
-    Public Property DateObject As Date
-End Class
