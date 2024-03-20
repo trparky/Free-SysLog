@@ -190,6 +190,7 @@ Partial Class Form1
         Me.NumericUpDown.Name = "NumericUpDown"
         Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
         Me.NumericUpDown.TabIndex = 8
+        Me.NumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.NumericUpDown.Value = New Decimal(New Integer() {5, 0, 0, 0})
         '
         'chkStartAtUserStartup
@@ -220,6 +221,7 @@ Partial Class Form1
         Me.txtSysLogServerPort.Name = "txtSysLogServerPort"
         Me.txtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
         Me.txtSysLogServerPort.TabIndex = 11
+        Me.txtSysLogServerPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.ToolTip.SetToolTip(Me.txtSysLogServerPort, "Default Port: 514")
         '
         'chkRegExSearch
