@@ -14,6 +14,9 @@ Public Class Form1
     Private longNumberOfIgnoredLogs As Long = 0
     Private IgnoredLogs As New List(Of MyDataGridViewRow)
     Private regexCache As New Dictionary(Of String, Regex)
+    Private intColumnNumber As Integer ' Define intColumnNumber at class level
+    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
+    Private ReadOnly dataGridLockObject As New Object
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strType As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -565,10 +568,6 @@ Public Class Form1
             btnSearch.PerformClick()
         End If
     End Sub
-
-    Private intColumnNumber As Integer ' Define intColumnNumber at class level
-    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
-    Private ReadOnly dataGridLockObject As New Object
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
         ' Disable user sorting
