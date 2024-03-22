@@ -701,11 +701,6 @@ Public Class Form1
         End Using
     End Sub
 
-    Private Sub ChkRegExSearch_Click(sender As Object, e As EventArgs) Handles chkRegExSearch.Click
-        chkCaseInsensitiveSearch.Enabled = chkRegExSearch.Checked
-        chkCaseInsensitiveSearch.Checked = False
-    End Sub
-
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlternatingColorToolStripMenuItem.Click
         Using ColorDialog As New ColorDialog()
             If ColorDialog.ShowDialog() = DialogResult.OK Then
