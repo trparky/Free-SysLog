@@ -286,6 +286,8 @@ Public Class Form1
                     listOfLogEntries.Add(item.MakeDataGridRow(logs))
                 Next
 
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", "Free SysLog Server Started.", logs))
+
                 SyncLock dataGridLockObject
                     Invoke(Sub()
                                logs.Rows.Clear()
