@@ -111,6 +111,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Support Code\DataGridViewComparer.vb" />
     <Compile Include="Windows\AddReplacement.Designer.vb">
       <DependentUpon>AddReplacement.vb</DependentUpon>
     </Compile>
