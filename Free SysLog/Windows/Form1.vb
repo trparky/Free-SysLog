@@ -522,10 +522,12 @@ Public Class Form1
 
             AddHandler worker.DoWork, Sub()
                                           Try
+                                              Dim regExOptions As RegexOptions = If(chkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+
                                               If chkRegExSearch.Checked Then
-                                                  regexCompiledObject = New Regex(txtSearchTerms.Text, If(chkRegexCaseInsensitive.Enabled, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled))
+                                                  regexCompiledObject = New Regex(txtSearchTerms.Text, regExOptions)
                                               Else
-                                                  regexCompiledObject = New Regex(Regex.Escape(txtSearchTerms.Text), RegexOptions.Compiled + RegexOptions.IgnoreCase)
+                                                  regexCompiledObject = New Regex(Regex.Escape(txtSearchTerms.Text), regExOptions)
                                               End If
 
                                               SyncLock dataGridLockObject
@@ -700,8 +702,8 @@ Public Class Form1
     End Sub
 
     Private Sub ChkRegExSearch_Click(sender As Object, e As EventArgs) Handles chkRegExSearch.Click
-        chkRegexCaseInsensitive.Enabled = chkRegExSearch.Checked
-        chkRegexCaseInsensitive.Checked = False
+        chkCaseInsensitiveSearch.Enabled = chkRegExSearch.Checked
+        chkCaseInsensitiveSearch.Checked = False
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlternatingColorToolStripMenuItem.Click

@@ -59,7 +59,7 @@ Partial Class Form1
         Me.lblSearchLabel = New System.Windows.Forms.Label()
         Me.txtSearchTerms = New System.Windows.Forms.TextBox()
         Me.btnSearch = New System.Windows.Forms.Button()
-        Me.chkRegexCaseInsensitive = New System.Windows.Forms.CheckBox()
+        Me.chkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
         Me.logs = New System.Windows.Forms.DataGridView()
         Me.colTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colType = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -342,17 +342,18 @@ Partial Class Form1
         Me.btnSearch.Text = "Search"
         Me.btnSearch.UseVisualStyleBackColor = True
         '
-        'chkRegexCaseInsensitive
+        'chkCaseInsensitiveSearch
         '
-        Me.chkRegexCaseInsensitive.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.chkRegexCaseInsensitive.AutoSize = True
-        Me.chkRegexCaseInsensitive.Enabled = False
-        Me.chkRegexCaseInsensitive.Location = New System.Drawing.Point(1003, 31)
-        Me.chkRegexCaseInsensitive.Name = "chkRegexCaseInsensitive"
-        Me.chkRegexCaseInsensitive.Size = New System.Drawing.Size(109, 17)
-        Me.chkRegexCaseInsensitive.TabIndex = 17
-        Me.chkRegexCaseInsensitive.Text = "Case Insensitive?"
-        Me.chkRegexCaseInsensitive.UseVisualStyleBackColor = True
+        Me.chkCaseInsensitiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.chkCaseInsensitiveSearch.AutoSize = True
+        Me.chkCaseInsensitiveSearch.Checked = True
+        Me.chkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkCaseInsensitiveSearch.Location = New System.Drawing.Point(1003, 31)
+        Me.chkCaseInsensitiveSearch.Name = "chkCaseInsensitiveSearch"
+        Me.chkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
+        Me.chkCaseInsensitiveSearch.TabIndex = 17
+        Me.chkCaseInsensitiveSearch.Text = "Case Insensitive?"
+        Me.chkCaseInsensitiveSearch.UseVisualStyleBackColor = True
         '
         'logs
         '
@@ -456,7 +457,7 @@ Partial Class Form1
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
         Me.Controls.Add(Me.logs)
-        Me.Controls.Add(Me.chkRegexCaseInsensitive)
+        Me.Controls.Add(Me.chkCaseInsensitiveSearch)
         Me.Controls.Add(Me.chkRegExSearch)
         Me.Controls.Add(Me.btnSearch)
         Me.Controls.Add(Me.txtSearchTerms)
@@ -518,7 +519,7 @@ Partial Class Form1
     Friend WithEvents ZerooutIgnoredLogsCounterToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureReplacementsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents chkRegExSearch As CheckBox
-    Friend WithEvents chkRegexCaseInsensitive As CheckBox
+    Friend WithEvents chkCaseInsensitiveSearch As CheckBox
     Friend WithEvents logs As DataGridView
     Friend WithEvents colTime As DataGridViewTextBoxColumn
     Friend WithEvents colType As DataGridViewTextBoxColumn
