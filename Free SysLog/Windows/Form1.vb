@@ -835,6 +835,7 @@ Public Class Form1
 
                 If sDataRecieve.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
                     WindowState = FormWindowState.Normal
+                    If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
                 Else
                     FillLog(sDataRecieve, sFromIP)
                 End If
