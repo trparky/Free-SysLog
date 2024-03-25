@@ -105,7 +105,7 @@ Public Class Form1
     Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.mainWindowSize = Size
         Threading.Thread.Sleep(100)
-        If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+        If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -205,7 +205,7 @@ Public Class Form1
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
         WindowState = FormWindowState.Normal
-        If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+        If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -318,7 +318,7 @@ Public Class Form1
                     Invoke(Sub()
                                logs.Rows.Clear()
                                logs.Rows.AddRange(listOfLogEntries.ToArray)
-                               If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+                               If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
                                UpdateLogCount()
                            End Sub)
                 End SyncLock
@@ -409,7 +409,7 @@ Public Class Form1
                        UpdateLogCount()
                        btnSaveLogsToDisk.Enabled = True
 
-                       If chkAutoScroll.Checked Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+                       If chkAutoScroll.Checked Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
                    End Sub)
         ElseIf boolIgnored And chkRecordIgnoredLogs.Checked Then
             IgnoredLogs.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), logs))
@@ -837,7 +837,7 @@ Public Class Form1
 
                 If sDataRecieve.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
                     WindowState = FormWindowState.Normal
-                    If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.GetLastRow(DataGridViewElementStates.None)
+                    If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
                 Else
                     FillLog(sDataRecieve, sFromIP)
                 End If
