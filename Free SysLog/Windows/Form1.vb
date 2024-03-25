@@ -836,8 +836,11 @@ Public Class Form1
                 sFromIP = ipeRemoteIpEndPoint.Address.ToString
 
                 If sDataRecieve.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
-                    WindowState = FormWindowState.Normal
-                    If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
+                    Invoke(Sub()
+                               WindowState = FormWindowState.Normal
+                               Threading.Thread.Sleep(100)
+                               If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
+                           End Sub)
                 Else
                     FillLog(sDataRecieve, sFromIP)
                 End If
