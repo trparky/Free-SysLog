@@ -65,6 +65,7 @@ Partial Class Form1
         Me.colType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -427,6 +428,11 @@ Partial Class Form1
         Me.ImportToolStripMenuItem.Size = New System.Drawing.Size(110, 22)
         Me.ImportToolStripMenuItem.Text = "Import"
         '
+        'NotifyIcon
+        '
+        Me.NotifyIcon.Text = "NotifyIcon"
+        Me.NotifyIcon.Visible = True
+        '
         'OlderThan1DayToolStripMenuItem
         '
         Me.OlderThan1DayToolStripMenuItem.Name = "OlderThan1DayToolStripMenuItem"
@@ -536,4 +542,5 @@ Partial Class Form1
     Friend WithEvents OlderThan2DaysToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OlderThan3DaysToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OlderThanAWeekToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents NotifyIcon As NotifyIcon
 End Class

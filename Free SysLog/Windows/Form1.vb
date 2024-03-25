@@ -6,6 +6,7 @@ Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 Imports System.Reflection
+Imports System.ComponentModel.Design
 
 Public Class Form1
     Private boolDoneLoading As Boolean = False
@@ -106,7 +107,10 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-        If boolDoneLoading Then My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
+        If boolDoneLoading Then
+            My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
+            ShowInTaskbar = WindowState <> FormWindowState.Minimized
+        End If
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -189,8 +193,25 @@ Public Class Form1
         Return input
     End Function
 
+    Private Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
+        Using udpClient As New UdpClient()
+            udpClient.Connect("127.0.0.1", intPort)
+            Dim data As Byte() = Encoding.ASCII.GetBytes(strMessage)
+            udpClient.Send(data, data.Length)
+        End Using
+    End Sub
+
+    Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
+        WindowState = FormWindowState.Normal
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
+
+        If SearchForExistingProcess(Application.ExecutablePath, Process.GetCurrentProcess.Id, True) Then
+            SendMessageToSysLogServer("restore", My.Settings.sysLogPort)
+            Process.GetCurrentProcess.Kill()
+        End If
 
         colTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         colTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
@@ -213,6 +234,8 @@ Public Class Form1
         txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
+        NotifyIcon.Icon = Icon
+        NotifyIcon.Text = "Free SysLog"
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
@@ -809,7 +832,11 @@ Public Class Form1
                 sDataRecieve = Encoding.ASCII.GetString(bBytesRecieved)
                 sFromIP = ipeRemoteIpEndPoint.Address.ToString
 
-                FillLog(sDataRecieve, sFromIP)
+                If sDataRecieve.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
+                    WindowState = FormWindowState.Normal
+                Else
+                    FillLog(sDataRecieve, sFromIP)
+                End If
 
                 sDataRecieve = ""
             End While
