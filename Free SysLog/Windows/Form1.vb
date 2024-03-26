@@ -876,6 +876,7 @@ Public Class Form1
                 End If
 
                 sDataRecieve = Nothing
+                sFromIP = Nothing
             End While
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
