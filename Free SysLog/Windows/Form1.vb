@@ -433,14 +433,13 @@ Public Class Form1
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
-                Dim intOldCount As Integer = Logs.Rows.Count
+                Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
                     Logs.Rows.Remove(item)
                 Next
 
-                Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
             End SyncLock
 
             UpdateLogCount()
