@@ -6,7 +6,6 @@ Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 Imports System.Reflection
-Imports System.ComponentModel.Design
 
 Public Class Form1
     Private boolDoneLoading As Boolean = False
