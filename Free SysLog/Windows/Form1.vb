@@ -298,7 +298,7 @@ Public Class Form1
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 Invoke(Sub()
-                           Logs.Rows.Add(MakeDataGridRow(Now, "", "", "", "Loading data and populating data grid... Please Wait.", Logs))
+                           Logs.Rows.Add(MakeDataGridRow(Now, Nothing, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", Logs))
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
                        End Sub)
 
@@ -314,7 +314,7 @@ Public Class Form1
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", "Free SysLog Server Started.", Logs))
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", "Free SysLog Server Started.", Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -351,7 +351,7 @@ Public Class Form1
         ElseIf sSyslog.Contains("L7") Then
             Return "Debug (7)"
         Else
-            Return ""
+            Return Nothing
         End If
     End Function
 
@@ -366,7 +366,7 @@ Public Class Form1
             Dim boolIgnored As Boolean = False
 
             sSyslog = sSyslog.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
-            sSyslog = sSyslog.Replace(vbCrLf, "")
+            sSyslog = sSyslog.Replace(vbCrLf, Nothing)
             sSyslog = Mid(sSyslog, InStr(sSyslog, ">") + 1, Len(sSyslog))
             sSyslog = sSyslog.Trim
 
@@ -445,7 +445,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -485,7 +485,7 @@ Public Class Form1
             SyncLock dataGridLockObject
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intOldCount} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intOldCount} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -727,7 +727,7 @@ Public Class Form1
                         Logs.AllowUserToOrderColumns = True
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
                         If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                     End SyncLock
 
@@ -824,7 +824,7 @@ Public Class Form1
                 Logs.AllowUserToOrderColumns = True
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
