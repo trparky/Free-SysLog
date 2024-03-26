@@ -875,7 +875,7 @@ Public Class Form1
                     FillLog(sDataRecieve, sFromIP)
                 End If
 
-                sDataRecieve = ""
+                sDataRecieve = Nothing
             End While
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
