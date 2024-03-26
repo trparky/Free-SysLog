@@ -23,9 +23,9 @@ Partial Class Log_Viewer
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.LogText = New System.Windows.Forms.TextBox()
-        Me.btnClose = New System.Windows.Forms.Button()
-        Me.lblLogDate = New System.Windows.Forms.Label()
-        Me.lblSource = New System.Windows.Forms.Label()
+        Me.BtnClose = New System.Windows.Forms.Button()
+        Me.LblLogDate = New System.Windows.Forms.Label()
+        Me.LblSource = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'LogText
@@ -41,42 +41,42 @@ Partial Class Log_Viewer
         Me.LogText.Size = New System.Drawing.Size(776, 129)
         Me.LogText.TabIndex = 1
         '
-        'btnClose
+        'BtnClose
         '
-        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClose.Location = New System.Drawing.Point(713, 160)
-        Me.btnClose.Name = "btnClose"
-        Me.btnClose.Size = New System.Drawing.Size(75, 23)
-        Me.btnClose.TabIndex = 0
-        Me.btnClose.Text = "&Close"
-        Me.btnClose.UseVisualStyleBackColor = True
+        Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClose.Location = New System.Drawing.Point(713, 160)
+        Me.BtnClose.Name = "btnClose"
+        Me.BtnClose.Size = New System.Drawing.Size(75, 23)
+        Me.BtnClose.TabIndex = 0
+        Me.BtnClose.Text = "&Close"
+        Me.BtnClose.UseVisualStyleBackColor = True
         '
-        'lblLogDate
+        'LblLogDate
         '
-        Me.lblLogDate.AutoSize = True
-        Me.lblLogDate.Location = New System.Drawing.Point(12, 9)
-        Me.lblLogDate.Name = "lblLogDate"
-        Me.lblLogDate.Size = New System.Drawing.Size(54, 13)
-        Me.lblLogDate.TabIndex = 2
-        Me.lblLogDate.Text = "Log Date:"
+        Me.LblLogDate.AutoSize = True
+        Me.LblLogDate.Location = New System.Drawing.Point(12, 9)
+        Me.LblLogDate.Name = "lblLogDate"
+        Me.LblLogDate.Size = New System.Drawing.Size(54, 13)
+        Me.LblLogDate.TabIndex = 2
+        Me.LblLogDate.Text = "Log Date:"
         '
-        'lblSource
+        'LblSource
         '
-        Me.lblSource.AutoSize = True
-        Me.lblSource.Location = New System.Drawing.Point(238, 9)
-        Me.lblSource.Name = "lblSource"
-        Me.lblSource.Size = New System.Drawing.Size(98, 13)
-        Me.lblSource.TabIndex = 3
-        Me.lblSource.Text = "Source IP Address:"
+        Me.LblSource.AutoSize = True
+        Me.LblSource.Location = New System.Drawing.Point(238, 9)
+        Me.LblSource.Name = "lblSource"
+        Me.LblSource.Size = New System.Drawing.Size(98, 13)
+        Me.LblSource.TabIndex = 3
+        Me.LblSource.Text = "Source IP Address:"
         '
         'Log_Viewer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 195)
-        Me.Controls.Add(Me.lblSource)
-        Me.Controls.Add(Me.lblLogDate)
-        Me.Controls.Add(Me.btnClose)
+        Me.Controls.Add(Me.LblSource)
+        Me.Controls.Add(Me.LblLogDate)
+        Me.Controls.Add(Me.BtnClose)
         Me.Controls.Add(Me.LogText)
         Me.KeyPreview = True
         Me.MaximizeBox = False
@@ -90,7 +90,7 @@ Partial Class Log_Viewer
     End Sub
 
     Friend WithEvents LogText As TextBox
-    Friend WithEvents btnClose As Button
-    Friend WithEvents lblLogDate As Label
-    Friend WithEvents lblSource As Label
+    Friend WithEvents BtnClose As Button
+    Friend WithEvents LblLogDate As Label
+    Friend WithEvents LblSource As Label
 End Class

@@ -37,9 +37,9 @@ Public Class Form1
         Return MyDataGridViewRow
     End Function
 
-    Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles chkStartAtUserStartup.Click
+    Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
-            If chkStartAtUserStartup.Checked Then
+            If ChkStartAtUserStartup.Checked Then
                 registryKey.SetValue("Free Syslog", $"""{Application.ExecutablePath}"" /background")
             Else
                 registryKey.DeleteValue("Free Syslog", False)
@@ -53,7 +53,7 @@ Public Class Form1
         End Using
     End Function
 
-    Private Sub BtnMoveLogFile_Click(sender As Object, e As EventArgs) Handles btnMoveLogFile.Click
+    Private Sub BtnMoveLogFile_Click(sender As Object, e As EventArgs) Handles BtnMoveLogFile.Click
         SyncLock lockObject
             Using SaveFileDialog As New SaveFileDialog()
                 SaveFileDialog.Filter = "JSON Data File|*.json"
@@ -77,7 +77,7 @@ Public Class Form1
             Dim myItem As MyDataGridViewRow
 
             SyncLock dataGridLockObject
-                For Each item As DataGridViewRow In logs.Rows
+                For Each item As DataGridViewRow In Logs.Rows
                     If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
                         myItem = DirectCast(item, MyDataGridViewRow)
 
@@ -96,16 +96,16 @@ Public Class Form1
                 fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
             End Using
 
-            lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
 
-            btnSaveLogsToDisk.Enabled = False
+            BtnSaveLogsToDisk.Enabled = False
         End SyncLock
     End Sub
 
     Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.mainWindowSize = Size
         Threading.Thread.Sleep(100)
-        If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
+        If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -115,16 +115,16 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles chkAutoSave.Click
-        SaveTimer.Enabled = chkAutoSave.Checked
-        NumericUpDown.Visible = chkAutoSave.Checked
-        lblAutoSaveLabel.Visible = chkAutoSave.Checked
-        lblAutoSaved.Visible = chkAutoSave.Checked
+    Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles ChkAutoSave.Click
+        SaveTimer.Enabled = ChkAutoSave.Checked
+        NumericUpDown.Visible = ChkAutoSave.Checked
+        LblAutoSaveLabel.Visible = ChkAutoSave.Checked
+        LblAutoSaved.Visible = ChkAutoSave.Checked
     End Sub
 
     Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
         WriteLogsToDisk()
-        lblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
+        LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
     End Sub
 
     Private Sub NumericUpDown_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown.ValueChanged
@@ -200,7 +200,7 @@ Public Class Form1
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
         WindowState = FormWindowState.Normal
-        If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
+        If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -211,26 +211,26 @@ Public Class Form1
             Process.GetCurrentProcess.Kill()
         End If
 
-        colTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        colTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
-        colType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        colType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
-        colIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        colIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+        ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
+        ColType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        ColType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+        ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
-        chkRecordIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
-        IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
-        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not chkRecordIgnoredLogs.Checked
-        chkAutoScroll.Checked = My.Settings.autoScroll
-        chkAutoSave.Checked = My.Settings.autoSave
-        chkConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
+        ChkRecordIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
+        IgnoredLogsToolStripMenuItem.Visible = ChkRecordIgnoredLogs.Checked
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkRecordIgnoredLogs.Checked
+        ChkAutoScroll.Checked = My.Settings.autoScroll
+        ChkAutoSave.Checked = My.Settings.autoSave
+        ChkConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
         NumericUpDown.Value = My.Settings.autoSaveMinutes
-        NumericUpDown.Visible = chkAutoSave.Checked
-        lblAutoSaveLabel.Visible = chkAutoSave.Checked
-        lblAutoSaved.Visible = chkAutoSave.Checked
-        chkStartAtUserStartup.Checked = DoesStartupEntryExist()
+        NumericUpDown.Visible = ChkAutoSave.Checked
+        LblAutoSaveLabel.Visible = ChkAutoSave.Checked
+        LblAutoSaved.Visible = ChkAutoSave.Checked
+        ChkStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
-        txtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
+        TxtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
         NotifyIcon.Icon = Icon
@@ -238,10 +238,10 @@ Public Class Form1
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-        propInfo?.SetValue(logs, True, Nothing)
+        propInfo?.SetValue(Logs, True, Nothing)
 
         Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
-        logs.AlternatingRowsDefaultCellStyle = rowStyle
+        Logs.AlternatingRowsDefaultCellStyle = rowStyle
 
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
             For Each strJSONString As String In My.Settings.replacements
@@ -256,10 +256,10 @@ Public Class Form1
 
         Size = My.Settings.mainWindowSize
 
-        colTime.Width = My.Settings.columnTimeSize
-        colType.Width = My.Settings.columnTypeSize
-        colIPAddress.Width = My.Settings.columnIPSize
-        colLog.Width = My.Settings.columnLogSize
+        ColTime.Width = My.Settings.columnTimeSize
+        ColType.Width = My.Settings.columnTypeSize
+        ColIPAddress.Width = My.Settings.columnIPSize
+        ColLog.Width = My.Settings.columnLogSize
 
         boolDoneLoading = True
 
@@ -292,8 +292,8 @@ Public Class Form1
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 Invoke(Sub()
-                           logs.Rows.Add(MakeDataGridRow(Now, "", "", "", "Loading data and populating data grid... Please Wait.", logs))
-                           lblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+                           Logs.Rows.Add(MakeDataGridRow(Now, "", "", "", "Loading data and populating data grid... Please Wait.", Logs))
+                           LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
                        End Sub)
 
                 Dim collectionOfSavedData As New List(Of SavedData)
@@ -305,16 +305,16 @@ Public Class Form1
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
                 For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(item.MakeDataGridRow(logs))
+                    listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", "Free SysLog Server Started.", logs))
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", "Free SysLog Server Started.", Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
-                               logs.Rows.Clear()
-                               logs.Rows.AddRange(listOfLogEntries.ToArray)
-                               If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
+                               Logs.Rows.Clear()
+                               Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                               If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                                UpdateLogCount()
                            End Sub)
                 End SyncLock
@@ -323,7 +323,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles btnOpenLogLocation.Click
+    Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles BtnOpenLogLocation.Click
         SelectFileInWindowsExplorer(My.Settings.logFileLocation)
     End Sub
 
@@ -372,13 +372,13 @@ Public Class Form1
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
-                                   If chkRecordIgnoredLogs.Checked Then
+                                   If ChkRecordIgnoredLogs.Checked Then
                                        IgnoredLogsToolStripMenuItem.Enabled = True
                                    Else
                                        ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
                                    End If
 
-                                   lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                                   LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                                End Sub)
 
                         boolIgnored = True
@@ -399,48 +399,48 @@ Public Class Form1
         If Not boolIgnored Then
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), logs))
+                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), Logs))
                        End SyncLock
 
                        UpdateLogCount()
-                       btnSaveLogsToDisk.Enabled = True
+                       BtnSaveLogsToDisk.Enabled = True
 
-                       If chkAutoScroll.Checked Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
+                       If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                    End Sub)
-        ElseIf boolIgnored And chkRecordIgnoredLogs.Checked Then
-            IgnoredLogs.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), logs))
+        ElseIf boolIgnored And ChkRecordIgnoredLogs.Checked Then
+            IgnoredLogs.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), Logs))
         End If
     End Sub
 
     Private Sub OpenLogViewerWindow()
-        If logs.Rows.Count > 0 Then
-            Dim selectedRow As MyDataGridViewRow = logs.Rows(logs.SelectedCells(0).RowIndex)
+        If Logs.Rows.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
             Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-                LogViewer.lblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewer.lblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
+                LogViewer.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
+                LogViewer.LblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
                 LogViewer.ShowDialog(Me)
             End Using
         End If
     End Sub
 
-    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
+    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles Logs.DoubleClick
         OpenLogViewerWindow()
     End Sub
 
-    Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles logs.KeyUp
+    Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles Logs.KeyUp
         If e.KeyValue = Keys.Enter Then
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
-                Dim intOldCount As Integer = logs.Rows.Count
+                Dim intOldCount As Integer = Logs.Rows.Count
 
-                For Each item As DataGridViewRow In logs.SelectedRows
-                    logs.Rows.Remove(item)
+                For Each item As DataGridViewRow In Logs.SelectedRows
+                    Logs.Rows.Remove(item)
                 Next
 
-                Dim intCountDifference As Integer = intOldCount - logs.Rows.Count
-                logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", logs))
+                Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", Logs))
             End SyncLock
 
             UpdateLogCount()
@@ -448,38 +448,38 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub Logs_KeyDown(sender As Object, e As KeyEventArgs) Handles logs.KeyDown
+    Private Sub Logs_KeyDown(sender As Object, e As KeyEventArgs) Handles Logs.KeyDown
         If e.KeyCode = Keys.Enter Then e.Handled = True
     End Sub
 
-    Private Sub Logs_UserDeletingRow(sender As Object, e As DataGridViewRowCancelEventArgs) Handles logs.UserDeletingRow
+    Private Sub Logs_UserDeletingRow(sender As Object, e As DataGridViewRowCancelEventArgs) Handles Logs.UserDeletingRow
         e.Cancel = True
     End Sub
 
     Private Sub UpdateLogCount()
-        btnClearLog.Enabled = logs.Rows.Count <> 0
-        NumberOfLogs.Text = $"Number of Log Entries: {logs.Rows.Count:N0}"
+        BtnClearLog.Enabled = Logs.Rows.Count <> 0
+        NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
     End Sub
 
-    Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles chkAutoScroll.Click
-        My.Settings.autoScroll = chkAutoScroll.Checked
+    Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkAutoScroll.Click
+        My.Settings.autoScroll = ChkAutoScroll.Checked
     End Sub
 
-    Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles logs.ColumnWidthChanged
+    Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
         If boolDoneLoading Then
-            My.Settings.columnTimeSize = colTime.Width
-            My.Settings.columnTypeSize = colType.Width
-            My.Settings.columnIPSize = colIPAddress.Width
-            My.Settings.columnLogSize = colLog.Width
+            My.Settings.columnTimeSize = ColTime.Width
+            My.Settings.columnTypeSize = ColType.Width
+            My.Settings.columnIPSize = ColIPAddress.Width
+            My.Settings.columnLogSize = ColLog.Width
         End If
     End Sub
 
-    Private Sub BtnClearAllLogs_Click(sender As Object, e As EventArgs) Handles btnClearAllLogs.Click
+    Private Sub BtnClearAllLogs_Click(sender As Object, e As EventArgs) Handles BtnClearAllLogs.Click
         If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             SyncLock dataGridLockObject
-                Dim intOldCount As Integer = logs.Rows.Count
-                logs.Rows.Clear()
-                logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intOldCount} {If(intOldCount = 1, "log", "logs")}.", logs))
+                Dim intOldCount As Integer = Logs.Rows.Count
+                Logs.Rows.Clear()
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intOldCount} {If(intOldCount = 1, "log", "logs")}.", Logs))
             End SyncLock
 
             UpdateLogCount()
@@ -489,16 +489,16 @@ Public Class Form1
 
     Private Sub SaveLogsToDiskSub()
         WriteLogsToDisk()
-        lblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
+        LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
         SaveTimer.Enabled = False
         SaveTimer.Enabled = True
     End Sub
 
-    Private Sub BtnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles btnSaveLogsToDisk.Click
+    Private Sub BtnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles BtnSaveLogsToDisk.Click
         SaveLogsToDiskSub()
     End Sub
 
-    Private Sub BtnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles btnCheckForUpdates.Click
+    Private Sub BtnCheckForUpdates_Click(sender As Object, e As EventArgs) Handles BtnCheckForUpdates.Click
         SaveLogsToDiskSub()
 
         Threading.ThreadPool.QueueUserWorkItem(Sub()
@@ -518,11 +518,11 @@ Public Class Form1
         Process.GetCurrentProcess.Kill()
     End Sub
 
-    Private Sub TxtSysLogServerPort_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSysLogServerPort.KeyUp
+    Private Sub TxtSysLogServerPort_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtSysLogServerPort.KeyUp
         If e.KeyCode = Keys.Enter Then
             Dim newPortNumber As Integer
 
-            If Integer.TryParse(txtSysLogServerPort.Text, newPortNumber) Then
+            If Integer.TryParse(TxtSysLogServerPort.Text, newPortNumber) Then
                 If newPortNumber < 1 Or newPortNumber > 65535 Then
                     MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
                 Else
@@ -540,9 +540,9 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
-        If btnSearch.Text = "Search" Then
-            If String.IsNullOrWhiteSpace(txtSearchTerms.Text) Then
+    Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
+        If BtnSearch.Text = "Search" Then
+            If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
                 MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
                 Exit Sub
             End If
@@ -552,22 +552,22 @@ Public Class Form1
             Dim regexCompiledObject As Regex = Nothing
             Dim MyDataGridRowItem As MyDataGridViewRow
 
-            btnSearch.Enabled = False
+            BtnSearch.Enabled = False
 
             Dim worker As New BackgroundWorker()
 
             AddHandler worker.DoWork, Sub()
                                           Try
-                                              Dim regExOptions As RegexOptions = If(chkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+                                              Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
 
-                                              If chkRegExSearch.Checked Then
-                                                  regexCompiledObject = New Regex(txtSearchTerms.Text, regExOptions)
+                                              If ChkRegExSearch.Checked Then
+                                                  regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
                                               Else
-                                                  regexCompiledObject = New Regex(Regex.Escape(txtSearchTerms.Text), regExOptions)
+                                                  regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
                                               End If
 
                                               SyncLock dataGridLockObject
-                                                  For Each item As DataGridViewRow In logs.Rows
+                                                  For Each item As DataGridViewRow In Logs.Rows
                                                       MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                       If MyDataGridRowItem IsNot Nothing Then
@@ -587,31 +587,31 @@ Public Class Form1
             AddHandler worker.RunWorkerCompleted, Sub()
                                                       If listOfSearchResults.Count > 0 Then
                                                           Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
-                                                          searchResultsWindow.lblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
+                                                          searchResultsWindow.LblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
                                                           searchResultsWindow.ShowDialog(Me)
                                                       Else
                                                           MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
                                                       End If
 
-                                                      Invoke(Sub() btnSearch.Enabled = True)
+                                                      Invoke(Sub() BtnSearch.Enabled = True)
                                                   End Sub
 
             worker.RunWorkerAsync()
         End If
     End Sub
 
-    Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyDown
+    Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearchTerms.KeyDown
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
-            btnSearch.PerformClick()
+            BtnSearch.PerformClick()
         End If
     End Sub
 
-    Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
+    Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.ColumnHeaderMouseClick
         ' Disable user sorting
-        logs.AllowUserToOrderColumns = False
+        Logs.AllowUserToOrderColumns = False
 
-        Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
+        Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
 
         If e.ColumnIndex = 0 Then
             If sortOrder = SortOrder.Descending Then
@@ -622,9 +622,9 @@ Public Class Form1
                 sortOrder = SortOrder.Ascending
             End If
 
-            colIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
-            colLog.HeaderCell.SortGlyphDirection = SortOrder.None
-            colType.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColType.HeaderCell.SortGlyphDirection = SortOrder.None
 
             SortLogsByDateObject(column.Index, sortOrder)
         Else
@@ -634,19 +634,19 @@ Public Class Form1
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
         SyncLock dataGridLockObject
-            logs.AllowUserToOrderColumns = False
-            logs.Enabled = False
+            Logs.AllowUserToOrderColumns = False
+            Logs.Enabled = False
 
             Dim comparer As New DataGridViewComparer(columnIndex, order)
-            Dim rows As MyDataGridViewRow() = logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
+            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
 
             Array.Sort(rows, Function(row1, row2) comparer.Compare(row1, row2))
 
-            logs.Rows.Clear()
-            logs.Rows.AddRange(rows)
+            Logs.Rows.Clear()
+            Logs.Rows.AddRange(rows)
 
-            logs.Enabled = True
-            logs.AllowUserToOrderColumns = True
+            Logs.Enabled = True
+            Logs.AllowUserToOrderColumns = True
         End SyncLock
     End Sub
 
@@ -663,7 +663,7 @@ Public Class Form1
         Else
             If ignoredLogsWindow Is Nothing Then
                 ignoredLogsWindow = New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
-                ignoredLogsWindow.lblCount.Text = $"Number of ignored logs: {IgnoredLogs.Count:N0}"
+                ignoredLogsWindow.LblCount.Text = $"Number of ignored logs: {IgnoredLogs.Count:N0}"
                 ignoredLogsWindow.Show(Me)
             Else
                 ignoredLogsWindow.BringToFront()
@@ -676,7 +676,7 @@ Public Class Form1
             IgnoredLogs.Clear()
             longNumberOfIgnoredLogs = 0
             IgnoredLogsToolStripMenuItem.Enabled = False
-            lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+            LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         End If
     End Sub
 
@@ -684,16 +684,16 @@ Public Class Form1
         If boolDoneLoading Then My.Settings.windowLocation = Location
     End Sub
 
-    Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles chkRecordIgnoredLogs.Click
-        My.Settings.recordIgnoredLogs = chkRecordIgnoredLogs.Checked
-        IgnoredLogsToolStripMenuItem.Visible = chkRecordIgnoredLogs.Checked
-        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not chkRecordIgnoredLogs.Checked
-        If Not chkRecordIgnoredLogs.Checked Then IgnoredLogs.Clear()
+    Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles ChkRecordIgnoredLogs.Click
+        My.Settings.recordIgnoredLogs = ChkRecordIgnoredLogs.Checked
+        IgnoredLogsToolStripMenuItem.Visible = ChkRecordIgnoredLogs.Checked
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkRecordIgnoredLogs.Checked
+        If Not ChkRecordIgnoredLogs.Checked Then IgnoredLogs.Clear()
     End Sub
 
     Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
         Using clearLogsOlderThanObject As New Clear_logs_older_than With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            clearLogsOlderThanObject.lblLogCount.Text = $"Number of Log Entries: {logs.Rows.Count:N0}"
+            clearLogsOlderThanObject.LblLogCount.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
             clearLogsOlderThanObject.ShowDialog(Me)
 
             If clearLogsOlderThanObject.boolSuccess Then
@@ -701,24 +701,24 @@ Public Class Form1
                     Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
 
                     SyncLock dataGridLockObject
-                        logs.AllowUserToOrderColumns = False
-                        logs.Enabled = False
+                        Logs.AllowUserToOrderColumns = False
+                        Logs.Enabled = False
 
-                        Dim intOldCount As Integer = logs.Rows.Count
+                        Dim intOldCount As Integer = Logs.Rows.Count
 
-                        For i As Integer = logs.Rows.Count - 1 To 0 Step -1
-                            Dim item As MyDataGridViewRow = CType(logs.Rows(i), MyDataGridViewRow)
+                        For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
+                            Dim item As MyDataGridViewRow = CType(Logs.Rows(i), MyDataGridViewRow)
 
                             If item.DateObject.Date <= dateChosenDate.Date Then
-                                logs.Rows.RemoveAt(i)
+                                Logs.Rows.RemoveAt(i)
                             End If
                         Next
 
-                        logs.Enabled = True
-                        logs.AllowUserToOrderColumns = True
+                        Logs.Enabled = True
+                        Logs.AllowUserToOrderColumns = True
 
-                        Dim intCountDifference As Integer = intOldCount - logs.Rows.Count
-                        logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", logs))
+                        Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", Logs))
                     End SyncLock
 
                     UpdateLogCount()
@@ -731,7 +731,7 @@ Public Class Form1
 
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
         longNumberOfIgnoredLogs = 0
-        lblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = False
     End Sub
 
@@ -748,7 +748,7 @@ Public Class Form1
                 My.Settings.searchColor = ColorDialog.Color
 
                 Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color}
-                logs.AlternatingRowsDefaultCellStyle = rowStyle
+                Logs.AlternatingRowsDefaultCellStyle = rowStyle
             End If
         End Using
     End Sub
@@ -796,24 +796,24 @@ Public Class Form1
             Dim dateChosenDate As Date = Date.Today.AddDays(-daysToKeep)
 
             SyncLock dataGridLockObject
-                logs.AllowUserToOrderColumns = False
-                logs.Enabled = False
+                Logs.AllowUserToOrderColumns = False
+                Logs.Enabled = False
 
-                Dim intOldCount As Integer = logs.Rows.Count
+                Dim intOldCount As Integer = Logs.Rows.Count
 
-                For i As Integer = logs.Rows.Count - 1 To 0 Step -1
-                    Dim item As MyDataGridViewRow = CType(logs.Rows(i), MyDataGridViewRow)
+                For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
+                    Dim item As MyDataGridViewRow = CType(Logs.Rows(i), MyDataGridViewRow)
 
                     If item.DateObject.Date <= dateChosenDate.Date Then
-                        logs.Rows.RemoveAt(i)
+                        Logs.Rows.RemoveAt(i)
                     End If
                 Next
 
-                logs.Enabled = True
-                logs.AllowUserToOrderColumns = True
+                Logs.Enabled = True
+                Logs.AllowUserToOrderColumns = True
 
-                Dim intCountDifference As Integer = intOldCount - logs.Rows.Count
-                logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", logs))
+                Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", Logs))
             End SyncLock
 
             UpdateLogCount()
@@ -839,8 +839,8 @@ Public Class Form1
         ClearLogsOlderThan(7)
     End Sub
 
-    Private Sub ChkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles chkConfirmCloseToolStripItem.Click
-        My.Settings.boolConfirmClose = chkConfirmCloseToolStripItem.Checked
+    Private Sub ChkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles ChkConfirmCloseToolStripItem.Click
+        My.Settings.boolConfirmClose = ChkConfirmCloseToolStripItem.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
@@ -861,7 +861,7 @@ Public Class Form1
                     Invoke(Sub()
                                WindowState = FormWindowState.Normal
                                Threading.Thread.Sleep(100)
-                               If logs.Rows.Count > 0 Then logs.FirstDisplayedScrollingRowIndex = logs.Rows.Count - 1
+                               If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                            End Sub)
                 Else
                     FillLog(sDataRecieve, sFromIP)

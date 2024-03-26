@@ -22,20 +22,20 @@ Partial Class Clear_logs_older_than
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lblLogCount = New System.Windows.Forms.Label()
+        Me.LblLogCount = New System.Windows.Forms.Label()
         Me.DateTimePicker = New System.Windows.Forms.DateTimePicker()
-        Me.lblOlderThan = New System.Windows.Forms.Label()
-        Me.btnClearLogs = New System.Windows.Forms.Button()
+        Me.LblOlderThan = New System.Windows.Forms.Label()
+        Me.BtnClearLogs = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
-        'lblLogCount
+        'LblLogCount
         '
-        Me.lblLogCount.AutoSize = True
-        Me.lblLogCount.Location = New System.Drawing.Point(12, 9)
-        Me.lblLogCount.Name = "lblLogCount"
-        Me.lblLogCount.Size = New System.Drawing.Size(124, 13)
-        Me.lblLogCount.TabIndex = 0
-        Me.lblLogCount.Text = "Number of Log Entries: 0"
+        Me.LblLogCount.AutoSize = True
+        Me.LblLogCount.Location = New System.Drawing.Point(12, 9)
+        Me.LblLogCount.Name = "lblLogCount"
+        Me.LblLogCount.Size = New System.Drawing.Size(124, 13)
+        Me.LblLogCount.TabIndex = 0
+        Me.LblLogCount.Text = "Number of Log Entries: 0"
         '
         'DateTimePicker
         '
@@ -44,34 +44,34 @@ Partial Class Clear_logs_older_than
         Me.DateTimePicker.Size = New System.Drawing.Size(200, 20)
         Me.DateTimePicker.TabIndex = 1
         '
-        'lblOlderThan
+        'LblOlderThan
         '
-        Me.lblOlderThan.AutoSize = True
-        Me.lblOlderThan.Location = New System.Drawing.Point(12, 34)
-        Me.lblOlderThan.Name = "lblOlderThan"
-        Me.lblOlderThan.Size = New System.Drawing.Size(116, 13)
-        Me.lblOlderThan.TabIndex = 2
-        Me.lblOlderThan.Text = "Clear Logs older than..."
+        Me.LblOlderThan.AutoSize = True
+        Me.LblOlderThan.Location = New System.Drawing.Point(12, 34)
+        Me.LblOlderThan.Name = "lblOlderThan"
+        Me.LblOlderThan.Size = New System.Drawing.Size(116, 13)
+        Me.LblOlderThan.TabIndex = 2
+        Me.LblOlderThan.Text = "Clear Logs older than..."
         '
-        'btnClearLogs
+        'BtnClearLogs
         '
-        Me.btnClearLogs.Enabled = False
-        Me.btnClearLogs.Location = New System.Drawing.Point(12, 54)
-        Me.btnClearLogs.Name = "btnClearLogs"
-        Me.btnClearLogs.Size = New System.Drawing.Size(322, 23)
-        Me.btnClearLogs.TabIndex = 3
-        Me.btnClearLogs.Text = "Clear Logs"
-        Me.btnClearLogs.UseVisualStyleBackColor = True
+        Me.BtnClearLogs.Enabled = False
+        Me.BtnClearLogs.Location = New System.Drawing.Point(12, 54)
+        Me.BtnClearLogs.Name = "btnClearLogs"
+        Me.BtnClearLogs.Size = New System.Drawing.Size(322, 23)
+        Me.BtnClearLogs.TabIndex = 3
+        Me.BtnClearLogs.Text = "Clear Logs"
+        Me.BtnClearLogs.UseVisualStyleBackColor = True
         '
         'Clear_logs_older_than
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(344, 88)
-        Me.Controls.Add(Me.btnClearLogs)
-        Me.Controls.Add(Me.lblOlderThan)
+        Me.Controls.Add(Me.BtnClearLogs)
+        Me.Controls.Add(Me.LblOlderThan)
         Me.Controls.Add(Me.DateTimePicker)
-        Me.Controls.Add(Me.lblLogCount)
+        Me.Controls.Add(Me.LblLogCount)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.KeyPreview = True
         Me.MaximizeBox = False
@@ -83,8 +83,8 @@ Partial Class Clear_logs_older_than
 
     End Sub
 
-    Friend WithEvents lblLogCount As Label
+    Friend WithEvents LblLogCount As Label
     Friend WithEvents DateTimePicker As DateTimePicker
-    Friend WithEvents lblOlderThan As Label
-    Friend WithEvents btnClearLogs As Button
+    Friend WithEvents LblOlderThan As Label
+    Friend WithEvents BtnClearLogs As Button
 End Class

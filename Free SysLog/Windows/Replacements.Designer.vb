@@ -22,30 +22,30 @@ Partial Class Replacements
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.replacementsListView = New System.Windows.Forms.ListView()
+        Me.ReplacementsListView = New System.Windows.Forms.ListView()
         Me.Replace = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ReplaceWith = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.btnAdd = New System.Windows.Forms.Button()
-        Me.btnDelete = New System.Windows.Forms.Button()
+        Me.BtnAdd = New System.Windows.Forms.Button()
+        Me.BtnDelete = New System.Windows.Forms.Button()
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.btnEdit = New System.Windows.Forms.Button()
+        Me.BtnEdit = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
-        'replacementsListView
+        'ReplacementsListView
         '
-        Me.replacementsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.ReplacementsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.replacementsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.ReplaceWith, Me.Regex, Me.CaseSensitive})
-        Me.replacementsListView.FullRowSelect = True
-        Me.replacementsListView.HideSelection = False
-        Me.replacementsListView.Location = New System.Drawing.Point(12, 12)
-        Me.replacementsListView.Name = "replacementsListView"
-        Me.replacementsListView.Size = New System.Drawing.Size(877, 397)
-        Me.replacementsListView.TabIndex = 4
-        Me.replacementsListView.UseCompatibleStateImageBehavior = False
-        Me.replacementsListView.View = System.Windows.Forms.View.Details
+        Me.ReplacementsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.ReplaceWith, Me.Regex, Me.CaseSensitive})
+        Me.ReplacementsListView.FullRowSelect = True
+        Me.ReplacementsListView.HideSelection = False
+        Me.ReplacementsListView.Location = New System.Drawing.Point(12, 12)
+        Me.ReplacementsListView.Name = "replacementsListView"
+        Me.ReplacementsListView.Size = New System.Drawing.Size(877, 397)
+        Me.ReplacementsListView.TabIndex = 4
+        Me.ReplacementsListView.UseCompatibleStateImageBehavior = False
+        Me.ReplacementsListView.View = System.Windows.Forms.View.Details
         '
         'Replace
         '
@@ -61,49 +61,49 @@ Partial Class Replacements
         '
         Me.Regex.Text = "Regex"
         '
-        'btnAdd
+        'BtnAdd
         '
-        Me.btnAdd.Location = New System.Drawing.Point(12, 415)
-        Me.btnAdd.Name = "btnAdd"
-        Me.btnAdd.Size = New System.Drawing.Size(75, 23)
-        Me.btnAdd.TabIndex = 5
-        Me.btnAdd.Text = "Add"
-        Me.btnAdd.UseVisualStyleBackColor = True
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 415)
+        Me.BtnAdd.Name = "btnAdd"
+        Me.BtnAdd.Size = New System.Drawing.Size(75, 23)
+        Me.BtnAdd.TabIndex = 5
+        Me.BtnAdd.Text = "Add"
+        Me.BtnAdd.UseVisualStyleBackColor = True
         '
-        'btnDelete
+        'BtnDelete
         '
-        Me.btnDelete.Enabled = False
-        Me.btnDelete.Location = New System.Drawing.Point(93, 415)
-        Me.btnDelete.Name = "btnDelete"
-        Me.btnDelete.Size = New System.Drawing.Size(75, 23)
-        Me.btnDelete.TabIndex = 6
-        Me.btnDelete.Text = "Delete"
-        Me.btnDelete.UseVisualStyleBackColor = True
+        Me.BtnDelete.Enabled = False
+        Me.BtnDelete.Location = New System.Drawing.Point(93, 415)
+        Me.BtnDelete.Name = "btnDelete"
+        Me.BtnDelete.Size = New System.Drawing.Size(75, 23)
+        Me.BtnDelete.TabIndex = 6
+        Me.BtnDelete.Text = "Delete"
+        Me.BtnDelete.UseVisualStyleBackColor = True
         '
         'CaseSensitive
         '
         Me.CaseSensitive.Text = "Case Sensitive"
         Me.CaseSensitive.Width = 91
         '
-        'btnEdit
+        'BtnEdit
         '
-        Me.btnEdit.Enabled = False
-        Me.btnEdit.Location = New System.Drawing.Point(174, 415)
-        Me.btnEdit.Name = "btnEdit"
-        Me.btnEdit.Size = New System.Drawing.Size(75, 23)
-        Me.btnEdit.TabIndex = 7
-        Me.btnEdit.Text = "Edit"
-        Me.btnEdit.UseVisualStyleBackColor = True
+        Me.BtnEdit.Enabled = False
+        Me.BtnEdit.Location = New System.Drawing.Point(174, 415)
+        Me.BtnEdit.Name = "btnEdit"
+        Me.BtnEdit.Size = New System.Drawing.Size(75, 23)
+        Me.BtnEdit.TabIndex = 7
+        Me.BtnEdit.Text = "Edit"
+        Me.BtnEdit.UseVisualStyleBackColor = True
         '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(901, 450)
-        Me.Controls.Add(Me.btnEdit)
-        Me.Controls.Add(Me.btnDelete)
-        Me.Controls.Add(Me.btnAdd)
-        Me.Controls.Add(Me.replacementsListView)
+        Me.Controls.Add(Me.BtnEdit)
+        Me.Controls.Add(Me.BtnDelete)
+        Me.Controls.Add(Me.BtnAdd)
+        Me.Controls.Add(Me.ReplacementsListView)
         Me.MinimumSize = New System.Drawing.Size(917, 489)
         Me.Name = "Replacements"
         Me.Text = "Replacements"
@@ -111,12 +111,12 @@ Partial Class Replacements
 
     End Sub
 
-    Friend WithEvents replacementsListView As ListView
+    Friend WithEvents ReplacementsListView As ListView
     Friend WithEvents Replace As ColumnHeader
     Friend WithEvents ReplaceWith As ColumnHeader
     Friend WithEvents Regex As ColumnHeader
-    Friend WithEvents btnAdd As Button
-    Friend WithEvents btnDelete As Button
+    Friend WithEvents BtnAdd As Button
+    Friend WithEvents BtnDelete As Button
     Friend WithEvents CaseSensitive As ColumnHeader
-    Friend WithEvents btnEdit As Button
+    Friend WithEvents BtnEdit As Button
 End Class

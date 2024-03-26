@@ -23,28 +23,28 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.btnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
-        Me.btnClearLog = New System.Windows.Forms.ToolStripMenuItem()
-        Me.btnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnClearLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.btnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.lblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.lblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.lblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.chkAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
-        Me.btnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ChkAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.chkAutoSave = New System.Windows.Forms.ToolStripMenuItem()
-        Me.lblAutoSaveLabel = New System.Windows.Forms.Label()
+        Me.ChkAutoSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LblAutoSaveLabel = New System.Windows.Forms.Label()
         Me.NumericUpDown = New System.Windows.Forms.NumericUpDown()
-        Me.chkStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
-        Me.btnMoveLogFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.lblSyslogServerPortLabel = New System.Windows.Forms.Label()
-        Me.txtSysLogServerPort = New System.Windows.Forms.TextBox()
+        Me.ChkStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnMoveLogFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LblSyslogServerPortLabel = New System.Windows.Forms.Label()
+        Me.TxtSysLogServerPort = New System.Windows.Forms.TextBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.chkRegExSearch = New System.Windows.Forms.CheckBox()
+        Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.MainMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogFunctionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -55,18 +55,18 @@ Partial Class Form1
         Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.chkRecordIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.lblSearchLabel = New System.Windows.Forms.Label()
-        Me.txtSearchTerms = New System.Windows.Forms.TextBox()
-        Me.btnSearch = New System.Windows.Forms.Button()
-        Me.chkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
-        Me.logs = New System.Windows.Forms.DataGridView()
-        Me.colTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colType = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ChkRecordIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LblSearchLabel = New System.Windows.Forms.Label()
+        Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
+        Me.BtnSearch = New System.Windows.Forms.Button()
+        Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
+        Me.Logs = New System.Windows.Forms.DataGridView()
+        Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.chkConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -79,28 +79,28 @@ Partial Class Form1
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
-        CType(Me.logs, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'btnOpenLogLocation
+        'BtnOpenLogLocation
         '
-        Me.btnOpenLogLocation.Name = "btnOpenLogLocation"
-        Me.btnOpenLogLocation.Size = New System.Drawing.Size(239, 22)
-        Me.btnOpenLogLocation.Text = "Open Log File Location"
+        Me.BtnOpenLogLocation.Name = "btnOpenLogLocation"
+        Me.BtnOpenLogLocation.Size = New System.Drawing.Size(239, 22)
+        Me.BtnOpenLogLocation.Text = "Open Log File Location"
         '
-        'btnClearLog
+        'BtnClearLog
         '
-        Me.btnClearLog.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearAllLogs, Me.LogsOlderThanToolStripMenuItem})
-        Me.btnClearLog.Enabled = False
-        Me.btnClearLog.Name = "btnClearLog"
-        Me.btnClearLog.Size = New System.Drawing.Size(239, 22)
-        Me.btnClearLog.Text = "Clear Logs"
+        Me.BtnClearLog.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearAllLogs, Me.LogsOlderThanToolStripMenuItem})
+        Me.BtnClearLog.Enabled = False
+        Me.BtnClearLog.Name = "btnClearLog"
+        Me.BtnClearLog.Size = New System.Drawing.Size(239, 22)
+        Me.BtnClearLog.Text = "Clear Logs"
         '
-        'btnClearAllLogs
+        'BtnClearAllLogs
         '
-        Me.btnClearAllLogs.Name = "btnClearAllLogs"
-        Me.btnClearAllLogs.Size = New System.Drawing.Size(165, 22)
-        Me.btnClearAllLogs.Text = "All Logs"
+        Me.BtnClearAllLogs.Name = "btnClearAllLogs"
+        Me.BtnClearAllLogs.Size = New System.Drawing.Size(165, 22)
+        Me.BtnClearAllLogs.Text = "All Logs"
         '
         'LogsOlderThanToolStripMenuItem
         '
@@ -109,16 +109,16 @@ Partial Class Form1
         Me.LogsOlderThanToolStripMenuItem.Size = New System.Drawing.Size(165, 22)
         Me.LogsOlderThanToolStripMenuItem.Text = "Logs older than..."
         '
-        'btnSaveLogsToDisk
+        'BtnSaveLogsToDisk
         '
-        Me.btnSaveLogsToDisk.Enabled = False
-        Me.btnSaveLogsToDisk.Name = "btnSaveLogsToDisk"
-        Me.btnSaveLogsToDisk.Size = New System.Drawing.Size(239, 22)
-        Me.btnSaveLogsToDisk.Text = "Save Logs to Disk"
+        Me.BtnSaveLogsToDisk.Enabled = False
+        Me.BtnSaveLogsToDisk.Name = "btnSaveLogsToDisk"
+        Me.BtnSaveLogsToDisk.Size = New System.Drawing.Size(239, 22)
+        Me.BtnSaveLogsToDisk.Text = "Save Logs to Disk"
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.lblAutoSaved, Me.lblLogFileSize, Me.lblNumberOfIgnoredIncomingLogs})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1175, 22)
@@ -132,58 +132,58 @@ Partial Class Form1
         Me.NumberOfLogs.Size = New System.Drawing.Size(138, 17)
         Me.NumberOfLogs.Text = "Number of Log Entries: 0"
         '
-        'lblAutoSaved
+        'LblAutoSaved
         '
-        Me.lblAutoSaved.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
-        Me.lblAutoSaved.Name = "lblAutoSaved"
-        Me.lblAutoSaved.Size = New System.Drawing.Size(193, 17)
-        Me.lblAutoSaved.Text = "Last Auto-Saved At: (Not Specified)"
+        Me.LblAutoSaved.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
+        Me.LblAutoSaved.Name = "lblAutoSaved"
+        Me.LblAutoSaved.Size = New System.Drawing.Size(193, 17)
+        Me.LblAutoSaved.Text = "Last Auto-Saved At: (Not Specified)"
         '
-        'lblLogFileSize
+        'LblLogFileSize
         '
-        Me.lblLogFileSize.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
-        Me.lblLogFileSize.Name = "lblLogFileSize"
-        Me.lblLogFileSize.Size = New System.Drawing.Size(156, 17)
-        Me.lblLogFileSize.Text = "Log File Size: (Not Specified)"
+        Me.LblLogFileSize.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
+        Me.LblLogFileSize.Name = "lblLogFileSize"
+        Me.LblLogFileSize.Size = New System.Drawing.Size(156, 17)
+        Me.LblLogFileSize.Text = "Log File Size: (Not Specified)"
         '
-        'lblNumberOfIgnoredIncomingLogs
+        'LblNumberOfIgnoredIncomingLogs
         '
-        Me.lblNumberOfIgnoredIncomingLogs.Name = "lblNumberOfIgnoredIncomingLogs"
-        Me.lblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
-        Me.lblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+        Me.LblNumberOfIgnoredIncomingLogs.Name = "lblNumberOfIgnoredIncomingLogs"
+        Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
+        Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         '
-        'chkAutoScroll
+        'ChkAutoScroll
         '
-        Me.chkAutoScroll.CheckOnClick = True
-        Me.chkAutoScroll.Name = "chkAutoScroll"
-        Me.chkAutoScroll.Size = New System.Drawing.Size(243, 22)
-        Me.chkAutoScroll.Text = "Auto Scroll"
+        Me.ChkAutoScroll.CheckOnClick = True
+        Me.ChkAutoScroll.Name = "chkAutoScroll"
+        Me.ChkAutoScroll.Size = New System.Drawing.Size(243, 22)
+        Me.ChkAutoScroll.Text = "Auto Scroll"
         '
-        'btnCheckForUpdates
+        'BtnCheckForUpdates
         '
-        Me.btnCheckForUpdates.Name = "btnCheckForUpdates"
-        Me.btnCheckForUpdates.Size = New System.Drawing.Size(171, 22)
-        Me.btnCheckForUpdates.Text = "Check for Updates"
+        Me.BtnCheckForUpdates.Name = "btnCheckForUpdates"
+        Me.BtnCheckForUpdates.Size = New System.Drawing.Size(171, 22)
+        Me.BtnCheckForUpdates.Text = "Check for Updates"
         '
         'SaveTimer
         '
         Me.SaveTimer.Interval = 300000
         '
-        'chkAutoSave
+        'ChkAutoSave
         '
-        Me.chkAutoSave.CheckOnClick = True
-        Me.chkAutoSave.Name = "chkAutoSave"
-        Me.chkAutoSave.Size = New System.Drawing.Size(243, 22)
-        Me.chkAutoSave.Text = "Auto Save"
+        Me.ChkAutoSave.CheckOnClick = True
+        Me.ChkAutoSave.Name = "chkAutoSave"
+        Me.ChkAutoSave.Size = New System.Drawing.Size(243, 22)
+        Me.ChkAutoSave.Text = "Auto Save"
         '
-        'lblAutoSaveLabel
+        'LblAutoSaveLabel
         '
-        Me.lblAutoSaveLabel.AutoSize = True
-        Me.lblAutoSaveLabel.Location = New System.Drawing.Point(202, 28)
-        Me.lblAutoSaveLabel.Name = "lblAutoSaveLabel"
-        Me.lblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
-        Me.lblAutoSaveLabel.TabIndex = 7
-        Me.lblAutoSaveLabel.Text = "Auto save every (in minutes):"
+        Me.LblAutoSaveLabel.AutoSize = True
+        Me.LblAutoSaveLabel.Location = New System.Drawing.Point(202, 28)
+        Me.LblAutoSaveLabel.Name = "lblAutoSaveLabel"
+        Me.LblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
+        Me.LblAutoSaveLabel.TabIndex = 7
+        Me.LblAutoSaveLabel.Text = "Auto save every (in minutes):"
         '
         'NumericUpDown
         '
@@ -195,49 +195,49 @@ Partial Class Form1
         Me.NumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.NumericUpDown.Value = New Decimal(New Integer() {5, 0, 0, 0})
         '
-        'chkStartAtUserStartup
+        'ChkStartAtUserStartup
         '
-        Me.chkStartAtUserStartup.CheckOnClick = True
-        Me.chkStartAtUserStartup.Name = "chkStartAtUserStartup"
-        Me.chkStartAtUserStartup.Size = New System.Drawing.Size(243, 22)
-        Me.chkStartAtUserStartup.Text = "Start at Startup"
+        Me.ChkStartAtUserStartup.CheckOnClick = True
+        Me.ChkStartAtUserStartup.Name = "chkStartAtUserStartup"
+        Me.ChkStartAtUserStartup.Size = New System.Drawing.Size(243, 22)
+        Me.ChkStartAtUserStartup.Text = "Start at Startup"
         '
-        'btnMoveLogFile
+        'BtnMoveLogFile
         '
-        Me.btnMoveLogFile.Name = "btnMoveLogFile"
-        Me.btnMoveLogFile.Size = New System.Drawing.Size(243, 22)
-        Me.btnMoveLogFile.Text = "Move Log File"
+        Me.BtnMoveLogFile.Name = "btnMoveLogFile"
+        Me.BtnMoveLogFile.Size = New System.Drawing.Size(243, 22)
+        Me.BtnMoveLogFile.Text = "Move Log File"
         '
-        'lblSyslogServerPortLabel
+        'LblSyslogServerPortLabel
         '
-        Me.lblSyslogServerPortLabel.AutoSize = True
-        Me.lblSyslogServerPortLabel.Location = New System.Drawing.Point(12, 28)
-        Me.lblSyslogServerPortLabel.Name = "lblSyslogServerPortLabel"
-        Me.lblSyslogServerPortLabel.Size = New System.Drawing.Size(97, 13)
-        Me.lblSyslogServerPortLabel.TabIndex = 10
-        Me.lblSyslogServerPortLabel.Text = "Syslog Server Port:"
+        Me.LblSyslogServerPortLabel.AutoSize = True
+        Me.LblSyslogServerPortLabel.Location = New System.Drawing.Point(12, 28)
+        Me.LblSyslogServerPortLabel.Name = "lblSyslogServerPortLabel"
+        Me.LblSyslogServerPortLabel.Size = New System.Drawing.Size(97, 13)
+        Me.LblSyslogServerPortLabel.TabIndex = 10
+        Me.LblSyslogServerPortLabel.Text = "Syslog Server Port:"
         '
-        'txtSysLogServerPort
+        'TxtSysLogServerPort
         '
-        Me.txtSysLogServerPort.Location = New System.Drawing.Point(115, 25)
-        Me.txtSysLogServerPort.Name = "txtSysLogServerPort"
-        Me.txtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
-        Me.txtSysLogServerPort.TabIndex = 11
-        Me.txtSysLogServerPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.ToolTip.SetToolTip(Me.txtSysLogServerPort, "Default Port: 514")
+        Me.TxtSysLogServerPort.Location = New System.Drawing.Point(115, 25)
+        Me.TxtSysLogServerPort.Name = "txtSysLogServerPort"
+        Me.TxtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
+        Me.TxtSysLogServerPort.TabIndex = 11
+        Me.TxtSysLogServerPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.ToolTip.SetToolTip(Me.TxtSysLogServerPort, "Default Port: 514")
         '
-        'chkRegExSearch
+        'ChkRegExSearch
         '
-        Me.chkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.chkRegExSearch.AutoSize = True
-        Me.chkRegExSearch.Location = New System.Drawing.Point(934, 31)
-        Me.chkRegExSearch.Name = "chkRegExSearch"
-        Me.chkRegExSearch.Size = New System.Drawing.Size(63, 17)
-        Me.chkRegExSearch.TabIndex = 16
-        Me.chkRegExSearch.Text = "Regex?"
-        Me.ToolTip.SetToolTip(Me.chkRegExSearch, "Be careful with regex searches, a malformed regex pattern may cause the program t" &
+        Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkRegExSearch.AutoSize = True
+        Me.ChkRegExSearch.Location = New System.Drawing.Point(934, 31)
+        Me.ChkRegExSearch.Name = "chkRegExSearch"
+        Me.ChkRegExSearch.Size = New System.Drawing.Size(63, 17)
+        Me.ChkRegExSearch.TabIndex = 16
+        Me.ChkRegExSearch.Text = "Regex?"
+        Me.ToolTip.SetToolTip(Me.ChkRegExSearch, "Be careful with regex searches, a malformed regex pattern may cause the program t" &
         "o malfunction.")
-        Me.chkRegExSearch.UseVisualStyleBackColor = True
+        Me.ChkRegExSearch.UseVisualStyleBackColor = True
         '
         'MenuStrip
         '
@@ -250,14 +250,14 @@ Partial Class Form1
         '
         'MainMenuToolStripMenuItem
         '
-        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnCheckForUpdates, Me.AboutToolStripMenuItem})
+        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnCheckForUpdates, Me.AboutToolStripMenuItem})
         Me.MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem"
         Me.MainMenuToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
         Me.MainMenuToolStripMenuItem.Text = "Main Menu"
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnClearLog, Me.IgnoredLogsToolStripMenuItem, Me.btnOpenLogLocation, Me.btnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -292,7 +292,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.chkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChkAutoSave, Me.ChkAutoScroll, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.ChkRecordIgnoredLogs, Me.ChkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -309,94 +309,94 @@ Partial Class Form1
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
         '
-        'chkRecordIgnoredLogs
+        'ChkRecordIgnoredLogs
         '
-        Me.chkRecordIgnoredLogs.CheckOnClick = True
-        Me.chkRecordIgnoredLogs.Name = "chkRecordIgnoredLogs"
-        Me.chkRecordIgnoredLogs.Size = New System.Drawing.Size(243, 22)
-        Me.chkRecordIgnoredLogs.Text = "Record Ignored Logs"
+        Me.ChkRecordIgnoredLogs.CheckOnClick = True
+        Me.ChkRecordIgnoredLogs.Name = "chkRecordIgnoredLogs"
+        Me.ChkRecordIgnoredLogs.Size = New System.Drawing.Size(243, 22)
+        Me.ChkRecordIgnoredLogs.Text = "Record Ignored Logs"
         '
-        'lblSearchLabel
+        'LblSearchLabel
         '
-        Me.lblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblSearchLabel.AutoSize = True
-        Me.lblSearchLabel.Location = New System.Drawing.Point(707, 32)
-        Me.lblSearchLabel.Name = "lblSearchLabel"
-        Me.lblSearchLabel.Size = New System.Drawing.Size(67, 13)
-        Me.lblSearchLabel.TabIndex = 13
-        Me.lblSearchLabel.Text = "Search Logs"
+        Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LblSearchLabel.AutoSize = True
+        Me.LblSearchLabel.Location = New System.Drawing.Point(707, 32)
+        Me.LblSearchLabel.Name = "lblSearchLabel"
+        Me.LblSearchLabel.Size = New System.Drawing.Size(67, 13)
+        Me.LblSearchLabel.TabIndex = 13
+        Me.LblSearchLabel.Text = "Search Logs"
         '
-        'txtSearchTerms
+        'TxtSearchTerms
         '
-        Me.txtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtSearchTerms.Location = New System.Drawing.Point(780, 29)
-        Me.txtSearchTerms.Name = "txtSearchTerms"
-        Me.txtSearchTerms.Size = New System.Drawing.Size(148, 20)
-        Me.txtSearchTerms.TabIndex = 14
+        Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(780, 29)
+        Me.TxtSearchTerms.Name = "txtSearchTerms"
+        Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
+        Me.TxtSearchTerms.TabIndex = 14
         '
-        'btnSearch
+        'BtnSearch
         '
-        Me.btnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSearch.Location = New System.Drawing.Point(1111, 27)
-        Me.btnSearch.Name = "btnSearch"
-        Me.btnSearch.Size = New System.Drawing.Size(52, 23)
-        Me.btnSearch.TabIndex = 15
-        Me.btnSearch.Text = "Search"
-        Me.btnSearch.UseVisualStyleBackColor = True
+        Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnSearch.Location = New System.Drawing.Point(1111, 27)
+        Me.BtnSearch.Name = "btnSearch"
+        Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
+        Me.BtnSearch.TabIndex = 15
+        Me.BtnSearch.Text = "Search"
+        Me.BtnSearch.UseVisualStyleBackColor = True
         '
-        'chkCaseInsensitiveSearch
+        'ChkCaseInsensitiveSearch
         '
-        Me.chkCaseInsensitiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.chkCaseInsensitiveSearch.AutoSize = True
-        Me.chkCaseInsensitiveSearch.Checked = True
-        Me.chkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkCaseInsensitiveSearch.Location = New System.Drawing.Point(1003, 31)
-        Me.chkCaseInsensitiveSearch.Name = "chkCaseInsensitiveSearch"
-        Me.chkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
-        Me.chkCaseInsensitiveSearch.TabIndex = 17
-        Me.chkCaseInsensitiveSearch.Text = "Case Insensitive?"
-        Me.chkCaseInsensitiveSearch.UseVisualStyleBackColor = True
+        Me.ChkCaseInsensitiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkCaseInsensitiveSearch.AutoSize = True
+        Me.ChkCaseInsensitiveSearch.Checked = True
+        Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(1003, 31)
+        Me.ChkCaseInsensitiveSearch.Name = "chkCaseInsensitiveSearch"
+        Me.ChkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
+        Me.ChkCaseInsensitiveSearch.TabIndex = 17
+        Me.ChkCaseInsensitiveSearch.Text = "Case Insensitive?"
+        Me.ChkCaseInsensitiveSearch.UseVisualStyleBackColor = True
         '
-        'logs
+        'Logs
         '
-        Me.logs.AllowUserToAddRows = False
-        Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.Logs.AllowUserToAddRows = False
+        Me.Logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colTime, Me.colType, Me.colIPAddress, Me.colLog})
-        Me.logs.Location = New System.Drawing.Point(12, 52)
-        Me.logs.Name = "logs"
-        Me.logs.ReadOnly = True
-        Me.logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.logs.Size = New System.Drawing.Size(1151, 369)
-        Me.logs.TabIndex = 18
+        Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColType, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.Location = New System.Drawing.Point(12, 52)
+        Me.Logs.Name = "logs"
+        Me.Logs.ReadOnly = True
+        Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.Logs.Size = New System.Drawing.Size(1151, 369)
+        Me.Logs.TabIndex = 18
         '
-        'colTime
+        'ColTime
         '
-        Me.colTime.HeaderText = "Time"
-        Me.colTime.Name = "colTime"
-        Me.colTime.ReadOnly = True
-        Me.colTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColTime.HeaderText = "Time"
+        Me.ColTime.Name = "colTime"
+        Me.ColTime.ReadOnly = True
+        Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         '
-        'colType
+        'ColType
         '
-        Me.colType.HeaderText = "Type"
-        Me.colType.Name = "colType"
-        Me.colType.ReadOnly = True
+        Me.ColType.HeaderText = "Type"
+        Me.ColType.Name = "colType"
+        Me.ColType.ReadOnly = True
         '
-        'colIPAddress
+        'ColIPAddress
         '
-        Me.colIPAddress.HeaderText = "IP Address"
-        Me.colIPAddress.Name = "colIPAddress"
-        Me.colIPAddress.ReadOnly = True
+        Me.ColIPAddress.HeaderText = "IP Address"
+        Me.ColIPAddress.Name = "colIPAddress"
+        Me.ColIPAddress.ReadOnly = True
         '
-        'colLog
+        'ColLog
         '
-        Me.colLog.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colLog.HeaderText = "Log"
-        Me.colLog.Name = "colLog"
-        Me.colLog.ReadOnly = True
+        Me.ColLog.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.ColLog.HeaderText = "Log"
+        Me.ColLog.Name = "colLog"
+        Me.ColLog.ReadOnly = True
         '
         'ConfigureAlternatingColorToolStripMenuItem
         '
@@ -458,30 +458,30 @@ Partial Class Form1
         Me.OlderThanAWeekToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
         Me.OlderThanAWeekToolStripMenuItem.Text = "Older than a week"
         '
-        'chkConfirmCloseToolStripItem
+        'ChkConfirmCloseToolStripItem
         '
-        Me.chkConfirmCloseToolStripItem.CheckOnClick = True
-        Me.chkConfirmCloseToolStripItem.Name = "chkConfirmCloseToolStripItem"
-        Me.chkConfirmCloseToolStripItem.Size = New System.Drawing.Size(243, 22)
-        Me.chkConfirmCloseToolStripItem.Text = "Confirm Close"
+        Me.ChkConfirmCloseToolStripItem.CheckOnClick = True
+        Me.ChkConfirmCloseToolStripItem.Name = "chkConfirmCloseToolStripItem"
+        Me.ChkConfirmCloseToolStripItem.Size = New System.Drawing.Size(243, 22)
+        Me.ChkConfirmCloseToolStripItem.Text = "Confirm Close"
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
-        Me.Controls.Add(Me.logs)
-        Me.Controls.Add(Me.chkCaseInsensitiveSearch)
-        Me.Controls.Add(Me.chkRegExSearch)
-        Me.Controls.Add(Me.btnSearch)
-        Me.Controls.Add(Me.txtSearchTerms)
-        Me.Controls.Add(Me.lblSearchLabel)
+        Me.Controls.Add(Me.Logs)
+        Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
+        Me.Controls.Add(Me.ChkRegExSearch)
+        Me.Controls.Add(Me.BtnSearch)
+        Me.Controls.Add(Me.TxtSearchTerms)
+        Me.Controls.Add(Me.LblSearchLabel)
         Me.Controls.Add(Me.NumericUpDown)
-        Me.Controls.Add(Me.lblAutoSaveLabel)
+        Me.Controls.Add(Me.LblAutoSaveLabel)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip)
-        Me.Controls.Add(Me.txtSysLogServerPort)
-        Me.Controls.Add(Me.lblSyslogServerPortLabel)
+        Me.Controls.Add(Me.TxtSysLogServerPort)
+        Me.Controls.Add(Me.LblSyslogServerPortLabel)
         Me.MainMenuStrip = Me.MenuStrip
         Me.MinimumSize = New System.Drawing.Size(1191, 485)
         Me.Name = "Form1"
@@ -491,54 +491,54 @@ Partial Class Form1
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
-        CType(Me.logs, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents btnOpenLogLocation As ToolStripMenuItem
+    Friend WithEvents BtnOpenLogLocation As ToolStripMenuItem
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
-    Friend WithEvents chkAutoScroll As ToolStripMenuItem
-    Friend WithEvents btnClearLog As ToolStripMenuItem
-    Friend WithEvents btnSaveLogsToDisk As ToolStripMenuItem
-    Friend WithEvents btnCheckForUpdates As ToolStripMenuItem
+    Friend WithEvents ChkAutoScroll As ToolStripMenuItem
+    Friend WithEvents BtnClearLog As ToolStripMenuItem
+    Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
+    Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem
     Friend WithEvents SaveTimer As Timer
-    Friend WithEvents chkAutoSave As ToolStripMenuItem
-    Friend WithEvents lblAutoSaveLabel As Label
+    Friend WithEvents ChkAutoSave As ToolStripMenuItem
+    Friend WithEvents LblAutoSaveLabel As Label
     Friend WithEvents NumericUpDown As NumericUpDown
-    Friend WithEvents lblAutoSaved As ToolStripStatusLabel
-    Friend WithEvents chkStartAtUserStartup As ToolStripMenuItem
-    Friend WithEvents lblLogFileSize As ToolStripStatusLabel
-    Friend WithEvents btnMoveLogFile As ToolStripMenuItem
-    Friend WithEvents lblSyslogServerPortLabel As Label
-    Friend WithEvents txtSysLogServerPort As TextBox
+    Friend WithEvents LblAutoSaved As ToolStripStatusLabel
+    Friend WithEvents ChkStartAtUserStartup As ToolStripMenuItem
+    Friend WithEvents LblLogFileSize As ToolStripStatusLabel
+    Friend WithEvents BtnMoveLogFile As ToolStripMenuItem
+    Friend WithEvents LblSyslogServerPortLabel As Label
+    Friend WithEvents TxtSysLogServerPort As TextBox
     Friend WithEvents ToolTip As ToolTip
     Friend WithEvents MenuStrip As MenuStrip
     Friend WithEvents MainMenuToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LogFunctionsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents lblSearchLabel As Label
-    Friend WithEvents txtSearchTerms As TextBox
-    Friend WithEvents btnSearch As Button
+    Friend WithEvents LblSearchLabel As Label
+    Friend WithEvents TxtSearchTerms As TextBox
+    Friend WithEvents BtnSearch As Button
     Friend WithEvents IgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents lblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
+    Friend WithEvents LblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClearIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents IgnoredLogsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents chkRecordIgnoredLogs As ToolStripMenuItem
-    Friend WithEvents btnClearAllLogs As ToolStripMenuItem
+    Friend WithEvents ChkRecordIgnoredLogs As ToolStripMenuItem
+    Friend WithEvents BtnClearAllLogs As ToolStripMenuItem
     Friend WithEvents LogsOlderThanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ZerooutIgnoredLogsCounterToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureReplacementsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents chkRegExSearch As CheckBox
-    Friend WithEvents chkCaseInsensitiveSearch As CheckBox
-    Friend WithEvents logs As DataGridView
-    Friend WithEvents colTime As DataGridViewTextBoxColumn
-    Friend WithEvents colType As DataGridViewTextBoxColumn
-    Friend WithEvents colIPAddress As DataGridViewTextBoxColumn
-    Friend WithEvents colLog As DataGridViewTextBoxColumn
+    Friend WithEvents ChkRegExSearch As CheckBox
+    Friend WithEvents ChkCaseInsensitiveSearch As CheckBox
+    Friend WithEvents Logs As DataGridView
+    Friend WithEvents ColTime As DataGridViewTextBoxColumn
+    Friend WithEvents ColType As DataGridViewTextBoxColumn
+    Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
+    Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents ConfigureAlternatingColorToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
@@ -551,5 +551,5 @@ Partial Class Form1
     Friend WithEvents OlderThan3DaysToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OlderThanAWeekToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NotifyIcon As NotifyIcon
-    Friend WithEvents chkConfirmCloseToolStripItem As ToolStripMenuItem
+    Friend WithEvents ChkConfirmCloseToolStripItem As ToolStripMenuItem
 End Class

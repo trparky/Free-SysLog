@@ -2,12 +2,12 @@
 
 Public Class Replacements
     Private Function CheckForExistingItem(strReplace As String, strReplaceWith As String) As Boolean
-        Return replacementsListView.Items.Cast(Of MyReplacementsListViewItem).Any(Function(item As MyReplacementsListViewItem)
+        Return ReplacementsListView.Items.Cast(Of MyReplacementsListViewItem).Any(Function(item As MyReplacementsListViewItem)
                                                                                       Return item.SubItems(0).Text.Equals(strReplace, StringComparison.OrdinalIgnoreCase) And item.SubItems(1).Text.Equals(strReplaceWith, StringComparison.OrdinalIgnoreCase)
                                                                                   End Function)
     End Function
 
-    Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
+    Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
         Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Replacement"}
             AddReplacement.ShowDialog(Me)
 
@@ -24,7 +24,7 @@ Public Class Replacements
                 MyReplacementsListViewItem.BoolRegex = AddReplacement.boolRegex
                 MyReplacementsListViewItem.BoolCaseSensitive = AddReplacement.boolCaseSensitive
 
-                replacementsListView.Items.Add(MyReplacementsListViewItem)
+                ReplacementsListView.Items.Add(MyReplacementsListViewItem)
             End If
         End Using
     End Sub
@@ -38,7 +38,7 @@ Public Class Replacements
             Next
         End If
 
-        replacementsListView.Items.AddRange(listOfReplacementsToAdd.ToArray())
+        ReplacementsListView.Items.AddRange(listOfReplacementsToAdd.ToArray())
     End Sub
 
     Private Sub Replacements_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
@@ -47,7 +47,7 @@ Public Class Replacements
         Dim replacementsClass As ReplacementsClass
         Dim tempReplacements As New Specialized.StringCollection()
 
-        For Each item As MyReplacementsListViewItem In replacementsListView.Items
+        For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
             replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive}
             replacementsList.Add(replacementsClass)
             tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
@@ -57,23 +57,23 @@ Public Class Replacements
         My.Settings.Save()
     End Sub
 
-    Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles replacementsListView.KeyUp
-        If replacementsListView.SelectedItems.Count > 0 Then
+    Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles ReplacementsListView.KeyUp
+        If ReplacementsListView.SelectedItems.Count > 0 Then
             If e.KeyCode = Keys.Delete Then
-                replacementsListView.Items.Remove(replacementsListView.SelectedItems(0))
+                ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
             ElseIf e.KeyCode = Keys.Enter Then
                 EditItem()
             End If
         End If
     End Sub
 
-    Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
-        replacementsListView.Items.Remove(replacementsListView.SelectedItems(0))
+    Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
+        ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
     End Sub
 
     Private Sub EditItem()
         Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = "Edit Replacement"}
-            Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(replacementsListView.SelectedItems(0), MyReplacementsListViewItem)
+            Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
 
             AddReplacement.strReplace = selectedItemObject.SubItems(0).Text
             AddReplacement.strReplaceWith = selectedItemObject.SubItems(1).Text
@@ -93,21 +93,21 @@ Public Class Replacements
         End Using
     End Sub
 
-    Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
+    Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles BtnEdit.Click
         EditItem()
     End Sub
 
-    Private Sub ReplacementsListView_Click(sender As Object, e As EventArgs) Handles replacementsListView.Click
-        If replacementsListView.SelectedItems.Count > 0 Then
-            btnDelete.Enabled = True
-            btnEdit.Enabled = True
+    Private Sub ReplacementsListView_Click(sender As Object, e As EventArgs) Handles ReplacementsListView.Click
+        If ReplacementsListView.SelectedItems.Count > 0 Then
+            BtnDelete.Enabled = True
+            BtnEdit.Enabled = True
         Else
-            btnDelete.Enabled = False
-            btnEdit.Enabled = False
+            BtnDelete.Enabled = False
+            BtnEdit.Enabled = False
         End If
     End Sub
 
-    Private Sub ReplacementsListView_DoubleClick(sender As Object, e As EventArgs) Handles replacementsListView.DoubleClick
+    Private Sub ReplacementsListView_DoubleClick(sender As Object, e As EventArgs) Handles ReplacementsListView.DoubleClick
         EditItem()
     End Sub
 End Class

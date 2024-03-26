@@ -23,12 +23,12 @@ Partial Class AddReplacement
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.txtReplace = New System.Windows.Forms.TextBox()
+        Me.TxtReplace = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtReplaceWith = New System.Windows.Forms.TextBox()
-        Me.chkRegex = New System.Windows.Forms.CheckBox()
-        Me.btnAdd = New System.Windows.Forms.Button()
-        Me.chkCaseSensitive = New System.Windows.Forms.CheckBox()
+        Me.TxtReplaceWith = New System.Windows.Forms.TextBox()
+        Me.ChkRegex = New System.Windows.Forms.CheckBox()
+        Me.BtnAdd = New System.Windows.Forms.Button()
+        Me.ChkCaseSensitive = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'Label1
@@ -40,12 +40,12 @@ Partial Class AddReplacement
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Replace"
         '
-        'txtReplace
+        'TxtReplace
         '
-        Me.txtReplace.Location = New System.Drawing.Point(65, 6)
-        Me.txtReplace.Name = "txtReplace"
-        Me.txtReplace.Size = New System.Drawing.Size(723, 20)
-        Me.txtReplace.TabIndex = 1
+        Me.TxtReplace.Location = New System.Drawing.Point(65, 6)
+        Me.TxtReplace.Name = "txtReplace"
+        Me.TxtReplace.Size = New System.Drawing.Size(723, 20)
+        Me.TxtReplace.TabIndex = 1
         '
         'Label2
         '
@@ -56,54 +56,54 @@ Partial Class AddReplacement
         Me.Label2.TabIndex = 2
         Me.Label2.Text = "With"
         '
-        'txtReplaceWith
+        'TxtReplaceWith
         '
-        Me.txtReplaceWith.Location = New System.Drawing.Point(65, 32)
-        Me.txtReplaceWith.Name = "txtReplaceWith"
-        Me.txtReplaceWith.Size = New System.Drawing.Size(723, 20)
-        Me.txtReplaceWith.TabIndex = 3
+        Me.TxtReplaceWith.Location = New System.Drawing.Point(65, 32)
+        Me.TxtReplaceWith.Name = "txtReplaceWith"
+        Me.TxtReplaceWith.Size = New System.Drawing.Size(723, 20)
+        Me.TxtReplaceWith.TabIndex = 3
         '
-        'chkRegex
+        'ChkRegex
         '
-        Me.chkRegex.AutoSize = True
-        Me.chkRegex.Location = New System.Drawing.Point(15, 58)
-        Me.chkRegex.Name = "chkRegex"
-        Me.chkRegex.Size = New System.Drawing.Size(478, 17)
-        Me.chkRegex.TabIndex = 4
-        Me.chkRegex.Text = "Regex? (Be careful with Regex, a broken regex pattern could cause the program to " &
+        Me.ChkRegex.AutoSize = True
+        Me.ChkRegex.Location = New System.Drawing.Point(15, 58)
+        Me.ChkRegex.Name = "chkRegex"
+        Me.ChkRegex.Size = New System.Drawing.Size(478, 17)
+        Me.ChkRegex.TabIndex = 4
+        Me.ChkRegex.Text = "Regex? (Be careful with Regex, a broken regex pattern could cause the program to " &
     "malfunction)"
-        Me.chkRegex.UseVisualStyleBackColor = True
+        Me.ChkRegex.UseVisualStyleBackColor = True
         '
-        'btnAdd
+        'BtnAdd
         '
-        Me.btnAdd.Location = New System.Drawing.Point(12, 81)
-        Me.btnAdd.Name = "btnAdd"
-        Me.btnAdd.Size = New System.Drawing.Size(75, 23)
-        Me.btnAdd.TabIndex = 5
-        Me.btnAdd.Text = "Add"
-        Me.btnAdd.UseVisualStyleBackColor = True
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 81)
+        Me.BtnAdd.Name = "btnAdd"
+        Me.BtnAdd.Size = New System.Drawing.Size(75, 23)
+        Me.BtnAdd.TabIndex = 5
+        Me.BtnAdd.Text = "Add"
+        Me.BtnAdd.UseVisualStyleBackColor = True
         '
-        'chkCaseSensitive
+        'ChkCaseSensitive
         '
-        Me.chkCaseSensitive.AutoSize = True
-        Me.chkCaseSensitive.Location = New System.Drawing.Point(542, 58)
-        Me.chkCaseSensitive.Name = "chkCaseSensitive"
-        Me.chkCaseSensitive.Size = New System.Drawing.Size(102, 17)
-        Me.chkCaseSensitive.TabIndex = 6
-        Me.chkCaseSensitive.Text = "Case Sensitive?"
-        Me.chkCaseSensitive.UseVisualStyleBackColor = True
+        Me.ChkCaseSensitive.AutoSize = True
+        Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 58)
+        Me.ChkCaseSensitive.Name = "chkCaseSensitive"
+        Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
+        Me.ChkCaseSensitive.TabIndex = 6
+        Me.ChkCaseSensitive.Text = "Case Sensitive?"
+        Me.ChkCaseSensitive.UseVisualStyleBackColor = True
         '
         'AddReplacement
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 112)
-        Me.Controls.Add(Me.chkCaseSensitive)
-        Me.Controls.Add(Me.btnAdd)
-        Me.Controls.Add(Me.chkRegex)
-        Me.Controls.Add(Me.txtReplaceWith)
+        Me.Controls.Add(Me.ChkCaseSensitive)
+        Me.Controls.Add(Me.BtnAdd)
+        Me.Controls.Add(Me.ChkRegex)
+        Me.Controls.Add(Me.TxtReplaceWith)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.txtReplace)
+        Me.Controls.Add(Me.TxtReplace)
         Me.Controls.Add(Me.Label1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.KeyPreview = True
@@ -117,10 +117,10 @@ Partial Class AddReplacement
     End Sub
 
     Friend WithEvents Label1 As Label
-    Friend WithEvents txtReplace As TextBox
+    Friend WithEvents TxtReplace As TextBox
     Friend WithEvents Label2 As Label
-    Friend WithEvents txtReplaceWith As TextBox
-    Friend WithEvents chkRegex As CheckBox
-    Friend WithEvents btnAdd As Button
-    Friend WithEvents chkCaseSensitive As CheckBox
+    Friend WithEvents TxtReplaceWith As TextBox
+    Friend WithEvents ChkRegex As CheckBox
+    Friend WithEvents BtnAdd As Button
+    Friend WithEvents ChkCaseSensitive As CheckBox
 End Class

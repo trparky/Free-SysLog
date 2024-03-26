@@ -22,80 +22,80 @@ Partial Class Ignored_Logs_and_Search_Results
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.logs = New System.Windows.Forms.DataGridView()
-        Me.colTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colType = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Logs = New System.Windows.Forms.DataGridView()
+        Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.lblCount = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
-        CType(Me.logs, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCount})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 403)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1152, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
-        'lblCount
+        'LblCount
         '
-        Me.lblCount.Name = "lblCount"
-        Me.lblCount.Size = New System.Drawing.Size(53, 17)
-        Me.lblCount.Text = "lblCount"
+        Me.LblCount.Name = "lblCount"
+        Me.LblCount.Size = New System.Drawing.Size(53, 17)
+        Me.LblCount.Text = "lblCount"
         '
-        'logs
+        'Logs
         '
-        Me.logs.AllowUserToAddRows = False
-        Me.logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.Logs.AllowUserToAddRows = False
+        Me.Logs.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colTime, Me.colType, Me.colIPAddress, Me.colLog})
-        Me.logs.Location = New System.Drawing.Point(12, 12)
-        Me.logs.Name = "logs"
-        Me.logs.ReadOnly = True
-        Me.logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.logs.Size = New System.Drawing.Size(1128, 359)
-        Me.logs.TabIndex = 19
+        Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColType, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.Location = New System.Drawing.Point(12, 12)
+        Me.Logs.Name = "logs"
+        Me.Logs.ReadOnly = True
+        Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.Logs.Size = New System.Drawing.Size(1128, 359)
+        Me.Logs.TabIndex = 19
         '
-        'colTime
+        'ColTime
         '
-        Me.colTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        Me.colTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
-        Me.colTime.HeaderText = "Time"
-        Me.colTime.Name = "colTime"
-        Me.colTime.ReadOnly = True
-        Me.colTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        Me.ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
+        Me.ColTime.HeaderText = "Time"
+        Me.ColTime.Name = "colTime"
+        Me.ColTime.ReadOnly = True
+        Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         '
-        'colType
+        'ColType
         '
-        Me.colType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        Me.colType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
-        Me.colType.HeaderText = "Type"
-        Me.colType.Name = "colType"
-        Me.colType.ReadOnly = True
+        Me.ColType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        Me.ColType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+        Me.ColType.HeaderText = "Type"
+        Me.ColType.Name = "colType"
+        Me.ColType.ReadOnly = True
         '
-        'colIPAddress
+        'ColIPAddress
         '
-        Me.colIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        Me.colIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
-        Me.colIPAddress.HeaderText = "IP Address"
-        Me.colIPAddress.Name = "colIPAddress"
-        Me.colIPAddress.ReadOnly = True
+        Me.ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        Me.ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+        Me.ColIPAddress.HeaderText = "IP Address"
+        Me.ColIPAddress.Name = "colIPAddress"
+        Me.ColIPAddress.ReadOnly = True
         '
-        'colLog
+        'ColLog
         '
-        Me.colLog.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colLog.HeaderText = "Log"
-        Me.colLog.Name = "colLog"
-        Me.colLog.ReadOnly = True
+        Me.ColLog.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.ColLog.HeaderText = "Log"
+        Me.ColLog.Name = "colLog"
+        Me.ColLog.ReadOnly = True
         '
         'BtnExport
         '
@@ -113,25 +113,25 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 425)
         Me.Controls.Add(Me.BtnExport)
-        Me.Controls.Add(Me.logs)
+        Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.StatusStrip1)
         Me.MinimumSize = New System.Drawing.Size(1168, 464)
         Me.Name = "Ignored_Logs_and_Search_Results"
         Me.Text = "Ignored Logs"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
-        CType(Me.logs, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents lblCount As ToolStripStatusLabel
-    Friend WithEvents logs As DataGridView
-    Friend WithEvents colTime As DataGridViewTextBoxColumn
-    Friend WithEvents colType As DataGridViewTextBoxColumn
-    Friend WithEvents colIPAddress As DataGridViewTextBoxColumn
-    Friend WithEvents colLog As DataGridViewTextBoxColumn
+    Friend WithEvents LblCount As ToolStripStatusLabel
+    Friend WithEvents Logs As DataGridView
+    Friend WithEvents ColTime As DataGridViewTextBoxColumn
+    Friend WithEvents ColType As DataGridViewTextBoxColumn
+    Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
+    Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents BtnExport As Button
     Friend WithEvents SaveFileDialog As SaveFileDialog
 End Class

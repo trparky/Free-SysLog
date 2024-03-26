@@ -11,7 +11,7 @@
         My.Settings.logViewerWindowSize = Size
     End Sub
 
-    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+    Private Sub BtnClose_Click(sender As Object, e As EventArgs) Handles BtnClose.Click
         Close()
     End Sub
 

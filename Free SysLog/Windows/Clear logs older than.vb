@@ -7,13 +7,13 @@
         DateTimePicker.MaxDate = Date.Now
     End Sub
 
-    Private Sub btnClearLogs_Click(sender As Object, e As EventArgs) Handles btnClearLogs.Click
+    Private Sub BtnClearLogs_Click(sender As Object, e As EventArgs) Handles BtnClearLogs.Click
         dateChosenDate = DateTimePicker.Value
         Close()
     End Sub
 
     Private Sub DateTimePicker_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker.ValueChanged
-        btnClearLogs.Enabled = True
+        BtnClearLogs.Enabled = True
         boolSuccess = True
     End Sub
 

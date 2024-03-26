@@ -282,7 +282,7 @@ Namespace checkForUpdates
 
         Public Sub CheckForUpdates(Optional boolShowMessageBox As Boolean = True)
             windowObject.Invoke(Sub()
-                                    windowObject.btnCheckForUpdates.Enabled = False
+                                    windowObject.BtnCheckForUpdates.Enabled = False
                                 End Sub)
 
             If Not My.Computer.Network.IsAvailable Then
@@ -317,7 +317,7 @@ Namespace checkForUpdates
                     ' Ok, we crashed but who cares.
                 Finally
                     windowObject.Invoke(Sub()
-                                            windowObject.btnCheckForUpdates.Enabled = True
+                                            windowObject.BtnCheckForUpdates.Enabled = True
                                         End Sub)
                     windowObject = Nothing
                 End Try

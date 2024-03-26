@@ -13,22 +13,22 @@ Public Class Ignored_Logs_and_Search_Results
     Private ReadOnly dataGridLockObject As New Object
 
     Private Sub OpenLogViewerWindow()
-        If logs.Rows.Count > 0 Then
-            Dim selectedRow As MyDataGridViewRow = logs.Rows(logs.SelectedCells(0).RowIndex)
+        If Logs.Rows.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
             Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-                LogViewer.lblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewer.lblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
+                LogViewer.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
+                LogViewer.LblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
                 LogViewer.ShowDialog(Me)
             End Using
         End If
     End Sub
 
-    Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles logs.ColumnHeaderMouseClick
+    Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.ColumnHeaderMouseClick
         ' Disable user sorting
-        logs.AllowUserToOrderColumns = False
+        Logs.AllowUserToOrderColumns = False
 
-        Dim column As DataGridViewColumn = logs.Columns(e.ColumnIndex)
+        Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
 
         If e.ColumnIndex = 0 Then
             If sortOrder = SortOrder.Descending Then
@@ -39,9 +39,9 @@ Public Class Ignored_Logs_and_Search_Results
                 sortOrder = SortOrder.Ascending
             End If
 
-            colIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
-            colLog.HeaderCell.SortGlyphDirection = SortOrder.None
-            colType.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColType.HeaderCell.SortGlyphDirection = SortOrder.None
 
             SortLogsByDateObject(column.Index, sortOrder)
         Else
@@ -51,23 +51,23 @@ Public Class Ignored_Logs_and_Search_Results
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
         SyncLock dataGridLockObject
-            logs.AllowUserToOrderColumns = False
-            logs.Enabled = False
+            Logs.AllowUserToOrderColumns = False
+            Logs.Enabled = False
 
             Dim comparer As New DataGridViewComparer(columnIndex, order)
-            Dim rows As MyDataGridViewRow() = logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
+            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
 
             Array.Sort(rows, Function(row1, row2) comparer.Compare(row1, row2))
 
-            logs.Rows.Clear()
-            logs.Rows.AddRange(rows)
+            Logs.Rows.Clear()
+            Logs.Rows.AddRange(rows)
 
-            logs.Enabled = True
-            logs.AllowUserToOrderColumns = True
+            Logs.Enabled = True
+            Logs.AllowUserToOrderColumns = True
         End SyncLock
     End Sub
 
-    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles logs.DoubleClick
+    Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles Logs.DoubleClick
         OpenLogViewerWindow()
     End Sub
 
@@ -78,19 +78,19 @@ Public Class Ignored_Logs_and_Search_Results
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Size = My.Settings.ignoredWindowSize
         Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
-        colTime.Width = My.Settings.columnTimeSize
-        colType.Width = My.Settings.columnTypeSize
-        colIPAddress.Width = My.Settings.columnIPSize
-        colLog.Width = My.Settings.columnLogSize
+        ColTime.Width = My.Settings.columnTimeSize
+        ColType.Width = My.Settings.columnTypeSize
+        ColIPAddress.Width = My.Settings.columnIPSize
+        ColLog.Width = My.Settings.columnLogSize
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-        propInfo?.SetValue(logs, True, Nothing)
+        propInfo?.SetValue(Logs, True, Nothing)
 
         Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
-        logs.AlternatingRowsDefaultCellStyle = rowStyle
+        Logs.AlternatingRowsDefaultCellStyle = rowStyle
 
-        logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
+        Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
 
         boolDoneLoading = True
     End Sub
@@ -119,7 +119,7 @@ Public Class Ignored_Logs_and_Search_Results
 
             If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Type,Source IP,Log Text")
 
-            For Each item As DataGridViewRow In logs.Rows
+            For Each item As DataGridViewRow In Logs.Rows
                 If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 

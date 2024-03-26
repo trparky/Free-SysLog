@@ -22,56 +22,56 @@ Partial Class Ignored_Words_and_Phrases
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.listOfWords = New System.Windows.Forms.ListView()
-        Me.btnAdd = New System.Windows.Forms.Button()
+        Me.ListOfWords = New System.Windows.Forms.ListView()
+        Me.BtnAdd = New System.Windows.Forms.Button()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.btnDelete = New System.Windows.Forms.Button()
+        Me.BtnDelete = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
-        'listOfWords
+        'ListOfWords
         '
-        Me.listOfWords.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
-        Me.listOfWords.FullRowSelect = True
-        Me.listOfWords.HideSelection = False
-        Me.listOfWords.Location = New System.Drawing.Point(12, 12)
-        Me.listOfWords.Name = "listOfWords"
-        Me.listOfWords.Size = New System.Drawing.Size(457, 218)
-        Me.listOfWords.TabIndex = 0
-        Me.listOfWords.UseCompatibleStateImageBehavior = False
-        Me.listOfWords.View = System.Windows.Forms.View.Details
+        Me.ListOfWords.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1})
+        Me.ListOfWords.FullRowSelect = True
+        Me.ListOfWords.HideSelection = False
+        Me.ListOfWords.Location = New System.Drawing.Point(12, 12)
+        Me.ListOfWords.Name = "listOfWords"
+        Me.ListOfWords.Size = New System.Drawing.Size(457, 218)
+        Me.ListOfWords.TabIndex = 0
+        Me.ListOfWords.UseCompatibleStateImageBehavior = False
+        Me.ListOfWords.View = System.Windows.Forms.View.Details
         '
-        'btnAdd
+        'BtnAdd
         '
-        Me.btnAdd.Location = New System.Drawing.Point(12, 236)
-        Me.btnAdd.Name = "btnAdd"
-        Me.btnAdd.Size = New System.Drawing.Size(65, 23)
-        Me.btnAdd.TabIndex = 1
-        Me.btnAdd.Text = "Add"
-        Me.btnAdd.UseVisualStyleBackColor = True
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 236)
+        Me.BtnAdd.Name = "btnAdd"
+        Me.BtnAdd.Size = New System.Drawing.Size(65, 23)
+        Me.BtnAdd.TabIndex = 1
+        Me.BtnAdd.Text = "Add"
+        Me.BtnAdd.UseVisualStyleBackColor = True
         '
         'ColumnHeader1
         '
         Me.ColumnHeader1.Text = "Ignored Word/Phrase"
         Me.ColumnHeader1.Width = 425
         '
-        'btnDelete
+        'BtnDelete
         '
-        Me.btnDelete.Enabled = False
-        Me.btnDelete.Location = New System.Drawing.Point(83, 236)
-        Me.btnDelete.Name = "btnDelete"
-        Me.btnDelete.Size = New System.Drawing.Size(65, 23)
-        Me.btnDelete.TabIndex = 2
-        Me.btnDelete.Text = "Delete"
-        Me.btnDelete.UseVisualStyleBackColor = True
+        Me.BtnDelete.Enabled = False
+        Me.BtnDelete.Location = New System.Drawing.Point(83, 236)
+        Me.BtnDelete.Name = "btnDelete"
+        Me.BtnDelete.Size = New System.Drawing.Size(65, 23)
+        Me.BtnDelete.TabIndex = 2
+        Me.BtnDelete.Text = "Delete"
+        Me.BtnDelete.UseVisualStyleBackColor = True
         '
         'Ignored_Words_and_Phrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(479, 265)
-        Me.Controls.Add(Me.btnDelete)
-        Me.Controls.Add(Me.btnAdd)
-        Me.Controls.Add(Me.listOfWords)
+        Me.Controls.Add(Me.BtnDelete)
+        Me.Controls.Add(Me.BtnAdd)
+        Me.Controls.Add(Me.ListOfWords)
         Me.MinimumSize = New System.Drawing.Size(495, 304)
         Me.Name = "Ignored_Words_and_Phrases"
         Me.Text = "Ignored Words and Phrases"
@@ -79,8 +79,8 @@ Partial Class Ignored_Words_and_Phrases
 
     End Sub
 
-    Friend WithEvents listOfWords As ListView
-    Friend WithEvents btnAdd As Button
+    Friend WithEvents ListOfWords As ListView
+    Friend WithEvents BtnAdd As Button
     Friend WithEvents ColumnHeader1 As ColumnHeader
-    Friend WithEvents btnDelete As Button
+    Friend WithEvents BtnDelete As Button
 End Class
