@@ -440,6 +440,7 @@ Public Class Form1
                 Next
 
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+                If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
             UpdateLogCount()
@@ -479,6 +480,7 @@ Public Class Form1
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intOldCount} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
+                If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
             UpdateLogCount()
@@ -718,6 +720,7 @@ Public Class Form1
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                         Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                        If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                     End SyncLock
 
                     UpdateLogCount()
@@ -813,6 +816,7 @@ Public Class Form1
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
             UpdateLogCount()
