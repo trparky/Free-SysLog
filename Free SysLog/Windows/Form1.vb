@@ -433,9 +433,14 @@ Public Class Form1
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
+                Dim intOldCount As Integer = logs.Rows.Count
+
                 For Each item As DataGridViewRow In logs.SelectedRows
                     logs.Rows.Remove(item)
                 Next
+
+                Dim intCountDifference As Integer = intOldCount - logs.Rows.Count
+                logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", logs))
             End SyncLock
 
             UpdateLogCount()
@@ -472,7 +477,9 @@ Public Class Form1
     Private Sub BtnClearAllLogs_Click(sender As Object, e As EventArgs) Handles btnClearAllLogs.Click
         If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             SyncLock dataGridLockObject
+                Dim intOldCount As Integer = logs.Rows.Count
                 logs.Rows.Clear()
+                logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intOldCount} {If(intOldCount = 1, "log", "logs")}.", logs))
             End SyncLock
 
             UpdateLogCount()
@@ -697,6 +704,8 @@ Public Class Form1
                         logs.AllowUserToOrderColumns = False
                         logs.Enabled = False
 
+                        Dim intOldCount As Integer = logs.Rows.Count
+
                         For i As Integer = logs.Rows.Count - 1 To 0 Step -1
                             Dim item As MyDataGridViewRow = CType(logs.Rows(i), MyDataGridViewRow)
 
@@ -707,6 +716,9 @@ Public Class Form1
 
                         logs.Enabled = True
                         logs.AllowUserToOrderColumns = True
+
+                        Dim intCountDifference As Integer = intOldCount - logs.Rows.Count
+                        logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", logs))
                     End SyncLock
 
                     UpdateLogCount()
@@ -787,6 +799,8 @@ Public Class Form1
                 logs.AllowUserToOrderColumns = False
                 logs.Enabled = False
 
+                Dim intOldCount As Integer = logs.Rows.Count
+
                 For i As Integer = logs.Rows.Count - 1 To 0 Step -1
                     Dim item As MyDataGridViewRow = CType(logs.Rows(i), MyDataGridViewRow)
 
@@ -797,6 +811,9 @@ Public Class Form1
 
                 logs.Enabled = True
                 logs.AllowUserToOrderColumns = True
+
+                Dim intCountDifference As Integer = intOldCount - logs.Rows.Count
+                logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", logs))
             End SyncLock
 
             UpdateLogCount()
