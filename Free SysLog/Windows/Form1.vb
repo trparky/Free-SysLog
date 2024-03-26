@@ -440,7 +440,7 @@ Public Class Form1
                 Next
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
             End SyncLock
 
             UpdateLogCount()
@@ -479,7 +479,7 @@ Public Class Form1
             SyncLock dataGridLockObject
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intOldCount} {If(intOldCount = 1, "log", "logs")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intOldCount} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
             End SyncLock
 
             UpdateLogCount()
@@ -718,7 +718,7 @@ Public Class Form1
                         Logs.AllowUserToOrderColumns = True
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
                     End SyncLock
 
                     UpdateLogCount()
@@ -813,7 +813,7 @@ Public Class Form1
                 Logs.AllowUserToOrderColumns = True
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} {If(intCountDifference = 1, "log", "logs")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "", "", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
             End SyncLock
 
             UpdateLogCount()
