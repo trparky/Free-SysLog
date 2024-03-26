@@ -207,7 +207,7 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         mutex = New Threading.Mutex(initiallyOwned:=False, name:=strMutexName, createdNew:=False)
 
-        If Not mutex.WaitOne(0, False) Then
+        If Not mutex.WaitOne(0, False) And Not Debugger.IsAttached Then
             SendMessageToSysLogServer("restore", My.Settings.sysLogPort)
             Process.GetCurrentProcess.Kill()
         End If
