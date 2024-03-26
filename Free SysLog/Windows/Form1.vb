@@ -212,8 +212,6 @@ Public Class Form1
             Process.GetCurrentProcess.Kill()
         End If
 
-        If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
-
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -238,6 +236,11 @@ Public Class Form1
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
         NotifyIcon.Icon = Icon
         NotifyIcon.Text = "Free SysLog"
+
+        If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then
+            WindowState = FormWindowState.Minimized
+            ShowInTaskbar = False
+        End If
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
