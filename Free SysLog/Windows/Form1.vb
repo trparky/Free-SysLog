@@ -115,11 +115,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        WriteLogsToDisk()
-        Process.GetCurrentProcess.Kill()
-    End Sub
-
     Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles chkAutoSave.Click
         SaveTimer.Enabled = chkAutoSave.Checked
         NumericUpDown.Visible = chkAutoSave.Checked
