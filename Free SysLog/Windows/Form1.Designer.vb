@@ -66,6 +66,7 @@ Partial Class Form1
         Me.colIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.chkConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -291,7 +292,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.chkAutoSave, Me.chkAutoScroll, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.chkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.btnMoveLogFile, Me.chkRecordIgnoredLogs, Me.chkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -457,6 +458,13 @@ Partial Class Form1
         Me.OlderThanAWeekToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
         Me.OlderThanAWeekToolStripMenuItem.Text = "Older than a week"
         '
+        'chkConfirmCloseToolStripItem
+        '
+        Me.chkConfirmCloseToolStripItem.CheckOnClick = True
+        Me.chkConfirmCloseToolStripItem.Name = "chkConfirmCloseToolStripItem"
+        Me.chkConfirmCloseToolStripItem.Size = New System.Drawing.Size(243, 22)
+        Me.chkConfirmCloseToolStripItem.Text = "Confirm Close"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -543,4 +551,5 @@ Partial Class Form1
     Friend WithEvents OlderThan3DaysToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OlderThanAWeekToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NotifyIcon As NotifyIcon
+    Friend WithEvents chkConfirmCloseToolStripItem As ToolStripMenuItem
 End Class

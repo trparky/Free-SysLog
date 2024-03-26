@@ -223,6 +223,7 @@ Public Class Form1
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not chkRecordIgnoredLogs.Checked
         chkAutoScroll.Checked = My.Settings.autoScroll
         chkAutoSave.Checked = My.Settings.autoSave
+        chkConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
         NumericUpDown.Value = My.Settings.autoSaveMinutes
         NumericUpDown.Visible = chkAutoSave.Checked
         lblAutoSaveLabel.Visible = chkAutoSave.Checked
@@ -500,6 +501,11 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        If My.Settings.boolConfirmClose AndAlso MsgBox("Are you sure you want to close Free SysLog?", MsgBoxStyle.YesNo + MsgBoxStyle.Question + vbDefaultButton2, Text) = MsgBoxResult.No Then
+            e.Cancel = True
+            Exit Sub
+        End If
+
         My.Settings.Save()
         WriteLogsToDisk()
         Process.GetCurrentProcess.Kill()
@@ -814,6 +820,10 @@ Public Class Form1
 
     Private Sub OlderThanAWeekToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OlderThanAWeekToolStripMenuItem.Click
         ClearLogsOlderThan(7)
+    End Sub
+
+    Private Sub chkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles chkConfirmCloseToolStripItem.Click
+        My.Settings.boolConfirmClose = chkConfirmCloseToolStripItem.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
