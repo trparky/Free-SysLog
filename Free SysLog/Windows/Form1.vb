@@ -17,6 +17,8 @@ Public Class Form1
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
+    Private strMutexName As String = "Free SysLog Server"
+    Private mutex As Threading.Mutex
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strType As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -203,12 +205,14 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
+        mutex = New Threading.Mutex(initiallyOwned:=False, name:=strMutexName, createdNew:=False)
 
-        If SearchForExistingProcess(Application.ExecutablePath, Process.GetCurrentProcess.Id, True) Then
+        If Not mutex.WaitOne(0, False) Then
             SendMessageToSysLogServer("restore", My.Settings.sysLogPort)
             Process.GetCurrentProcess.Kill()
         End If
+
+        If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then WindowState = FormWindowState.Minimized
 
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
@@ -515,6 +519,7 @@ Public Class Form1
 
         My.Settings.Save()
         WriteLogsToDisk()
+        mutex.ReleaseMutex()
         Process.GetCurrentProcess.Kill()
     End Sub
 
@@ -532,6 +537,7 @@ Public Class Form1
 
                     WriteLogsToDisk()
 
+                    mutex.ReleaseMutex()
                     Process.GetCurrentProcess.Kill()
                 End If
             Else
@@ -787,6 +793,7 @@ Public Class Form1
                 My.Settings.Save()
                 MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
                 Process.Start(Application.ExecutablePath)
+                mutex.ReleaseMutex()
                 Process.GetCurrentProcess.Kill()
             End If
         End Using

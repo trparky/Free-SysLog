@@ -24,45 +24,6 @@
             End If
         End If
     End Sub
-
-    Public Function SearchForExistingProcess(strFileName As String, currentProcessID As Integer, boolFullFilePathPassed As Boolean) As Boolean
-        Dim processExecutablePath As String
-
-        For Each process As Process In Process.GetProcesses()
-            processExecutablePath = GetProcessExecutablePath(process.Id)
-
-            If Not String.IsNullOrWhiteSpace(processExecutablePath) Then
-                Try
-                    processExecutablePath = If(boolFullFilePathPassed, New IO.FileInfo(processExecutablePath).FullName, New IO.FileInfo(processExecutablePath).Name)
-                    If strFileName.Equals(processExecutablePath, StringComparison.OrdinalIgnoreCase) And process.Id <> currentProcessID Then Return True
-                Catch ex As ArgumentException
-                End Try
-            End If
-        Next
-
-        Return False
-    End Function
-
-    Private Function GetProcessExecutablePath(processID As Integer) As String
-        Try
-            Dim memoryBuffer As New Text.StringBuilder(1024)
-            Dim processHandle As IntPtr = NativeMethod.NativeMethods.OpenProcess(NativeMethod.ProcessAccessFlags.PROCESS_QUERY_LIMITED_INFORMATION, False, processID)
-
-            If Not processHandle.Equals(IntPtr.Zero) Then
-                Try
-                    Dim memoryBufferSize As Integer = memoryBuffer.Capacity
-                    If NativeMethod.NativeMethods.QueryFullProcessImageName(processHandle, 0, memoryBuffer, memoryBufferSize) Then Return memoryBuffer.ToString()
-                Finally
-                    NativeMethod.NativeMethods.CloseHandle(processHandle)
-                End Try
-            End If
-
-            NativeMethod.NativeMethods.CloseHandle(processHandle)
-            Return Nothing
-        Catch ex As Exception
-            Return Nothing
-        End Try
-    End Function
 End Module
 
 Public Class ReplacementsClass
