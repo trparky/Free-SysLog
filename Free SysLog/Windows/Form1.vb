@@ -866,7 +866,7 @@ Public Class Form1
 
             While True
                 bBytesRecieved = udpcUDPClient.Receive(ipeRemoteIpEndPoint)
-                sDataRecieve = Encoding.ASCII.GetString(bBytesRecieved)
+                sDataRecieve = Encoding.UTF8.GetString(bBytesRecieved)
                 sFromIP = ipeRemoteIpEndPoint.Address.ToString
 
                 If sDataRecieve.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
