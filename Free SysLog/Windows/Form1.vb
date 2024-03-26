@@ -872,25 +872,24 @@ Public Class Form1
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
-            Dim ipeRemoteIpEndPoint As New IPEndPoint(IPAddress.Any, 0)
-            Dim udpcUDPClient As New UdpClient(My.Settings.sysLogPort)
-            Dim sDataRecieve As String
-            Dim bBytesRecieved() As Byte
-            Dim sFromIP As String
+            Dim ipEndPoint As New IPEndPoint(IPAddress.Any, 0)
+            Dim udpServer As New UdpClient(My.Settings.sysLogPort)
+            Dim strReceivedData, strSourceIP As String
+            Dim byteReceivedData() As Byte
 
             While True
-                bBytesRecieved = udpcUDPClient.Receive(ipeRemoteIpEndPoint)
-                sDataRecieve = Encoding.UTF8.GetString(bBytesRecieved)
-                sFromIP = ipeRemoteIpEndPoint.Address.ToString
+                byteReceivedData = udpServer.Receive(ipEndPoint)
+                strReceivedData = Encoding.UTF8.GetString(byteReceivedData)
+                strSourceIP = ipEndPoint.Address.ToString
 
-                If sDataRecieve.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
+                If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
                     Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
                 Else
-                    FillLog(sDataRecieve, sFromIP)
+                    FillLog(strReceivedData, strSourceIP)
                 End If
 
-                sDataRecieve = Nothing
-                sFromIP = Nothing
+                strReceivedData = Nothing
+                strSourceIP = Nothing
             End While
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
