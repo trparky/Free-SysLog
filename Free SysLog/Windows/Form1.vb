@@ -194,7 +194,7 @@ Public Class Form1
     Private Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
         Using udpClient As New UdpClient()
             udpClient.Connect("127.0.0.1", intPort)
-            Dim data As Byte() = Encoding.ASCII.GetBytes(strMessage)
+            Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
             udpClient.Send(data, data.Length)
         End Using
     End Sub
