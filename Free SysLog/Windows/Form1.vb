@@ -17,8 +17,6 @@ Public Class Form1
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
-    Private strMutexName As String = "Free SysLog Server"
-    Private mutex As Threading.Mutex
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strType As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -191,27 +189,12 @@ Public Class Form1
         Return input
     End Function
 
-    Private Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
-        Using udpClient As New UdpClient()
-            udpClient.Connect("127.0.0.1", intPort)
-            Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
-            udpClient.Send(data, data.Length)
-        End Using
-    End Sub
-
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
         WindowState = FormWindowState.Normal
         If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        mutex = New Threading.Mutex(initiallyOwned:=False, name:=strMutexName, createdNew:=False)
-
-        If Not mutex.WaitOne(0, False) And Not Debugger.IsAttached Then
-            SendMessageToSysLogServer("restore", My.Settings.sysLogPort)
-            Process.GetCurrentProcess.Kill()
-        End If
-
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
