@@ -522,7 +522,12 @@ Public Class Form1
 
         My.Settings.Save()
         WriteLogsToDisk()
-        mutex.ReleaseMutex()
+
+        Try
+            mutex.ReleaseMutex()
+        Catch ex As ApplicationException
+        End Try
+
         Process.GetCurrentProcess.Kill()
     End Sub
 
@@ -540,7 +545,11 @@ Public Class Form1
 
                     WriteLogsToDisk()
 
-                    mutex.ReleaseMutex()
+                    Try
+                        mutex.ReleaseMutex()
+                    Catch ex As ApplicationException
+                    End Try
+
                     Process.GetCurrentProcess.Kill()
                 End If
             Else
@@ -796,7 +805,12 @@ Public Class Form1
                 My.Settings.Save()
                 MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
                 Process.Start(Application.ExecutablePath)
-                mutex.ReleaseMutex()
+
+                Try
+                    mutex.ReleaseMutex()
+                Catch ex As ApplicationException
+                End Try
+
                 Process.GetCurrentProcess.Kill()
             End If
         End Using
