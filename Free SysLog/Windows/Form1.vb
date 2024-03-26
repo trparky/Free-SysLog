@@ -839,7 +839,7 @@ Public Class Form1
         ClearLogsOlderThan(7)
     End Sub
 
-    Private Sub chkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles chkConfirmCloseToolStripItem.Click
+    Private Sub ChkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles chkConfirmCloseToolStripItem.Click
         My.Settings.boolConfirmClose = chkConfirmCloseToolStripItem.Checked
     End Sub
 
