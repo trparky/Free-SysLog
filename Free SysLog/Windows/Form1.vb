@@ -861,11 +861,7 @@ Public Class Form1
                 sFromIP = ipeRemoteIpEndPoint.Address.ToString
 
                 If sDataRecieve.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
-                    Invoke(Sub()
-                               WindowState = FormWindowState.Normal
-                               Threading.Thread.Sleep(100)
-                               If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
-                           End Sub)
+                    Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
                 Else
                     FillLog(sDataRecieve, sFromIP)
                 End If
@@ -877,6 +873,12 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text))
         End Try
+    End Sub
+
+    Private Async Sub RestoreWindowAfterReceivingRestoreCommand()
+        WindowState = FormWindowState.Normal
+        Await Threading.Tasks.Task.Delay(100)
+        If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
     End Sub
 #End Region
 End Class
