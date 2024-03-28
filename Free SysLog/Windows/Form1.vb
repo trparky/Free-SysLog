@@ -428,7 +428,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -468,7 +468,7 @@ Public Class Form1
             SyncLock dataGridLockObject
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intOldCount} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -719,7 +719,7 @@ Public Class Form1
                         Logs.AllowUserToOrderColumns = True
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
                         If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                     End SyncLock
 
@@ -821,7 +821,7 @@ Public Class Form1
                 Logs.AllowUserToOrderColumns = True
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
