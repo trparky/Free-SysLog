@@ -11,6 +11,11 @@ Namespace My
     ' NetworkAvailabilityChanged: Raised when the network connection is connected or disconnected.
     Partial Friend Class MyApplication
         Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
+            If IO.File.Exists("updater.exe") Then
+                SearchForProcessAndKillIt("updater.exe", False)
+                IO.File.Delete("updater.exe")
+            End If
+
             mutex = New Threading.Mutex(False, strMutexName, False)
 
             If Not mutex.WaitOne(0, False) And Not Debugger.IsAttached Then
