@@ -11,7 +11,7 @@ Namespace My
     ' NetworkAvailabilityChanged: Raised when the network connection is connected or disconnected.
     Partial Friend Class MyApplication
         Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
-            mutex = New Threading.Mutex(initiallyOwned:=False, name:=strMutexName, createdNew:=False)
+            mutex = New Threading.Mutex(False, strMutexName, False)
 
             If Not mutex.WaitOne(0, False) And Not Debugger.IsAttached Then
                 SendMessageToSysLogServer("restore", Settings.sysLogPort)
