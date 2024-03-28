@@ -39,7 +39,7 @@ Public Class Form1
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
             If ChkStartAtUserStartup.Checked Then
-                registryKey.SetValue("Free Syslog", $"""{Application.ExecutablePath}"" /background")
+                registryKey.SetValue("Free Syslog", $"""{strEXEPath}"" /background")
             Else
                 registryKey.DeleteValue("Free Syslog", False)
             End If
@@ -195,6 +195,8 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Debug.WriteLine($"strEXEPath = {strEXEPath}")
+        Debug.WriteLine($"Application.ExecutablePath = {Application.ExecutablePath}")
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -213,7 +215,7 @@ Public Class Form1
         LblAutoSaveLabel.Visible = ChkAutoSave.Checked
         LblAutoSaved.Visible = ChkAutoSave.Checked
         ChkStartAtUserStartup.Checked = DoesStartupEntryExist()
-        Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
+        Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         TxtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
@@ -787,7 +789,7 @@ Public Class Form1
             If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
                 My.Settings.Save()
                 MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
-                Process.Start(Application.ExecutablePath)
+                Process.Start(strEXEPath)
 
                 Try
                     mutex.ReleaseMutex()

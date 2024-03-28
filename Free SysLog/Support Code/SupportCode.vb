@@ -3,6 +3,7 @@
     Public replacementsList As New List(Of ReplacementsClass)
     Public Const strMutexName As String = "Free SysLog Server"
     Public mutex As Threading.Mutex
+    Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
 
     Public Function VerifyWindowLocation(point As Point, ByRef window As Form) As Point
         Dim screen As Screen = Screen.FromControl(window)
