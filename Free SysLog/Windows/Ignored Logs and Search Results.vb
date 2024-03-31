@@ -107,7 +107,7 @@ Public Class Ignored_Logs_and_Search_Results
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
         SaveFileDialog.Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"
-        SaveFileDialog.Title = "Export..."
+        SaveFileDialog.Title = "Export Data..."
 
         If SaveFileDialog.ShowDialog() = DialogResult.OK Then
             Dim fileInfo As New IO.FileInfo(SaveFileDialog.FileName)
