@@ -116,18 +116,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("110")>  _
-        Public Property columnTypeSize() As Integer
-            Get
-                Return CType(Me("columnTypeSize"),Integer)
-            End Get
-            Set
-                Me("columnTypeSize") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("102")>  _
         Public Property columnIPSize() As Integer
             Get

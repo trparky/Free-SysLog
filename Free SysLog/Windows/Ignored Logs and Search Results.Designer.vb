@@ -24,7 +24,6 @@ Partial Class Ignored_Logs_and_Search_Results
     Private Sub InitializeComponent()
         Me.Logs = New System.Windows.Forms.DataGridView()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
@@ -57,7 +56,7 @@ Partial Class Ignored_Logs_and_Search_Results
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColType, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog})
         Me.Logs.Location = New System.Drawing.Point(12, 12)
         Me.Logs.Name = "logs"
         Me.Logs.ReadOnly = True
@@ -73,14 +72,6 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.ColTime.Name = "colTime"
         Me.ColTime.ReadOnly = True
         Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        '
-        'ColType
-        '
-        Me.ColType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        Me.ColType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
-        Me.ColType.HeaderText = "Type"
-        Me.ColType.Name = "colType"
-        Me.ColType.ReadOnly = True
         '
         'ColIPAddress
         '
@@ -129,7 +120,6 @@ Partial Class Ignored_Logs_and_Search_Results
     Friend WithEvents LblCount As ToolStripStatusLabel
     Friend WithEvents Logs As DataGridView
     Friend WithEvents ColTime As DataGridViewTextBoxColumn
-    Friend WithEvents ColType As DataGridViewTextBoxColumn
     Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents BtnExport As Button

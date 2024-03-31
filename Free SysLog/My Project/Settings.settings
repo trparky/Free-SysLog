@@ -17,9 +17,6 @@
     <Setting Name="columnTimeSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">196</Value>
     </Setting>
-    <Setting Name="columnTypeSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">110</Value>
-    </Setting>
     <Setting Name="columnIPSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">102</Value>
     </Setting>

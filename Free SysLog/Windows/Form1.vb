@@ -18,18 +18,16 @@ Public Class Form1
     Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
 
-    Private Function MakeDataGridRow(dateObject As Date, strTime As String, strType As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+    Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
 
         With MyDataGridViewRow
             .CreateCells(dataGrid)
             .Cells(0).Value = strTime
             .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Cells(1).Value = strType
+            .Cells(1).Value = strSourceAddress
             .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Cells(2).Value = strSourceAddress
-            .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Cells(3).Value = strLog
+            .Cells(2).Value = strLog
             .DateObject = dateObject
         End With
 
@@ -82,9 +80,8 @@ Public Class Form1
 
                         collectionOfSavedData.Add(New SavedData With {
                                             .time = myItem.Cells(0).Value,
-                                            .type = myItem.Cells(1).Value,
-                                            .ip = myItem.Cells(2).Value,
-                                            .log = myItem.Cells(3).Value,
+                                            .ip = myItem.Cells(1).Value,
+                                            .log = myItem.Cells(2).Value,
                                             .DateObject = myItem.DateObject
                                           })
                     End If
@@ -199,8 +196,6 @@ Public Class Form1
         Debug.WriteLine($"Application.ExecutablePath = {Application.ExecutablePath}")
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
-        ColType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        ColType.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
         ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
@@ -248,7 +243,6 @@ Public Class Form1
         Size = My.Settings.mainWindowSize
 
         ColTime.Width = My.Settings.columnTimeSize
-        ColType.Width = My.Settings.columnTypeSize
         ColIPAddress.Width = My.Settings.columnIPSize
         ColLog.Width = My.Settings.columnLogSize
 
@@ -283,7 +277,7 @@ Public Class Form1
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 Invoke(Sub()
-                           Logs.Rows.Add(MakeDataGridRow(Now, Nothing, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", Logs))
+                           Logs.Rows.Add(MakeDataGridRow(Now, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", Logs))
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
                        End Sub)
 
@@ -299,7 +293,7 @@ Public Class Form1
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", "Free SysLog Server Started.", Logs))
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -318,28 +312,6 @@ Public Class Form1
         SelectFileInWindowsExplorer(My.Settings.logFileLocation)
     End Sub
 
-    Private Function GetSyslogPriority(sSyslog As String) As String
-        If sSyslog.Contains("L0") Then
-            Return "Emergency (0)"
-        ElseIf sSyslog.Contains("L1") Then
-            Return "Alert (1)"
-        ElseIf sSyslog.Contains("L2") Then
-            Return "Critical (2)"
-        ElseIf sSyslog.Contains("L3") Then
-            Return "Error (3)"
-        ElseIf sSyslog.Contains("L4") Then
-            Return "Warning (4)"
-        ElseIf sSyslog.Contains("L5") Then
-            Return "Notice (5)"
-        ElseIf sSyslog.Contains("L6") Then
-            Return "Info (6)"
-        ElseIf sSyslog.Contains("L7") Then
-            Return "Debug (7)"
-        Else
-            Return Nothing
-        End If
-    End Function
-
     Private Function GetCachedRegex(pattern As String, Optional boolCaseInsensitive As Boolean = True) As Regex
         If Not regexCache.ContainsKey(pattern) Then regexCache(pattern) = New Regex(pattern, If(boolCaseInsensitive, RegexOptions.Compiled Or RegexOptions.IgnoreCase, RegexOptions.Compiled))
         Return regexCache(pattern)
@@ -347,15 +319,12 @@ Public Class Form1
 
     Private Sub FillLog(sSyslog As String, sFromIp As String)
         Try
-            Dim sPriority As String
             Dim boolIgnored As Boolean = False
 
             sSyslog = sSyslog.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
             sSyslog = sSyslog.Replace(vbCrLf, Nothing)
             sSyslog = Mid(sSyslog, InStr(sSyslog, ">") + 1, Len(sSyslog))
             sSyslog = sSyslog.Trim
-
-            sPriority = GetSyslogPriority(sSyslog)
 
             If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count <> 0 Then
                 For Each word As String In My.Settings.ignored
@@ -378,19 +347,19 @@ Public Class Form1
                 Next
             End If
 
-            AddToLogList(sPriority, sFromIp, sSyslog, boolIgnored)
+            AddToLogList(sFromIp, sSyslog, boolIgnored)
         Catch ex As Exception
-            AddToLogList("Error (3)", "local", $"{ex.Message} -- {ex.StackTrace}", False)
+            AddToLogList("local", $"{ex.Message} -- {ex.StackTrace}", False)
         End Try
     End Sub
 
-    Private Sub AddToLogList(sPriority As String, sFromIp As String, sSyslog As String, boolIgnored As Boolean)
+    Private Sub AddToLogList(sFromIp As String, sSyslog As String, boolIgnored As Boolean)
         Dim currentDate As Date = Now.ToLocalTime
 
         If Not boolIgnored Then
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), Logs))
+                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs))
                        End SyncLock
 
                        UpdateLogCount()
@@ -399,7 +368,7 @@ Public Class Form1
                        If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                    End Sub)
         ElseIf boolIgnored And ChkRecordIgnoredLogs.Checked Then
-            IgnoredLogs.Add(MakeDataGridRow(currentDate, currentDate.ToString, sPriority, sFromIp, ProcessReplacements(sSyslog), Logs))
+            IgnoredLogs.Add(MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs))
         End If
     End Sub
 
@@ -407,7 +376,7 @@ Public Class Form1
         If Logs.Rows.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
-            Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
                 LogViewer.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
                 LogViewer.LblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
                 LogViewer.ShowDialog(Me)
@@ -430,7 +399,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -459,7 +428,6 @@ Public Class Form1
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
         If boolDoneLoading Then
             My.Settings.columnTimeSize = ColTime.Width
-            My.Settings.columnTypeSize = ColType.Width
             My.Settings.columnIPSize = ColIPAddress.Width
             My.Settings.columnLogSize = ColLog.Width
         End If
@@ -470,7 +438,7 @@ Public Class Form1
             SyncLock dataGridLockObject
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -574,7 +542,7 @@ Public Class Form1
                                                       MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                       If MyDataGridRowItem IsNot Nothing Then
-                                                          strLogText = MyDataGridRowItem.Cells(3).Value
+                                                          strLogText = MyDataGridRowItem.Cells(2).Value
 
                                                           If regexCompiledObject.IsMatch(strLogText) Then
                                                               listOfSearchResults.Add(MyDataGridRowItem.Clone())
@@ -627,7 +595,6 @@ Public Class Form1
 
             ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
             ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
-            ColType.HeaderCell.SortGlyphDirection = SortOrder.None
 
             SortLogsByDateObject(column.Index, sortOrder)
         Else
@@ -721,7 +688,7 @@ Public Class Form1
                         Logs.AllowUserToOrderColumns = True
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
                         If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                     End SyncLock
 
@@ -823,7 +790,7 @@ Public Class Form1
                 Logs.AllowUserToOrderColumns = True
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, Nothing, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
                 If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 

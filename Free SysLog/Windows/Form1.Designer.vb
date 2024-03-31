@@ -62,7 +62,6 @@ Partial Class Form1
         Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
         Me.Logs = New System.Windows.Forms.DataGridView()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
@@ -364,7 +363,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColType, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog})
         Me.Logs.Location = New System.Drawing.Point(12, 52)
         Me.Logs.Name = "logs"
         Me.Logs.ReadOnly = True
@@ -378,12 +377,6 @@ Partial Class Form1
         Me.ColTime.Name = "colTime"
         Me.ColTime.ReadOnly = True
         Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        '
-        'ColType
-        '
-        Me.ColType.HeaderText = "Type"
-        Me.ColType.Name = "colType"
-        Me.ColType.ReadOnly = True
         '
         'ColIPAddress
         '
@@ -536,7 +529,6 @@ Partial Class Form1
     Friend WithEvents ChkCaseInsensitiveSearch As CheckBox
     Friend WithEvents Logs As DataGridView
     Friend WithEvents ColTime As DataGridViewTextBoxColumn
-    Friend WithEvents ColType As DataGridViewTextBoxColumn
     Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog

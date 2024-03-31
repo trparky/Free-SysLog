@@ -41,7 +41,6 @@ Public Class Ignored_Logs_and_Search_Results
 
             ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
             ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
-            ColType.HeaderCell.SortGlyphDirection = SortOrder.None
 
             SortLogsByDateObject(column.Index, sortOrder)
         Else
@@ -79,7 +78,6 @@ Public Class Ignored_Logs_and_Search_Results
         Size = My.Settings.ignoredWindowSize
         Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
         ColTime.Width = My.Settings.columnTimeSize
-        ColType.Width = My.Settings.columnTypeSize
         ColIPAddress.Width = My.Settings.columnIPSize
         ColLog.Width = My.Settings.columnLogSize
 
@@ -115,9 +113,9 @@ Public Class Ignored_Logs_and_Search_Results
             Dim collectionOfSavedData As New List(Of SavedData)
             Dim myItem As MyDataGridViewRow
             Dim csvStringBuilder As New Text.StringBuilder
-            Dim strTime, strType, strSourceIP, strLogText As String
+            Dim strTime, strSourceIP, strLogText As String
 
-            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Type,Source IP,Log Text")
+            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text")
 
             For Each item As DataGridViewRow In Logs.Rows
                 If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
@@ -126,18 +124,16 @@ Public Class Ignored_Logs_and_Search_Results
                     If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                         With myItem
                             strTime = SanitizeForCSV(.Cells(0).Value)
-                            strType = SanitizeForCSV(.Cells(1).Value)
-                            strSourceIP = SanitizeForCSV(.Cells(2).Value)
-                            strLogText = SanitizeForCSV(.Cells(3).Value)
+                            strSourceIP = SanitizeForCSV(.Cells(1).Value)
+                            strLogText = SanitizeForCSV(.Cells(2).Value)
                         End With
 
-                        csvStringBuilder.AppendLine($"{strTime},{strType},{strSourceIP},{strLogText}")
+                        csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText}")
                     Else
                         collectionOfSavedData.Add(New SavedData With {
                                                 .time = myItem.Cells(0).Value,
-                                                .type = myItem.Cells(1).Value,
-                                                .ip = myItem.Cells(2).Value,
-                                                .log = myItem.Cells(3).Value,
+                                                .ip = myItem.Cells(1).Value,
+                                                .log = myItem.Cells(2).Value,
                                                 .DateObject = myItem.DateObject
                                               })
                     End If
