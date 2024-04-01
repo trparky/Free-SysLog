@@ -850,7 +850,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub Logs_CellMouseClick_MouseDown(sender As Object, e As MouseEventArgs) Handles Logs.MouseDown
+    Private Sub Logs_MouseDown(sender As Object, e As MouseEventArgs) Handles Logs.MouseDown
         ' Check if it's a right-click
         If e.Button = MouseButtons.Right Then
             ' Get the current mouse position
