@@ -873,6 +873,11 @@ Public Class Form1
             ' Perform actions with selectedRow
         End If
     End Sub
+
+    Private Sub OpenLogViewerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogViewerToolStripMenuItem.Click
+        OpenLogViewerWindow()
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try

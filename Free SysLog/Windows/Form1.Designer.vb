@@ -70,6 +70,7 @@ Partial Class Form1
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenLogViewerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -464,15 +465,21 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
-        Me.LogsMenu.Size = New System.Drawing.Size(181, 48)
+        Me.LogsMenu.Size = New System.Drawing.Size(165, 48)
         '
         'CopyLogTextToolStripMenuItem
         '
         Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
-        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
+        '
+        'OpenLogViewerToolStripMenuItem
+        '
+        Me.OpenLogViewerToolStripMenuItem.Name = "OpenLogViewerToolStripMenuItem"
+        Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.OpenLogViewerToolStripMenuItem.Text = "Open Log Viewer"
         '
         'Form1
         '
@@ -563,4 +570,5 @@ Partial Class Form1
     Friend WithEvents ChkConfirmCloseToolStripItem As ToolStripMenuItem
     Friend WithEvents LogsMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
 End Class
