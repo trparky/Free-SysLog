@@ -300,6 +300,7 @@ Public Class Form1
                                Logs.Rows.Clear()
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
                                If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                               Logs.SelectedRows(0).Selected = False
                                UpdateLogCount()
                            End Sub)
                 End SyncLock
@@ -820,6 +821,24 @@ Public Class Form1
     Private Sub ChkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles ChkConfirmCloseToolStripItem.Click
         My.Settings.boolConfirmClose = ChkConfirmCloseToolStripItem.Checked
     End Sub
+
+    Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
+        If Logs.SelectedRows.Count = 0 Then e.Cancel = True
+    End Sub
+
+    Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
+        CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(2).Value)
+    End Sub
+
+    Private Function CopyTextToWindowsClipboard(strTextToBeCopiedToClipboard As String) As Boolean
+        Try
+            Clipboard.SetDataObject(strTextToBeCopiedToClipboard, True, 5, 200)
+            Return True
+        Catch ex As Exception
+            MsgBox("Unable to open Windows Clipboard to copy text to it.", MsgBoxStyle.Critical, Text)
+            Return False
+        End Try
+    End Function
 
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()

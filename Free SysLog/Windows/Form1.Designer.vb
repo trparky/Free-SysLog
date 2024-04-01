@@ -67,6 +67,8 @@ Partial Class Form1
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ChkConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -79,6 +81,7 @@ Partial Class Form1
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.LogsMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnOpenLogLocation
@@ -364,6 +367,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.ContextMenuStrip = Me.LogsMenu
         Me.Logs.Location = New System.Drawing.Point(12, 52)
         Me.Logs.Name = "logs"
         Me.Logs.ReadOnly = True
@@ -458,6 +462,18 @@ Partial Class Form1
         Me.ChkConfirmCloseToolStripItem.Size = New System.Drawing.Size(243, 22)
         Me.ChkConfirmCloseToolStripItem.Text = "Confirm Close"
         '
+        'LogsMenu
+        '
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem})
+        Me.LogsMenu.Name = "LogsMenu"
+        Me.LogsMenu.Size = New System.Drawing.Size(181, 48)
+        '
+        'CopyLogTextToolStripMenuItem
+        '
+        Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
+        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -485,6 +501,7 @@ Partial Class Form1
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.LogsMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -544,4 +561,6 @@ Partial Class Form1
     Friend WithEvents OlderThanAWeekToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NotifyIcon As NotifyIcon
     Friend WithEvents ChkConfirmCloseToolStripItem As ToolStripMenuItem
+    Friend WithEvents LogsMenu As ContextMenuStrip
+    Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
 End Class
