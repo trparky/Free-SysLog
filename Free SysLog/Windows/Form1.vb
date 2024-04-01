@@ -823,7 +823,15 @@ Public Class Form1
     End Sub
 
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
-        If Logs.SelectedRows.Count = 0 Then e.Cancel = True
+        If Logs.SelectedRows.Count = 1 Then
+            CopyLogTextToolStripMenuItem.Visible = True
+            OpenLogViewerToolStripMenuItem.Visible = True
+        Else
+            CopyLogTextToolStripMenuItem.Visible = False
+            OpenLogViewerToolStripMenuItem.Visible = False
+        End If
+
+        DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
@@ -879,6 +887,22 @@ Public Class Form1
 
     Private Sub OpenLogViewerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogViewerToolStripMenuItem.Click
         OpenLogViewerWindow()
+    End Sub
+
+    Private Sub DeleteLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteLogsToolStripMenuItem.Click
+        SyncLock dataGridLockObject
+            Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
+
+            For Each item As DataGridViewRow In Logs.SelectedRows
+                Logs.Rows.Remove(item)
+            Next
+
+            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+            If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+        End SyncLock
+
+        UpdateLogCount()
+        SaveLogsToDiskSub()
     End Sub
 
 #Region "-- SysLog Server Code --"

@@ -71,6 +71,7 @@ Partial Class Form1
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenLogViewerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -465,7 +466,7 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem, Me.DeleteLogsToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(165, 48)
         '
@@ -480,6 +481,12 @@ Partial Class Form1
         Me.OpenLogViewerToolStripMenuItem.Name = "OpenLogViewerToolStripMenuItem"
         Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.OpenLogViewerToolStripMenuItem.Text = "Open Log Viewer"
+        '
+        'DeleteLogsToolStripMenuItem
+        '
+        Me.DeleteLogsToolStripMenuItem.Name = "DeleteLogsToolStripMenuItem"
+        Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.DeleteLogsToolStripMenuItem.Text = "Delete Selected Logs"
         '
         'Form1
         '
@@ -571,4 +578,5 @@ Partial Class Form1
     Friend WithEvents LogsMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
 End Class
