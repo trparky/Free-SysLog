@@ -865,7 +865,7 @@ Public Class Form1
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
         Catch e As Exception
-            Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical, Text))
+            Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text))
         End Try
     End Sub
 
