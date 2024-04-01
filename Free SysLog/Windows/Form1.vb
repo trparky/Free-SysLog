@@ -858,14 +858,17 @@ Public Class Form1
 
             ' If the right-click is on a valid row
             If currentMouseOverRow >= 0 Then
-                ' Select the row
-                Logs.ClearSelection()
-                Logs.Rows(currentMouseOverRow).Selected = True
+                If Logs.SelectedRows.Count <= 1 Then
+                    ' Clear previous selections
+                    Logs.ClearSelection()
+                    ' Select the row
+                    Logs.Rows(currentMouseOverRow).Selected = True
+                End If
             End If
         End If
     End Sub
 
-    Private Sub YourContextMenuStrip_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles LogsMenu.ItemClicked
+    Private Sub LogsMenu_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles LogsMenu.ItemClicked
         ' Perform actions when a context menu item is clicked
         ' For example, you can use the selected row(s) like:
         If Logs.SelectedRows.Count > 0 Then
