@@ -869,12 +869,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub LogsMenu_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles LogsMenu.ItemClicked
-        If Logs.SelectedRows.Count > 0 Then
-            Dim selectedRow As DataGridViewRow = Logs.SelectedRows(0)
-        End If
-    End Sub
-
     Private Sub OpenLogViewerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogViewerToolStripMenuItem.Click
         OpenLogViewerWindow()
     End Sub
