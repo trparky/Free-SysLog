@@ -18,6 +18,7 @@ Public Class Form1
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
+    Private Const strPayPal As String = "https://paypal.me/trparky"
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -956,6 +957,10 @@ Public Class Form1
                 End If
             End If
         End SyncLock
+    End Sub
+
+    Private Sub DonationStripMenuItem_Click(sender As Object, e As EventArgs) Handles DonationStripMenuItem.Click
+        Process.Start(strPayPal)
     End Sub
 
 #Region "-- SysLog Server Code --"

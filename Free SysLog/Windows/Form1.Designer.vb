@@ -80,6 +80,7 @@ Partial Class Form1
         Me.OlderThan2DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -246,7 +247,7 @@ Partial Class Form1
         '
         'MenuStrip
         '
-        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MainMenuToolStripMenuItem, Me.LogFunctionsToolStripMenuItem, Me.SettingsToolStripMenuItem})
+        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MainMenuToolStripMenuItem, Me.LogFunctionsToolStripMenuItem, Me.SettingsToolStripMenuItem, Me.DonationStripMenuItem})
         Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip.Name = "MenuStrip"
         Me.MenuStrip.Size = New System.Drawing.Size(1175, 24)
@@ -495,6 +496,12 @@ Partial Class Form1
         Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.ExportsLogsToolStripMenuItem.Text = "Exports Selected Logs"
         '
+        ' DonationStripMenuItem
+        '
+        Me.DonationStripMenuItem.Name = "DonationStripMenuItem"
+        Me.DonationStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.DonationStripMenuItem.Text = "Donate via PayPal"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -587,4 +594,5 @@ Partial Class Form1
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExportsLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DonationStripMenuItem As ToolStripMenuItem
 End Class
