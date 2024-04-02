@@ -72,6 +72,7 @@ Partial Class Form1
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenLogViewerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -466,7 +467,7 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(165, 48)
         '
@@ -487,6 +488,12 @@ Partial Class Form1
         Me.DeleteLogsToolStripMenuItem.Name = "DeleteLogsToolStripMenuItem"
         Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.DeleteLogsToolStripMenuItem.Text = "Delete Selected Logs"
+        '
+        'ExportsLogsToolStripMenuItem
+        '
+        Me.ExportsLogsToolStripMenuItem.Name = "ExportsLogsToolStripMenuItem"
+        Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.ExportsLogsToolStripMenuItem.Text = "Exports Selected Logs"
         '
         'Form1
         '
@@ -579,4 +586,5 @@ Partial Class Form1
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ExportsLogsToolStripMenuItem As ToolStripMenuItem
 End Class

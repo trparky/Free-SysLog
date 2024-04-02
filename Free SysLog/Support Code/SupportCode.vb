@@ -5,6 +5,12 @@
     Public mutex As Threading.Mutex
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
 
+    Public Function SanitizeForCSV(input As String) As String
+        If input.Contains(Chr(34)) Then input = input.Replace(Chr(34), Chr(34) & Chr(34))
+        If input.Contains(",") Then input = $"{Chr(34)}{input}{Chr(34)}"
+        Return input
+    End Function
+
     Public Function VerifyWindowLocation(point As Point, ByRef window As Form) As Point
         Dim screen As Screen = Screen.FromControl(window)
 

@@ -97,12 +97,6 @@ Public Class Ignored_Logs_and_Search_Results
         If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
     End Sub
 
-    Private Function SanitizeForCSV(input As String) As String
-        If input.Contains(Chr(34)) Then input = input.Replace(Chr(34), Chr(34) & Chr(34))
-        If input.Contains(",") Then input = $"{Chr(34)}{input}{Chr(34)}"
-        Return input
-    End Function
-
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
         SaveFileDialog.Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"
         SaveFileDialog.Title = "Export Data..."

@@ -832,6 +832,7 @@ Public Class Form1
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
+        ExportsLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Export Selected Log", "Export Selected Logs")
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
@@ -903,6 +904,61 @@ Public Class Form1
 
         UpdateLogCount()
         SaveLogsToDiskSub()
+    End Sub
+
+    Private Sub ExportsLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportsLogsToolStripMenuItem.Click
+        SyncLock dataGridLockObject
+            Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}
+
+            If saveFileDialog.ShowDialog() = DialogResult.OK Then
+                Dim fileInfo As New FileInfo(saveFileDialog.FileName)
+
+                Dim collectionOfSavedData As New List(Of SavedData)
+                Dim myItem As MyDataGridViewRow
+                Dim csvStringBuilder As New StringBuilder
+                Dim strTime, strSourceIP, strLogText As String
+
+                If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text")
+
+                For Each item As DataGridViewRow In Logs.SelectedRows
+                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                        myItem = DirectCast(item, MyDataGridViewRow)
+
+                        If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                            With myItem
+                                strTime = SanitizeForCSV(.Cells(0).Value)
+                                strSourceIP = SanitizeForCSV(.Cells(1).Value)
+                                strLogText = SanitizeForCSV(.Cells(2).Value)
+                            End With
+
+                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText}")
+                        Else
+                            collectionOfSavedData.Add(New SavedData With {
+                                                    .time = myItem.Cells(0).Value,
+                                                    .ip = myItem.Cells(1).Value,
+                                                    .log = myItem.Cells(2).Value,
+                                                    .DateObject = myItem.DateObject
+                                                  })
+                        End If
+                    End If
+                Next
+
+                Using fileStream As New StreamWriter(saveFileDialog.FileName)
+                    If fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) Then
+                        Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
+                        xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
+                    ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
+                        fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                    ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                        fileStream.Write(csvStringBuilder.ToString.Trim)
+                    End If
+                End Using
+
+                If MsgBox($"Data exported to ""{saveFileDialog.FileName}"" successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+                    SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                End If
+            End If
+        End SyncLock
     End Sub
 
 #Region "-- SysLog Server Code --"
