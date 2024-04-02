@@ -379,7 +379,7 @@ Public Class Form1
 
             Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
                 LogViewer.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewer.LblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
+                LogViewer.LblSource.Text = $"Source IP Address: {selectedRow.Cells(1).Value}"
                 LogViewer.ShowDialog(Me)
             End Using
         End If
