@@ -8,6 +8,7 @@ Imports System.Text.RegularExpressions
 Imports System.Reflection
 
 Public Class Form1
+    Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
@@ -106,7 +107,12 @@ Public Class Form1
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
-            My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
+            If WindowState = FormWindowState.Minimized Then
+                boolMaximizedBeforeMinimize = WindowState = FormWindowState.Maximized
+            Else
+                My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
+            End If
+
             ShowInTaskbar = WindowState <> FormWindowState.Minimized
         End If
     End Sub
@@ -187,7 +193,14 @@ Public Class Form1
     End Function
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
-        WindowState = FormWindowState.Normal
+        If boolMaximizedBeforeMinimize Then
+            WindowState = FormWindowState.Maximized
+        ElseIf My.Settings.boolMaximized Then
+            WindowState = FormWindowState.Maximized
+        Else
+            WindowState = FormWindowState.Normal
+        End If
+
         If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
     End Sub
 
@@ -975,7 +988,14 @@ Public Class Form1
     End Sub
 
     Private Async Sub RestoreWindowAfterReceivingRestoreCommand()
-        WindowState = FormWindowState.Normal
+        If boolMaximizedBeforeMinimize Then
+            WindowState = FormWindowState.Maximized
+        ElseIf My.Settings.boolMaximized Then
+            WindowState = FormWindowState.Maximized
+        Else
+            WindowState = FormWindowState.Normal
+        End If
+
         Await Threading.Tasks.Task.Delay(100)
         If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
     End Sub
