@@ -363,6 +363,7 @@ Public Class Form1
                            Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs))
                        End SyncLock
 
+                       NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
                        UpdateLogCount()
                        BtnSaveLogsToDisk.Enabled = True
 
