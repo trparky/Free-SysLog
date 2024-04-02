@@ -850,27 +850,19 @@ Public Class Form1
     End Function
 
     Private Sub Logs_CellMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.CellMouseClick
-        ' Check if it's a right-click
         If e.Button = MouseButtons.Right AndAlso e.RowIndex >= 0 AndAlso e.ColumnIndex >= 0 Then
-            ' Clear previous selections
             Logs.ClearSelection()
-            ' Select the clicked cell
             Logs.Rows(e.RowIndex).Cells(e.ColumnIndex).Selected = True
         End If
     End Sub
 
     Private Sub Logs_MouseDown(sender As Object, e As MouseEventArgs) Handles Logs.MouseDown
-        ' Check if it's a right-click
         If e.Button = MouseButtons.Right Then
-            ' Get the current mouse position
             Dim currentMouseOverRow As Integer = Logs.HitTest(e.X, e.Y).RowIndex
 
-            ' If the right-click is on a valid row
             If currentMouseOverRow >= 0 Then
                 If Logs.SelectedRows.Count <= 1 Then
-                    ' Clear previous selections
                     Logs.ClearSelection()
-                    ' Select the row
                     Logs.Rows(currentMouseOverRow).Selected = True
                 End If
             End If
@@ -878,11 +870,8 @@ Public Class Form1
     End Sub
 
     Private Sub LogsMenu_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles LogsMenu.ItemClicked
-        ' Perform actions when a context menu item is clicked
-        ' For example, you can use the selected row(s) like:
         If Logs.SelectedRows.Count > 0 Then
             Dim selectedRow As DataGridViewRow = Logs.SelectedRows(0)
-            ' Perform actions with selectedRow
         End If
     End Sub
 
