@@ -222,6 +222,7 @@ Public Class Form1
         NumericUpDown.Visible = ChkAutoSave.Checked
         LblAutoSaveLabel.Visible = ChkAutoSave.Checked
         LblAutoSaved.Visible = ChkAutoSave.Checked
+        StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
         ChkStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         TxtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
@@ -963,6 +964,24 @@ Public Class Form1
 
     Private Sub DonationStripMenuItem_Click(sender As Object, e As EventArgs) Handles DonationStripMenuItem.Click
         Process.Start(strPayPal)
+    End Sub
+
+    Private Sub StopServerStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopServerStripMenuItem.Click
+        If StopServerStripMenuItem.Text = "Stop Server" Then
+            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+            StopServerStripMenuItem.Text = "Start Server"
+        ElseIf StopServerStripMenuItem.Text = "Start Server" Then
+            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
+            serverThread.Start()
+
+            SyncLock dataGridLockObject
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
+                If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                UpdateLogCount()
+            End SyncLock
+
+            StopServerStripMenuItem.Text = "Stop Server"
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

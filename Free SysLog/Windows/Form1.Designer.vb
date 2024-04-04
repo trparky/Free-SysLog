@@ -81,6 +81,7 @@ Partial Class Form1
         Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
@@ -256,7 +257,7 @@ Partial Class Form1
         '
         'MainMenuToolStripMenuItem
         '
-        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnCheckForUpdates, Me.AboutToolStripMenuItem})
+        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnCheckForUpdates, Me.StopServerStripMenuItem, Me.AboutToolStripMenuItem})
         Me.MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem"
         Me.MainMenuToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
         Me.MainMenuToolStripMenuItem.Text = "Main Menu"
@@ -502,6 +503,12 @@ Partial Class Form1
         Me.DonationStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.DonationStripMenuItem.Text = "Donate via PayPal"
         '
+        'StopServerStripMenuItem
+        '
+        Me.StopServerStripMenuItem.Name = "StopServerStripMenuItem"
+        Me.StopServerStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.StopServerStripMenuItem.Text = "Stop Server"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -595,4 +602,5 @@ Partial Class Form1
     Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExportsLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DonationStripMenuItem As ToolStripMenuItem
+    Friend WithEvents StopServerStripMenuItem As ToolStripMenuItem
 End Class
