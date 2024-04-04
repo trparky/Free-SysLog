@@ -19,6 +19,7 @@ Public Class Form1
     Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
+    Private serverThread As Threading.Thread
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -279,7 +280,7 @@ Public Class Form1
         Dim worker As New BackgroundWorker()
         AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, Sub()
-                                                  Dim serverThread As New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
+                                                  serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
                                                   serverThread.Start()
                                               End Sub
         worker.RunWorkerAsync()
@@ -490,12 +491,12 @@ Public Class Form1
         My.Settings.Save()
         WriteLogsToDisk()
 
+        If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+
         Try
             mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
-
-        Process.GetCurrentProcess.Kill()
     End Sub
 
     Private Sub TxtSysLogServerPort_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtSysLogServerPort.KeyUp
@@ -506,18 +507,21 @@ Public Class Form1
                 If newPortNumber < 1 Or newPortNumber > 65535 Then
                     MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
                 Else
-                    MsgBox("New port number accepted. The program will need to be restarted in order for the new port number to be used by the program.", MsgBoxStyle.Information, Text)
+                    If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+
                     My.Settings.sysLogPort = newPortNumber
                     My.Settings.Save()
 
-                    WriteLogsToDisk()
+                    If serverThread.IsAlive Then serverThread.Abort()
 
-                    Try
-                        mutex.ReleaseMutex()
-                    Catch ex As ApplicationException
-                    End Try
+                    serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
+                    serverThread.Start()
 
-                    Process.GetCurrentProcess.Kill()
+                    SyncLock dataGridLockObject
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
+                        If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                        UpdateLogCount()
+                    End SyncLock
                 End If
             Else
                 MsgBox("You must input a valid integer.", MsgBoxStyle.Critical, Text)
@@ -965,24 +969,29 @@ Public Class Form1
     Sub SysLogThread()
         Try
             Dim ipEndPoint As New IPEndPoint(IPAddress.Any, 0)
-            Dim udpServer As New UdpClient(My.Settings.sysLogPort)
-            Dim strReceivedData, strSourceIP As String
-            Dim byteReceivedData() As Byte
 
-            While True
-                byteReceivedData = udpServer.Receive(ipEndPoint)
-                strReceivedData = Encoding.UTF8.GetString(byteReceivedData)
-                strSourceIP = ipEndPoint.Address.ToString
+            Using udpServer As New UdpClient(My.Settings.sysLogPort)
+                Dim strReceivedData, strSourceIP As String
+                Dim byteReceivedData() As Byte
+                Dim boolDoServerLoop As Boolean = True
 
-                If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
-                    Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
-                Else
-                    FillLog(strReceivedData, strSourceIP)
-                End If
+                While boolDoServerLoop
+                    byteReceivedData = udpServer.Receive(ipEndPoint)
+                    strReceivedData = Encoding.UTF8.GetString(byteReceivedData)
+                    strSourceIP = ipEndPoint.Address.ToString
 
-                strReceivedData = Nothing
-                strSourceIP = Nothing
-            End While
+                    If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
+                        Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
+                    ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
+                        boolDoServerLoop = False
+                    Else
+                        FillLog(strReceivedData, strSourceIP)
+                    End If
+
+                    strReceivedData = Nothing
+                    strSourceIP = Nothing
+                End While
+            End Using
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
         Catch e As Exception

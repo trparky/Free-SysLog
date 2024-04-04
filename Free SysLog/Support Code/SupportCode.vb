@@ -1,9 +1,21 @@
-﻿Module SupportCode
+﻿Imports System.Net.Sockets
+Imports System.Text
+
+Module SupportCode
     Public ignoredLogsWindow As Ignored_Logs_and_Search_Results = Nothing
     Public replacementsList As New List(Of ReplacementsClass)
     Public Const strMutexName As String = "Free SysLog Server"
     Public mutex As Threading.Mutex
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
+    Public boolDoWeOwnTheMutex As Boolean = False
+
+    Public Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
+        Using udpClient As New UdpClient()
+            udpClient.Connect("127.0.0.1", intPort)
+            Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
+            udpClient.Send(data, data.Length)
+        End Using
+    End Sub
 
     Public Function SanitizeForCSV(input As String) As String
         If input.Contains(Chr(34)) Then input = input.Replace(Chr(34), Chr(34) & Chr(34))

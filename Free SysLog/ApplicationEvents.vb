@@ -1,6 +1,4 @@
-﻿Imports System.Net.Sockets
-Imports System.Text
-Imports Microsoft.VisualBasic.ApplicationServices
+﻿Imports Microsoft.VisualBasic.ApplicationServices
 
 Namespace My
     ' The following events are available for MyApplication:
@@ -22,15 +20,9 @@ Namespace My
                 SendMessageToSysLogServer("restore", Settings.sysLogPort)
                 e.Cancel = True
                 Exit Sub
+            Else
+                boolDoWeOwnTheMutex = True
             End If
-        End Sub
-
-        Private Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
-            Using udpClient As New UdpClient()
-                udpClient.Connect("127.0.0.1", intPort)
-                Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
-                udpClient.Send(data, data.Length)
-            End Using
         End Sub
     End Class
 End Namespace
