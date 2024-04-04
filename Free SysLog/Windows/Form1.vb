@@ -206,8 +206,6 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Debug.WriteLine($"strEXEPath = {strEXEPath}")
-        Debug.WriteLine($"Application.ExecutablePath = {Application.ExecutablePath}")
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
