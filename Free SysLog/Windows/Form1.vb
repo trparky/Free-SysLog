@@ -281,7 +281,7 @@ Public Class Form1
         Dim worker As New BackgroundWorker()
         AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, Sub()
-                                                  serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
+                                                  serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
                                                   serverThread.Start()
                                               End Sub
         worker.RunWorkerAsync()
@@ -515,7 +515,7 @@ Public Class Form1
 
                     If serverThread.IsAlive Then serverThread.Abort()
 
-                    serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
+                    serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
                     serverThread.Start()
 
                     SyncLock dataGridLockObject
@@ -971,7 +971,7 @@ Public Class Form1
             SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
             StopServerStripMenuItem.Text = "Start Server"
         ElseIf StopServerStripMenuItem.Text = "Start Server" Then
-            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .IsBackground = True, .Priority = Threading.ThreadPriority.Normal}
+            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
             serverThread.Start()
 
             SyncLock dataGridLockObject
