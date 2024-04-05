@@ -16,12 +16,16 @@ Namespace My
 
             mutex = New Threading.Mutex(False, strMutexName, False)
 
-            If Not mutex.WaitOne(0, False) And Not Debugger.IsAttached Then
-                SendMessageToSysLogServer("restore", Settings.sysLogPort)
-                e.Cancel = True
-                Exit Sub
-            Else
+            Dim boolMutexAcquired As Boolean = mutex.WaitOne(0, False)
+
+            If boolMutexAcquired Then
                 boolDoWeOwnTheMutex = True
+            Else
+                If Not Debugger.IsAttached Then
+                    SendMessageToSysLogServer("restore", Settings.sysLogPort)
+                    e.Cancel = True
+                    Exit Sub
+                End If
             End If
         End Sub
     End Class
