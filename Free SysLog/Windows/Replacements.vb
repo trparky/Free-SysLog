@@ -1,6 +1,8 @@
 ﻿Imports System.ComponentModel
 
 Public Class Replacements
+    Private boolDoneLoading As Boolean = False
+
     Private Function CheckForExistingItem(strReplace As String, strReplaceWith As String) As Boolean
         Return ReplacementsListView.Items.Cast(Of MyReplacementsListViewItem).Any(Function(item As MyReplacementsListViewItem)
                                                                                       Return item.SubItems(0).Text.Equals(strReplace, StringComparison.OrdinalIgnoreCase) And item.SubItems(1).Text.Equals(strReplaceWith, StringComparison.OrdinalIgnoreCase)
@@ -29,7 +31,12 @@ Public Class Replacements
         End Using
     End Sub
 
+    Private Sub Ignored_Words_and_Phrases_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+        If boolDoneLoading Then My.Settings.replacementsLocation = Location
+    End Sub
+
     Private Sub Replacements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Location = VerifyWindowLocation(My.Settings.replacementsLocation, Me)
         Dim listOfReplacementsToAdd As New List(Of MyReplacementsListViewItem)
 
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
@@ -39,6 +46,8 @@ Public Class Replacements
         End If
 
         ReplacementsListView.Items.AddRange(listOfReplacementsToAdd.ToArray())
+
+        boolDoneLoading = True
     End Sub
 
     Private Sub Replacements_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
