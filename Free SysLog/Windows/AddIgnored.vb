@@ -5,11 +5,23 @@
     Public boolEditMode As Boolean = False
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
-        boolRegex = ChkRegex.Checked
-        boolCaseSensitive = ChkCaseSensitive.Checked
-        strIgnored = TxtIgnored.Text
-        boolSuccess = True
-        Close()
+        If Not ChkRegex.Checked Then
+            boolRegex = ChkRegex.Checked
+            boolCaseSensitive = ChkCaseSensitive.Checked
+            strIgnored = TxtIgnored.Text
+            boolSuccess = True
+            Close()
+        Else
+            If IsRegexPatternValid(TxtIgnored.Text) Then
+                boolRegex = ChkRegex.Checked
+                boolCaseSensitive = ChkCaseSensitive.Checked
+                strIgnored = TxtIgnored.Text
+                boolSuccess = True
+                Close()
+            Else
+                MsgBox("Invalid regex pattern detected.", MsgBoxStyle.Critical, Text)
+            End If
+        End If
     End Sub
 
     Private Sub AddReplacement_Load(sender As Object, e As EventArgs) Handles MyBase.Load

@@ -10,6 +10,15 @@ Module SupportCode
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
     Public boolDoWeOwnTheMutex As Boolean = False
 
+    Public Function IsRegexPatternValid(pattern As String) As Boolean
+        Try
+            Dim regex As New RegularExpressions.Regex(pattern)
+            Return True
+        Catch ex As ArgumentException
+            Return False
+        End Try
+    End Function
+
     Public Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
         Using udpClient As New UdpClient()
             udpClient.Connect("127.0.0.1", intPort)
