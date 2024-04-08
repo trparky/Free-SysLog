@@ -176,18 +176,10 @@ Public Class Form1
     Private Function ProcessReplacements(input As String) As String
         If replacementsList.Count > 0 Then
             For Each item As ReplacementsClass In replacementsList
-                If item.BoolRegex Then
-                    Try
-                        input = GetCachedRegex(item.StrReplace, item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
-                    Catch ex As Exception
-                    End Try
-                Else
-                    If item.BoolCaseSensitive Then
-                        input = input.Replace(item.StrReplace, item.StrReplaceWith)
-                    Else
-                        input = input.Replace(item.StrReplace, item.StrReplaceWith, StringComparison.OrdinalIgnoreCase)
-                    End If
-                End If
+                Try
+                    input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+                Catch ex As Exception
+                End Try
             Next
         End If
 
