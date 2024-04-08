@@ -249,6 +249,25 @@ Public Class Form1
             Next
         End If
 
+        If My.Settings.ignored2 Is Nothing Then
+            My.Settings.ignored2 = New Specialized.StringCollection()
+
+            If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count > 0 Then
+                For Each strIgnoredString As String In My.Settings.ignored
+                    My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New IgnoredClass With {.BoolCaseSensitive = False, .BoolRegex = False, .strIgnore = strIgnoredString}))
+                Next
+
+                My.Settings.ignored.Clear()
+                My.Settings.Save()
+            End If
+        End If
+
+        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
+            For Each strJSONString As String In My.Settings.ignored2
+                ignoredList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString))
+            Next
+        End If
+
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
             SaveTimer.Enabled = True
@@ -341,9 +360,9 @@ Public Class Form1
             sSyslog = Mid(sSyslog, InStr(sSyslog, ">") + 1, Len(sSyslog))
             sSyslog = sSyslog.Trim
 
-            If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count <> 0 Then
-                For Each word As String In My.Settings.ignored
-                    If GetCachedRegex(Regex.Escape(word)).IsMatch(sSyslog) Then
+            If ignoredList.Count > 0 Then
+                For Each ignoredClassInstance As IgnoredClass In ignoredList
+                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.strIgnore, Regex.Escape(ignoredClassInstance.strIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(sSyslog) Then
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 

@@ -112,6 +112,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Support Code\DataGridViewComparer.vb" />
+    <Compile Include="Support Code\MyIgnoredListViewItem.vb" />
+    <Compile Include="Windows\AddIgnored.Designer.vb">
+      <DependentUpon>AddIgnored.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddIgnored.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\AddReplacement.Designer.vb">
       <DependentUpon>AddReplacement.vb</DependentUpon>
     </Compile>
@@ -185,6 +192,9 @@
     <Compile Include="Support Code\SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Windows\AddIgnored.resx">
+      <DependentUpon>AddIgnored.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\AddReplacement.resx">
       <DependentUpon>AddReplacement.vb</DependentUpon>
     </EmbeddedResource>

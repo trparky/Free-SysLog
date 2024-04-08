@@ -4,6 +4,7 @@ Imports System.Text
 Module SupportCode
     Public ignoredLogsWindow As Ignored_Logs_and_Search_Results = Nothing
     Public replacementsList As New List(Of ReplacementsClass)
+    Public ignoredList As New List(Of IgnoredClass)
     Public Const strMutexName As String = "Free SysLog Server"
     Public mutex As Threading.Mutex
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
@@ -55,6 +56,21 @@ Public Class ReplacementsClass
     Public Function ToListViewItem() As MyReplacementsListViewItem
         Dim listViewItem As New MyReplacementsListViewItem(StrReplace)
         listViewItem.SubItems.Add(StrReplaceWith)
+        listViewItem.SubItems.Add(BoolRegex.ToString)
+        listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+        listViewItem.BoolRegex = BoolRegex
+        listViewItem.BoolCaseSensitive = BoolCaseSensitive
+        Return listViewItem
+    End Function
+End Class
+
+Public Class IgnoredClass
+    Public BoolRegex As Boolean
+    Public BoolCaseSensitive As Boolean
+    Public strIgnore As String
+
+    Public Function ToListViewItem() As MyIgnoredListViewItem
+        Dim listViewItem As New MyIgnoredListViewItem(strIgnore)
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
         listViewItem.BoolRegex = BoolRegex
