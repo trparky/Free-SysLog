@@ -93,8 +93,8 @@
                 selectedItemObject.SubItems(0).Text = AddIgnored.strIgnored
                 selectedItemObject.SubItems(1).Text = AddIgnored.boolRegex.ToString
                 selectedItemObject.SubItems(2).Text = AddIgnored.boolCaseSensitive.ToString
-                selectedItemObject.BoolRegex = AddReplacement.boolRegex
-                selectedItemObject.BoolCaseSensitive = AddReplacement.boolCaseSensitive
+                selectedItemObject.BoolRegex = AddIgnored.boolRegex
+                selectedItemObject.BoolCaseSensitive = AddIgnored.boolCaseSensitive
             End If
         End Using
     End Sub
