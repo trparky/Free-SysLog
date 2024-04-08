@@ -61,9 +61,9 @@ Partial Class AddIgnored
         '
         'TxtIgnored
         '
-        Me.TxtIgnored.Location = New System.Drawing.Point(65, 6)
+        Me.TxtIgnored.Location = New System.Drawing.Point(61, 6)
         Me.TxtIgnored.Name = "TxtIgnored"
-        Me.TxtIgnored.Size = New System.Drawing.Size(723, 20)
+        Me.TxtIgnored.Size = New System.Drawing.Size(727, 20)
         Me.TxtIgnored.TabIndex = 8
         '
         'Label1
@@ -71,9 +71,9 @@ Partial Class AddIgnored
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(47, 13)
+        Me.Label1.Size = New System.Drawing.Size(43, 13)
         Me.Label1.TabIndex = 7
-        Me.Label1.Text = "Replace"
+        Me.Label1.Text = "Ignored"
         '
         'AddIgnored
         '
