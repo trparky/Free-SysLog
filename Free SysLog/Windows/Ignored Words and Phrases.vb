@@ -35,7 +35,7 @@
         Dim tempIgnored As New Specialized.StringCollection()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            ignoredClass = New IgnoredClass() With {.strIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex}
+            ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex}
             ignoredList.Add(ignoredClass)
             tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
         Next

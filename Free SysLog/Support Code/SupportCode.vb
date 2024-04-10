@@ -76,10 +76,10 @@ End Class
 Public Class IgnoredClass
     Public BoolRegex As Boolean
     Public BoolCaseSensitive As Boolean
-    Public strIgnore As String
+    Public StrIgnore As String
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
-        Dim listViewItem As New MyIgnoredListViewItem(strIgnore)
+        Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
         listViewItem.BoolRegex = BoolRegex

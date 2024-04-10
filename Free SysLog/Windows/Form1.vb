@@ -246,7 +246,7 @@ Public Class Form1
 
             If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count > 0 Then
                 For Each strIgnoredString As String In My.Settings.ignored
-                    My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New IgnoredClass With {.BoolCaseSensitive = False, .BoolRegex = False, .strIgnore = strIgnoredString}))
+                    My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New IgnoredClass With {.BoolCaseSensitive = False, .BoolRegex = False, .StrIgnore = strIgnoredString}))
                 Next
 
                 My.Settings.ignored.Clear()
@@ -354,7 +354,7 @@ Public Class Form1
 
             If ignoredList.Count > 0 Then
                 For Each ignoredClassInstance As IgnoredClass In ignoredList
-                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.strIgnore, Regex.Escape(ignoredClassInstance.strIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(sSyslog) Then
+                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(sSyslog) Then
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
