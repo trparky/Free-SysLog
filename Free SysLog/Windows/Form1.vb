@@ -359,9 +359,7 @@ Public Class Form1
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
-                                   If ChkRecordIgnoredLogs.Checked Then
-                                       IgnoredLogsToolStripMenuItem.Enabled = True
-                                   Else
+                                   If Not ChkRecordIgnoredLogs.Checked Then
                                        ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
                                    End If
 
@@ -683,7 +681,6 @@ Public Class Form1
         SyncLock IgnoredLogsLockObject
             IgnoredLogs.Clear()
             longNumberOfIgnoredLogs = 0
-            IgnoredLogsToolStripMenuItem.Enabled = False
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         End SyncLock
     End Sub
