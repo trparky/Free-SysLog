@@ -664,7 +664,7 @@ Public Class Form1
             If ignoredLogsWindow Is Nothing Then
                 ignoredLogsWindow = New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
                 ignoredLogsWindow.LblCount.Text = $"Number of ignored logs: {IgnoredLogs.Count:N0}"
-                ignoredLogsWindow.Show(Me)
+                ignoredLogsWindow.Show()
             Else
                 ignoredLogsWindow.BringToFront()
             End If
