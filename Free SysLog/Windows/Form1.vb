@@ -18,6 +18,7 @@ Public Class Form1
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
+    Private ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
 
@@ -676,10 +677,12 @@ Public Class Form1
     End Sub
 
     Public Sub ClearIgnoredLogs()
+        SyncLock IgnoredLogsLockObject
             IgnoredLogs.Clear()
             longNumberOfIgnoredLogs = 0
             IgnoredLogsToolStripMenuItem.Enabled = False
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        End SyncLock
     End Sub
 
     Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
