@@ -5,6 +5,7 @@ Imports System.Xml.Serialization
 
 Public Class Ignored_Logs_and_Search_Results
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
+    Public WindowDisplayMode As IgnoreOrSearchWindowDisplayMode
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
 
@@ -75,6 +76,7 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        BtnClearIgnoredLogs.Visible = WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
         Size = My.Settings.ignoredWindowSize
         Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
         ColTime.Width = My.Settings.columnTimeSize
@@ -95,6 +97,13 @@ Public Class Ignored_Logs_and_Search_Results
 
     Private Sub Ignored_Logs_and_Search_Results_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
         If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
+    End Sub
+
+    Private Sub BtnClearIgnoredLogs_Click(sender As Object, e As EventArgs) Handles BtnClearIgnoredLogs.Click
+        If TypeOf parentForm Is Form1 Then
+            Close()
+            parentForm.ClearIgnoredLogsToolStripMenuItem.PerformClick()
+        End If
     End Sub
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click

@@ -587,7 +587,7 @@ Public Class Form1
 
             AddHandler worker.RunWorkerCompleted, Sub()
                                                       If listOfSearchResults.Count > 0 Then
-                                                          Dim searchResultsWindow As New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
+                                                          Dim searchResultsWindow As New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
                                                           searchResultsWindow.LblCount.Text = $"Number of search results: {listOfSearchResults.Count:N0}"
                                                           searchResultsWindow.ShowDialog(Me)
                                                       Else
@@ -662,7 +662,7 @@ Public Class Form1
             MsgBox("There are no recorded ignored log entries to be shown.", MsgBoxStyle.Information, Text)
         Else
             If ignoredLogsWindow Is Nothing Then
-                ignoredLogsWindow = New Ignored_Logs_and_Search_Results With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
+                ignoredLogsWindow = New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
                 ignoredLogsWindow.LblCount.Text = $"Number of ignored logs: {IgnoredLogs.Count:N0}"
                 ignoredLogsWindow.Show(Me)
             Else

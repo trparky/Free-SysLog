@@ -14,6 +14,13 @@ Partial Class Ignored_Logs_and_Search_Results
         End Try
     End Sub
 
+    Private Shadows parentForm As Form1
+
+    Public Sub New(parentForm As Form1)
+        InitializeComponent()
+        Me.parentForm = parentForm
+    End Sub
+
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
 
@@ -31,6 +38,7 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.StatusStrip1.SuspendLayout()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
+        Me.BtnClearIgnoredLogs = New System.Windows.Forms.Button()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -98,6 +106,16 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.BtnExport.Text = "Export"
         Me.BtnExport.UseVisualStyleBackColor = True
         '
+        'BtnClearIgnoredLogs
+        '
+        Me.BtnClearIgnoredLogs.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnClearIgnoredLogs.Location = New System.Drawing.Point(923, 377)
+        Me.BtnClearIgnoredLogs.Name = "BtnClearIgnoredLogs"
+        Me.BtnClearIgnoredLogs.Size = New System.Drawing.Size(136, 23)
+        Me.BtnClearIgnoredLogs.TabIndex = 21
+        Me.BtnClearIgnoredLogs.Text = "Clear Ignored Logs"
+        Me.BtnClearIgnoredLogs.UseVisualStyleBackColor = True
+        '
         'Ignored_Logs_and_Search_Results
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -106,6 +124,7 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.StatusStrip1)
+        Me.Controls.Add(Me.BtnClearIgnoredLogs)
         Me.MinimumSize = New System.Drawing.Size(1168, 464)
         Me.Name = "Ignored_Logs_and_Search_Results"
         Me.Text = "Ignored Logs"
@@ -124,4 +143,5 @@ Partial Class Ignored_Logs_and_Search_Results
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents BtnExport As Button
     Friend WithEvents SaveFileDialog As SaveFileDialog
+    Friend WithEvents BtnClearIgnoredLogs As Button
 End Class

@@ -1,6 +1,11 @@
 ﻿Imports System.Net.Sockets
 Imports System.Text
 
+Public Enum IgnoreOrSearchWindowDisplayMode As Byte
+    ignored
+    search
+End Enum
+
 Module SupportCode
     Public ignoredLogsWindow As Ignored_Logs_and_Search_Results = Nothing
     Public replacementsList As New List(Of ReplacementsClass)
