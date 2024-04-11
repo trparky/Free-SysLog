@@ -116,6 +116,7 @@ Public Class Form1
                 My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
             End If
 
+            If ignoredLogsWindow IsNot Nothing Then ignoredLogsWindow.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
             ShowInTaskbar = WindowState <> FormWindowState.Minimized
         End If
     End Sub

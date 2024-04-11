@@ -179,7 +179,10 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub BtnViewMainWindow_Click(sender As Object, e As EventArgs) Handles BtnViewMainWindow.Click
-        If TypeOf parentForm Is Form1 Then parentForm.RestoreWindow()
+        If TypeOf parentForm Is Form1 Then
+            parentForm.RestoreWindow()
+            BtnViewMainWindow.Enabled = False
+        End If
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing

@@ -120,6 +120,7 @@ Partial Class Ignored_Logs_and_Search_Results
         'BtnViewMainWindow
         '
         Me.BtnViewMainWindow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnViewMainWindow.Enabled = False
         Me.BtnViewMainWindow.Location = New System.Drawing.Point(12, 377)
         Me.BtnViewMainWindow.Name = "BtnViewMainWindow"
         Me.BtnViewMainWindow.Size = New System.Drawing.Size(117, 23)
