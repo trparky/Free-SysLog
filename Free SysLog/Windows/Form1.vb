@@ -398,6 +398,7 @@ Public Class Form1
                 Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs)
                 IgnoredLogs.Add(NewIgnoredItem)
                 If ignoredLogsWindow IsNot Nothing Then ignoredLogsWindow.AddIgnoredDatagrid(NewIgnoredItem, ChkAutoScroll.Checked)
+                Invoke(Sub() ClearIgnoredLogsToolStripMenuItem.Enabled = True)
             End SyncLock
         End If
     End Sub
@@ -660,13 +661,13 @@ Public Class Form1
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
-            If ignoredLogsWindow Is Nothing Then
-                ignoredLogsWindow = New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
-                ignoredLogsWindow.Show()
-            Else
-                ignoredLogsWindow.WindowState = FormWindowState.Normal
-                ignoredLogsWindow.BringToFront()
-            End If
+        If ignoredLogsWindow Is Nothing Then
+            ignoredLogsWindow = New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
+            ignoredLogsWindow.Show()
+        Else
+            ignoredLogsWindow.WindowState = FormWindowState.Normal
+            ignoredLogsWindow.BringToFront()
+        End If
     End Sub
 
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
@@ -677,6 +678,7 @@ Public Class Form1
         SyncLock IgnoredLogsLockObject
             IgnoredLogs.Clear()
             longNumberOfIgnoredLogs = 0
+            ClearIgnoredLogsToolStripMenuItem.Enabled = False
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         End SyncLock
     End Sub

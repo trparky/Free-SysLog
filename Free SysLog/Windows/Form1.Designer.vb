@@ -279,6 +279,7 @@ Partial Class Form1
         'ClearIgnoredLogsToolStripMenuItem
         '
         Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
+        Me.ClearIgnoredLogsToolStripMenuItem.Enabled = False
         Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear"
         '
