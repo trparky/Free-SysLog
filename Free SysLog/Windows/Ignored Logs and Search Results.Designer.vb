@@ -53,7 +53,7 @@ Partial Class Ignored_Logs_and_Search_Results
         '
         'LblCount
         '
-        Me.LblCount.Name = "lblCount"
+        Me.LblCount.Name = "LblCount"
         Me.LblCount.Size = New System.Drawing.Size(53, 17)
         Me.LblCount.Text = "lblCount"
         '
@@ -66,7 +66,7 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog})
         Me.Logs.Location = New System.Drawing.Point(12, 12)
-        Me.Logs.Name = "logs"
+        Me.Logs.Name = "Logs"
         Me.Logs.ReadOnly = True
         Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.Logs.Size = New System.Drawing.Size(1128, 359)
@@ -77,7 +77,7 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         Me.ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         Me.ColTime.HeaderText = "Time"
-        Me.ColTime.Name = "colTime"
+        Me.ColTime.Name = "ColTime"
         Me.ColTime.ReadOnly = True
         Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         '
@@ -86,14 +86,14 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         Me.ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
         Me.ColIPAddress.HeaderText = "IP Address"
-        Me.ColIPAddress.Name = "colIPAddress"
+        Me.ColIPAddress.Name = "ColIPAddress"
         Me.ColIPAddress.ReadOnly = True
         '
         'ColLog
         '
         Me.ColLog.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.ColLog.HeaderText = "Log"
-        Me.ColLog.Name = "colLog"
+        Me.ColLog.Name = "ColLog"
         Me.ColLog.ReadOnly = True
         '
         'BtnExport
