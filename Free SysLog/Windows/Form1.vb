@@ -187,7 +187,7 @@ Public Class Form1
         Return input
     End Function
 
-    Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
+    Public Sub RestoreWindow()
         If boolMaximizedBeforeMinimize Then
             WindowState = FormWindowState.Maximized
         ElseIf My.Settings.boolMaximized Then
@@ -197,6 +197,10 @@ Public Class Form1
         End If
 
         If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+    End Sub
+
+    Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
+        RestoreWindow()
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load

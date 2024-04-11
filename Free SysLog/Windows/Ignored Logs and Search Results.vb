@@ -76,7 +76,11 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        BtnClearIgnoredLogs.Visible = WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
+        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+            BtnClearIgnoredLogs.Visible = True
+            BtnViewMainWindow.Visible = True
+        End If
+
         Size = My.Settings.ignoredWindowSize
         Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
         ColTime.Width = My.Settings.columnTimeSize
@@ -172,6 +176,10 @@ Public Class Ignored_Logs_and_Search_Results
                 SelectFileInWindowsExplorer(SaveFileDialog.FileName)
             End If
         End If
+    End Sub
+
+    Private Sub BtnViewMainWindow_Click(sender As Object, e As EventArgs) Handles BtnViewMainWindow.Click
+        If TypeOf parentForm Is Form1 Then parentForm.RestoreWindow()
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing

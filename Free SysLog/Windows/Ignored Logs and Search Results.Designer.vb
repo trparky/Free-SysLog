@@ -39,6 +39,7 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.BtnClearIgnoredLogs = New System.Windows.Forms.Button()
+        Me.BtnViewMainWindow = New System.Windows.Forms.Button()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -116,11 +117,23 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.BtnClearIgnoredLogs.Text = "Clear Ignored Logs"
         Me.BtnClearIgnoredLogs.UseVisualStyleBackColor = True
         '
+        'BtnViewMainWindow
+        '
+        Me.BtnViewMainWindow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnViewMainWindow.Location = New System.Drawing.Point(12, 377)
+        Me.BtnViewMainWindow.Name = "BtnViewMainWindow"
+        Me.BtnViewMainWindow.Size = New System.Drawing.Size(117, 23)
+        Me.BtnViewMainWindow.TabIndex = 22
+        Me.BtnViewMainWindow.Text = "View Main Window"
+        Me.BtnViewMainWindow.UseVisualStyleBackColor = True
+        Me.BtnViewMainWindow.Visible = False
+        '
         'Ignored_Logs_and_Search_Results
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 425)
+        Me.Controls.Add(Me.BtnViewMainWindow)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.StatusStrip1)
@@ -145,4 +158,5 @@ Partial Class Ignored_Logs_and_Search_Results
     Friend WithEvents BtnExport As Button
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents BtnClearIgnoredLogs As Button
+    Friend WithEvents BtnViewMainWindow As Button
 End Class
