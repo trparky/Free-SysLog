@@ -101,6 +101,14 @@ Public Class Ignored_Logs_and_Search_Results
         boolDoneLoading = True
     End Sub
 
+    Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
+        Invoke(Sub()
+                   Logs.Rows.Add(ItemToAdd)
+                   If BoolAutoScroll Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                   LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+               End Sub)
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
         If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
     End Sub

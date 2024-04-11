@@ -396,7 +396,11 @@ Public Class Form1
                        If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                    End Sub)
         ElseIf boolIgnored And ChkRecordIgnoredLogs.Checked Then
-            IgnoredLogs.Add(MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs))
+            SyncLock IgnoredLogsLockObject
+                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs)
+                IgnoredLogs.Add(NewIgnoredItem)
+                If ignoredLogsWindow IsNot Nothing Then ignoredLogsWindow.AddIgnoredDatagrid(NewIgnoredItem, ChkAutoScroll.Checked)
+            End SyncLock
         End If
     End Sub
 
