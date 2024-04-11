@@ -125,6 +125,7 @@ Partial Class Ignored_Logs_and_Search_Results
         Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.BtnClearIgnoredLogs)
+        Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(1168, 464)
         Me.Name = "Ignored_Logs_and_Search_Results"
         Me.Text = "Ignored Logs"
