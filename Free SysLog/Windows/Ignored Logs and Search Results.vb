@@ -92,6 +92,12 @@ Public Class Ignored_Logs_and_Search_Results
 
         Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
 
+        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+            LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+        Else
+            LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
+        End If
+
         boolDoneLoading = True
     End Sub
 
