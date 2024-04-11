@@ -667,6 +667,7 @@ Public Class Form1
                 ignoredLogsWindow.LblCount.Text = $"Number of ignored logs: {IgnoredLogs.Count:N0}"
                 ignoredLogsWindow.Show()
             Else
+                ignoredLogsWindow.WindowState = FormWindowState.Normal
                 ignoredLogsWindow.BringToFront()
             End If
         End If
