@@ -314,6 +314,30 @@ Namespace My
                 Me("replacementsLocation") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property searchWindowLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("searchWindowLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("searchWindowLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1168, 464")>  _
+        Public Property searchWindowSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("searchWindowSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("searchWindowSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -72,7 +72,11 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
-        My.Settings.ignoredWindowSize = Size
+        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+            My.Settings.ignoredWindowSize = Size
+        Else
+            My.Settings.searchWindowSize = Size
+        End If
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -81,8 +85,14 @@ Public Class Ignored_Logs_and_Search_Results
             BtnViewMainWindow.Visible = True
         End If
 
-        Size = My.Settings.ignoredWindowSize
-        Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
+        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+            Size = My.Settings.ignoredWindowSize
+            Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
+        Else
+            Size = My.Settings.searchWindowSize
+            Location = VerifyWindowLocation(My.Settings.searchWindowLocation, Me)
+        End If
+
         ColTime.Width = My.Settings.columnTimeSize
         ColIPAddress.Width = My.Settings.columnIPSize
         ColLog.Width = My.Settings.columnLogSize
@@ -114,7 +124,13 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.ignoredWindowLocation = Location
+        If boolDoneLoading Then
+            If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+                My.Settings.ignoredWindowLocation = Location
+            Else
+                My.Settings.searchWindowLocation = Location
+            End If
+        End If
     End Sub
 
     Private Sub BtnClearIgnoredLogs_Click(sender As Object, e As EventArgs) Handles BtnClearIgnoredLogs.Click
