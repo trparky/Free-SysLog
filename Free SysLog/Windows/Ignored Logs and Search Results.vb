@@ -136,6 +136,7 @@ Public Class Ignored_Logs_and_Search_Results
     Private Sub BtnClearIgnoredLogs_Click(sender As Object, e As EventArgs) Handles BtnClearIgnoredLogs.Click
         If TypeOf parentForm Is Form1 AndAlso MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             Logs.Rows.Clear()
+            LblCount.Text = "Number of ignored logs: 0"
             parentForm.ClearIgnoredLogs()
         End If
     End Sub
