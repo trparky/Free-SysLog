@@ -660,9 +660,6 @@ Public Class Form1
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
-        If IgnoredLogs.Count = 0 Then
-            MsgBox("There are no recorded ignored log entries to be shown.", MsgBoxStyle.Information, Text)
-        Else
             If ignoredLogsWindow Is Nothing Then
                 ignoredLogsWindow = New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
                 ignoredLogsWindow.Show()
@@ -670,7 +667,6 @@ Public Class Form1
                 ignoredLogsWindow.WindowState = FormWindowState.Normal
                 ignoredLogsWindow.BringToFront()
             End If
-        End If
     End Sub
 
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
