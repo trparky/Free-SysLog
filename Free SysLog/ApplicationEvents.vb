@@ -14,18 +14,12 @@ Namespace My
                 IO.File.Delete("updater.exe")
             End If
 
-            mutex = New Threading.Mutex(False, strMutexName, False)
+            mutex = New Threading.Mutex(True, strMutexName, boolDoWeOwnTheMutex)
 
-            Dim boolMutexAcquired As Boolean = mutex.WaitOne(0, False)
-
-            If boolMutexAcquired Then
-                boolDoWeOwnTheMutex = True
-            Else
-                If Not Debugger.IsAttached Then
-                    SendMessageToSysLogServer("restore", Settings.sysLogPort)
-                    e.Cancel = True
-                    Exit Sub
-                End If
+            If Not boolDoWeOwnTheMutex And Not Debugger.IsAttached Then
+                SendMessageToSysLogServer("restore", Settings.sysLogPort)
+                e.Cancel = True
+                Exit Sub
             End If
         End Sub
     End Class
