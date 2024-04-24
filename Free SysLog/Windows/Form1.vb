@@ -349,7 +349,7 @@ Public Class Form1
         Return regexCache(pattern)
     End Function
 
-    Private Sub FillLog(sSyslog As String, sFromIp As String)
+    Private Sub ProcessIncomingLog(sSyslog As String, sFromIp As String)
         Try
             Dim boolIgnored As Boolean = False
 
@@ -1023,7 +1023,7 @@ Public Class Form1
                     ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
                         boolDoServerLoop = False
                     Else
-                        FillLog(strReceivedData, strSourceIP)
+                        ProcessIncomingLog(strReceivedData, strSourceIP)
                     End If
 
                     strReceivedData = Nothing
