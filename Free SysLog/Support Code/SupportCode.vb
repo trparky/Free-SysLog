@@ -6,10 +6,16 @@ Public Enum IgnoreOrSearchWindowDisplayMode As Byte
     search
 End Enum
 
+Public Enum IgnoredOrAlertsMode As Byte
+    Ignored
+    Alerts
+End Enum
+
 Module SupportCode
     Public ignoredLogsWindow As Ignored_Logs_and_Search_Results = Nothing
     Public replacementsList As New List(Of ReplacementsClass)
     Public ignoredList As New List(Of IgnoredClass)
+    Public alertsList As New List(Of IgnoredClass)
     Public Const strMutexName As String = "Free SysLog Server"
     Public mutex As Threading.Mutex
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName

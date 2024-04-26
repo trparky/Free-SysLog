@@ -67,6 +67,7 @@ Partial Class Form1
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ChkConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureAlertsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -299,7 +300,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChkAutoSave, Me.ChkAutoScroll, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.ChkRecordIgnoredLogs, Me.ChkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChkAutoSave, Me.ChkAutoScroll, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.ChkRecordIgnoredLogs, Me.ChkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -399,6 +400,12 @@ Partial Class Form1
         Me.ColLog.HeaderText = "Log"
         Me.ColLog.Name = "colLog"
         Me.ColLog.ReadOnly = True
+        '
+        'ConfigureAlertsToolStripMenuItem
+        '
+        Me.ConfigureAlertsToolStripMenuItem.Name = "ConfigureAlertsToolStripMenuItem"
+        Me.ConfigureAlertsToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.ConfigureAlertsToolStripMenuItem.Text = "Configure Alerts"
         '
         'ConfigureAlternatingColorToolStripMenuItem
         '
@@ -585,6 +592,7 @@ Partial Class Form1
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents ConfigureAlternatingColorToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportExportSettingsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExportToolStripMenuItem As ToolStripMenuItem

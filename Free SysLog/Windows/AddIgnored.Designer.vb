@@ -68,12 +68,12 @@ Partial Class AddIgnored
         '
         'Label1
         '
-        Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(43, 13)
+        Me.Label1.Size = New System.Drawing.Size(41, 13)
         Me.Label1.TabIndex = 7
         Me.Label1.Text = "Ignored"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'AddIgnored
         '

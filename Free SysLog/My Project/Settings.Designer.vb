@@ -338,6 +338,17 @@ Namespace My
                 Me("searchWindowSize") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property alerts() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("alerts"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("alerts") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

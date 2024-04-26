@@ -266,6 +266,12 @@ Public Class Form1
             Next
         End If
 
+        If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
+            For Each strJSONString As String In My.Settings.alerts
+                alertsList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString))
+            Next
+        End If
+
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
             SaveTimer.Enabled = True
@@ -373,6 +379,14 @@ Public Class Form1
 
                         boolIgnored = True
                         Exit For
+                    End If
+                Next
+            End If
+
+            If alertsList.Count > 0 Then
+                For Each alert As IgnoredClass In alertsList
+                    If GetCachedRegex(If(alert.BoolRegex, alert.StrIgnore, Regex.Escape(alert.StrIgnore)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
+                        NotifyIcon.ShowBalloonTip(5, "Log Alert", sSyslog, ToolTipIcon.Warning)
                     End If
                 Next
             End If
@@ -659,7 +673,7 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
-        Using ignored As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+        Using ignored As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Ignored}
             ignored.ShowDialog(Me)
             regexCache.Clear()
         End Using
@@ -1001,6 +1015,13 @@ Public Class Form1
 
             StopServerStripMenuItem.Text = "Stop Server"
         End If
+    End Sub
+
+    Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
+        Using alerts As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Alerts}
+            alerts.ShowDialog(Me)
+            regexCache.Clear()
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"

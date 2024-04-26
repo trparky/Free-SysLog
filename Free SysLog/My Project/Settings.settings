@@ -74,5 +74,8 @@
     <Setting Name="searchWindowSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">1168, 464</Value>
     </Setting>
+    <Setting Name="alerts" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -1,4 +1,5 @@
 ﻿Public Class AddIgnored
+    Public WindowDisplayMode As IgnoredOrAlertsMode
     Public boolRegex, boolCaseSensitive As Boolean
     Public strIgnored As String
     Public boolSuccess As Boolean = False
@@ -31,6 +32,8 @@
             ChkCaseSensitive.Checked = boolCaseSensitive
             BtnAdd.Text = "Save"
         End If
+
+        Label1.Text = If(WindowDisplayMode = IgnoredOrAlertsMode.Ignored, "Ignored", "Alert")
     End Sub
 
     Private Sub AddReplacement_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
