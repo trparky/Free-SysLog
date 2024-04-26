@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Ignored_Words_and_Phrases
+Partial Class IgnoredWordsAndPhrasesOrAlerts
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.

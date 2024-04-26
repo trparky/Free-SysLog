@@ -1,4 +1,4 @@
-﻿Public Class Log_Viewer
+﻿Public Class LogViewer
     Public strLogText As String
 
     Private Sub Log_Viewer_Load(sender As Object, e As EventArgs) Handles MyBase.Load

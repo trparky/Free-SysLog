@@ -3,7 +3,7 @@ Imports System.IO
 Imports System.Reflection
 Imports System.Xml.Serialization
 
-Public Class Ignored_Logs_and_Search_Results
+Public Class IgnoredLogsAndSearchResults
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
     Public WindowDisplayMode As IgnoreOrSearchWindowDisplayMode
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
@@ -17,10 +17,10 @@ Public Class Ignored_Logs_and_Search_Results
         If Logs.Rows.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
-            Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-                LogViewer.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewer.LblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
-                LogViewer.ShowDialog(Me)
+            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
+                LogViewerInstance.ShowDialog(Me)
             End Using
         End If
     End Sub
@@ -203,6 +203,6 @@ Public Class Ignored_Logs_and_Search_Results
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        ignoredLogsWindow = Nothing
+        IgnoredLogsAndSearchResultsInstance = Nothing
     End Sub
 End Class

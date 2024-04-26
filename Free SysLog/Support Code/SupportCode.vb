@@ -12,7 +12,7 @@ Public Enum IgnoredOrAlertsMode As Byte
 End Enum
 
 Module SupportCode
-    Public ignoredLogsWindow As Ignored_Logs_and_Search_Results = Nothing
+    Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
     Public replacementsList As New List(Of ReplacementsClass)
     Public ignoredList As New List(Of IgnoredClass)
     Public alertsList As New List(Of IgnoredClass)

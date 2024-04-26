@@ -1,4 +1,4 @@
-﻿Public Class AddIgnored
+﻿Public Class AddIgnoredOrAlert
     Public WindowDisplayMode As IgnoredOrAlertsMode
     Public boolRegex, boolCaseSensitive As Boolean
     Public strIgnored As String
@@ -25,7 +25,7 @@
         End If
     End Sub
 
-    Private Sub AddReplacement_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub AddIgnoredOrAlert_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If boolEditMode Then
             TxtIgnored.Text = strIgnored
             ChkRegex.Checked = boolRegex

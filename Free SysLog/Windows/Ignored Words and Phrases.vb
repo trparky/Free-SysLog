@@ -1,4 +1,4 @@
-﻿Public Class Ignored_Words_and_Phrases
+﻿Public Class IgnoredWordsAndPhrasesOrAlerts
     Public WindowDisplayMode As IgnoredOrAlertsMode
     Private boolDoneLoading As Boolean = False
 
@@ -9,7 +9,7 @@
     End Function
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
-        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String", .WindowDisplayMode = WindowDisplayMode}
+        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String", .WindowDisplayMode = WindowDisplayMode}
             AddIgnored.ShowDialog(Me)
 
             If AddIgnored.boolSuccess Then
@@ -29,7 +29,7 @@
         End Using
     End Sub
 
-    Private Sub Ignored_Words_and_Phrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub IgnoredWordsAndPhrasesOrAlerts_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If WindowDisplayMode = IgnoredOrAlertsMode.Ignored Then
             ignoredList.Clear()
 
@@ -61,7 +61,7 @@
         My.Settings.Save()
     End Sub
 
-    Private Sub Ignored_Words_and_Phrases_Load(sender As Object, e As EventArgs) Handles Me.Load
+    Private Sub IgnoredWordsAndPhrasesOrAlerts_Load(sender As Object, e As EventArgs) Handles Me.Load
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
 
         If WindowDisplayMode = IgnoredOrAlertsMode.Ignored Then
@@ -114,7 +114,7 @@
     Private Sub EditItem()
         Dim strTitle As String = If(WindowDisplayMode = IgnoredOrAlertsMode.Ignored, "Edit Ignored String", "Edit Alert")
 
-        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = strTitle, .WindowDisplayMode = WindowDisplayMode}
+        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = strTitle, .WindowDisplayMode = WindowDisplayMode}
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
             AddIgnored.strIgnored = selectedItemObject.SubItems(0).Text

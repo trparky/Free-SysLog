@@ -116,7 +116,7 @@ Public Class Form1
                 My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
             End If
 
-            If ignoredLogsWindow IsNot Nothing Then ignoredLogsWindow.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
+            If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
             ShowInTaskbar = WindowState <> FormWindowState.Minimized
         End If
     End Sub
@@ -416,7 +416,7 @@ Public Class Form1
             SyncLock IgnoredLogsLockObject
                 Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs)
                 IgnoredLogs.Add(NewIgnoredItem)
-                If ignoredLogsWindow IsNot Nothing Then ignoredLogsWindow.AddIgnoredDatagrid(NewIgnoredItem, ChkAutoScroll.Checked)
+                If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ChkAutoScroll.Checked)
                 Invoke(Sub() ClearIgnoredLogsToolStripMenuItem.Enabled = True)
             End SyncLock
         End If
@@ -426,10 +426,10 @@ Public Class Form1
         If Logs.Rows.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
-            Using LogViewer As New Log_Viewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-                LogViewer.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewer.LblSource.Text = $"Source IP Address: {selectedRow.Cells(1).Value}"
-                LogViewer.ShowDialog(Me)
+            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(1).Value}"
+                LogViewerInstance.ShowDialog(Me)
             End Using
         End If
     End Sub
@@ -610,7 +610,7 @@ Public Class Form1
 
             AddHandler worker.RunWorkerCompleted, Sub()
                                                       If listOfSearchResults.Count > 0 Then
-                                                          Dim searchResultsWindow As New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                          Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
                                                           searchResultsWindow.ShowDialog(Me)
                                                       Else
                                                           MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -673,19 +673,19 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
-        Using ignored As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Ignored}
-            ignored.ShowDialog(Me)
+        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrasesOrAlerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Ignored}
+            IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
             regexCache.Clear()
         End Using
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
-        If ignoredLogsWindow Is Nothing Then
-            ignoredLogsWindow = New Ignored_Logs_and_Search_Results(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
-            ignoredLogsWindow.Show()
+        If IgnoredLogsAndSearchResultsInstance Is Nothing Then
+            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
+            IgnoredLogsAndSearchResultsInstance.Show()
         Else
-            ignoredLogsWindow.WindowState = FormWindowState.Normal
-            ignoredLogsWindow.BringToFront()
+            IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
+            IgnoredLogsAndSearchResultsInstance.BringToFront()
         End If
     End Sub
 
@@ -714,13 +714,13 @@ Public Class Form1
     End Sub
 
     Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
-        Using clearLogsOlderThanObject As New Clear_logs_older_than With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            clearLogsOlderThanObject.LblLogCount.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
-            clearLogsOlderThanObject.ShowDialog(Me)
+        Using ClearLogsOlderThanInstance As New ClearLogsOlderThan With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            ClearLogsOlderThanInstance.LblLogCount.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
+            ClearLogsOlderThanInstance.ShowDialog(Me)
 
-            If clearLogsOlderThanObject.boolSuccess Then
+            If ClearLogsOlderThanInstance.boolSuccess Then
                 Try
-                    Dim dateChosenDate As Date = clearLogsOlderThanObject.dateChosenDate.AddDays(-1)
+                    Dim dateChosenDate As Date = ClearLogsOlderThanInstance.dateChosenDate.AddDays(-1)
 
                     SyncLock dataGridLockObject
                         Logs.AllowUserToOrderColumns = False
@@ -759,8 +759,8 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
-        Using ReplacementsWindow As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            ReplacementsWindow.ShowDialog(Me)
+        Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            ReplacementsInstance.ShowDialog(Me)
             regexCache.Clear()
         End Using
     End Sub
@@ -1018,8 +1018,8 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        Using alerts As New Ignored_Words_and_Phrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Alerts}
-            alerts.ShowDialog(Me)
+        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrasesOrAlerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Alerts}
+            IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
             regexCache.Clear()
         End Using
     End Sub

@@ -1,4 +1,4 @@
-﻿Public Class Clear_logs_older_than
+﻿Public Class ClearLogsOlderThan
     Public dateChosenDate As Date
     Public boolSuccess As Boolean = False
 
