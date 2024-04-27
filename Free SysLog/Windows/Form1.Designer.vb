@@ -83,8 +83,11 @@ Partial Class Form1
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BalloonNotificationTime = New System.Windows.Forms.NumericUpDown()
+        Me.lblNotificationTime = New System.Windows.Forms.Label()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.AutoSave, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.BalloonNotificationTime, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
@@ -516,11 +519,32 @@ Partial Class Form1
         Me.StopServerStripMenuItem.Size = New System.Drawing.Size(164, 22)
         Me.StopServerStripMenuItem.Text = "Stop Server"
         '
+        'BalloonNotificationTime
+        '
+        Me.BalloonNotificationTime.Location = New System.Drawing.Point(638, 25)
+        Me.BalloonNotificationTime.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
+        Me.BalloonNotificationTime.Name = "BalloonNotificationTime"
+        Me.BalloonNotificationTime.Size = New System.Drawing.Size(40, 20)
+        Me.BalloonNotificationTime.TabIndex = 20
+        Me.BalloonNotificationTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.BalloonNotificationTime.Value = New Decimal(New Integer() {10, 0, 0, 0})
+        '
+        'lblNotificationTime
+        '
+        Me.lblNotificationTime.AutoSize = True
+        Me.lblNotificationTime.Location = New System.Drawing.Point(442, 28)
+        Me.lblNotificationTime.Name = "lblNotificationTime"
+        Me.lblNotificationTime.Size = New System.Drawing.Size(190, 13)
+        Me.lblNotificationTime.TabIndex = 19
+        Me.lblNotificationTime.Text = "Balloon Notification Time (In Seconds):"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.BalloonNotificationTime)
+        Me.Controls.Add(Me.lblNotificationTime)
         Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
         Me.Controls.Add(Me.ChkRegExSearch)
@@ -540,6 +564,7 @@ Partial Class Form1
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         CType(Me.AutoSave, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.BalloonNotificationTime, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
@@ -611,4 +636,6 @@ Partial Class Form1
     Friend WithEvents ExportsLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DonationStripMenuItem As ToolStripMenuItem
     Friend WithEvents StopServerStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BalloonNotificationTime As NumericUpDown
+    Friend WithEvents lblNotificationTime As Label
 End Class

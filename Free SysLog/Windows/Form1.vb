@@ -386,7 +386,7 @@ Public Class Form1
             If alertsList.Count > 0 Then
                 For Each alert As IgnoredClass In alertsList
                     If GetCachedRegex(If(alert.BoolRegex, alert.StrIgnore, Regex.Escape(alert.StrIgnore)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
-                        NotifyIcon.ShowBalloonTip(5, "Log Alert", sSyslog, ToolTipIcon.Warning)
+                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", sSyslog, ToolTipIcon.Warning)
                     End If
                 Next
             End If
@@ -1022,6 +1022,10 @@ Public Class Form1
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
             regexCache.Clear()
         End Using
+    End Sub
+
+    Private Sub BalloonNotificationTime_ValueChanged(sender As Object, e As EventArgs) Handles BalloonNotificationTime.ValueChanged
+        If boolDoneLoading Then My.Settings.balloonNotificationTime = BalloonNotificationTime.Value
     End Sub
 
 #Region "-- SysLog Server Code --"
