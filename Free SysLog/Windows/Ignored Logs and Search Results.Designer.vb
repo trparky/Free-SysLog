@@ -146,7 +146,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnViewMainWindow.UseVisualStyleBackColor = True
         Me.BtnViewMainWindow.Visible = False
         '
-        'Ignored_Logs_and_Search_Results
+        'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -158,11 +158,12 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Controls.Add(Me.BtnClearIgnoredLogs)
         Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(1168, 464)
-        Me.Name = "Ignored_Logs_and_Search_Results"
+        Me.Name = "IgnoredLogsAndSearchResults"
         Me.Text = "Ignored Logs"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.LogsContextMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -177,4 +178,6 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents BtnClearIgnoredLogs As Button
     Friend WithEvents BtnViewMainWindow As Button
+    Friend WithEvents LogsContextMenu As ContextMenuStrip
+    Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
 End Class
