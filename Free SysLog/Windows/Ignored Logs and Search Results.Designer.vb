@@ -29,6 +29,7 @@ Partial Class IgnoredLogsAndSearchResults
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.Logs = New System.Windows.Forms.DataGridView()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -40,7 +41,10 @@ Partial Class IgnoredLogsAndSearchResults
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.BtnClearIgnoredLogs = New System.Windows.Forms.Button()
         Me.BtnViewMainWindow = New System.Windows.Forms.Button()
+        Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.LogsContextMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'StatusStrip1
@@ -66,6 +70,7 @@ Partial Class IgnoredLogsAndSearchResults
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.ContextMenuStrip = Me.LogsContextMenu
         Me.Logs.Location = New System.Drawing.Point(12, 12)
         Me.Logs.Name = "Logs"
         Me.Logs.ReadOnly = True
@@ -116,6 +121,18 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnClearIgnoredLogs.TabIndex = 21
         Me.BtnClearIgnoredLogs.Text = "Clear Ignored Logs"
         Me.BtnClearIgnoredLogs.UseVisualStyleBackColor = True
+        '
+        'LogsContextMenu
+        '
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem})
+        Me.LogsContextMenu.Name = "LogsContextMenu"
+        Me.LogsContextMenu.Size = New System.Drawing.Size(181, 48)
+        '
+        'CopyLogTextToolStripMenuItem
+        '
+        Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
+        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
         '
         'BtnViewMainWindow
         '

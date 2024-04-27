@@ -202,6 +202,15 @@ Public Class IgnoredLogsAndSearchResults
         End If
     End Sub
 
+    Private Sub LogsContextMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsContextMenu.Opening
+        If Logs.SelectedRows.Count <> 1 Then e.Cancel = True
+    End Sub
+
+    Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
+        Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+        Clipboard.SetText(selectedRow.Cells(2).Value)
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         IgnoredLogsAndSearchResultsInstance = Nothing
     End Sub
