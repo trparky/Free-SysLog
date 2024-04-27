@@ -383,6 +383,8 @@ Public Class Form1
                 Next
             End If
 
+            sSyslog = ProcessReplacements(sSyslog)
+
             If alertsList.Count > 0 Then
                 For Each alert As IgnoredClass In alertsList
                     If GetCachedRegex(If(alert.BoolRegex, alert.StrIgnore, Regex.Escape(alert.StrIgnore)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
@@ -403,7 +405,7 @@ Public Class Form1
         If Not boolIgnored Then
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs))
+                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, sSyslog, Logs))
                        End SyncLock
 
                        NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -414,7 +416,7 @@ Public Class Form1
                    End Sub)
         ElseIf boolIgnored And ChkRecordIgnoredLogs.Checked Then
             SyncLock IgnoredLogsLockObject
-                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, ProcessReplacements(sSyslog), Logs)
+                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, sSyslog, Logs)
                 IgnoredLogs.Add(NewIgnoredItem)
                 If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ChkAutoScroll.Checked)
                 Invoke(Sub() ClearIgnoredLogsToolStripMenuItem.Enabled = True)
