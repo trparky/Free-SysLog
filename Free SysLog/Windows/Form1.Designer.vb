@@ -190,7 +190,7 @@ Partial Class Form1
         'LblAutoSaveLabel
         '
         Me.LblAutoSaveLabel.AutoSize = True
-        Me.LblAutoSaveLabel.Location = New System.Drawing.Point(202, 28)
+        Me.LblAutoSaveLabel.Location = New System.Drawing.Point(202, 31)
         Me.LblAutoSaveLabel.Name = "lblAutoSaveLabel"
         Me.LblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
         Me.LblAutoSaveLabel.TabIndex = 7
@@ -198,7 +198,7 @@ Partial Class Form1
         '
         'AutoSave
         '
-        Me.AutoSave.Location = New System.Drawing.Point(351, 25)
+        Me.AutoSave.Location = New System.Drawing.Point(351, 29)
         Me.AutoSave.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.AutoSave.Name = "AutoSave"
         Me.AutoSave.Size = New System.Drawing.Size(40, 20)
@@ -222,7 +222,7 @@ Partial Class Form1
         'LblSyslogServerPortLabel
         '
         Me.LblSyslogServerPortLabel.AutoSize = True
-        Me.LblSyslogServerPortLabel.Location = New System.Drawing.Point(12, 28)
+        Me.LblSyslogServerPortLabel.Location = New System.Drawing.Point(12, 31)
         Me.LblSyslogServerPortLabel.Name = "lblSyslogServerPortLabel"
         Me.LblSyslogServerPortLabel.Size = New System.Drawing.Size(97, 13)
         Me.LblSyslogServerPortLabel.TabIndex = 10
@@ -230,7 +230,7 @@ Partial Class Form1
         '
         'TxtSysLogServerPort
         '
-        Me.TxtSysLogServerPort.Location = New System.Drawing.Point(115, 25)
+        Me.TxtSysLogServerPort.Location = New System.Drawing.Point(115, 29)
         Me.TxtSysLogServerPort.Name = "txtSysLogServerPort"
         Me.TxtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
         Me.TxtSysLogServerPort.TabIndex = 11
@@ -331,7 +331,7 @@ Partial Class Form1
         '
         Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LblSearchLabel.AutoSize = True
-        Me.LblSearchLabel.Location = New System.Drawing.Point(707, 32)
+        Me.LblSearchLabel.Location = New System.Drawing.Point(707, 31)
         Me.LblSearchLabel.Name = "lblSearchLabel"
         Me.LblSearchLabel.Size = New System.Drawing.Size(67, 13)
         Me.LblSearchLabel.TabIndex = 13
@@ -340,7 +340,7 @@ Partial Class Form1
         'TxtSearchTerms
         '
         Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtSearchTerms.Location = New System.Drawing.Point(780, 29)
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(780, 28)
         Me.TxtSearchTerms.Name = "txtSearchTerms"
         Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
         Me.TxtSearchTerms.TabIndex = 14
@@ -521,7 +521,7 @@ Partial Class Form1
         '
         'BalloonNotificationTime
         '
-        Me.BalloonNotificationTime.Location = New System.Drawing.Point(638, 25)
+        Me.BalloonNotificationTime.Location = New System.Drawing.Point(638, 29)
         Me.BalloonNotificationTime.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
         Me.BalloonNotificationTime.Name = "BalloonNotificationTime"
         Me.BalloonNotificationTime.Size = New System.Drawing.Size(40, 20)
@@ -532,7 +532,7 @@ Partial Class Form1
         'lblNotificationTime
         '
         Me.lblNotificationTime.AutoSize = True
-        Me.lblNotificationTime.Location = New System.Drawing.Point(442, 28)
+        Me.lblNotificationTime.Location = New System.Drawing.Point(442, 31)
         Me.lblNotificationTime.Name = "lblNotificationTime"
         Me.lblNotificationTime.Size = New System.Drawing.Size(190, 13)
         Me.lblNotificationTime.TabIndex = 19
