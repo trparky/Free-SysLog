@@ -123,7 +123,7 @@ Public Class Form1
 
     Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles ChkAutoSave.Click
         SaveTimer.Enabled = ChkAutoSave.Checked
-        NumericUpDown.Visible = ChkAutoSave.Checked
+        AutoSave.Visible = ChkAutoSave.Checked
         LblAutoSaveLabel.Visible = ChkAutoSave.Checked
         LblAutoSaved.Visible = ChkAutoSave.Checked
     End Sub
@@ -133,10 +133,10 @@ Public Class Form1
         LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
     End Sub
 
-    Private Sub NumericUpDown_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown.ValueChanged
+    Private Sub AutoSave_ValueChanged(sender As Object, e As EventArgs) Handles AutoSave.ValueChanged
         If boolDoneLoading Then
-            SaveTimer.Interval = TimeSpan.FromMinutes(NumericUpDown.Value).TotalMilliseconds
-            My.Settings.autoSaveMinutes = NumericUpDown.Value
+            SaveTimer.Interval = TimeSpan.FromMinutes(AutoSave.Value).TotalMilliseconds
+            My.Settings.autoSaveMinutes = AutoSave.Value
         End If
     End Sub
 
@@ -216,8 +216,8 @@ Public Class Form1
         ChkAutoScroll.Checked = My.Settings.autoScroll
         ChkAutoSave.Checked = My.Settings.autoSave
         ChkConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
-        NumericUpDown.Value = My.Settings.autoSaveMinutes
-        NumericUpDown.Visible = ChkAutoSave.Checked
+        AutoSave.Value = My.Settings.autoSaveMinutes
+        AutoSave.Visible = ChkAutoSave.Checked
         LblAutoSaveLabel.Visible = ChkAutoSave.Checked
         LblAutoSaved.Visible = ChkAutoSave.Checked
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex

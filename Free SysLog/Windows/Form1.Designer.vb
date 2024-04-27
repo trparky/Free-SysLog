@@ -38,7 +38,7 @@ Partial Class Form1
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ChkAutoSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.LblAutoSaveLabel = New System.Windows.Forms.Label()
-        Me.NumericUpDown = New System.Windows.Forms.NumericUpDown()
+        Me.AutoSave = New System.Windows.Forms.NumericUpDown()
         Me.ChkStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnMoveLogFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.LblSyslogServerPortLabel = New System.Windows.Forms.Label()
@@ -84,7 +84,7 @@ Partial Class Form1
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
-        CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.AutoSave, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
@@ -193,15 +193,15 @@ Partial Class Form1
         Me.LblAutoSaveLabel.TabIndex = 7
         Me.LblAutoSaveLabel.Text = "Auto save every (in minutes):"
         '
-        'NumericUpDown
+        'AutoSave
         '
-        Me.NumericUpDown.Location = New System.Drawing.Point(351, 25)
-        Me.NumericUpDown.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
-        Me.NumericUpDown.Name = "NumericUpDown"
-        Me.NumericUpDown.Size = New System.Drawing.Size(40, 20)
-        Me.NumericUpDown.TabIndex = 8
-        Me.NumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.NumericUpDown.Value = New Decimal(New Integer() {5, 0, 0, 0})
+        Me.AutoSave.Location = New System.Drawing.Point(351, 25)
+        Me.AutoSave.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
+        Me.AutoSave.Name = "AutoSave"
+        Me.AutoSave.Size = New System.Drawing.Size(40, 20)
+        Me.AutoSave.TabIndex = 8
+        Me.AutoSave.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.AutoSave.Value = New Decimal(New Integer() {5, 0, 0, 0})
         '
         'ChkStartAtUserStartup
         '
@@ -527,7 +527,7 @@ Partial Class Form1
         Me.Controls.Add(Me.BtnSearch)
         Me.Controls.Add(Me.TxtSearchTerms)
         Me.Controls.Add(Me.LblSearchLabel)
-        Me.Controls.Add(Me.NumericUpDown)
+        Me.Controls.Add(Me.AutoSave)
         Me.Controls.Add(Me.LblAutoSaveLabel)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip)
@@ -539,7 +539,7 @@ Partial Class Form1
         Me.Text = "Free SysLog Server"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
-        CType(Me.NumericUpDown, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.AutoSave, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
@@ -559,7 +559,7 @@ Partial Class Form1
     Friend WithEvents SaveTimer As Timer
     Friend WithEvents ChkAutoSave As ToolStripMenuItem
     Friend WithEvents LblAutoSaveLabel As Label
-    Friend WithEvents NumericUpDown As NumericUpDown
+    Friend WithEvents AutoSave As NumericUpDown
     Friend WithEvents LblAutoSaved As ToolStripStatusLabel
     Friend WithEvents ChkStartAtUserStartup As ToolStripMenuItem
     Friend WithEvents LblLogFileSize As ToolStripStatusLabel
