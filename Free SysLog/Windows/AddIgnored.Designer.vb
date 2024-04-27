@@ -75,7 +75,7 @@ Partial Class AddIgnoredOrAlert
         Me.Label1.Text = "Ignored"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'AddIgnored
+        'AddIgnoredOrAlert
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -85,7 +85,8 @@ Partial Class AddIgnoredOrAlert
         Me.Controls.Add(Me.ChkRegex)
         Me.Controls.Add(Me.TxtIgnored)
         Me.Controls.Add(Me.Label1)
-        Me.Name = "AddIgnored"
+        Me.KeyPreview = True
+        Me.Name = "AddIgnoredOrAlert"
         Me.Text = "Add Ignored"
         Me.ResumeLayout(False)
         Me.PerformLayout()
