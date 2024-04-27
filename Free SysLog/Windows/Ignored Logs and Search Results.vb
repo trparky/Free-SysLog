@@ -17,9 +17,9 @@ Public Class IgnoredLogsAndSearchResults
         If Logs.Rows.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
-            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(3).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(2).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(1).Value}"
                 LogViewerInstance.ShowDialog(Me)
             End Using
         End If
