@@ -6,11 +6,6 @@ Public Enum IgnoreOrSearchWindowDisplayMode As Byte
     search
 End Enum
 
-Public Enum IgnoredOrAlertsMode As Byte
-    Ignored
-    Alerts
-End Enum
-
 Module SupportCode
     Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
     Public replacementsList As New List(Of ReplacementsClass)

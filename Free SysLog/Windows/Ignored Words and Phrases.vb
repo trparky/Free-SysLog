@@ -1,5 +1,4 @@
-﻿Public Class IgnoredWordsAndPhrasesOrAlerts
-    Public WindowDisplayMode As IgnoredOrAlertsMode
+﻿Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
@@ -9,7 +8,7 @@
     End Function
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
-        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String", .WindowDisplayMode = WindowDisplayMode}
+        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
             AddIgnored.ShowDialog(Me)
 
             If AddIgnored.boolSuccess Then
@@ -29,64 +28,33 @@
         End Using
     End Sub
 
-    Private Sub IgnoredWordsAndPhrasesOrAlerts_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If WindowDisplayMode = IgnoredOrAlertsMode.Ignored Then
-            ignoredList.Clear()
+    Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        ignoredList.Clear()
 
-            Dim ignoredClass As IgnoredClass
-            Dim tempIgnored As New Specialized.StringCollection()
+        Dim ignoredClass As IgnoredClass
+        Dim tempIgnored As New Specialized.StringCollection()
 
-            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex}
-                ignoredList.Add(ignoredClass)
-                tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-            Next
+        For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+            ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex}
+            ignoredList.Add(ignoredClass)
+            tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+        Next
 
-            My.Settings.ignored2 = tempIgnored
-        Else
-            alertsList.Clear()
-
-            Dim ignoredClass As IgnoredClass
-            Dim tempAlerts As New Specialized.StringCollection()
-
-            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex}
-                alertsList.Add(ignoredClass)
-                tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-            Next
-
-            My.Settings.alerts = tempAlerts
-        End If
-
+        My.Settings.ignored2 = tempIgnored
         My.Settings.Save()
     End Sub
 
-    Private Sub IgnoredWordsAndPhrasesOrAlerts_Load(sender As Object, e As EventArgs) Handles Me.Load
+    Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
+        Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
 
-        If WindowDisplayMode = IgnoredOrAlertsMode.Ignored Then
-            Text = "Ignored Words and Phrases"
-            Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
-
-            If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
-                For Each strJSONString As String In My.Settings.ignored2
-                    MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString).ToListViewItem())
-                Next
-            End If
-
-            IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
-        Else
-            Text = "Alerts"
-            Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
-
-            If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
-                For Each strJSONString As String In My.Settings.alerts
-                    MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString).ToListViewItem())
-                Next
-            End If
-
-            IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
+        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
+            For Each strJSONString As String In My.Settings.ignored2
+                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString).ToListViewItem())
+            Next
         End If
+
+        IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
 
         boolDoneLoading = True
     End Sub
@@ -112,9 +80,7 @@
     End Sub
 
     Private Sub EditItem()
-        Dim strTitle As String = If(WindowDisplayMode = IgnoredOrAlertsMode.Ignored, "Edit Ignored String", "Edit Alert")
-
-        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = strTitle, .WindowDisplayMode = WindowDisplayMode}
+        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
             AddIgnored.strIgnored = selectedItemObject.SubItems(0).Text

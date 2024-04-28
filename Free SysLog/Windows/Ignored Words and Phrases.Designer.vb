@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class IgnoredWordsAndPhrasesOrAlerts
+Partial Class IgnoredWordsAndPhrases
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -89,7 +89,7 @@ Partial Class IgnoredWordsAndPhrasesOrAlerts
         Me.BtnEdit.Text = "Edit"
         Me.BtnEdit.UseVisualStyleBackColor = True
         '
-        'Ignored_Words_and_Phrases
+        'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -99,7 +99,7 @@ Partial Class IgnoredWordsAndPhrasesOrAlerts
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnAdd)
         Me.MinimumSize = New System.Drawing.Size(495, 304)
-        Me.Name = "Ignored_Words_and_Phrases"
+        Me.Name = "IgnoredWordsAndPhrases"
         Me.Text = "Ignored Words and Phrases"
         Me.ResumeLayout(False)
 

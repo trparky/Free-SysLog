@@ -675,7 +675,7 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
-        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrasesOrAlerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Ignored}
+        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
             regexCache.Clear()
         End Using
@@ -1020,7 +1020,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrasesOrAlerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .WindowDisplayMode = IgnoredOrAlertsMode.Alerts}
+        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
             regexCache.Clear()
         End Using
