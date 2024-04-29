@@ -167,7 +167,7 @@ Partial Class Form1
         '
         Me.ChkAutoScroll.CheckOnClick = True
         Me.ChkAutoScroll.Name = "ChkAutoScroll"
-        Me.ChkAutoScroll.Size = New System.Drawing.Size(243, 22)
+        Me.ChkAutoScroll.Size = New System.Drawing.Size(248, 22)
         Me.ChkAutoScroll.Text = "Auto Scroll"
         '
         'BtnCheckForUpdates
@@ -184,7 +184,7 @@ Partial Class Form1
         '
         Me.ChkAutoSave.CheckOnClick = True
         Me.ChkAutoSave.Name = "ChkAutoSave"
-        Me.ChkAutoSave.Size = New System.Drawing.Size(243, 22)
+        Me.ChkAutoSave.Size = New System.Drawing.Size(248, 22)
         Me.ChkAutoSave.Text = "Auto Save"
         '
         'LblAutoSaveLabel
@@ -210,13 +210,13 @@ Partial Class Form1
         '
         Me.ChkStartAtUserStartup.CheckOnClick = True
         Me.ChkStartAtUserStartup.Name = "ChkStartAtUserStartup"
-        Me.ChkStartAtUserStartup.Size = New System.Drawing.Size(243, 22)
+        Me.ChkStartAtUserStartup.Size = New System.Drawing.Size(248, 22)
         Me.ChkStartAtUserStartup.Text = "Start at Startup"
         '
         'BtnMoveLogFile
         '
         Me.BtnMoveLogFile.Name = "BtnMoveLogFile"
-        Me.BtnMoveLogFile.Size = New System.Drawing.Size(243, 22)
+        Me.BtnMoveLogFile.Size = New System.Drawing.Size(248, 22)
         Me.BtnMoveLogFile.Text = "Move Log File"
         '
         'LblSyslogServerPortLabel
@@ -311,20 +311,20 @@ Partial Class Form1
         'ConfigureReplacementsToolStripMenuItem
         '
         Me.ConfigureReplacementsToolStripMenuItem.Name = "ConfigureReplacementsToolStripMenuItem"
-        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(248, 22)
         Me.ConfigureReplacementsToolStripMenuItem.Text = "Configure Replacements"
         '
         'IgnoredWordsAndPhrasesToolStripMenuItem
         '
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Name = "IgnoredWordsAndPhrasesToolStripMenuItem"
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(248, 22)
         Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
         '
         'ChkRecordIgnoredLogs
         '
         Me.ChkRecordIgnoredLogs.CheckOnClick = True
         Me.ChkRecordIgnoredLogs.Name = "ChkRecordIgnoredLogs"
-        Me.ChkRecordIgnoredLogs.Size = New System.Drawing.Size(243, 22)
+        Me.ChkRecordIgnoredLogs.Size = New System.Drawing.Size(248, 22)
         Me.ChkRecordIgnoredLogs.Text = "Record Ignored Logs"
         '
         'LblSearchLabel
@@ -407,13 +407,13 @@ Partial Class Form1
         'ConfigureAlertsToolStripMenuItem
         '
         Me.ConfigureAlertsToolStripMenuItem.Name = "ConfigureAlertsToolStripMenuItem"
-        Me.ConfigureAlertsToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.ConfigureAlertsToolStripMenuItem.Size = New System.Drawing.Size(248, 22)
         Me.ConfigureAlertsToolStripMenuItem.Text = "Configure Alerts"
         '
         'ConfigureAlternatingColorToolStripMenuItem
         '
         Me.ConfigureAlternatingColorToolStripMenuItem.Name = "ConfigureAlternatingColorToolStripMenuItem"
-        Me.ConfigureAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.ConfigureAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(248, 22)
         Me.ConfigureAlternatingColorToolStripMenuItem.Text = "Configure Alternating Color"
         '
         'AboutToolStripMenuItem
@@ -426,7 +426,7 @@ Partial Class Form1
         '
         Me.ImportExportSettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExportToolStripMenuItem, Me.ImportToolStripMenuItem})
         Me.ImportExportSettingsToolStripMenuItem.Name = "ImportExportSettingsToolStripMenuItem"
-        Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(248, 22)
         Me.ImportExportSettingsToolStripMenuItem.Text = "Import/Export Program Settings"
         '
         'ExportToolStripMenuItem
@@ -474,49 +474,49 @@ Partial Class Form1
         '
         Me.ChkConfirmCloseToolStripItem.CheckOnClick = True
         Me.ChkConfirmCloseToolStripItem.Name = "ChkConfirmCloseToolStripItem"
-        Me.ChkConfirmCloseToolStripItem.Size = New System.Drawing.Size(243, 22)
+        Me.ChkConfirmCloseToolStripItem.Size = New System.Drawing.Size(248, 22)
         Me.ChkConfirmCloseToolStripItem.Text = "Confirm Close"
         '
         'LogsMenu
         '
         Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
-        Me.LogsMenu.Size = New System.Drawing.Size(165, 48)
+        Me.LogsMenu.Size = New System.Drawing.Size(189, 92)
         '
         'CopyLogTextToolStripMenuItem
         '
         Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
-        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
         '
         'OpenLogViewerToolStripMenuItem
         '
         Me.OpenLogViewerToolStripMenuItem.Name = "OpenLogViewerToolStripMenuItem"
-        Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.OpenLogViewerToolStripMenuItem.Text = "Open Log Viewer"
         '
         'DeleteLogsToolStripMenuItem
         '
         Me.DeleteLogsToolStripMenuItem.Name = "DeleteLogsToolStripMenuItem"
-        Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.DeleteLogsToolStripMenuItem.Text = "Delete Selected Logs"
         '
         'ExportsLogsToolStripMenuItem
         '
         Me.ExportsLogsToolStripMenuItem.Name = "ExportsLogsToolStripMenuItem"
-        Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.ExportsLogsToolStripMenuItem.Text = "Exports Selected Logs"
         '
         ' DonationStripMenuItem
         '
         Me.DonationStripMenuItem.Name = "DonationStripMenuItem"
-        Me.DonationStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.DonationStripMenuItem.Size = New System.Drawing.Size(113, 20)
         Me.DonationStripMenuItem.Text = "Donate via PayPal"
         '
         'StopServerStripMenuItem
         '
         Me.StopServerStripMenuItem.Name = "StopServerStripMenuItem"
-        Me.StopServerStripMenuItem.Size = New System.Drawing.Size(164, 22)
+        Me.StopServerStripMenuItem.Size = New System.Drawing.Size(171, 22)
         Me.StopServerStripMenuItem.Text = "Stop Server"
         '
         'BalloonNotificationTime
