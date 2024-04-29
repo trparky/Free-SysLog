@@ -113,6 +113,12 @@
   <ItemGroup>
     <Compile Include="Support Code\DataGridViewComparer.vb" />
     <Compile Include="Support Code\MyIgnoredListViewItem.vb" />
+    <Compile Include="Windows\AddAlert.Designer.vb">
+      <DependentUpon>AddAlert.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddAlert.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\AddIgnored.Designer.vb">
       <DependentUpon>AddIgnored.vb</DependentUpon>
     </Compile>
@@ -127,6 +133,12 @@
     </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Support Code\Check for Update.vb" />
+    <Compile Include="Windows\Alerts.Designer.vb">
+      <DependentUpon>Alerts.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Alerts.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Clear logs older than.Designer.vb">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
     </Compile>
@@ -192,11 +204,17 @@
     <Compile Include="Support Code\SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Windows\AddAlert.resx">
+      <DependentUpon>AddAlert.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\AddIgnored.resx">
       <DependentUpon>AddIgnored.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\AddReplacement.resx">
       <DependentUpon>AddReplacement.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Alerts.resx">
+      <DependentUpon>Alerts.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Clear logs older than.resx">
       <DependentUpon>Clear logs older than.vb</DependentUpon>

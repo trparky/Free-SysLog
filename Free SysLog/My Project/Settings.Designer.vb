@@ -361,6 +361,18 @@ Namespace My
                 Me("balloonNotificationTime") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property alertsLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("alertsLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("alertsLocation") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -10,7 +10,7 @@ Module SupportCode
     Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
     Public replacementsList As New List(Of ReplacementsClass)
     Public ignoredList As New List(Of IgnoredClass)
-    Public alertsList As New List(Of IgnoredClass)
+    Public alertsList As New List(Of AlertsClass)
     Public Const strMutexName As String = "Free SysLog Server"
     Public mutex As Threading.Mutex
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
@@ -86,6 +86,22 @@ Public Class IgnoredClass
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
+        listViewItem.SubItems.Add(BoolRegex.ToString)
+        listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+        listViewItem.BoolRegex = BoolRegex
+        listViewItem.BoolCaseSensitive = BoolCaseSensitive
+        Return listViewItem
+    End Function
+End Class
+
+Public Class AlertsClass
+    Public BoolRegex As Boolean
+    Public BoolCaseSensitive As Boolean
+    Public StrLogText, StrAlertText As String
+
+    Public Function ToListViewItem() As AlertsListViewItem
+        Dim listViewItem As New AlertsListViewItem(StrLogText) With {.StrLogText = StrLogText, .StrAlertText = StrAlertText}
+        listViewItem.SubItems.Add(If(String.IsNullOrWhiteSpace(StrAlertText), "(Shows Log Text)", StrAlertText))
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
         listViewItem.BoolRegex = BoolRegex

@@ -9,3 +9,16 @@ Public Class MyIgnoredListViewItem
         Me.Text = strInput
     End Sub
 End Class
+
+Public Class AlertsListViewItem
+    Inherits ListViewItem
+    Implements ICloneable
+    Public Property BoolRegex As Boolean
+    Public Property BoolCaseSensitive As Boolean
+    Public Property StrLogText As String
+    Public Property StrAlertText As String
+
+    Public Sub New(strInput As String)
+        Me.Text = strInput
+    End Sub
+End Class

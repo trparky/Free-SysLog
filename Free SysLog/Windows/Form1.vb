@@ -268,7 +268,7 @@ Public Class Form1
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
-                alertsList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString))
+                alertsList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString))
             Next
         End If
 
@@ -386,9 +386,9 @@ Public Class Form1
             sSyslog = ProcessReplacements(sSyslog)
 
             If alertsList.Count > 0 Then
-                For Each alert As IgnoredClass In alertsList
-                    If GetCachedRegex(If(alert.BoolRegex, alert.StrIgnore, Regex.Escape(alert.StrIgnore)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
-                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", sSyslog, ToolTipIcon.Warning)
+                For Each alert As AlertsClass In alertsList
+                    If GetCachedRegex(If(alert.BoolRegex, alert.StrAlertText, Regex.Escape(alert.StrAlertText)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
+                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", If(String.IsNullOrWhiteSpace(alert.StrAlertText), alertsList, alert.StrAlertText), ToolTipIcon.Warning)
                     End If
                 Next
             End If
@@ -1020,8 +1020,8 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
+        Using Alerts As New Alerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            Alerts.ShowDialog(Me)
             regexCache.Clear()
         End Using
     End Sub
