@@ -6,6 +6,7 @@ Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 Imports System.Reflection
+Imports System.Configuration
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
@@ -1028,6 +1029,11 @@ Public Class Form1
 
     Private Sub BalloonNotificationTime_ValueChanged(sender As Object, e As EventArgs) Handles BalloonNotificationTime.ValueChanged
         If boolDoneLoading Then My.Settings.balloonNotificationTime = BalloonNotificationTime.Value
+    End Sub
+
+    Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
+        MsgBox("Modifying the application XML configuration file by hand may cause the program to malfunction. Caution is advised.", MsgBoxStyle.Information, Text)
+        SelectFileInWindowsExplorer(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath)
     End Sub
 
 #Region "-- SysLog Server Code --"
