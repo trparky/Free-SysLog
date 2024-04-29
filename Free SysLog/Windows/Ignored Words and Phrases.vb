@@ -13,7 +13,7 @@
 
             If AddIgnored.boolSuccess Then
                 If CheckForExistingItem(AddIgnored.strIgnored) Then
-                    MsgBox("A similar item has already been found in your replacements list.", MsgBoxStyle.Critical, Text)
+                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
                     Exit Sub
                 End If
 
