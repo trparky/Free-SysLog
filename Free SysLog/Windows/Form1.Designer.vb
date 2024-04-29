@@ -82,6 +82,7 @@ Partial Class Form1
         Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BalloonNotificationTime = New System.Windows.Forms.NumericUpDown()
@@ -93,6 +94,12 @@ Partial Class Form1
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
         Me.SuspendLayout()
+        '
+        'CreateAlertToolStripMenuItem
+        '
+        Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
+        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(100, 22)
+        Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
         'BtnOpenLogLocation
         '
@@ -480,7 +487,7 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(189, 92)
         '
@@ -646,4 +653,5 @@ Partial Class Form1
     Friend WithEvents BalloonNotificationTime As NumericUpDown
     Friend WithEvents lblNotificationTime As Label
     Friend WithEvents OpenWindowsExplorerToAppConfigFile As ToolStripMenuItem
+    Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
 End Class

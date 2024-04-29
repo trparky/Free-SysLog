@@ -880,9 +880,11 @@ Public Class Form1
         If Logs.SelectedRows.Count = 1 Then
             CopyLogTextToolStripMenuItem.Visible = True
             OpenLogViewerToolStripMenuItem.Visible = True
+            CreateAlertToolStripMenuItem.Visible = True
         Else
             CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
+            CreateAlertToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1034,6 +1036,32 @@ Public Class Form1
     Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
         MsgBox("Modifying the application XML configuration file by hand may cause the program to malfunction. Caution is advised.", MsgBoxStyle.Information, Text)
         SelectFileInWindowsExplorer(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath)
+    End Sub
+
+    Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
+        Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(2).Value
+            AddAlert.TxtLogText.Text = strLogText
+
+            AddAlert.ShowDialog(Me)
+
+            If AddAlert.boolSuccess Then
+                Dim boolExistCheck As Boolean = alertsList.Any(Function(item As AlertsClass)
+                                                                   Return item.StrLogText.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
+                                                               End Function)
+
+                If boolExistCheck Then
+                    MsgBox("A similar item has already been found in your alerts list.", MsgBoxStyle.Critical, Text)
+                    Exit Sub
+                End If
+
+                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex}
+                alertsList.Add(AlertsClass)
+                My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
+
+                MsgBox("Done", MsgBoxStyle.Information, Text)
+            End If
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"
