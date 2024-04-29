@@ -63,13 +63,18 @@
     End Sub
 
     Private Sub IgnoredListView_KeyUp(sender As Object, e As KeyEventArgs) Handles IgnoredListView.KeyUp
-        If e.KeyCode = Keys.Delete And IgnoredListView.SelectedItems().Count > 0 Then IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
+        If e.KeyCode = Keys.Delete And IgnoredListView.SelectedItems().Count > 0 Then
+            IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
+            BtnDelete.Enabled = False
+            BtnEdit.Enabled = False
+        End If
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
         If IgnoredListView.SelectedItems().Count > 0 Then
             IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
             BtnDelete.Enabled = False
+            BtnEdit.Enabled = False
         End If
     End Sub
 

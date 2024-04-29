@@ -73,6 +73,8 @@ Public Class Replacements
         If ReplacementsListView.SelectedItems.Count > 0 Then
             If e.KeyCode = Keys.Delete Then
                 ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
+                BtnDelete.Enabled = False
+                BtnEdit.Enabled = False
             ElseIf e.KeyCode = Keys.Enter Then
                 EditItem()
             End If
