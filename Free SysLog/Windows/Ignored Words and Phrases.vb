@@ -8,7 +8,7 @@
     End Function
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
-        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
+        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
             AddIgnored.ShowDialog(Me)
 
             If AddIgnored.boolSuccess Then
@@ -88,7 +88,7 @@
     End Sub
 
     Private Sub EditItem()
-        Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
+        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
             With AddIgnored

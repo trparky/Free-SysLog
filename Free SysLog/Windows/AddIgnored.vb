@@ -1,4 +1,4 @@
-﻿Public Class AddIgnoredOrAlert
+﻿Public Class AddIgnored
     Public boolRegex, boolCaseSensitive As Boolean
     Public strIgnored As String
     Public boolSuccess As Boolean = False
