@@ -17,13 +17,16 @@
                     Exit Sub
                 End If
 
-                Dim MyIgnoredListViewItem As New MyIgnoredListViewItem(AddIgnored.strIgnored)
-                MyIgnoredListViewItem.SubItems.Add(AddIgnored.boolRegex.ToString)
-                MyIgnoredListViewItem.SubItems.Add(AddIgnored.boolCaseSensitive.ToString)
-                MyIgnoredListViewItem.BoolRegex = AddIgnored.boolRegex
-                MyIgnoredListViewItem.BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                Dim IgnoredListViewItem As New MyIgnoredListViewItem(AddIgnored.strIgnored)
 
-                IgnoredListView.Items.Add(MyIgnoredListViewItem)
+                With IgnoredListViewItem
+                    .SubItems.Add(AddIgnored.boolRegex.ToString)
+                    .SubItems.Add(AddIgnored.boolCaseSensitive.ToString)
+                    .BoolRegex = AddIgnored.boolRegex
+                    .BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                End With
+
+                IgnoredListView.Items.Add(IgnoredListViewItem)
             End If
         End Using
     End Sub
@@ -83,18 +86,22 @@
         Using AddIgnored As New AddIgnoredOrAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
-            AddIgnored.strIgnored = selectedItemObject.SubItems(0).Text
-            AddIgnored.boolRegex = selectedItemObject.BoolRegex
-            AddIgnored.boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+            With AddIgnored
+                .strIgnored = selectedItemObject.SubItems(0).Text
+                .boolRegex = selectedItemObject.BoolRegex
+                .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+            End With
 
             AddIgnored.ShowDialog(Me)
 
             If AddIgnored.boolSuccess Then
-                selectedItemObject.SubItems(0).Text = AddIgnored.strIgnored
-                selectedItemObject.SubItems(1).Text = AddIgnored.boolRegex.ToString
-                selectedItemObject.SubItems(2).Text = AddIgnored.boolCaseSensitive.ToString
-                selectedItemObject.BoolRegex = AddIgnored.boolRegex
-                selectedItemObject.BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                With selectedItemObject
+                    .SubItems(0).Text = AddIgnored.strIgnored
+                    .SubItems(1).Text = AddIgnored.boolRegex.ToString
+                    .SubItems(2).Text = AddIgnored.boolCaseSensitive.ToString
+                    .BoolRegex = AddIgnored.boolRegex
+                    .BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                End With
             End If
         End Using
     End Sub

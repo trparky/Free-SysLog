@@ -20,11 +20,14 @@ Public Class Replacements
                 End If
 
                 Dim MyReplacementsListViewItem As New MyReplacementsListViewItem(AddReplacement.strReplace)
-                MyReplacementsListViewItem.SubItems.Add(AddReplacement.strReplaceWith)
-                MyReplacementsListViewItem.SubItems.Add(AddReplacement.boolRegex.ToString)
-                MyReplacementsListViewItem.SubItems.Add(AddReplacement.boolCaseSensitive.ToString)
-                MyReplacementsListViewItem.BoolRegex = AddReplacement.boolRegex
-                MyReplacementsListViewItem.BoolCaseSensitive = AddReplacement.boolCaseSensitive
+
+                With MyReplacementsListViewItem
+                    .SubItems.Add(AddReplacement.strReplaceWith)
+                    .SubItems.Add(AddReplacement.boolRegex.ToString)
+                    .SubItems.Add(AddReplacement.boolCaseSensitive.ToString)
+                    .BoolRegex = AddReplacement.boolRegex
+                    .BoolCaseSensitive = AddReplacement.boolCaseSensitive
+                End With
 
                 ReplacementsListView.Items.Add(MyReplacementsListViewItem)
             End If
@@ -84,20 +87,24 @@ Public Class Replacements
         Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = "Edit Replacement"}
             Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
 
-            AddReplacement.strReplace = selectedItemObject.SubItems(0).Text
-            AddReplacement.strReplaceWith = selectedItemObject.SubItems(1).Text
-            AddReplacement.boolRegex = selectedItemObject.BoolRegex
-            AddReplacement.boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+            With AddReplacement
+                .strReplace = selectedItemObject.SubItems(0).Text
+                .strReplaceWith = selectedItemObject.SubItems(1).Text
+                .boolRegex = selectedItemObject.BoolRegex
+                .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+            End With
 
             AddReplacement.ShowDialog(Me)
 
             If AddReplacement.boolSuccess Then
-                selectedItemObject.SubItems(0).Text = AddReplacement.strReplace
-                selectedItemObject.SubItems(1).Text = AddReplacement.strReplaceWith
-                selectedItemObject.SubItems(2).Text = AddReplacement.boolRegex.ToString
-                selectedItemObject.SubItems(3).Text = AddReplacement.boolCaseSensitive.ToString
-                selectedItemObject.BoolRegex = AddReplacement.boolRegex
-                selectedItemObject.BoolCaseSensitive = AddReplacement.boolCaseSensitive
+                With selectedItemObject
+                    .SubItems(0).Text = AddReplacement.strReplace
+                    .SubItems(1).Text = AddReplacement.strReplaceWith
+                    .SubItems(2).Text = AddReplacement.boolRegex.ToString
+                    .SubItems(3).Text = AddReplacement.boolCaseSensitive.ToString
+                    .BoolRegex = AddReplacement.boolRegex
+                    .BoolCaseSensitive = AddReplacement.boolCaseSensitive
+                End With
             End If
         End Using
     End Sub
