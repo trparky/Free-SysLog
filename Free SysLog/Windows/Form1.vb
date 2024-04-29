@@ -387,7 +387,7 @@ Public Class Form1
 
             If alertsList.Count > 0 Then
                 For Each alert As AlertsClass In alertsList
-                    If GetCachedRegex(If(alert.BoolRegex, alert.StrAlertText, Regex.Escape(alert.StrAlertText)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
+                    If GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
                         NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText), ToolTipIcon.Warning)
                     End If
                 Next
