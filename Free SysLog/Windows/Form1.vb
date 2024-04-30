@@ -196,6 +196,10 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ChangeBalloonTimeIntervalToolStripMenuItem.Text = $"Change Balloon Time Interval ({My.Settings.balloonNotificationTime} Seconds)"
+        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
+        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
+
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -1090,6 +1094,8 @@ Public Class Form1
                     Else
                         If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
 
+                        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
+
                         My.Settings.sysLogPort = .intResult
                         My.Settings.Save()
 
@@ -1120,6 +1126,7 @@ Public Class Form1
                 .ShowDialog(Me)
 
                 If .boolSuccess Then
+                    ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({IntegerInputForm.intResult} Minutes)"
                     SaveTimer.Interval = TimeSpan.FromMinutes(.intResult).TotalMilliseconds
                     My.Settings.autoSaveMinutes = .intResult
 
@@ -1138,6 +1145,7 @@ Public Class Form1
                 .ShowDialog(Me)
 
                 If .boolSuccess Then
+                    ChangeBalloonTimeIntervalToolStripMenuItem.Text = $"Change Balloon Time Interval ({IntegerInputForm.intResult} Seconds)"
                     My.Settings.balloonNotificationTime = .intResult
                     MsgBox("Done.", MsgBoxStyle.Information, Text)
                 End If
