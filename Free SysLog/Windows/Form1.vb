@@ -388,9 +388,14 @@ Public Class Form1
 
             If alertsList.Count > 0 Then
                 Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
+                Dim RegExObject As Regex
+                Dim strAlertText As String
+                Dim regExGroupCollection As GroupCollection
 
                 For Each alert As AlertsClass In alertsList
-                    If GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
+                    RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
+
+                    If RegExObject.IsMatch(sSyslog) Then
                         If alert.alertType = AlertType.Warning Then
                             ToolTipIcon = ToolTipIcon.Warning
                         ElseIf alert.alertType = AlertType.ErrorMsg Then
@@ -399,7 +404,17 @@ Public Class Form1
                             ToolTipIcon = ToolTipIcon.Info
                         End If
 
-                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText), ToolTipIcon)
+                        strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText)
+
+                        If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                            regExGroupCollection = RegExObject.Match(sSyslog).Groups
+
+                            For index As Integer = 0 To regExGroupCollection.Count - 1
+                                strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
+                            Next
+                        End If
+
+                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", strAlertText, ToolTipIcon)
                     End If
                 Next
             End If
