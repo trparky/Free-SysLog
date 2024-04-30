@@ -72,11 +72,11 @@
                     .AlertType = AddAlert.AlertType
 
                     If .AlertType = AlertType.Warning Then
-                        .SubItems(4).Text = "Warning Message"
+                        .SubItems(4).Text = "Warning"
                     ElseIf .AlertType = AlertType.ErrorMsg Then
-                        .SubItems(4).Text = "Error Message"
+                        .SubItems(4).Text = "Error"
                     ElseIf .AlertType = AlertType.Info Then
-                        .SubItems(4).Text = "Information Message"
+                        .SubItems(4).Text = "Information"
                     ElseIf .AlertType = AlertType.None Then
                         .SubItems(4).Text = "None"
                     End If

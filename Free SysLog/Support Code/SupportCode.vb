@@ -114,11 +114,11 @@ Public Class AlertsClass
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
 
         If alertType = AlertType.Warning Then
-            listViewItem.SubItems.Add("Warning Message")
+            listViewItem.SubItems.Add("Warning")
         ElseIf alertType = AlertType.ErrorMsg Then
-            listViewItem.SubItems.Add("Error Message")
+            listViewItem.SubItems.Add("Error")
         ElseIf alertType = AlertType.Info Then
-            listViewItem.SubItems.Add("Information Message")
+            listViewItem.SubItems.Add("Information")
         ElseIf alertType = AlertType.None Then
             listViewItem.SubItems.Add("None")
         End If

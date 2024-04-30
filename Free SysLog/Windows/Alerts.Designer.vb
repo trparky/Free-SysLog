@@ -102,7 +102,7 @@ Partial Class Alerts
         'AlertTypeColumn
         '
         Me.AlertTypeColumn.Text = "Alert Type"
-        Me.AlertTypeColumn.Width = 165
+        Me.AlertTypeColumn.Width = 90
         '
         'Alerts
         '

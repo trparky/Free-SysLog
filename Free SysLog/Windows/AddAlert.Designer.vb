@@ -114,15 +114,15 @@ Partial Class AddAlert
         'AlertTypeComboBox
         '
         Me.AlertTypeComboBox.FormattingEnabled = True
-        Me.AlertTypeComboBox.Items.AddRange(New Object() {"Warning Message", "Error Message", "Information Message", "None"})
+        Me.AlertTypeComboBox.Items.AddRange(New Object() {"Warning", "Error", "Information", "None"})
         Me.AlertTypeComboBox.Location = New System.Drawing.Point(73, 58)
         Me.AlertTypeComboBox.Name = "AlertTypeComboBox"
-        Me.AlertTypeComboBox.Size = New System.Drawing.Size(121, 21)
+        Me.AlertTypeComboBox.Size = New System.Drawing.Size(79, 21)
         Me.AlertTypeComboBox.TabIndex = 23
         '
         'IconPictureBox
         '
-        Me.IconPictureBox.Location = New System.Drawing.Point(200, 58)
+        Me.IconPictureBox.Location = New System.Drawing.Point(158, 58)
         Me.IconPictureBox.Name = "IconPictureBox"
         Me.IconPictureBox.Size = New System.Drawing.Size(32, 32)
         Me.IconPictureBox.TabIndex = 24
