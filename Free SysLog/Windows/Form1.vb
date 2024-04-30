@@ -1047,7 +1047,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Configure SysLog Server Port", .StartPosition = FormStartPosition.CenterParent, .intMax = 65535, .intMin = 1}
+        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent, .intMax = 65535, .intMin = 1}
             With IntegerInputForm
                 .lblSetting.Text = "Server Port"
                 .TxtSetting.Text = My.Settings.sysLogPort
@@ -1084,7 +1084,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeLogAutosaveIntervalToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Configure Auto Save", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
+        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Log Autosave Interval", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
             With IntegerInputForm
                 .lblSetting.Text = "Auto Save (In Seconds)"
                 .TxtSetting.Text = My.Settings.autoSaveMinutes
@@ -1103,7 +1103,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeBalloonTimeIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeBalloonTimeIntervalToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Balloon Notification Time", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
+        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Balloon Time Interval", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
             With IntegerInputForm
                 .lblSetting.Text = "Balloon Notification Time (In Seconds)"
                 .TxtSetting.Text = My.Settings.balloonNotificationTime
