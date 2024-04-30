@@ -39,9 +39,9 @@ Public Class Form1
         Return MyDataGridViewRow
     End Function
 
-    Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkStartAtUserStartup.Click
+    Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
         Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
-            If ChkStartAtUserStartup.Checked Then
+            If ChkEnableStartAtUserStartup.Checked Then
                 registryKey.SetValue("Free Syslog", $"""{strEXEPath}"" /background")
             Else
                 registryKey.DeleteValue("Free Syslog", False)
@@ -122,10 +122,10 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles ChkAutoSave.Click
-        SaveTimer.Enabled = ChkAutoSave.Checked
-        ChangeAutosaveIntervalToolStripMenuItem.Visible = ChkAutoSave.Checked
-        LblAutoSaved.Visible = ChkAutoSave.Checked
+    Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoSave.Click
+        SaveTimer.Enabled = ChkEnableAutoSave.Checked
+        ChangeLogAutosaveIntervalToolStripMenuItem.Visible = ChkEnableAutoSave.Checked
+        LblAutoSaved.Visible = ChkEnableAutoSave.Checked
     End Sub
 
     Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
@@ -201,15 +201,15 @@ Public Class Form1
         ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
-        ChkRecordIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
-        IgnoredLogsToolStripMenuItem.Visible = ChkRecordIgnoredLogs.Checked
-        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkRecordIgnoredLogs.Checked
-        ChkAutoScroll.Checked = My.Settings.autoScroll
-        ChkAutoSave.Checked = My.Settings.autoSave
-        ChkConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
-        LblAutoSaved.Visible = ChkAutoSave.Checked
+        ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
+        IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
+        ChkEnableAutoScroll.Checked = My.Settings.autoScroll
+        ChkEnableAutoSave.Checked = My.Settings.autoSave
+        ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
+        LblAutoSaved.Visible = ChkEnableAutoSave.Checked
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
-        ChkStartAtUserStartup.Checked = DoesStartupEntryExist()
+        ChkEnableStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
@@ -357,7 +357,7 @@ Public Class Form1
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
-                                   If Not ChkRecordIgnoredLogs.Checked Then
+                                   If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
                                        ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
                                    End If
 
@@ -425,13 +425,13 @@ Public Class Form1
                        UpdateLogCount()
                        BtnSaveLogsToDisk.Enabled = True
 
-                       If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                       If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                    End Sub)
-        ElseIf boolIgnored And ChkRecordIgnoredLogs.Checked Then
+        ElseIf boolIgnored And ChkEnableRecordingOfIgnoredLogs.Checked Then
             SyncLock IgnoredLogsLockObject
                 Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, Logs)
                 IgnoredLogs.Add(NewIgnoredItem)
-                If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ChkAutoScroll.Checked)
+                If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ChkEnableAutoScroll.Checked)
                 Invoke(Sub() ClearIgnoredLogsToolStripMenuItem.Enabled = True)
             End SyncLock
         End If
@@ -465,7 +465,7 @@ Public Class Form1
                 Next
 
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
-                If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
             UpdateLogCount()
@@ -486,8 +486,8 @@ Public Class Form1
         NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
     End Sub
 
-    Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkAutoScroll.Click
-        My.Settings.autoScroll = ChkAutoScroll.Checked
+    Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
+        My.Settings.autoScroll = ChkEnableAutoScroll.Checked
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
@@ -504,7 +504,7 @@ Public Class Form1
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
-                If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
             UpdateLogCount()
@@ -657,7 +657,7 @@ Public Class Form1
         End SyncLock
     End Sub
 
-    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IgnoredWordsAndPhrasesToolStripMenuItem.Click
+    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
         Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
             regexCache.Clear()
@@ -691,11 +691,11 @@ Public Class Form1
         If boolDoneLoading Then My.Settings.windowLocation = Location
     End Sub
 
-    Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles ChkRecordIgnoredLogs.Click
-        My.Settings.recordIgnoredLogs = ChkRecordIgnoredLogs.Checked
-        IgnoredLogsToolStripMenuItem.Visible = ChkRecordIgnoredLogs.Checked
-        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkRecordIgnoredLogs.Checked
-        If Not ChkRecordIgnoredLogs.Checked Then IgnoredLogs.Clear()
+    Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles ChkEnableRecordingOfIgnoredLogs.Click
+        My.Settings.recordIgnoredLogs = ChkEnableRecordingOfIgnoredLogs.Checked
+        IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
+        If Not ChkEnableRecordingOfIgnoredLogs.Checked Then IgnoredLogs.Clear()
     End Sub
 
     Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
@@ -726,7 +726,7 @@ Public Class Form1
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                         Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
-                        If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                        If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                     End SyncLock
 
                     UpdateLogCount()
@@ -750,7 +750,7 @@ Public Class Form1
         End Using
     End Sub
 
-    Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlternatingColorToolStripMenuItem.Click
+    Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAlternatingColorToolStripMenuItem.Click
         Using ColorDialog As New ColorDialog()
             If ColorDialog.ShowDialog() = DialogResult.OK Then
                 My.Settings.searchColor = ColorDialog.Color
@@ -828,7 +828,7 @@ Public Class Form1
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
-                If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
             UpdateLogCount()
@@ -854,8 +854,8 @@ Public Class Form1
         ClearLogsOlderThan(7)
     End Sub
 
-    Private Sub ChkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles ChkConfirmCloseToolStripItem.Click
-        My.Settings.boolConfirmClose = ChkConfirmCloseToolStripItem.Checked
+    Private Sub ChkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles ChkEnableConfirmCloseToolStripItem.Click
+        My.Settings.boolConfirmClose = ChkEnableConfirmCloseToolStripItem.Checked
     End Sub
 
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
@@ -920,7 +920,7 @@ Public Class Form1
             Next
 
             Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
-            If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+            If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
         End SyncLock
 
         UpdateLogCount()
@@ -1111,7 +1111,7 @@ Public Class Form1
         End Using
     End Sub
 
-    Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAutosaveIntervalToolStripMenuItem.Click
+    Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeLogAutosaveIntervalToolStripMenuItem.Click
         Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Configure Auto Save", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
             With IntegerInputForm
                 .lblSetting.Text = "Auto Save (In Seconds)"

@@ -33,11 +33,11 @@ Partial Class Form1
         Me.LblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ChkAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.ChkAutoSave = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChkStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkEnableAutoSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkEnableStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnMoveLogFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
@@ -50,8 +50,8 @@ Partial Class Form1
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChkRecordIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkEnableRecordingOfIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.BtnSearch = New System.Windows.Forms.Button()
@@ -61,8 +61,8 @@ Partial Class Form1
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.ChkConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkEnableConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureAlertsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -82,7 +82,7 @@ Partial Class Form1
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeSyslogServerPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChangeAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeBalloonTimeIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
@@ -166,12 +166,12 @@ Partial Class Form1
         Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
         Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         '
-        'ChkAutoScroll
+        'ChkEnableAutoScroll
         '
-        Me.ChkAutoScroll.CheckOnClick = True
-        Me.ChkAutoScroll.Name = "ChkAutoScroll"
-        Me.ChkAutoScroll.Size = New System.Drawing.Size(339, 22)
-        Me.ChkAutoScroll.Text = "Auto Scroll"
+        Me.ChkEnableAutoScroll.CheckOnClick = True
+        Me.ChkEnableAutoScroll.Name = "ChkEnableAutoScroll"
+        Me.ChkEnableAutoScroll.Size = New System.Drawing.Size(339, 22)
+        Me.ChkEnableAutoScroll.Text = "Enable Auto Scroll"
         '
         'BtnCheckForUpdates
         '
@@ -183,19 +183,19 @@ Partial Class Form1
         '
         Me.SaveTimer.Interval = 300000
         '
-        'ChkAutoSave
+        'ChkEnableAutoSave
         '
-        Me.ChkAutoSave.CheckOnClick = True
-        Me.ChkAutoSave.Name = "ChkAutoSave"
-        Me.ChkAutoSave.Size = New System.Drawing.Size(339, 22)
-        Me.ChkAutoSave.Text = "Auto Save"
+        Me.ChkEnableAutoSave.CheckOnClick = True
+        Me.ChkEnableAutoSave.Name = "ChkEnableAutoSave"
+        Me.ChkEnableAutoSave.Size = New System.Drawing.Size(339, 22)
+        Me.ChkEnableAutoSave.Text = "Enable Auto Save"
         '
-        'ChkStartAtUserStartup
+        'ChkEnableStartAtUserStartup
         '
-        Me.ChkStartAtUserStartup.CheckOnClick = True
-        Me.ChkStartAtUserStartup.Name = "ChkStartAtUserStartup"
-        Me.ChkStartAtUserStartup.Size = New System.Drawing.Size(339, 22)
-        Me.ChkStartAtUserStartup.Text = "Start at Startup"
+        Me.ChkEnableStartAtUserStartup.CheckOnClick = True
+        Me.ChkEnableStartAtUserStartup.Name = "ChkEnableStartAtUserStartup"
+        Me.ChkEnableStartAtUserStartup.Size = New System.Drawing.Size(339, 22)
+        Me.ChkEnableStartAtUserStartup.Text = "Enable Start at Startup"
         '
         'BtnMoveLogFile
         '
@@ -269,7 +269,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChkAutoSave, Me.ChkAutoScroll, Me.ChangeAutosaveIntervalToolStripMenuItem, Me.ChangeBalloonTimeIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.OpenWindowsExplorerToAppConfigFile, Me.BtnMoveLogFile, Me.ChkRecordIgnoredLogs, Me.ChkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeBalloonTimeIntervalToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -280,18 +280,18 @@ Partial Class Form1
         Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ConfigureReplacementsToolStripMenuItem.Text = "Configure Replacements"
         '
-        'IgnoredWordsAndPhrasesToolStripMenuItem
+        'ConfigureIgnoredWordsAndPhrasesToolStripMenuItem
         '
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Name = "IgnoredWordsAndPhrasesToolStripMenuItem"
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
-        Me.IgnoredWordsAndPhrasesToolStripMenuItem.Text = "Ignored Words and Phrases"
+        Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Name = "ConfigureIgnoredWordsAndPhrasesToolStripMenuItem"
+        Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Text = "Configure Ignored Words and Phrases"
         '
-        'ChkRecordIgnoredLogs
+        'ChkEnableRecordingOfIgnoredLogs
         '
-        Me.ChkRecordIgnoredLogs.CheckOnClick = True
-        Me.ChkRecordIgnoredLogs.Name = "ChkRecordIgnoredLogs"
-        Me.ChkRecordIgnoredLogs.Size = New System.Drawing.Size(339, 22)
-        Me.ChkRecordIgnoredLogs.Text = "Record Ignored Logs"
+        Me.ChkEnableRecordingOfIgnoredLogs.CheckOnClick = True
+        Me.ChkEnableRecordingOfIgnoredLogs.Name = "ChkEnableRecordingOfIgnoredLogs"
+        Me.ChkEnableRecordingOfIgnoredLogs.Size = New System.Drawing.Size(339, 22)
+        Me.ChkEnableRecordingOfIgnoredLogs.Text = "Enable Recording of Ignored Logs"
         '
         'LblSearchLabel
         '
@@ -376,11 +376,11 @@ Partial Class Form1
         Me.ConfigureAlertsToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ConfigureAlertsToolStripMenuItem.Text = "Configure Alerts"
         '
-        'ConfigureAlternatingColorToolStripMenuItem
+        'ChangeAlternatingColorToolStripMenuItem
         '
-        Me.ConfigureAlternatingColorToolStripMenuItem.Name = "ConfigureAlternatingColorToolStripMenuItem"
-        Me.ConfigureAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
-        Me.ConfigureAlternatingColorToolStripMenuItem.Text = "Configure Alternating Color"
+        Me.ChangeAlternatingColorToolStripMenuItem.Name = "ChangeAlternatingColorToolStripMenuItem"
+        Me.ChangeAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.ChangeAlternatingColorToolStripMenuItem.Text = "Change Alternating Color"
         '
         'AboutToolStripMenuItem
         '
@@ -436,12 +436,12 @@ Partial Class Form1
         Me.OlderThanAWeekToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
         Me.OlderThanAWeekToolStripMenuItem.Text = "Older than a week"
         '
-        'ChkConfirmCloseToolStripItem
+        'ChkEnableConfirmCloseToolStripItem
         '
-        Me.ChkConfirmCloseToolStripItem.CheckOnClick = True
-        Me.ChkConfirmCloseToolStripItem.Name = "ChkConfirmCloseToolStripItem"
-        Me.ChkConfirmCloseToolStripItem.Size = New System.Drawing.Size(339, 22)
-        Me.ChkConfirmCloseToolStripItem.Text = "Confirm Close"
+        Me.ChkEnableConfirmCloseToolStripItem.CheckOnClick = True
+        Me.ChkEnableConfirmCloseToolStripItem.Name = "ChkEnableConfirmCloseToolStripItem"
+        Me.ChkEnableConfirmCloseToolStripItem.Size = New System.Drawing.Size(339, 22)
+        Me.ChkEnableConfirmCloseToolStripItem.Text = "Enable Confirm Close"
         '
         'LogsMenu
         '
@@ -491,11 +491,11 @@ Partial Class Form1
         Me.ChangeSyslogServerPortToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ChangeSyslogServerPortToolStripMenuItem.Text = "Change Syslog Server Port"
         '
-        'ChangeAutosaveIntervalToolStripMenuItem
+        'ChangeLogAutosaveIntervalToolStripMenuItem
         '
-        Me.ChangeAutosaveIntervalToolStripMenuItem.Name = "ChangeAutosaveIntervalToolStripMenuItem"
-        Me.ChangeAutosaveIntervalToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
-        Me.ChangeAutosaveIntervalToolStripMenuItem.Text = "Change Autosave Interval"
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Name = "ChangeLogAutosaveIntervalToolStripMenuItem"
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Text = "Change Log Autosave Interval"
         '
         'OpenWindowsExplorerToAppConfigFile
         '
@@ -540,14 +540,14 @@ Partial Class Form1
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
-    Friend WithEvents ChkAutoScroll As ToolStripMenuItem
+    Friend WithEvents ChkEnableAutoScroll As ToolStripMenuItem
     Friend WithEvents BtnClearLog As ToolStripMenuItem
     Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
     Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem
     Friend WithEvents SaveTimer As Timer
-    Friend WithEvents ChkAutoSave As ToolStripMenuItem
+    Friend WithEvents ChkEnableAutoSave As ToolStripMenuItem
     Friend WithEvents LblAutoSaved As ToolStripStatusLabel
-    Friend WithEvents ChkStartAtUserStartup As ToolStripMenuItem
+    Friend WithEvents ChkEnableStartAtUserStartup As ToolStripMenuItem
     Friend WithEvents LblLogFileSize As ToolStripStatusLabel
     Friend WithEvents BtnMoveLogFile As ToolStripMenuItem
     Friend WithEvents ToolTip As ToolTip
@@ -558,12 +558,12 @@ Partial Class Form1
     Friend WithEvents LblSearchLabel As Label
     Friend WithEvents TxtSearchTerms As TextBox
     Friend WithEvents BtnSearch As Button
-    Friend WithEvents IgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ConfigureIgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClearIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents IgnoredLogsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ChkRecordIgnoredLogs As ToolStripMenuItem
+    Friend WithEvents ChkEnableRecordingOfIgnoredLogs As ToolStripMenuItem
     Friend WithEvents BtnClearAllLogs As ToolStripMenuItem
     Friend WithEvents LogsOlderThanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ZerooutIgnoredLogsCounterToolStripMenuItem As ToolStripMenuItem
@@ -575,7 +575,7 @@ Partial Class Form1
     Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
-    Friend WithEvents ConfigureAlternatingColorToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChangeAlternatingColorToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportExportSettingsToolStripMenuItem As ToolStripMenuItem
@@ -587,7 +587,7 @@ Partial Class Form1
     Friend WithEvents OlderThan3DaysToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OlderThanAWeekToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NotifyIcon As NotifyIcon
-    Friend WithEvents ChkConfirmCloseToolStripItem As ToolStripMenuItem
+    Friend WithEvents ChkEnableConfirmCloseToolStripItem As ToolStripMenuItem
     Friend WithEvents LogsMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
@@ -598,6 +598,6 @@ Partial Class Form1
     Friend WithEvents OpenWindowsExplorerToAppConfigFile As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeSyslogServerPortToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ChangeAutosaveIntervalToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChangeLogAutosaveIntervalToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeBalloonTimeIntervalToolStripMenuItem As ToolStripMenuItem
 End Class
