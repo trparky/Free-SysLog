@@ -95,10 +95,10 @@
 
                 With AlertsListViewItem
                     .SubItems.Add(If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText))
-                    .SubItems.Add(AddIgnored.boolRegex.ToString)
-                    .SubItems.Add(AddIgnored.boolCaseSensitive.ToString)
-                    .BoolRegex = AddIgnored.boolRegex
-                    .BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                    .SubItems.Add(AddAlert.boolRegex.ToString)
+                    .SubItems.Add(AddAlert.boolCaseSensitive.ToString)
+                    .BoolRegex = AddAlert.boolRegex
+                    .BoolCaseSensitive = AddAlert.boolCaseSensitive
                 End With
 
                 AlertsListView.Items.Add(AlertsListViewItem)
