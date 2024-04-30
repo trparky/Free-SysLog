@@ -27,6 +27,7 @@ Partial Class IntegerInputForm
         Me.BtnUp = New System.Windows.Forms.Button()
         Me.BtnDown = New System.Windows.Forms.Button()
         Me.BtnSave = New System.Windows.Forms.Button()
+        Me.BtnCancel = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lblSetting
@@ -67,22 +68,33 @@ Partial Class IntegerInputForm
         '
         Me.BtnSave.Location = New System.Drawing.Point(15, 52)
         Me.BtnSave.Name = "BtnSave"
-        Me.BtnSave.Size = New System.Drawing.Size(186, 23)
+        Me.BtnSave.Size = New System.Drawing.Size(90, 23)
         Me.BtnSave.TabIndex = 4
         Me.BtnSave.Text = "Save"
         Me.BtnSave.UseVisualStyleBackColor = True
+        '
+        'BtnCancel
+        '
+        Me.BtnCancel.Location = New System.Drawing.Point(111, 52)
+        Me.BtnCancel.Name = "BtnCancel"
+        Me.BtnCancel.Size = New System.Drawing.Size(90, 23)
+        Me.BtnCancel.TabIndex = 5
+        Me.BtnCancel.Text = "Cancel"
+        Me.BtnCancel.UseVisualStyleBackColor = True
         '
         'IntegerInputForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(243, 84)
+        Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.BtnSave)
         Me.Controls.Add(Me.BtnDown)
         Me.Controls.Add(Me.BtnUp)
         Me.Controls.Add(Me.TxtSetting)
         Me.Controls.Add(Me.lblSetting)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "IntegerInputForm"
@@ -97,4 +109,5 @@ Partial Class IntegerInputForm
     Friend WithEvents BtnUp As Button
     Friend WithEvents BtnDown As Button
     Friend WithEvents BtnSave As Button
+    Friend WithEvents BtnCancel As Button
 End Class

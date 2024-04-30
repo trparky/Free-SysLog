@@ -31,4 +31,12 @@
             TxtSetting.Text = myInteger.ToString
         End If
     End Sub
+
+    Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
+        Close()
+    End Sub
+
+    Private Sub IntegerInputForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyData = Keys.Escape Then Close()
+    End Sub
 End Class
