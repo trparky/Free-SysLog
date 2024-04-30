@@ -166,6 +166,12 @@
     <Compile Include="Windows\Ignored Words and Phrases.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Windows\Integer Input Form.Designer.vb">
+      <DependentUpon>Integer Input Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Integer Input Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Log Viewer.Designer.vb">
       <DependentUpon>Log Viewer.vb</DependentUpon>
     </Compile>
@@ -228,6 +234,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Ignored Words and Phrases.resx">
       <DependentUpon>Ignored Words and Phrases.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Integer Input Form.resx">
+      <DependentUpon>Integer Input Form.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Log Viewer.resx">
       <DependentUpon>Log Viewer.vb</DependentUpon>

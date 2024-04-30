@@ -124,21 +124,13 @@ Public Class Form1
 
     Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles ChkAutoSave.Click
         SaveTimer.Enabled = ChkAutoSave.Checked
-        AutoSave.Visible = ChkAutoSave.Checked
-        LblAutoSaveLabel.Visible = ChkAutoSave.Checked
+        ChangeAutosaveIntervalToolStripMenuItem.Visible = ChkAutoSave.Checked
         LblAutoSaved.Visible = ChkAutoSave.Checked
     End Sub
 
     Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
         WriteLogsToDisk()
         LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
-    End Sub
-
-    Private Sub AutoSave_ValueChanged(sender As Object, e As EventArgs) Handles AutoSave.ValueChanged
-        If boolDoneLoading Then
-            SaveTimer.Interval = TimeSpan.FromMinutes(AutoSave.Value).TotalMilliseconds
-            My.Settings.autoSaveMinutes = AutoSave.Value
-        End If
     End Sub
 
     Private Function FileSizeToHumanSize(size As Long, Optional roundToNearestWholeNumber As Boolean = False) As String
@@ -215,14 +207,10 @@ Public Class Form1
         ChkAutoScroll.Checked = My.Settings.autoScroll
         ChkAutoSave.Checked = My.Settings.autoSave
         ChkConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
-        AutoSave.Value = My.Settings.autoSaveMinutes
-        AutoSave.Visible = ChkAutoSave.Checked
-        LblAutoSaveLabel.Visible = ChkAutoSave.Checked
         LblAutoSaved.Visible = ChkAutoSave.Checked
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
         ChkStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
-        TxtSysLogServerPort.Text = My.Settings.sysLogPort.ToString
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
         NotifyIcon.Icon = Icon
@@ -559,36 +547,6 @@ Public Class Form1
             mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
-    End Sub
-
-    Private Sub TxtSysLogServerPort_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtSysLogServerPort.KeyUp
-        If e.KeyCode = Keys.Enter Then
-            Dim newPortNumber As Integer
-
-            If Integer.TryParse(TxtSysLogServerPort.Text, newPortNumber) Then
-                If newPortNumber < 1 Or newPortNumber > 65535 Then
-                    MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
-                Else
-                    If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-
-                    My.Settings.sysLogPort = newPortNumber
-                    My.Settings.Save()
-
-                    If serverThread.IsAlive Then serverThread.Abort()
-
-                    serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
-                    serverThread.Start()
-
-                    SyncLock dataGridLockObject
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
-                        If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
-                        UpdateLogCount()
-                    End SyncLock
-                End If
-            Else
-                MsgBox("You must input a valid integer.", MsgBoxStyle.Critical, Text)
-            End If
-        End If
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
@@ -1053,10 +1011,6 @@ Public Class Form1
         End Using
     End Sub
 
-    Private Sub BalloonNotificationTime_ValueChanged(sender As Object, e As EventArgs) Handles BalloonNotificationTime.ValueChanged
-        If boolDoneLoading Then My.Settings.balloonNotificationTime = BalloonNotificationTime.Value
-    End Sub
-
     Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
         MsgBox("Modifying the application XML configuration file by hand may cause the program to malfunction. Caution is advised.", MsgBoxStyle.Information, Text)
         SelectFileInWindowsExplorer(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath)
@@ -1120,6 +1074,75 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text))
         End Try
+    End Sub
+
+    Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
+        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Configure SysLog Server Port", .StartPosition = FormStartPosition.CenterParent, .intMax = 65535, .intMin = 1}
+            With IntegerInputForm
+                .lblSetting.Text = "Server Port"
+                .TxtSetting.Text = My.Settings.sysLogPort
+
+                .ShowDialog(Me)
+
+                If .boolSuccess Then
+                    If .intResult < 1 Or .intResult > 65535 Then
+                        MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
+                    Else
+                        If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+
+                        My.Settings.sysLogPort = .intResult
+                        My.Settings.Save()
+
+                        If serverThread.IsAlive Then serverThread.Abort()
+
+                        serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+                        serverThread.Start()
+
+                        SyncLock dataGridLockObject
+                            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
+                            If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                            UpdateLogCount()
+                        End SyncLock
+
+                        MsgBox("Done.", MsgBoxStyle.Information, Text)
+                    End If
+                End If
+            End With
+        End Using
+    End Sub
+
+    Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAutosaveIntervalToolStripMenuItem.Click
+        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Configure Auto Save", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
+            With IntegerInputForm
+                .lblSetting.Text = "Auto Save (In Seconds)"
+                .TxtSetting.Text = My.Settings.autoSaveMinutes
+
+                .ShowDialog(Me)
+
+                If .boolSuccess Then
+                    SaveTimer.Interval = TimeSpan.FromMinutes(.intResult).TotalMilliseconds
+                    My.Settings.autoSaveMinutes = .intResult
+
+                    MsgBox("Done.", MsgBoxStyle.Information, Text)
+                End If
+            End With
+        End Using
+    End Sub
+
+    Private Sub ChangeBalloonTimeIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeBalloonTimeIntervalToolStripMenuItem.Click
+        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Balloon Notification Time", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
+            With IntegerInputForm
+                .lblSetting.Text = "Balloon Notification Time (In Seconds)"
+                .TxtSetting.Text = My.Settings.balloonNotificationTime
+
+                .ShowDialog(Me)
+
+                If .boolSuccess Then
+                    My.Settings.balloonNotificationTime = .intResult
+                    MsgBox("Done.", MsgBoxStyle.Information, Text)
+                End If
+            End With
+        End Using
     End Sub
 
     Private Async Sub RestoreWindowAfterReceivingRestoreCommand()

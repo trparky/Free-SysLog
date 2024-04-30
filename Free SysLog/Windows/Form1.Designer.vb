@@ -37,12 +37,8 @@ Partial Class Form1
         Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ChkAutoSave = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LblAutoSaveLabel = New System.Windows.Forms.Label()
-        Me.AutoSave = New System.Windows.Forms.NumericUpDown()
         Me.ChkStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnMoveLogFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LblSyslogServerPortLabel = New System.Windows.Forms.Label()
-        Me.TxtSysLogServerPort = New System.Windows.Forms.TextBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
@@ -85,11 +81,10 @@ Partial Class Form1
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.BalloonNotificationTime = New System.Windows.Forms.NumericUpDown()
-        Me.lblNotificationTime = New System.Windows.Forms.Label()
+        Me.ChangeSyslogServerPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeBalloonTimeIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
-        CType(Me.AutoSave, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.BalloonNotificationTime, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
@@ -98,7 +93,7 @@ Partial Class Form1
         'CreateAlertToolStripMenuItem
         '
         Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
-        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(100, 22)
+        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
         'BtnOpenLogLocation
@@ -195,25 +190,6 @@ Partial Class Form1
         Me.ChkAutoSave.Size = New System.Drawing.Size(339, 22)
         Me.ChkAutoSave.Text = "Auto Save"
         '
-        'LblAutoSaveLabel
-        '
-        Me.LblAutoSaveLabel.AutoSize = True
-        Me.LblAutoSaveLabel.Location = New System.Drawing.Point(202, 31)
-        Me.LblAutoSaveLabel.Name = "LblAutoSaveLabel"
-        Me.LblAutoSaveLabel.Size = New System.Drawing.Size(143, 13)
-        Me.LblAutoSaveLabel.TabIndex = 7
-        Me.LblAutoSaveLabel.Text = "Auto save every (in minutes):"
-        '
-        'AutoSave
-        '
-        Me.AutoSave.Location = New System.Drawing.Point(351, 29)
-        Me.AutoSave.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
-        Me.AutoSave.Name = "AutoSave"
-        Me.AutoSave.Size = New System.Drawing.Size(40, 20)
-        Me.AutoSave.TabIndex = 8
-        Me.AutoSave.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.AutoSave.Value = New Decimal(New Integer() {5, 0, 0, 0})
-        '
         'ChkStartAtUserStartup
         '
         Me.ChkStartAtUserStartup.CheckOnClick = True
@@ -227,29 +203,11 @@ Partial Class Form1
         Me.BtnMoveLogFile.Size = New System.Drawing.Size(339, 22)
         Me.BtnMoveLogFile.Text = "Move Log File"
         '
-        'LblSyslogServerPortLabel
-        '
-        Me.LblSyslogServerPortLabel.AutoSize = True
-        Me.LblSyslogServerPortLabel.Location = New System.Drawing.Point(12, 31)
-        Me.LblSyslogServerPortLabel.Name = "LblSyslogServerPortLabel"
-        Me.LblSyslogServerPortLabel.Size = New System.Drawing.Size(97, 13)
-        Me.LblSyslogServerPortLabel.TabIndex = 10
-        Me.LblSyslogServerPortLabel.Text = "Syslog Server Port:"
-        '
-        'TxtSysLogServerPort
-        '
-        Me.TxtSysLogServerPort.Location = New System.Drawing.Point(115, 29)
-        Me.TxtSysLogServerPort.Name = "TxtSysLogServerPort"
-        Me.TxtSysLogServerPort.Size = New System.Drawing.Size(40, 20)
-        Me.TxtSysLogServerPort.TabIndex = 11
-        Me.TxtSysLogServerPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.ToolTip.SetToolTip(Me.TxtSysLogServerPort, "Default Port: 514")
-        '
         'ChkRegExSearch
         '
         Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ChkRegExSearch.AutoSize = True
-        Me.ChkRegExSearch.Location = New System.Drawing.Point(934, 31)
+        Me.ChkRegExSearch.Location = New System.Drawing.Point(239, 31)
         Me.ChkRegExSearch.Name = "ChkRegExSearch"
         Me.ChkRegExSearch.Size = New System.Drawing.Size(63, 17)
         Me.ChkRegExSearch.TabIndex = 16
@@ -311,7 +269,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChkAutoSave, Me.ChkAutoScroll, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.OpenWindowsExplorerToAppConfigFile, Me.BtnMoveLogFile, Me.ChkRecordIgnoredLogs, Me.ChkStartAtUserStartup})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChkAutoSave, Me.ChkAutoScroll, Me.ChangeAutosaveIntervalToolStripMenuItem, Me.ChangeBalloonTimeIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureAlternatingColorToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkConfirmCloseToolStripItem, Me.IgnoredWordsAndPhrasesToolStripMenuItem, Me.ImportExportSettingsToolStripMenuItem, Me.OpenWindowsExplorerToAppConfigFile, Me.BtnMoveLogFile, Me.ChkRecordIgnoredLogs, Me.ChkStartAtUserStartup})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -339,7 +297,7 @@ Partial Class Form1
         '
         Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LblSearchLabel.AutoSize = True
-        Me.LblSearchLabel.Location = New System.Drawing.Point(707, 31)
+        Me.LblSearchLabel.Location = New System.Drawing.Point(12, 31)
         Me.LblSearchLabel.Name = "LblSearchLabel"
         Me.LblSearchLabel.Size = New System.Drawing.Size(67, 13)
         Me.LblSearchLabel.TabIndex = 13
@@ -348,7 +306,7 @@ Partial Class Form1
         'TxtSearchTerms
         '
         Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtSearchTerms.Location = New System.Drawing.Point(780, 28)
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(85, 28)
         Me.TxtSearchTerms.Name = "TxtSearchTerms"
         Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
         Me.TxtSearchTerms.TabIndex = 14
@@ -356,7 +314,7 @@ Partial Class Form1
         'BtnSearch
         '
         Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnSearch.Location = New System.Drawing.Point(1111, 27)
+        Me.BtnSearch.Location = New System.Drawing.Point(416, 27)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
         Me.BtnSearch.TabIndex = 15
@@ -369,7 +327,7 @@ Partial Class Form1
         Me.ChkCaseInsensitiveSearch.AutoSize = True
         Me.ChkCaseInsensitiveSearch.Checked = True
         Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(1003, 31)
+        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(308, 31)
         Me.ChkCaseInsensitiveSearch.Name = "ChkCaseInsensitiveSearch"
         Me.ChkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
         Me.ChkCaseInsensitiveSearch.TabIndex = 17
@@ -489,7 +447,7 @@ Partial Class Form1
         '
         Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
-        Me.LogsMenu.Size = New System.Drawing.Size(189, 92)
+        Me.LogsMenu.Size = New System.Drawing.Size(189, 114)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -527,24 +485,17 @@ Partial Class Form1
         Me.StopServerStripMenuItem.Size = New System.Drawing.Size(171, 22)
         Me.StopServerStripMenuItem.Text = "Stop Server"
         '
-        'BalloonNotificationTime
+        'ChangeSyslogServerPortToolStripMenuItem
         '
-        Me.BalloonNotificationTime.Location = New System.Drawing.Point(638, 29)
-        Me.BalloonNotificationTime.Maximum = New Decimal(New Integer() {20, 0, 0, 0})
-        Me.BalloonNotificationTime.Name = "BalloonNotificationTime"
-        Me.BalloonNotificationTime.Size = New System.Drawing.Size(40, 20)
-        Me.BalloonNotificationTime.TabIndex = 20
-        Me.BalloonNotificationTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.BalloonNotificationTime.Value = New Decimal(New Integer() {10, 0, 0, 0})
+        Me.ChangeSyslogServerPortToolStripMenuItem.Name = "ChangeSyslogServerPortToolStripMenuItem"
+        Me.ChangeSyslogServerPortToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.ChangeSyslogServerPortToolStripMenuItem.Text = "Change Syslog Server Port"
         '
-        'lblNotificationTime
+        'ChangeAutosaveIntervalToolStripMenuItem
         '
-        Me.lblNotificationTime.AutoSize = True
-        Me.lblNotificationTime.Location = New System.Drawing.Point(442, 31)
-        Me.lblNotificationTime.Name = "lblNotificationTime"
-        Me.lblNotificationTime.Size = New System.Drawing.Size(190, 13)
-        Me.lblNotificationTime.TabIndex = 19
-        Me.lblNotificationTime.Text = "Balloon Notification Time (In Seconds):"
+        Me.ChangeAutosaveIntervalToolStripMenuItem.Name = "ChangeAutosaveIntervalToolStripMenuItem"
+        Me.ChangeAutosaveIntervalToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.ChangeAutosaveIntervalToolStripMenuItem.Text = "Change Autosave Interval"
         '
         'OpenWindowsExplorerToAppConfigFile
         '
@@ -552,33 +503,31 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(339, 22)
         Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
         '
+        'ChangeBalloonTimeIntervalToolStripMenuItem
+        '
+        Me.ChangeBalloonTimeIntervalToolStripMenuItem.Name = "ChangeBalloonTimeIntervalToolStripMenuItem"
+        Me.ChangeBalloonTimeIntervalToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.ChangeBalloonTimeIntervalToolStripMenuItem.Text = "Change Balloon Time Interval"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
-        Me.Controls.Add(Me.BalloonNotificationTime)
-        Me.Controls.Add(Me.lblNotificationTime)
         Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
         Me.Controls.Add(Me.ChkRegExSearch)
         Me.Controls.Add(Me.BtnSearch)
         Me.Controls.Add(Me.TxtSearchTerms)
         Me.Controls.Add(Me.LblSearchLabel)
-        Me.Controls.Add(Me.AutoSave)
-        Me.Controls.Add(Me.LblAutoSaveLabel)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip)
-        Me.Controls.Add(Me.TxtSysLogServerPort)
-        Me.Controls.Add(Me.LblSyslogServerPortLabel)
         Me.MainMenuStrip = Me.MenuStrip
         Me.MinimumSize = New System.Drawing.Size(1191, 485)
         Me.Name = "Form1"
         Me.Text = "Free SysLog Server"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
-        CType(Me.AutoSave, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.BalloonNotificationTime, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
@@ -597,14 +546,10 @@ Partial Class Form1
     Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem
     Friend WithEvents SaveTimer As Timer
     Friend WithEvents ChkAutoSave As ToolStripMenuItem
-    Friend WithEvents LblAutoSaveLabel As Label
-    Friend WithEvents AutoSave As NumericUpDown
     Friend WithEvents LblAutoSaved As ToolStripStatusLabel
     Friend WithEvents ChkStartAtUserStartup As ToolStripMenuItem
     Friend WithEvents LblLogFileSize As ToolStripStatusLabel
     Friend WithEvents BtnMoveLogFile As ToolStripMenuItem
-    Friend WithEvents LblSyslogServerPortLabel As Label
-    Friend WithEvents TxtSysLogServerPort As TextBox
     Friend WithEvents ToolTip As ToolTip
     Friend WithEvents MenuStrip As MenuStrip
     Friend WithEvents MainMenuToolStripMenuItem As ToolStripMenuItem
@@ -650,8 +595,9 @@ Partial Class Form1
     Friend WithEvents ExportsLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DonationStripMenuItem As ToolStripMenuItem
     Friend WithEvents StopServerStripMenuItem As ToolStripMenuItem
-    Friend WithEvents BalloonNotificationTime As NumericUpDown
-    Friend WithEvents lblNotificationTime As Label
     Friend WithEvents OpenWindowsExplorerToAppConfigFile As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChangeSyslogServerPortToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChangeAutosaveIntervalToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChangeBalloonTimeIntervalToolStripMenuItem As ToolStripMenuItem
 End Class
