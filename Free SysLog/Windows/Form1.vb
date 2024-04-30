@@ -1046,40 +1046,6 @@ Public Class Form1
         End Using
     End Sub
 
-#Region "-- SysLog Server Code --"
-    Sub SysLogThread()
-        Try
-            Dim ipEndPoint As New IPEndPoint(IPAddress.Any, 0)
-
-            Using udpServer As New UdpClient(My.Settings.sysLogPort)
-                Dim strReceivedData, strSourceIP As String
-                Dim byteReceivedData() As Byte
-                Dim boolDoServerLoop As Boolean = True
-
-                While boolDoServerLoop
-                    byteReceivedData = udpServer.Receive(ipEndPoint)
-                    strReceivedData = Encoding.UTF8.GetString(byteReceivedData)
-                    strSourceIP = ipEndPoint.Address.ToString
-
-                    If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
-                        Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
-                    ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
-                        boolDoServerLoop = False
-                    Else
-                        ProcessIncomingLog(strReceivedData, strSourceIP)
-                    End If
-
-                    strReceivedData = Nothing
-                    strSourceIP = Nothing
-                End While
-            End Using
-        Catch ex As Threading.ThreadAbortException
-            ' Does nothing
-        Catch e As Exception
-            Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text))
-        End Try
-    End Sub
-
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
         Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Configure SysLog Server Port", .StartPosition = FormStartPosition.CenterParent, .intMax = 65535, .intMin = 1}
             With IntegerInputForm
@@ -1151,6 +1117,40 @@ Public Class Form1
                 End If
             End With
         End Using
+    End Sub
+
+#Region "-- SysLog Server Code --"
+    Sub SysLogThread()
+        Try
+            Dim ipEndPoint As New IPEndPoint(IPAddress.Any, 0)
+
+            Using udpServer As New UdpClient(My.Settings.sysLogPort)
+                Dim strReceivedData, strSourceIP As String
+                Dim byteReceivedData() As Byte
+                Dim boolDoServerLoop As Boolean = True
+
+                While boolDoServerLoop
+                    byteReceivedData = udpServer.Receive(ipEndPoint)
+                    strReceivedData = Encoding.UTF8.GetString(byteReceivedData)
+                    strSourceIP = ipEndPoint.Address.ToString
+
+                    If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
+                        Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
+                    ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
+                        boolDoServerLoop = False
+                    Else
+                        ProcessIncomingLog(strReceivedData, strSourceIP)
+                    End If
+
+                    strReceivedData = Nothing
+                    strSourceIP = Nothing
+                End While
+            End Using
+        Catch ex As Threading.ThreadAbortException
+            ' Does nothing
+        Catch e As Exception
+            Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text))
+        End Try
     End Sub
 
     Private Async Sub RestoreWindowAfterReceivingRestoreCommand()
