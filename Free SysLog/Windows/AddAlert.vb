@@ -4,6 +4,8 @@
     Public boolSuccess As Boolean = False
     Public boolEditMode As Boolean = False
     Public AlertType As AlertType
+    Private boolChanged As Boolean = False
+    Private boolDoneLoading As Boolean = False
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
         TxtAlertText.Text = TxtAlertText.Text.Trim
@@ -57,6 +59,8 @@
             ChkCaseSensitive.Checked = boolCaseSensitive
             BtnAdd.Text = "Save"
         End If
+
+        boolDoneLoading = True
     End Sub
 
     Private Sub Add_Alert_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
@@ -65,5 +69,36 @@
 
     Private Sub BtnAdd_KeyUp(sender As Object, e As KeyEventArgs) Handles BtnAdd.KeyUp
         BtnAdd.PerformClick()
+    End Sub
+
+    Private Sub TxtAlertText_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtAlertText.KeyUp
+        boolChanged = True
+    End Sub
+
+    Private Sub TxtLogText_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtLogText.KeyUp
+        boolChanged = True
+    End Sub
+
+    Private Sub AlertTypeComboBox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles AlertTypeComboBox.SelectedIndexChanged
+        If boolDoneLoading Then boolChanged = True
+    End Sub
+
+    Private Sub AddAlert_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If boolChanged Then
+            If MsgBox("You have changed some data on this window, do you want to save it before closing?", MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton1 + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
+                BtnAdd.PerformClick()
+            Else
+                boolChanged = False
+                Close()
+            End If
+        End If
+    End Sub
+
+    Private Sub ChkCaseSensitive_Click(sender As Object, e As EventArgs) Handles ChkCaseSensitive.Click
+        boolChanged = True
+    End Sub
+
+    Private Sub ChkRegex_Click(sender As Object, e As EventArgs) Handles ChkRegex.Click
+        boolChanged = True
     End Sub
 End Class

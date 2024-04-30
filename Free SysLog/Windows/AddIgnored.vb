@@ -3,6 +3,7 @@
     Public strIgnored As String
     Public boolSuccess As Boolean = False
     Public boolEditMode As Boolean = False
+    Private boolChanged As Boolean = False
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
         If Not ChkRegex.Checked Then
@@ -35,5 +36,28 @@
 
     Private Sub AddReplacement_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(TxtIgnored.Text) Then BtnAdd.PerformClick()
+    End Sub
+
+    Private Sub TxtIgnored_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtIgnored.KeyUp
+        boolChanged = True
+    End Sub
+
+    Private Sub ChkCaseSensitive_Click(sender As Object, e As EventArgs) Handles ChkCaseSensitive.Click
+        boolChanged = True
+    End Sub
+
+    Private Sub ChkRegex_Click(sender As Object, e As EventArgs) Handles ChkRegex.Click
+        boolChanged = True
+    End Sub
+
+    Private Sub AddIgnored_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If boolChanged Then
+            If MsgBox("You have changed some data on this window, do you want to save it before closing?", MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton1 + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
+                BtnAdd.PerformClick()
+            Else
+                boolChanged = False
+                Close()
+            End If
+        End If
     End Sub
 End Class
