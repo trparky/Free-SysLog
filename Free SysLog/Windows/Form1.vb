@@ -385,44 +385,45 @@ Public Class Form1
             End If
 
             sSyslog = ProcessReplacements(sSyslog)
-
-            If alertsList.Count > 0 Then
-                Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
-                Dim RegExObject As Regex
-                Dim strAlertText As String
-                Dim regExGroupCollection As GroupCollection
-
-                For Each alert As AlertsClass In alertsList
-                    RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
-
-                    If RegExObject.IsMatch(sSyslog) Then
-                        If alert.alertType = AlertType.Warning Then
-                            ToolTipIcon = ToolTipIcon.Warning
-                        ElseIf alert.alertType = AlertType.ErrorMsg Then
-                            ToolTipIcon = ToolTipIcon.Error
-                        ElseIf alert.alertType = AlertType.Info Then
-                            ToolTipIcon = ToolTipIcon.Info
-                        End If
-
-                        strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText)
-
-                        If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
-                            regExGroupCollection = RegExObject.Match(sSyslog).Groups
-
-                            For index As Integer = 0 To regExGroupCollection.Count - 1
-                                strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
-                            Next
-                        End If
-
-                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", strAlertText, ToolTipIcon)
-                    End If
-                Next
-            End If
+            If alertsList.Count > 0 Then ProcessAlerts(sSyslog)
 
             AddToLogList(sFromIp, sSyslog, boolIgnored)
         Catch ex As Exception
             AddToLogList("local", $"{ex.Message} -- {ex.StackTrace}", False)
         End Try
+    End Sub
+
+    Private Sub ProcessAlerts(sSyslog As String)
+        Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
+        Dim RegExObject As Regex
+        Dim strAlertText As String
+        Dim regExGroupCollection As GroupCollection
+
+        For Each alert As AlertsClass In alertsList
+            RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
+
+            If RegExObject.IsMatch(sSyslog) Then
+                If alert.alertType = AlertType.Warning Then
+                    ToolTipIcon = ToolTipIcon.Warning
+                ElseIf alert.alertType = AlertType.ErrorMsg Then
+                    ToolTipIcon = ToolTipIcon.Error
+                ElseIf alert.alertType = AlertType.Info Then
+                    ToolTipIcon = ToolTipIcon.Info
+                End If
+
+                strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText)
+
+                If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                    regExGroupCollection = RegExObject.Match(sSyslog).Groups
+
+                    For index As Integer = 0 To regExGroupCollection.Count - 1
+                        strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
+                    Next
+                End If
+
+                NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", strAlertText, ToolTipIcon)
+            End If
+        Next
     End Sub
 
     Private Sub AddToLogList(sFromIp As String, sSyslog As String, boolIgnored As Boolean)
