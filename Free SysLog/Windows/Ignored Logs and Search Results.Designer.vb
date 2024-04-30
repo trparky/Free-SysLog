@@ -41,6 +41,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.BtnClearIgnoredLogs = New System.Windows.Forms.Button()
         Me.BtnViewMainWindow = New System.Windows.Forms.Button()
+        Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -124,9 +125,9 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LogsContextMenu
         '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem})
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem})
         Me.LogsContextMenu.Name = "LogsContextMenu"
-        Me.LogsContextMenu.Size = New System.Drawing.Size(181, 48)
+        Me.LogsContextMenu.Size = New System.Drawing.Size(181, 70)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -145,6 +146,12 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnViewMainWindow.Text = "View Main Window"
         Me.BtnViewMainWindow.UseVisualStyleBackColor = True
         Me.BtnViewMainWindow.Visible = False
+        '
+        'CreateAlertToolStripMenuItem
+        '
+        Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
+        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
         'IgnoredLogsAndSearchResults
         '
@@ -180,4 +187,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents BtnViewMainWindow As Button
     Friend WithEvents LogsContextMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
 End Class

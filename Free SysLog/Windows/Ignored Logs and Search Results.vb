@@ -211,6 +211,32 @@ Public Class IgnoredLogsAndSearchResults
         Clipboard.SetText(selectedRow.Cells(2).Value)
     End Sub
 
+    Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
+        Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(2).Value
+            AddAlert.TxtLogText.Text = strLogText
+
+            AddAlert.ShowDialog(Me)
+
+            If AddAlert.boolSuccess Then
+                Dim boolExistCheck As Boolean = alertsList.Any(Function(item As AlertsClass)
+                                                                   Return item.StrLogText.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
+                                                               End Function)
+
+                If boolExistCheck Then
+                    MsgBox("A similar item has already been found in your alerts list.", MsgBoxStyle.Critical, Text)
+                    Exit Sub
+                End If
+
+                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex, .alertType = AddAlert.AlertType}
+                alertsList.Add(AlertsClass)
+                My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
+
+                MsgBox("Done", MsgBoxStyle.Information, Text)
+            End If
+        End Using
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
         IgnoredLogsAndSearchResultsInstance = Nothing
     End Sub
