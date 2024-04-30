@@ -33,12 +33,14 @@ Partial Class AddAlert
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.Label3 = New System.Windows.Forms.Label()
         Me.AlertTypeComboBox = New System.Windows.Forms.ComboBox()
+        Me.IconPictureBox = New System.Windows.Forms.PictureBox()
+        CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'ChkCaseSensitive
         '
         Me.ChkCaseSensitive.AutoSize = True
-        Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 85)
+        Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 96)
         Me.ChkCaseSensitive.Name = "ChkCaseSensitive"
         Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
         Me.ChkCaseSensitive.TabIndex = 18
@@ -47,7 +49,7 @@ Partial Class AddAlert
         '
         'BtnAdd
         '
-        Me.BtnAdd.Location = New System.Drawing.Point(12, 108)
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 119)
         Me.BtnAdd.Name = "BtnAdd"
         Me.BtnAdd.Size = New System.Drawing.Size(75, 23)
         Me.BtnAdd.TabIndex = 17
@@ -57,7 +59,7 @@ Partial Class AddAlert
         'ChkRegex
         '
         Me.ChkRegex.AutoSize = True
-        Me.ChkRegex.Location = New System.Drawing.Point(15, 85)
+        Me.ChkRegex.Location = New System.Drawing.Point(15, 96)
         Me.ChkRegex.Name = "ChkRegex"
         Me.ChkRegex.Size = New System.Drawing.Size(478, 17)
         Me.ChkRegex.TabIndex = 16
@@ -118,11 +120,20 @@ Partial Class AddAlert
         Me.AlertTypeComboBox.Size = New System.Drawing.Size(121, 21)
         Me.AlertTypeComboBox.TabIndex = 23
         '
+        'IconPictureBox
+        '
+        Me.IconPictureBox.Location = New System.Drawing.Point(200, 58)
+        Me.IconPictureBox.Name = "IconPictureBox"
+        Me.IconPictureBox.Size = New System.Drawing.Size(32, 32)
+        Me.IconPictureBox.TabIndex = 24
+        Me.IconPictureBox.TabStop = False
+        '
         'AddAlert
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 139)
+        Me.ClientSize = New System.Drawing.Size(800, 150)
+        Me.Controls.Add(Me.IconPictureBox)
         Me.Controls.Add(Me.AlertTypeComboBox)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
@@ -135,6 +146,7 @@ Partial Class AddAlert
         Me.KeyPreview = True
         Me.Name = "AddAlert"
         Me.Text = "Add Alert"
+        CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -150,4 +162,5 @@ Partial Class AddAlert
     Friend WithEvents ToolTip As ToolTip
     Friend WithEvents Label3 As Label
     Friend WithEvents AlertTypeComboBox As ComboBox
+    Friend WithEvents IconPictureBox As PictureBox
 End Class

@@ -7,6 +7,21 @@
     Private boolChanged As Boolean = False
     Private boolDoneLoading As Boolean = False
 
+    Private Function GetToolTipIconImage(icon As ToolTipIcon) As Image
+        Select Case icon
+            Case ToolTipIcon.None
+                Return Nothing
+            Case ToolTipIcon.Info
+                Return SystemIcons.Information.ToBitmap()
+            Case ToolTipIcon.Warning
+                Return SystemIcons.Warning.ToBitmap()
+            Case ToolTipIcon.Error
+                Return SystemIcons.Error.ToBitmap()
+            Case Else
+                Return Nothing
+        End Select
+    End Function
+
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
         TxtAlertText.Text = TxtAlertText.Text.Trim
 
@@ -80,6 +95,16 @@
     End Sub
 
     Private Sub AlertTypeComboBox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles AlertTypeComboBox.SelectedIndexChanged
+        If AlertTypeComboBox.SelectedIndex = 0 Then
+            IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Warning)
+        ElseIf AlertTypeComboBox.SelectedIndex = 1 Then
+            IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Error)
+        ElseIf AlertTypeComboBox.SelectedIndex = 2 Then
+            IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Info)
+        ElseIf AlertTypeComboBox.SelectedIndex = 3 Then
+            IconPictureBox.Image = Nothing
+        End If
+
         If boolDoneLoading Then boolChanged = True
     End Sub
 
