@@ -1086,7 +1086,7 @@ Public Class Form1
     Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeLogAutosaveIntervalToolStripMenuItem.Click
         Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Log Autosave Interval", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
             With IntegerInputForm
-                .lblSetting.Text = "Auto Save (In Seconds)"
+                .lblSetting.Text = "Auto Save (In Minutes)"
                 .TxtSetting.Text = My.Settings.autoSaveMinutes
 
                 .ShowDialog(Me)
