@@ -202,7 +202,6 @@
     <Compile Include="Support Code\Search for Process and Kill It.vb" />
     <Compile Include="Support Code\StringExtensions.vb" />
     <Compile Include="Support Code\SupportCode.vb" />
-    <Compile Include="Support Code\SysLog.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Windows\AddAlert.resx">
