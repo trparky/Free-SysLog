@@ -354,18 +354,18 @@ Public Class Form1
         Return regexCache(pattern)
     End Function
 
-    Private Sub ProcessIncomingLog(sSyslog As String, sFromIp As String)
+    Private Sub ProcessIncomingLog(strLogText As String, strSourceIP As String)
         Try
             Dim boolIgnored As Boolean = False
 
-            sSyslog = sSyslog.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
-            sSyslog = sSyslog.Replace(vbCrLf, Nothing)
-            sSyslog = Mid(sSyslog, InStr(sSyslog, ">") + 1, Len(sSyslog))
-            sSyslog = sSyslog.Trim
+            strLogText = strLogText.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
+            strLogText = strLogText.Replace(vbCrLf, Nothing)
+            strLogText = Mid(strLogText, InStr(strLogText, ">") + 1, Len(strLogText))
+            strLogText = strLogText.Trim
 
             If ignoredList.Count > 0 Then
                 For Each ignoredClassInstance As IgnoredClass In ignoredList
-                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(sSyslog) Then
+                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(strLogText) Then
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
@@ -382,16 +382,16 @@ Public Class Form1
                 Next
             End If
 
-            If replacementsList.Count > 0 Then sSyslog = ProcessReplacements(sSyslog)
-            If alertsList.Count > 0 Then ProcessAlerts(sSyslog)
+            If replacementsList.Count > 0 Then strLogText = ProcessReplacements(strLogText)
+            If alertsList.Count > 0 Then ProcessAlerts(strLogText)
 
-            AddToLogList(sFromIp, sSyslog, boolIgnored)
+            AddToLogList(strSourceIP, strLogText, boolIgnored)
         Catch ex As Exception
             AddToLogList("local", $"{ex.Message} -- {ex.StackTrace}", False)
         End Try
     End Sub
 
-    Private Sub ProcessAlerts(sSyslog As String)
+    Private Sub ProcessAlerts(strLogText As String)
         Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
         Dim RegExObject As Regex
         Dim strAlertText As String
@@ -400,7 +400,7 @@ Public Class Form1
         For Each alert As AlertsClass In alertsList
             RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
 
-            If RegExObject.IsMatch(sSyslog) Then
+            If RegExObject.IsMatch(strLogText) Then
                 If alert.alertType = AlertType.Warning Then
                     ToolTipIcon = ToolTipIcon.Warning
                 ElseIf alert.alertType = AlertType.ErrorMsg Then
@@ -409,10 +409,10 @@ Public Class Form1
                     ToolTipIcon = ToolTipIcon.Info
                 End If
 
-                strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText)
+                strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
 
                 If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
-                    regExGroupCollection = RegExObject.Match(sSyslog).Groups
+                    regExGroupCollection = RegExObject.Match(strLogText).Groups
 
                     For index As Integer = 0 To regExGroupCollection.Count - 1
                         strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
@@ -424,13 +424,13 @@ Public Class Form1
         Next
     End Sub
 
-    Private Sub AddToLogList(sFromIp As String, sSyslog As String, boolIgnored As Boolean)
+    Private Sub AddToLogList(strSourceIP As String, strLogText As String, boolIgnored As Boolean)
         Dim currentDate As Date = Now.ToLocalTime
 
         If Not boolIgnored Then
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, sSyslog, Logs))
+                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, Logs))
                        End SyncLock
 
                        NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -441,7 +441,7 @@ Public Class Form1
                    End Sub)
         ElseIf boolIgnored And ChkRecordIgnoredLogs.Checked Then
             SyncLock IgnoredLogsLockObject
-                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, sFromIp, sSyslog, Logs)
+                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, Logs)
                 IgnoredLogs.Add(NewIgnoredItem)
                 If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ChkAutoScroll.Checked)
                 Invoke(Sub() ClearIgnoredLogsToolStripMenuItem.Enabled = True)
