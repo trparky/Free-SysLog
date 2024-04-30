@@ -177,14 +177,12 @@ Public Class Form1
     End Function
 
     Private Function ProcessReplacements(input As String) As String
-        If replacementsList.Count > 0 Then
-            For Each item As ReplacementsClass In replacementsList
-                Try
-                    input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
-                Catch ex As Exception
-                End Try
-            Next
-        End If
+        For Each item As ReplacementsClass In replacementsList
+            Try
+                input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+            Catch ex As Exception
+            End Try
+        Next
 
         Return input
     End Function
@@ -384,7 +382,7 @@ Public Class Form1
                 Next
             End If
 
-            sSyslog = ProcessReplacements(sSyslog)
+            If replacementsList.Count > 0 Then sSyslog = ProcessReplacements(sSyslog)
             If alertsList.Count > 0 Then ProcessAlerts(sSyslog)
 
             AddToLogList(sFromIp, sSyslog, boolIgnored)
