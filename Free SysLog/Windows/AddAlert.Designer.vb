@@ -31,12 +31,14 @@ Partial Class AddAlert
         Me.TxtAlertText = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.AlertTypeComboBox = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
         '
         'ChkCaseSensitive
         '
         Me.ChkCaseSensitive.AutoSize = True
-        Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 61)
+        Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 85)
         Me.ChkCaseSensitive.Name = "ChkCaseSensitive"
         Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
         Me.ChkCaseSensitive.TabIndex = 18
@@ -45,7 +47,7 @@ Partial Class AddAlert
         '
         'BtnAdd
         '
-        Me.BtnAdd.Location = New System.Drawing.Point(12, 84)
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 108)
         Me.BtnAdd.Name = "BtnAdd"
         Me.BtnAdd.Size = New System.Drawing.Size(75, 23)
         Me.BtnAdd.TabIndex = 17
@@ -55,7 +57,7 @@ Partial Class AddAlert
         'ChkRegex
         '
         Me.ChkRegex.AutoSize = True
-        Me.ChkRegex.Location = New System.Drawing.Point(15, 61)
+        Me.ChkRegex.Location = New System.Drawing.Point(15, 85)
         Me.ChkRegex.Name = "ChkRegex"
         Me.ChkRegex.Size = New System.Drawing.Size(478, 17)
         Me.ChkRegex.TabIndex = 16
@@ -98,11 +100,31 @@ Partial Class AddAlert
         Me.Label2.TabIndex = 20
         Me.Label2.Text = "Alert Text"
         '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(12, 61)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(55, 13)
+        Me.Label3.TabIndex = 21
+        Me.Label3.Text = "Alert Type"
+        '
+        'AlertTypeComboBox
+        '
+        Me.AlertTypeComboBox.FormattingEnabled = True
+        Me.AlertTypeComboBox.Items.AddRange(New Object() {"Warning Message", "Error Message", "Information Message", "None"})
+        Me.AlertTypeComboBox.Location = New System.Drawing.Point(73, 58)
+        Me.AlertTypeComboBox.Name = "AlertTypeComboBox"
+        Me.AlertTypeComboBox.Size = New System.Drawing.Size(121, 21)
+        Me.AlertTypeComboBox.TabIndex = 23
+        '
         'AddAlert
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 116)
+        Me.ClientSize = New System.Drawing.Size(800, 139)
+        Me.Controls.Add(Me.AlertTypeComboBox)
+        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TxtAlertText)
         Me.Controls.Add(Me.ChkCaseSensitive)
@@ -110,6 +132,7 @@ Partial Class AddAlert
         Me.Controls.Add(Me.ChkRegex)
         Me.Controls.Add(Me.TxtLogText)
         Me.Controls.Add(Me.Label1)
+        Me.KeyPreview = True
         Me.Name = "AddAlert"
         Me.Text = "Add Alert"
         Me.ResumeLayout(False)
@@ -125,4 +148,6 @@ Partial Class AddAlert
     Friend WithEvents TxtAlertText As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents ToolTip As ToolTip
+    Friend WithEvents Label3 As Label
+    Friend WithEvents AlertTypeComboBox As ComboBox
 End Class

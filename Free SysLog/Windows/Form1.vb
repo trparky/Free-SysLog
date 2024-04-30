@@ -387,9 +387,19 @@ Public Class Form1
             sSyslog = ProcessReplacements(sSyslog)
 
             If alertsList.Count > 0 Then
+                Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
+
                 For Each alert As AlertsClass In alertsList
                     If GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive).IsMatch(sSyslog) Then
-                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText), ToolTipIcon.Warning)
+                        If alert.alertType = AlertType.Warning Then
+                            ToolTipIcon = ToolTipIcon.Warning
+                        ElseIf alert.alertType = AlertType.ErrorMsg Then
+                            ToolTipIcon = ToolTipIcon.Error
+                        ElseIf alert.alertType = AlertType.Info Then
+                            ToolTipIcon = ToolTipIcon.Info
+                        End If
+
+                        NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", If(String.IsNullOrWhiteSpace(alert.StrAlertText), sSyslog, alert.StrAlertText), ToolTipIcon)
                     End If
                 Next
             End If
@@ -1055,7 +1065,7 @@ Public Class Form1
                     Exit Sub
                 End If
 
-                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex}
+                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex, .alertType = AddAlert.AlertType}
                 alertsList.Add(AlertsClass)
                 My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
 

@@ -17,6 +17,7 @@ Public Class AlertsListViewItem
     Public Property BoolCaseSensitive As Boolean
     Public Property StrLogText As String
     Public Property StrAlertText As String
+    Public Property AlertType As AlertType
 
     Public Sub New(strInput As String)
         Me.Text = strInput

@@ -94,18 +94,38 @@ Public Class IgnoredClass
     End Function
 End Class
 
+Public Enum AlertType As Byte
+    Warning
+    Info
+    ErrorMsg
+    None
+End Enum
+
 Public Class AlertsClass
     Public BoolRegex As Boolean
     Public BoolCaseSensitive As Boolean
     Public StrLogText, StrAlertText As String
+    Public alertType As AlertType = AlertType.None
 
     Public Function ToListViewItem() As AlertsListViewItem
         Dim listViewItem As New AlertsListViewItem(StrLogText) With {.StrLogText = StrLogText, .StrAlertText = StrAlertText}
         listViewItem.SubItems.Add(If(String.IsNullOrWhiteSpace(StrAlertText), "(Shows Log Text)", StrAlertText))
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+
+        If alertType = AlertType.Warning Then
+            listViewItem.SubItems.Add("Warning Message")
+        ElseIf alertType = AlertType.ErrorMsg Then
+            listViewItem.SubItems.Add("Error Message")
+        ElseIf alertType = AlertType.Info Then
+            listViewItem.SubItems.Add("Information Message")
+        ElseIf alertType = AlertType.None Then
+            listViewItem.SubItems.Add("None")
+        End If
+
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
+        listViewItem.AlertType = alertType
         Return listViewItem
     End Function
 End Class

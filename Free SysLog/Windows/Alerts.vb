@@ -54,6 +54,7 @@
                 .strAlertText = selectedItemObject.StrAlertText
                 .boolRegex = selectedItemObject.BoolRegex
                 .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+                .AlertType = selectedItemObject.AlertType
             End With
 
             AddAlert.ShowDialog(Me)
@@ -68,6 +69,17 @@
                     .SubItems(3).Text = AddAlert.boolCaseSensitive.ToString
                     .BoolRegex = AddAlert.boolRegex
                     .BoolCaseSensitive = AddAlert.boolCaseSensitive
+                    .AlertType = AddAlert.AlertType
+
+                    If .AlertType = AlertType.Warning Then
+                        .SubItems(4).Text = "Warning Message"
+                    ElseIf .AlertType = AlertType.ErrorMsg Then
+                        .SubItems(4).Text = "Error Message"
+                    ElseIf .AlertType = AlertType.Info Then
+                        .SubItems(4).Text = "Information Message"
+                    ElseIf .AlertType = AlertType.None Then
+                        .SubItems(4).Text = "None"
+                    End If
                 End With
             End If
         End Using
@@ -99,6 +111,7 @@
                     .SubItems.Add(AddAlert.boolCaseSensitive.ToString)
                     .BoolRegex = AddAlert.boolRegex
                     .BoolCaseSensitive = AddAlert.boolCaseSensitive
+                    .AlertType = AddAlert.AlertType
                 End With
 
                 AlertsListView.Items.Add(AlertsListViewItem)
@@ -113,7 +126,7 @@
         Dim tempAlerts As New Specialized.StringCollection()
 
         For Each item As AlertsListViewItem In AlertsListView.Items
-            AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex}
+            AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType}
             alertsList.Add(AlertsClass)
             tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
         Next

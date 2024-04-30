@@ -30,6 +30,7 @@ Partial Class Alerts
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.BtnAdd = New System.Windows.Forms.Button()
+        Me.AlertTypeColumn = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'BtnEdit
@@ -48,12 +49,12 @@ Partial Class Alerts
         Me.AlertsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.AlertsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.AlertLogText, Me.AlertText, Me.Regex, Me.CaseSensitive})
+        Me.AlertsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.AlertLogText, Me.AlertText, Me.Regex, Me.CaseSensitive, Me.AlertTypeColumn})
         Me.AlertsListView.FullRowSelect = True
         Me.AlertsListView.HideSelection = False
         Me.AlertsListView.Location = New System.Drawing.Point(12, 12)
         Me.AlertsListView.Name = "AlertsListView"
-        Me.AlertsListView.Size = New System.Drawing.Size(761, 230)
+        Me.AlertsListView.Size = New System.Drawing.Size(963, 230)
         Me.AlertsListView.TabIndex = 11
         Me.AlertsListView.UseCompatibleStateImageBehavior = False
         Me.AlertsListView.View = System.Windows.Forms.View.Details
@@ -98,11 +99,16 @@ Partial Class Alerts
         Me.BtnAdd.Text = "Add"
         Me.BtnAdd.UseVisualStyleBackColor = True
         '
+        'AlertTypeColumn
+        '
+        Me.AlertTypeColumn.Text = "Alert Type"
+        Me.AlertTypeColumn.Width = 165
+        '
         'Alerts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(785, 283)
+        Me.ClientSize = New System.Drawing.Size(987, 283)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.AlertsListView)
         Me.Controls.Add(Me.BtnDelete)
@@ -121,4 +127,5 @@ Partial Class Alerts
     Friend WithEvents BtnDelete As Button
     Friend WithEvents BtnAdd As Button
     Friend WithEvents AlertText As ColumnHeader
+    Friend WithEvents AlertTypeColumn As ColumnHeader
 End Class
