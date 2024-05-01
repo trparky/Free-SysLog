@@ -406,9 +406,11 @@ Public Class Form1
                 If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
                     regExGroupCollection = RegExObject.Match(strLogText).Groups
 
-                    For index As Integer = 0 To regExGroupCollection.Count - 1
-                        strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
-                    Next
+                    If regExGroupCollection.Count > 0 Then
+                        For index As Integer = 0 To regExGroupCollection.Count - 1
+                            strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
+                        Next
+                    End If
                 End If
 
                 NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", strAlertText, ToolTipIcon)
