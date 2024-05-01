@@ -39,7 +39,7 @@
     End Sub
 
     Private Sub TxtIgnored_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtIgnored.KeyUp
-        boolChanged = True
+        If e.KeyCode <> Keys.Escape Then boolChanged = True
     End Sub
 
     Private Sub ChkCaseSensitive_Click(sender As Object, e As EventArgs) Handles ChkCaseSensitive.Click

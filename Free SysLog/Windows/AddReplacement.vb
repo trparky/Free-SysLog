@@ -61,10 +61,10 @@
     End Sub
 
     Private Sub TxtReplace_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtReplace.KeyUp
-        boolChanged = True
+        If e.KeyCode <> Keys.Escape Then boolChanged = True
     End Sub
 
     Private Sub TxtReplaceWith_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtReplaceWith.KeyUp
-        boolChanged = True
+        If e.KeyCode <> Keys.Escape Then boolChanged = True
     End Sub
 End Class

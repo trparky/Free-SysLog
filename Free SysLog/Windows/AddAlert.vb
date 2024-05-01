@@ -87,11 +87,11 @@
     End Sub
 
     Private Sub TxtAlertText_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtAlertText.KeyUp
-        boolChanged = True
+        If e.KeyCode <> Keys.Escape Then boolChanged = True
     End Sub
 
     Private Sub TxtLogText_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtLogText.KeyUp
-        boolChanged = True
+        If e.KeyCode <> Keys.Escape Then boolChanged = True
     End Sub
 
     Private Sub AlertTypeComboBox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles AlertTypeComboBox.SelectedIndexChanged
