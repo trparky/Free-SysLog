@@ -35,7 +35,11 @@
     End Sub
 
     Private Sub AddReplacement_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(TxtIgnored.Text) Then BtnAdd.PerformClick()
+        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(TxtIgnored.Text) Then
+            BtnAdd.PerformClick()
+        ElseIf e.KeyCode = Keys.Escape Then
+            Close()
+        End If
     End Sub
 
     Private Sub TxtIgnored_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtIgnored.KeyUp

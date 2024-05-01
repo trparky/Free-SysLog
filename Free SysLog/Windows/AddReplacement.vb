@@ -38,7 +38,11 @@
     End Sub
 
     Private Sub AddReplacement_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(TxtReplace.Text) Then BtnAdd.PerformClick()
+        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(TxtReplace.Text) Then
+            BtnAdd.PerformClick()
+        ElseIf e.KeyCode = Keys.Escape Then
+            Close()
+        End If
     End Sub
 
     Private Sub AddReplacement_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing

@@ -79,7 +79,11 @@
     End Sub
 
     Private Sub Add_Alert_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(TxtLogText.Text) Then BtnAdd.PerformClick()
+        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(TxtLogText.Text) Then
+            BtnAdd.PerformClick()
+        ElseIf e.KeyCode = Keys.Escape Then
+            Close()
+        End If
     End Sub
 
     Private Sub BtnAdd_KeyUp(sender As Object, e As KeyEventArgs) Handles BtnAdd.KeyUp
