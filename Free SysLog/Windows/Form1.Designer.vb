@@ -83,7 +83,6 @@ Partial Class Form1
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeSyslogServerPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChangeBalloonTimeIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -269,7 +268,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeBalloonTimeIntervalToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -503,12 +502,6 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(339, 22)
         Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
         '
-        'ChangeBalloonTimeIntervalToolStripMenuItem
-        '
-        Me.ChangeBalloonTimeIntervalToolStripMenuItem.Name = "ChangeBalloonTimeIntervalToolStripMenuItem"
-        Me.ChangeBalloonTimeIntervalToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
-        Me.ChangeBalloonTimeIntervalToolStripMenuItem.Text = "Change Balloon Time Interval"
-        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -599,5 +592,4 @@ Partial Class Form1
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeSyslogServerPortToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeLogAutosaveIntervalToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ChangeBalloonTimeIntervalToolStripMenuItem As ToolStripMenuItem
 End Class

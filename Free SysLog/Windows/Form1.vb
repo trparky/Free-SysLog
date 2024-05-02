@@ -196,7 +196,6 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ChangeBalloonTimeIntervalToolStripMenuItem.Text = $"Change Balloon Time Interval ({My.Settings.balloonNotificationTime} Seconds)"
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
 
@@ -413,7 +412,7 @@ Public Class Form1
                     End If
                 End If
 
-                NotifyIcon.ShowBalloonTip(My.Settings.balloonNotificationTime, "Log Alert", strAlertText, ToolTipIcon)
+                NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
             End If
         Next
     End Sub
@@ -1098,23 +1097,6 @@ Public Class Form1
                     SaveTimer.Interval = TimeSpan.FromMinutes(.intResult).TotalMilliseconds
                     My.Settings.autoSaveMinutes = .intResult
 
-                    MsgBox("Done.", MsgBoxStyle.Information, Text)
-                End If
-            End With
-        End Using
-    End Sub
-
-    Private Sub ChangeBalloonTimeIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeBalloonTimeIntervalToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Balloon Time Interval", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
-            With IntegerInputForm
-                .lblSetting.Text = "Balloon Notification Time (In Seconds)"
-                .TxtSetting.Text = My.Settings.balloonNotificationTime
-
-                .ShowDialog(Me)
-
-                If .boolSuccess Then
-                    ChangeBalloonTimeIntervalToolStripMenuItem.Text = $"Change Balloon Time Interval ({IntegerInputForm.intResult} Seconds)"
-                    My.Settings.balloonNotificationTime = .intResult
                     MsgBox("Done.", MsgBoxStyle.Information, Text)
                 End If
             End With

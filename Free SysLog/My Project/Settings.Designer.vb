@@ -352,18 +352,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("10")>  _
-        Public Property balloonNotificationTime() As Integer
-            Get
-                Return CType(Me("balloonNotificationTime"),Integer)
-            End Get
-            Set
-                Me("balloonNotificationTime") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
         Public Property alertsLocation() As Global.System.Drawing.Point
             Get
