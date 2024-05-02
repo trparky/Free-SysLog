@@ -83,6 +83,8 @@ Partial Class Form1
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeSyslogServerPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -444,7 +446,7 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(189, 114)
         '
@@ -501,6 +503,16 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile.Name = "OpenWindowsExplorerToAppConfigFile"
         Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(339, 22)
         Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
+        '
+        'CreateIgnoredLogToolStripMenuItem
+        '
+        Me.CreateIgnoredLogToolStripMenuItem.Name = "CreateIgnoredLogToolStripMenuItem"
+        Me.CreateIgnoredLogToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.CreateIgnoredLogToolStripMenuItem.Text = "Create Ignored Log"
+        '
+        Me.CreateReplacementToolStripMenuItem.Name = "CreateReplacementToolStripMenuItem"
+        Me.CreateReplacementToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.CreateReplacementToolStripMenuItem.Text = "Create Replacement"
         '
         'Form1
         '
@@ -592,4 +604,6 @@ Partial Class Form1
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeSyslogServerPortToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeLogAutosaveIntervalToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CreateIgnoredLogToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CreateReplacementToolStripMenuItem As ToolStripMenuItem
 End Class

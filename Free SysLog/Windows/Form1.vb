@@ -868,10 +868,14 @@ Public Class Form1
             CopyLogTextToolStripMenuItem.Visible = True
             OpenLogViewerToolStripMenuItem.Visible = True
             CreateAlertToolStripMenuItem.Visible = True
+            CreateReplacementToolStripMenuItem.Visible = True
+            CreateIgnoredLogToolStripMenuItem.Visible = True
         Else
             CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
             CreateAlertToolStripMenuItem.Visible = False
+            CreateReplacementToolStripMenuItem.Visible = False
+            CreateIgnoredLogToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1100,6 +1104,58 @@ Public Class Form1
                     MsgBox("Done.", MsgBoxStyle.Information, Text)
                 End If
             End With
+        End Using
+    End Sub
+
+    Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
+        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(2).Value
+            AddIgnored.TxtIgnored.Text = strLogText
+
+            AddIgnored.ShowDialog(Me)
+
+            If AddIgnored.boolSuccess Then
+                Dim boolExistCheck As Boolean = ignoredList.Cast(Of IgnoredClass).Any(Function(item As IgnoredClass)
+                                                                                          Return item.StrIgnore.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
+                                                                                      End Function)
+
+                If boolExistCheck Then
+                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
+                    Exit Sub
+                End If
+
+                Dim IgnoredClass As New IgnoredClass() With {.StrIgnore = AddIgnored.TxtIgnored.Text, .BoolCaseSensitive = AddIgnored.boolCaseSensitive, .BoolRegex = AddIgnored.boolRegex}
+                ignoredList.Add(IgnoredClass)
+                My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredClass))
+
+                MsgBox("Done", MsgBoxStyle.Information, Text)
+            End If
+        End Using
+    End Sub
+
+    Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
+        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(2).Value
+            AddReplacement.TxtReplace.Text = strLogText
+
+            AddReplacement.ShowDialog(Me)
+
+            If AddReplacement.boolSuccess Then
+                Dim boolExistCheck As Boolean = replacementsList.Cast(Of ReplacementsClass).Any(Function(item As ReplacementsClass)
+                                                                                                    Return item.StrReplace.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
+                                                                                                End Function)
+
+                If boolExistCheck Then
+                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
+                    Exit Sub
+                End If
+
+                Dim ReplacementClass As New ReplacementsClass() With {.StrReplace = AddReplacement.TxtReplace.Text, .StrReplaceWith = AddReplacement.TxtReplaceWith.Text, .BoolCaseSensitive = AddReplacement.boolCaseSensitive, .BoolRegex = AddReplacement.boolRegex}
+                replacementsList.Add(ReplacementClass)
+                My.Settings.replacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ReplacementClass))
+
+                MsgBox("Done", MsgBoxStyle.Information, Text)
+            End If
         End Using
     End Sub
 
