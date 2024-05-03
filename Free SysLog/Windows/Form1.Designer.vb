@@ -31,6 +31,7 @@ Partial Class Form1
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblItemsSelected = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
@@ -133,7 +134,7 @@ Partial Class Form1
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1175, 22)
@@ -146,6 +147,14 @@ Partial Class Form1
         Me.NumberOfLogs.Name = "NumberOfLogs"
         Me.NumberOfLogs.Size = New System.Drawing.Size(138, 17)
         Me.NumberOfLogs.Text = "Number of Log Entries: 0"
+        '
+        'LblItemsSelected
+        '
+        Me.LblItemsSelected.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
+        Me.LblItemsSelected.Name = "LblItemsSelected"
+        Me.LblItemsSelected.Size = New System.Drawing.Size(193, 17)
+        Me.LblItemsSelected.Text = "Selected Logs: 0"
+        Me.LblItemsSelected.Visible = False
         '
         'LblAutoSaved
         '
@@ -606,4 +615,5 @@ Partial Class Form1
     Friend WithEvents ChangeLogAutosaveIntervalToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateIgnoredLogToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateReplacementToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LblItemsSelected As ToolStripStatusLabel
 End Class

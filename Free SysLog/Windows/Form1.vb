@@ -1163,6 +1163,11 @@ Public Class Form1
         End Using
     End Sub
 
+    Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
+        LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
+        LblItemsSelected.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
