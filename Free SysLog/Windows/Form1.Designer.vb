@@ -28,7 +28,7 @@ Partial Class Form1
         Me.BtnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.StatusStrip = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblItemsSelected = New System.Windows.Forms.ToolStripStatusLabel()
@@ -86,7 +86,7 @@ Partial Class Form1
         Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.StatusStrip1.SuspendLayout()
+        Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
@@ -132,14 +132,14 @@ Partial Class Form1
         Me.BtnSaveLogsToDisk.Size = New System.Drawing.Size(239, 22)
         Me.BtnSaveLogsToDisk.Text = "Save Logs to Disk"
         '
-        'StatusStrip1
+        'StatusStrip
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 424)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1175, 22)
-        Me.StatusStrip1.TabIndex = 4
-        Me.StatusStrip1.Text = "StatusStrip1"
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs})
+        Me.StatusStrip.Location = New System.Drawing.Point(0, 424)
+        Me.StatusStrip.Name = "StatusStrip"
+        Me.StatusStrip.Size = New System.Drawing.Size(1175, 22)
+        Me.StatusStrip.TabIndex = 4
+        Me.StatusStrip.Text = "StatusStrip"
         '
         'NumberOfLogs
         '
@@ -534,14 +534,14 @@ Partial Class Form1
         Me.Controls.Add(Me.BtnSearch)
         Me.Controls.Add(Me.TxtSearchTerms)
         Me.Controls.Add(Me.LblSearchLabel)
-        Me.Controls.Add(Me.StatusStrip1)
+        Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.MenuStrip)
         Me.MainMenuStrip = Me.MenuStrip
         Me.MinimumSize = New System.Drawing.Size(1191, 485)
         Me.Name = "Form1"
         Me.Text = "Free SysLog Server"
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
+        Me.StatusStrip.ResumeLayout(False)
+        Me.StatusStrip.PerformLayout()
         Me.MenuStrip.ResumeLayout(False)
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
@@ -552,7 +552,7 @@ Partial Class Form1
     End Sub
     Friend WithEvents BtnOpenLogLocation As ToolStripMenuItem
     Friend WithEvents SaveFileDialog As SaveFileDialog
-    Friend WithEvents StatusStrip1 As StatusStrip
+    Friend WithEvents StatusStrip As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
     Friend WithEvents ChkEnableAutoScroll As ToolStripMenuItem
     Friend WithEvents BtnClearLog As ToolStripMenuItem
