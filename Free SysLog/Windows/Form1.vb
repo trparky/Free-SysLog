@@ -23,7 +23,7 @@ Public Class Form1
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
 
-    Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+    Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
 
         With MyDataGridViewRow
@@ -33,7 +33,9 @@ Public Class Form1
             .Cells(1).Value = strSourceAddress
             .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(2).Value = strLog
+            .Cells(3).Value = boolAlerted.ToString
             .DateObject = dateObject
+            .BoolAlerted = boolAlerted
         End With
 
         Return MyDataGridViewRow
@@ -87,7 +89,8 @@ Public Class Form1
                                             .time = myItem.Cells(0).Value,
                                             .ip = myItem.Cells(1).Value,
                                             .log = myItem.Cells(2).Value,
-                                            .DateObject = myItem.DateObject
+                                            .DateObject = myItem.DateObject,
+                                            .BoolAlerted = myItem.BoolAlerted
                                           })
                     End If
                 Next
@@ -219,6 +222,8 @@ Public Class Form1
         ChkEnableAutoSave.Checked = My.Settings.autoSave
         ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
         LblAutoSaved.Visible = ChkEnableAutoSave.Checked
+        ColAlerts.Visible = My.Settings.boolShowAlertedColumn
+        ChkShowAlertedColumn.Checked = My.Settings.boolShowAlertedColumn
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
         ChkEnableStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
@@ -312,7 +317,7 @@ Public Class Form1
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 Invoke(Sub()
-                           Logs.Rows.Add(MakeDataGridRow(Now, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", Logs))
+                           Logs.Rows.Add(MakeDataGridRow(Now, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", False, Logs))
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
                        End Sub)
 
@@ -328,7 +333,7 @@ Public Class Form1
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -381,16 +386,18 @@ Public Class Form1
                 Next
             End If
 
-            If replacementsList.Count > 0 Then strLogText = ProcessReplacements(strLogText)
-            If alertsList.Count > 0 Then ProcessAlerts(strLogText)
+            Dim boolAlerted As Boolean = False
 
-            AddToLogList(strSourceIP, strLogText, boolIgnored)
+            If replacementsList.Count > 0 Then strLogText = ProcessReplacements(strLogText)
+            If alertsList.Count > 0 Then boolAlerted = ProcessAlerts(strLogText)
+
+            AddToLogList(strSourceIP, strLogText, boolIgnored, boolAlerted)
         Catch ex As Exception
-            AddToLogList("local", $"{ex.Message} -- {ex.StackTrace}", False)
+            AddToLogList("local", $"{ex.Message} -- {ex.StackTrace}", False, False)
         End Try
     End Sub
 
-    Private Sub ProcessAlerts(strLogText As String)
+    Private Function ProcessAlerts(strLogText As String) As Boolean
         Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
         Dim RegExObject As Regex
         Dim strAlertText As String
@@ -422,18 +429,21 @@ Public Class Form1
                     End If
 
                     NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
+                    Return True
                 End If
             End If
         Next
-    End Sub
 
-    Private Sub AddToLogList(strSourceIP As String, strLogText As String, boolIgnored As Boolean)
+        Return False
+    End Function
+
+    Private Sub AddToLogList(strSourceIP As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean)
         Dim currentDate As Date = Now.ToLocalTime
 
         If Not boolIgnored Then
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, Logs))
+                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, boolAlerted, Logs))
                        End SyncLock
 
                        NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -444,7 +454,7 @@ Public Class Form1
                    End Sub)
         ElseIf boolIgnored And ChkEnableRecordingOfIgnoredLogs.Checked Then
             SyncLock IgnoredLogsLockObject
-                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, Logs)
+                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, False, Logs)
                 IgnoredLogs.Add(NewIgnoredItem)
                 If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ChkEnableAutoScroll.Checked)
                 Invoke(Sub() ClearIgnoredLogsToolStripMenuItem.Enabled = True)
@@ -479,7 +489,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", False, Logs))
                 If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -518,7 +528,7 @@ Public Class Form1
             SyncLock dataGridLockObject
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", False, Logs))
                 If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -740,7 +750,7 @@ Public Class Form1
                         Logs.AllowUserToOrderColumns = True
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
                         If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                     End SyncLock
 
@@ -842,7 +852,7 @@ Public Class Form1
                 Logs.AllowUserToOrderColumns = True
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
                 If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
             End SyncLock
 
@@ -938,7 +948,7 @@ Public Class Form1
                 Logs.Rows.Remove(item)
             Next
 
-            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", False, Logs))
             If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
         End SyncLock
 
@@ -958,7 +968,7 @@ Public Class Form1
                 Dim csvStringBuilder As New StringBuilder
                 Dim strTime, strSourceIP, strLogText As String
 
-                If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text")
+                If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
                     If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
@@ -971,13 +981,14 @@ Public Class Form1
                                 strLogText = SanitizeForCSV(.Cells(2).Value)
                             End With
 
-                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText}")
+                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{myItem.BoolAlerted}")
                         Else
                             collectionOfSavedData.Add(New SavedData With {
                                                     .time = myItem.Cells(0).Value,
                                                     .ip = myItem.Cells(1).Value,
                                                     .log = myItem.Cells(2).Value,
-                                                    .DateObject = myItem.DateObject
+                                                    .DateObject = myItem.DateObject,
+                                                    .BoolAlerted = myItem.BoolAlerted
                                                   })
                         End If
                     End If
@@ -1014,7 +1025,7 @@ Public Class Form1
             serverThread.Start()
 
             SyncLock dataGridLockObject
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs))
                 If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                 UpdateLogCount()
             End SyncLock
@@ -1086,7 +1097,7 @@ Public Class Form1
                         serverThread.Start()
 
                         SyncLock dataGridLockObject
-                            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", Logs))
+                            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs))
                             If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                             UpdateLogCount()
                         End SyncLock
@@ -1223,6 +1234,11 @@ Public Class Form1
 
         Await Threading.Tasks.Task.Delay(100)
         If Logs.Rows.Count > 0 Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+    End Sub
+
+    Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
+        My.Settings.boolShowAlertedColumn = ChkShowAlertedColumn.Checked
+        ColAlerts.Visible = ChkShowAlertedColumn.Checked
     End Sub
 #End Region
 End Class

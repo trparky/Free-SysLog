@@ -34,6 +34,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LblCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
@@ -70,7 +71,7 @@ Partial Class IgnoredLogsAndSearchResults
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog, Me.ColAlerts})
         Me.Logs.ContextMenuStrip = Me.LogsContextMenu
         Me.Logs.Location = New System.Drawing.Point(12, 12)
         Me.Logs.Name = "Logs"
@@ -102,6 +103,13 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColLog.HeaderText = "Log"
         Me.ColLog.Name = "ColLog"
         Me.ColLog.ReadOnly = True
+        '
+        'ColAlerts
+        '
+        Me.ColAlerts.HeaderText = "Alerted"
+        Me.ColAlerts.Name = "ColAlerts"
+        Me.ColAlerts.ReadOnly = True
+        Me.ColAlerts.Width = 50
         '
         'BtnExport
         '
@@ -188,4 +196,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents LogsContextMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
 End Class

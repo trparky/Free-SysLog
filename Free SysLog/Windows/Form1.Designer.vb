@@ -61,6 +61,7 @@ Partial Class Form1
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ChkEnableConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -79,6 +80,7 @@ Partial Class Form1
         Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkShowAlertedColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -287,7 +289,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkDeselectItemAfterMinimizingWindow, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkDeselectItemAfterMinimizingWindow, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -359,7 +361,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog, Me.ColAlerts})
         Me.Logs.ContextMenuStrip = Me.LogsMenu
         Me.Logs.Location = New System.Drawing.Point(12, 52)
         Me.Logs.Name = "Logs"
@@ -380,6 +382,13 @@ Partial Class Form1
         Me.ColIPAddress.HeaderText = "IP Address"
         Me.ColIPAddress.Name = "ColIPAddress"
         Me.ColIPAddress.ReadOnly = True
+        '
+        'ColAlerts
+        '
+        Me.ColAlerts.HeaderText = "Alerted"
+        Me.ColAlerts.Name = "ColAlerts"
+        Me.ColAlerts.ReadOnly = True
+        Me.ColAlerts.Width = 50
         '
         'ColLog
         '
@@ -521,6 +530,13 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(339, 22)
         Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
         '
+        'ChkShowAlertedColumn
+        '
+        Me.ChkShowAlertedColumn.CheckOnClick = True
+        Me.ChkShowAlertedColumn.Name = "ChkShowAlertedColumn"
+        Me.ChkShowAlertedColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowAlertedColumn.Text = "Show Alerted Column"
+        '
         'CreateIgnoredLogToolStripMenuItem
         '
         Me.CreateIgnoredLogToolStripMenuItem.Name = "CreateIgnoredLogToolStripMenuItem"
@@ -596,6 +612,7 @@ Partial Class Form1
     Friend WithEvents ColTime As DataGridViewTextBoxColumn
     Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
+    Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents ChangeAlternatingColorToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem
@@ -625,4 +642,5 @@ Partial Class Form1
     Friend WithEvents CreateReplacementToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LblItemsSelected As ToolStripStatusLabel
     Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
+    Friend WithEvents ChkShowAlertedColumn As ToolStripMenuItem
 End Class

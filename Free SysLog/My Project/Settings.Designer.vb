@@ -373,6 +373,18 @@ Namespace My
                 Me("boolDeselectItemsWhenMinimizing") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property boolShowAlertedColumn() As Boolean
+            Get
+                Return CType(Me("boolShowAlertedColumn"),Boolean)
+            End Get
+            Set
+                Me("boolShowAlertedColumn") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

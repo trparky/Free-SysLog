@@ -96,6 +96,7 @@ Public Class IgnoredLogsAndSearchResults
         ColTime.Width = My.Settings.columnTimeSize
         ColIPAddress.Width = My.Settings.columnIPSize
         ColLog.Width = My.Settings.columnLogSize
+        ColAlerts.Visible = My.Settings.boolShowAlertedColumn
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
