@@ -33,7 +33,7 @@ Public Class Form1
             .Cells(1).Value = strSourceAddress
             .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(2).Value = strLog
-            .Cells(3).Value = boolAlerted.ToString
+            .Cells(3).Value = If(boolAlerted, "Yes", "No")
             .DateObject = dateObject
             .BoolAlerted = boolAlerted
         End With

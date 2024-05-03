@@ -13,7 +13,7 @@
             .Cells(1).Value = ip
             .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(2).Value = log
-            .Cells(3).Value = BoolAlerted.ToString
+            .Cells(3).Value = If(BoolAlerted, "Yes", "No")
             .DateObject = DateObject
             .BoolAlerted = BoolAlerted
         End With

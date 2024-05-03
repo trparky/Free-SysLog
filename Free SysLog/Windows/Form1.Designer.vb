@@ -391,7 +391,7 @@ Partial Class Form1
         Me.ColAlerts.Name = "ColAlerts"
         Me.ColAlerts.ReadOnly = True
         Me.ColAlerts.Width = 50
-        Me.ColAlerts.ToolTipText = "True or False. Indicates if the log entry triggered an alert from this program."
+        Me.ColAlerts.ToolTipText = "Yes or No. Indicates if the log entry triggered an alert from this program."
         '
         'ColLog
         '
