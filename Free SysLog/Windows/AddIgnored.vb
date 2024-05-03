@@ -3,6 +3,7 @@
     Public strIgnored As String
     Public boolSuccess As Boolean = False
     Public boolEditMode As Boolean = False
+    Public boolEnabled As Boolean = True
     Private boolChanged As Boolean = False
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
@@ -10,14 +11,18 @@
             boolRegex = ChkRegex.Checked
             boolCaseSensitive = ChkCaseSensitive.Checked
             strIgnored = TxtIgnored.Text
+            boolEnabled = ChkEnabled.Checked
             boolSuccess = True
+            boolChanged = False
             Close()
         Else
             If IsRegexPatternValid(TxtIgnored.Text) Then
                 boolRegex = ChkRegex.Checked
                 boolCaseSensitive = ChkCaseSensitive.Checked
                 strIgnored = TxtIgnored.Text
+                boolEnabled = ChkEnabled.Checked
                 boolSuccess = True
+                boolChanged = False
                 Close()
             Else
                 MsgBox("Invalid regex pattern detected.", MsgBoxStyle.Critical, Text)
@@ -30,6 +35,7 @@
             TxtIgnored.Text = strIgnored
             ChkRegex.Checked = boolRegex
             ChkCaseSensitive.Checked = boolCaseSensitive
+            ChkEnabled.Checked = boolEnabled
             BtnAdd.Text = "Save"
         End If
     End Sub
@@ -63,5 +69,9 @@
                 Close()
             End If
         End If
+    End Sub
+
+    Private Sub ChkEnabled_Click(sender As Object, e As EventArgs) Handles ChkEnabled.Click
+        boolChanged = True
     End Sub
 End Class

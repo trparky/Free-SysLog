@@ -3,6 +3,7 @@
     Public strReplace, strReplaceWith As String
     Public boolSuccess As Boolean = False
     Public boolEditMode As Boolean = False
+    Public boolEnabled As Boolean = True
     Private boolChanged As Boolean = False
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
@@ -11,7 +12,9 @@
             boolCaseSensitive = ChkCaseSensitive.Checked
             strReplace = TxtReplace.Text
             strReplaceWith = TxtReplaceWith.Text
+            boolEnabled = ChkEnabled.Checked
             boolSuccess = True
+            boolChanged = False
             Close()
         Else
             If IsRegexPatternValid(TxtReplace.Text) Then
@@ -19,7 +22,9 @@
                 boolCaseSensitive = ChkCaseSensitive.Checked
                 strReplace = TxtReplace.Text
                 strReplaceWith = TxtReplaceWith.Text
+                boolEnabled = ChkEnabled.Checked
                 boolSuccess = True
+                boolChanged = False
                 Close()
             Else
                 MsgBox("Invalid regex pattern detected.", MsgBoxStyle.Critical, Text)
@@ -33,6 +38,7 @@
             TxtReplaceWith.Text = strReplaceWith
             ChkRegex.Checked = boolRegex
             ChkCaseSensitive.Checked = boolCaseSensitive
+            ChkEnabled.Checked = boolEnabled
             BtnAdd.Text = "Save"
         End If
     End Sub
@@ -70,5 +76,9 @@
 
     Private Sub TxtReplaceWith_KeyUp(sender As Object, e As KeyEventArgs) Handles TxtReplaceWith.KeyUp
         If e.KeyCode <> Keys.Escape Then boolChanged = True
+    End Sub
+
+    Private Sub ChkEnabled_Click(sender As Object, e As EventArgs) Handles ChkEnabled.Click
+        boolChanged = True
     End Sub
 End Class

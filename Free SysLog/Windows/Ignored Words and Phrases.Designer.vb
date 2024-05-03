@@ -29,6 +29,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.BtnEdit = New System.Windows.Forms.Button()
+        Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'BtnAdd
@@ -55,12 +56,12 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.Regex, Me.CaseSensitive})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.Regex, Me.CaseSensitive, Me.ColEnabled})
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
         Me.IgnoredListView.Location = New System.Drawing.Point(12, 12)
         Me.IgnoredListView.Name = "IgnoredListView"
-        Me.IgnoredListView.Size = New System.Drawing.Size(529, 218)
+        Me.IgnoredListView.Size = New System.Drawing.Size(630, 218)
         Me.IgnoredListView.TabIndex = 5
         Me.IgnoredListView.UseCompatibleStateImageBehavior = False
         Me.IgnoredListView.View = System.Windows.Forms.View.Details
@@ -89,11 +90,15 @@ Partial Class IgnoredWordsAndPhrases
         Me.BtnEdit.Text = "Edit"
         Me.BtnEdit.UseVisualStyleBackColor = True
         '
+        'ColEnabled
+        '
+        Me.ColEnabled.Text = "Enabled"
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(553, 265)
+        Me.ClientSize = New System.Drawing.Size(654, 265)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.IgnoredListView)
         Me.Controls.Add(Me.BtnDelete)
@@ -111,4 +116,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents Regex As ColumnHeader
     Friend WithEvents CaseSensitive As ColumnHeader
     Friend WithEvents BtnEdit As Button
+    Friend WithEvents ColEnabled As ColumnHeader
 End Class

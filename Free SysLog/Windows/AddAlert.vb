@@ -4,6 +4,7 @@
     Public boolSuccess As Boolean = False
     Public boolEditMode As Boolean = False
     Public AlertType As AlertType
+    Public boolEnabled As Boolean = True
     Private boolChanged As Boolean = False
     Private boolDoneLoading As Boolean = False
 
@@ -40,7 +41,9 @@
             boolCaseSensitive = ChkCaseSensitive.Checked
             strLogText = TxtLogText.Text
             strAlertText = TxtAlertText.Text
+            boolEnabled = ChkEnabled.Checked
             boolSuccess = True
+            boolChanged = False
             Close()
         Else
             If IsRegexPatternValid(TxtLogText.Text) Then
@@ -48,7 +51,9 @@
                 boolCaseSensitive = ChkCaseSensitive.Checked
                 strLogText = TxtLogText.Text
                 strAlertText = TxtAlertText.Text
+                boolEnabled = ChkEnabled.Checked
                 boolSuccess = True
+                boolChanged = False
                 Close()
             Else
                 MsgBox("Invalid regex pattern detected.", MsgBoxStyle.Critical, Text)
@@ -72,6 +77,7 @@
             TxtAlertText.Text = strAlertText
             ChkRegex.Checked = boolRegex
             ChkCaseSensitive.Checked = boolCaseSensitive
+            ChkEnabled.Checked = boolEnabled
             BtnAdd.Text = "Save"
         End If
 
@@ -128,6 +134,10 @@
     End Sub
 
     Private Sub ChkRegex_Click(sender As Object, e As EventArgs) Handles ChkRegex.Click
+        boolChanged = True
+    End Sub
+
+    Private Sub ChkEnabled_Click(sender As Object, e As EventArgs) Handles ChkEnabled.Click
         boolChanged = True
     End Sub
 End Class

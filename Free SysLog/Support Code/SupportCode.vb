@@ -67,14 +67,17 @@ Public Class ReplacementsClass
     Public BoolRegex As Boolean
     Public BoolCaseSensitive As Boolean
     Public StrReplace, StrReplaceWith As String
+    Public BoolEnabled As Boolean = True
 
     Public Function ToListViewItem() As MyReplacementsListViewItem
         Dim listViewItem As New MyReplacementsListViewItem(StrReplace)
         listViewItem.SubItems.Add(StrReplaceWith)
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+        listViewItem.SubItems.Add(BoolEnabled.ToString)
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
+        listViewItem.BoolEnabled = BoolEnabled
         Return listViewItem
     End Function
 End Class
@@ -83,13 +86,16 @@ Public Class IgnoredClass
     Public BoolRegex As Boolean
     Public BoolCaseSensitive As Boolean
     Public StrIgnore As String
+    Public BoolEnabled As Boolean = True
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+        listViewItem.SubItems.Add(BoolEnabled.ToString)
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
+        listViewItem.BoolEnabled = BoolEnabled
         Return listViewItem
     End Function
 End Class
@@ -106,6 +112,7 @@ Public Class AlertsClass
     Public BoolCaseSensitive As Boolean
     Public StrLogText, StrAlertText As String
     Public alertType As AlertType = AlertType.None
+    Public BoolEnabled As Boolean = True
 
     Public Function ToListViewItem() As AlertsListViewItem
         Dim listViewItem As New AlertsListViewItem(StrLogText) With {.StrLogText = StrLogText, .StrAlertText = StrAlertText}
@@ -123,9 +130,12 @@ Public Class AlertsClass
             listViewItem.SubItems.Add("None")
         End If
 
+        listViewItem.SubItems.Add(BoolEnabled.ToString)
+
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.AlertType = alertType
+        listViewItem.BoolEnabled = BoolEnabled
         Return listViewItem
     End Function
 End Class

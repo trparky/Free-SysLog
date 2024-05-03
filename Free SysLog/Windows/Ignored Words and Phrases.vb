@@ -22,8 +22,10 @@
                 With IgnoredListViewItem
                     .SubItems.Add(AddIgnored.boolRegex.ToString)
                     .SubItems.Add(AddIgnored.boolCaseSensitive.ToString)
+                    .SubItems.Add(AddIgnored.boolEnabled.ToString)
                     .BoolRegex = AddIgnored.boolRegex
                     .BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                    .BoolEnabled = AddIgnored.boolEnabled
                 End With
 
                 IgnoredListView.Items.Add(IgnoredListViewItem)
@@ -38,7 +40,7 @@
         Dim tempIgnored As New Specialized.StringCollection()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex}
+            ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
             ignoredList.Add(ignoredClass)
             tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
         Next
@@ -95,6 +97,7 @@
                 .strIgnored = selectedItemObject.SubItems(0).Text
                 .boolRegex = selectedItemObject.BoolRegex
                 .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+                .boolEnabled = selectedItemObject.BoolEnabled
             End With
 
             AddIgnored.ShowDialog(Me)
@@ -104,8 +107,10 @@
                     .SubItems(0).Text = AddIgnored.strIgnored
                     .SubItems(1).Text = AddIgnored.boolRegex.ToString
                     .SubItems(2).Text = AddIgnored.boolCaseSensitive.ToString
+                    .SubItems(3).Text = AddIgnored.boolEnabled.ToString
                     .BoolRegex = AddIgnored.boolRegex
                     .BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                    .BoolEnabled = AddIgnored.boolEnabled
                 End With
             End If
         End Using

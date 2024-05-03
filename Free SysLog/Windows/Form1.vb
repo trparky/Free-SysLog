@@ -170,10 +170,12 @@ Public Class Form1
 
     Private Function ProcessReplacements(input As String) As String
         For Each item As ReplacementsClass In replacementsList
-            Try
-                input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
-            Catch ex As Exception
-            End Try
+            If item.BoolEnabled Then
+                Try
+                    input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+                Catch ex As Exception
+                End Try
+            End If
         Next
 
         Return input
@@ -356,7 +358,7 @@ Public Class Form1
 
             If ignoredList.Count > 0 Then
                 For Each ignoredClassInstance As IgnoredClass In ignoredList
-                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(strLogText) Then
+                    If ignoredClassInstance.BoolEnabled AndAlso GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(strLogText) Then
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
@@ -389,30 +391,32 @@ Public Class Form1
         Dim regExGroupCollection As GroupCollection
 
         For Each alert As AlertsClass In alertsList
-            RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
+            If alert.BoolEnabled Then
+                RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
 
-            If RegExObject.IsMatch(strLogText) Then
-                If alert.alertType = AlertType.Warning Then
-                    ToolTipIcon = ToolTipIcon.Warning
-                ElseIf alert.alertType = AlertType.ErrorMsg Then
-                    ToolTipIcon = ToolTipIcon.Error
-                ElseIf alert.alertType = AlertType.Info Then
-                    ToolTipIcon = ToolTipIcon.Info
-                End If
-
-                strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
-
-                If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
-                    regExGroupCollection = RegExObject.Match(strLogText).Groups
-
-                    If regExGroupCollection.Count > 0 Then
-                        For index As Integer = 0 To regExGroupCollection.Count - 1
-                            strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
-                        Next
+                If RegExObject.IsMatch(strLogText) Then
+                    If alert.alertType = AlertType.Warning Then
+                        ToolTipIcon = ToolTipIcon.Warning
+                    ElseIf alert.alertType = AlertType.ErrorMsg Then
+                        ToolTipIcon = ToolTipIcon.Error
+                    ElseIf alert.alertType = AlertType.Info Then
+                        ToolTipIcon = ToolTipIcon.Info
                     End If
-                End If
 
-                NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
+                    strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
+
+                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                        regExGroupCollection = RegExObject.Match(strLogText).Groups
+
+                        If regExGroupCollection.Count > 0 Then
+                            For index As Integer = 0 To regExGroupCollection.Count - 1
+                                strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
+                            Next
+                        End If
+                    End If
+
+                    NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
+                End If
             End If
         Next
     End Sub

@@ -4,6 +4,7 @@ Public Class MyReplacementsListViewItem
     Implements ICloneable
     Public Property BoolRegex As Boolean
     Public Property BoolCaseSensitive As Boolean
+    Public Property BoolEnabled As Boolean
 
     Public Sub New(strInput As String)
         Me.Text = strInput

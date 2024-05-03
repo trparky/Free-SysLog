@@ -4,6 +4,7 @@ Public Class MyIgnoredListViewItem
     Implements ICloneable
     Public Property BoolRegex As Boolean
     Public Property BoolCaseSensitive As Boolean
+    Public Property BoolEnabled As Boolean
 
     Public Sub New(strInput As String)
         Me.Text = strInput
@@ -18,6 +19,7 @@ Public Class AlertsListViewItem
     Public Property StrLogText As String
     Public Property StrAlertText As String
     Public Property AlertType As AlertType
+    Public Property BoolEnabled As Boolean
 
     Public Sub New(strInput As String)
         Me.Text = strInput

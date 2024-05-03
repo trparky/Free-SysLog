@@ -28,9 +28,10 @@ Partial Class Alerts
         Me.AlertText = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.AlertTypeColumn = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.BtnAdd = New System.Windows.Forms.Button()
-        Me.AlertTypeColumn = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'BtnEdit
@@ -49,7 +50,7 @@ Partial Class Alerts
         Me.AlertsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.AlertsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.AlertLogText, Me.AlertText, Me.Regex, Me.CaseSensitive, Me.AlertTypeColumn})
+        Me.AlertsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.AlertLogText, Me.AlertText, Me.Regex, Me.CaseSensitive, Me.AlertTypeColumn, Me.ColEnabled})
         Me.AlertsListView.FullRowSelect = True
         Me.AlertsListView.HideSelection = False
         Me.AlertsListView.Location = New System.Drawing.Point(12, 12)
@@ -78,6 +79,11 @@ Partial Class Alerts
         Me.CaseSensitive.Text = "Case Sensitive"
         Me.CaseSensitive.Width = 91
         '
+        'AlertTypeColumn
+        '
+        Me.AlertTypeColumn.Text = "Alert Type"
+        Me.AlertTypeColumn.Width = 90
+        '
         'BtnDelete
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -99,10 +105,9 @@ Partial Class Alerts
         Me.BtnAdd.Text = "Add"
         Me.BtnAdd.UseVisualStyleBackColor = True
         '
-        'AlertTypeColumn
+        'ColEnabled
         '
-        Me.AlertTypeColumn.Text = "Alert Type"
-        Me.AlertTypeColumn.Width = 90
+        Me.ColEnabled.Text = "Enabled"
         '
         'Alerts
         '
@@ -128,4 +133,5 @@ Partial Class Alerts
     Friend WithEvents BtnAdd As Button
     Friend WithEvents AlertText As ColumnHeader
     Friend WithEvents AlertTypeColumn As ColumnHeader
+    Friend WithEvents ColEnabled As ColumnHeader
 End Class

@@ -34,6 +34,7 @@ Partial Class AddAlert
         Me.Label3 = New System.Windows.Forms.Label()
         Me.AlertTypeComboBox = New System.Windows.Forms.ComboBox()
         Me.IconPictureBox = New System.Windows.Forms.PictureBox()
+        Me.ChkEnabled = New System.Windows.Forms.CheckBox()
         CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -128,11 +129,25 @@ Partial Class AddAlert
         Me.IconPictureBox.TabIndex = 24
         Me.IconPictureBox.TabStop = False
         '
+        'ChkEnabled
+        '
+        Me.ChkEnabled.AutoSize = True
+        Me.ChkEnabled.Checked = True
+        Me.ChkEnabled.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ChkEnabled.Location = New System.Drawing.Point(717, 96)
+        Me.ChkEnabled.Name = "ChkEnabled"
+        Me.ChkEnabled.Size = New System.Drawing.Size(71, 17)
+        Me.ChkEnabled.TabIndex = 25
+        Me.ChkEnabled.Text = "Enabled?"
+        Me.ToolTip.SetToolTip(Me.ChkEnabled, "Allows for an alert to be disabled without deleting it.")
+        Me.ChkEnabled.UseVisualStyleBackColor = True
+        '
         'AddAlert
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 150)
+        Me.Controls.Add(Me.ChkEnabled)
         Me.Controls.Add(Me.IconPictureBox)
         Me.Controls.Add(Me.AlertTypeComboBox)
         Me.Controls.Add(Me.Label3)
@@ -163,4 +178,5 @@ Partial Class AddAlert
     Friend WithEvents Label3 As Label
     Friend WithEvents AlertTypeComboBox As ComboBox
     Friend WithEvents IconPictureBox As PictureBox
+    Friend WithEvents ChkEnabled As CheckBox
 End Class

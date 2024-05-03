@@ -22,6 +22,7 @@ Partial Class AddReplacement
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TxtReplace = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -29,6 +30,8 @@ Partial Class AddReplacement
         Me.ChkRegex = New System.Windows.Forms.CheckBox()
         Me.BtnAdd = New System.Windows.Forms.Button()
         Me.ChkCaseSensitive = New System.Windows.Forms.CheckBox()
+        Me.ChkEnabled = New System.Windows.Forms.CheckBox()
+        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.SuspendLayout()
         '
         'Label1
@@ -43,7 +46,7 @@ Partial Class AddReplacement
         'TxtReplace
         '
         Me.TxtReplace.Location = New System.Drawing.Point(65, 6)
-        Me.TxtReplace.Name = "txtReplace"
+        Me.TxtReplace.Name = "TxtReplace"
         Me.TxtReplace.Size = New System.Drawing.Size(723, 20)
         Me.TxtReplace.TabIndex = 1
         '
@@ -59,7 +62,7 @@ Partial Class AddReplacement
         'TxtReplaceWith
         '
         Me.TxtReplaceWith.Location = New System.Drawing.Point(65, 32)
-        Me.TxtReplaceWith.Name = "txtReplaceWith"
+        Me.TxtReplaceWith.Name = "TxtReplaceWith"
         Me.TxtReplaceWith.Size = New System.Drawing.Size(723, 20)
         Me.TxtReplaceWith.TabIndex = 3
         '
@@ -67,7 +70,7 @@ Partial Class AddReplacement
         '
         Me.ChkRegex.AutoSize = True
         Me.ChkRegex.Location = New System.Drawing.Point(15, 58)
-        Me.ChkRegex.Name = "chkRegex"
+        Me.ChkRegex.Name = "ChkRegex"
         Me.ChkRegex.Size = New System.Drawing.Size(478, 17)
         Me.ChkRegex.TabIndex = 4
         Me.ChkRegex.Text = "Regex? (Be careful with Regex, a broken regex pattern could cause the program to " &
@@ -77,7 +80,7 @@ Partial Class AddReplacement
         'BtnAdd
         '
         Me.BtnAdd.Location = New System.Drawing.Point(12, 81)
-        Me.BtnAdd.Name = "btnAdd"
+        Me.BtnAdd.Name = "BtnAdd"
         Me.BtnAdd.Size = New System.Drawing.Size(75, 23)
         Me.BtnAdd.TabIndex = 5
         Me.BtnAdd.Text = "Add"
@@ -87,17 +90,31 @@ Partial Class AddReplacement
         '
         Me.ChkCaseSensitive.AutoSize = True
         Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 58)
-        Me.ChkCaseSensitive.Name = "chkCaseSensitive"
+        Me.ChkCaseSensitive.Name = "ChkCaseSensitive"
         Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
         Me.ChkCaseSensitive.TabIndex = 6
         Me.ChkCaseSensitive.Text = "Case Sensitive?"
         Me.ChkCaseSensitive.UseVisualStyleBackColor = True
+        '
+        'ChkEnabled
+        '
+        Me.ChkEnabled.AutoSize = True
+        Me.ChkEnabled.Checked = True
+        Me.ChkEnabled.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ChkEnabled.Location = New System.Drawing.Point(717, 58)
+        Me.ChkEnabled.Name = "ChkEnabled"
+        Me.ChkEnabled.Size = New System.Drawing.Size(71, 17)
+        Me.ChkEnabled.TabIndex = 26
+        Me.ChkEnabled.Text = "Enabled?"
+        Me.ToolTip.SetToolTip(Me.ChkEnabled, "Allows for a replacement to be disabled without deleting it.")
+        Me.ChkEnabled.UseVisualStyleBackColor = True
         '
         'AddReplacement
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 112)
+        Me.Controls.Add(Me.ChkEnabled)
         Me.Controls.Add(Me.ChkCaseSensitive)
         Me.Controls.Add(Me.BtnAdd)
         Me.Controls.Add(Me.ChkRegex)
@@ -123,4 +140,6 @@ Partial Class AddReplacement
     Friend WithEvents ChkRegex As CheckBox
     Friend WithEvents BtnAdd As Button
     Friend WithEvents ChkCaseSensitive As CheckBox
+    Friend WithEvents ChkEnabled As CheckBox
+    Friend WithEvents ToolTip As ToolTip
 End Class

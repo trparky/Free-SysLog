@@ -25,8 +25,10 @@ Public Class Replacements
                     .SubItems.Add(AddReplacement.strReplaceWith)
                     .SubItems.Add(AddReplacement.boolRegex.ToString)
                     .SubItems.Add(AddReplacement.boolCaseSensitive.ToString)
+                    .SubItems.Add(AddReplacement.boolEnabled.ToString)
                     .BoolRegex = AddReplacement.boolRegex
                     .BoolCaseSensitive = AddReplacement.boolCaseSensitive
+                    .BoolEnabled = AddIgnored.boolEnabled
                 End With
 
                 ReplacementsListView.Items.Add(MyReplacementsListViewItem)
@@ -60,7 +62,7 @@ Public Class Replacements
         Dim tempReplacements As New Specialized.StringCollection()
 
         For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
-            replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive}
+            replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled}
             replacementsList.Add(replacementsClass)
             tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
         Next
@@ -94,6 +96,7 @@ Public Class Replacements
                 .strReplaceWith = selectedItemObject.SubItems(1).Text
                 .boolRegex = selectedItemObject.BoolRegex
                 .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+                .boolEnabled = selectedItemObject.BoolEnabled
             End With
 
             AddReplacement.ShowDialog(Me)
@@ -104,8 +107,10 @@ Public Class Replacements
                     .SubItems(1).Text = AddReplacement.strReplaceWith
                     .SubItems(2).Text = AddReplacement.boolRegex.ToString
                     .SubItems(3).Text = AddReplacement.boolCaseSensitive.ToString
+                    .SubItems(4).Text = AddReplacement.boolEnabled.ToString
                     .BoolRegex = AddReplacement.boolRegex
                     .BoolCaseSensitive = AddReplacement.boolCaseSensitive
+                    .BoolEnabled = AddReplacement.boolEnabled
                 End With
             End If
         End Using
