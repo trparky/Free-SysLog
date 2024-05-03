@@ -88,6 +88,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColTime.Name = "ColTime"
         Me.ColTime.ReadOnly = True
         Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColTime.ToolTipText = "The time at which the log entry came in."
         '
         'ColIPAddress
         '
@@ -96,6 +97,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColIPAddress.HeaderText = "IP Address"
         Me.ColIPAddress.Name = "ColIPAddress"
         Me.ColIPAddress.ReadOnly = True
+        Me.ColIPAddress.ToolTipText = "The IP address of the system from which the log came from."
         '
         'ColLog
         '
@@ -103,6 +105,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColLog.HeaderText = "Log"
         Me.ColLog.Name = "ColLog"
         Me.ColLog.ReadOnly = True
+        Me.ColLog.ToolTipText = "The text contents of the log."
         '
         'ColAlerts
         '
@@ -110,6 +113,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColAlerts.Name = "ColAlerts"
         Me.ColAlerts.ReadOnly = True
         Me.ColAlerts.Width = 50
+        Me.ColAlerts.ToolTipText = "True or False. Indicates if the log entry triggered an alert from this program."
         '
         'BtnExport
         '
