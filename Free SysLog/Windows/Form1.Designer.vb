@@ -86,6 +86,7 @@ Partial Class Form1
         Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -200,6 +201,13 @@ Partial Class Form1
         Me.ChkEnableAutoSave.Size = New System.Drawing.Size(339, 22)
         Me.ChkEnableAutoSave.Text = "Enable Auto Save"
         '
+        'ChkDeselectItemAfterMinimizingWindow
+        '
+        Me.ChkDeselectItemAfterMinimizingWindow.CheckOnClick = True
+        Me.ChkDeselectItemAfterMinimizingWindow.Name = "ChkDeselectItemAfterMinimizingWindow"
+        Me.ChkDeselectItemAfterMinimizingWindow.Size = New System.Drawing.Size(339, 22)
+        Me.ChkDeselectItemAfterMinimizingWindow.Text = "De-Select Items When Minimizing Window"
+        '
         'ChkEnableStartAtUserStartup
         '
         Me.ChkEnableStartAtUserStartup.CheckOnClick = True
@@ -279,7 +287,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkDeselectItemAfterMinimizingWindow, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -616,4 +624,5 @@ Partial Class Form1
     Friend WithEvents CreateIgnoredLogToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateReplacementToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LblItemsSelected As ToolStripStatusLabel
+    Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
 End Class

@@ -112,6 +112,11 @@ Public Class Form1
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
             If WindowState = FormWindowState.Minimized Then
+                If My.Settings.boolDeselectItemsWhenMinimizing Then
+                    Logs.ClearSelection()
+                    LblItemsSelected.Visible = False
+                End If
+
                 boolMaximizedBeforeMinimize = WindowState = FormWindowState.Maximized
             Else
                 My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
@@ -206,6 +211,7 @@ Public Class Form1
         ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
+        ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
@@ -1166,6 +1172,10 @@ Public Class Form1
     Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
         LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
         LblItemsSelected.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
+    End Sub
+
+    Private Sub ChkDeselectItemAfterMinimizingWindow_Click(sender As Object, e As EventArgs) Handles ChkDeselectItemAfterMinimizingWindow.Click
+        My.Settings.boolDeselectItemsWhenMinimizing = ChkDeselectItemAfterMinimizingWindow.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
