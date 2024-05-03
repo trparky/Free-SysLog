@@ -22,6 +22,7 @@ Partial Class Replacements
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.ReplacementsListView = New System.Windows.Forms.ListView()
         Me.Replace = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ReplaceWith = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -31,6 +32,10 @@ Partial Class Replacements
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.BtnEdit = New System.Windows.Forms.Button()
         Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnEnableDisable = New System.Windows.Forms.Button()
+        Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'ReplacementsListView
@@ -39,6 +44,7 @@ Partial Class Replacements
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ReplacementsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.ReplaceWith, Me.Regex, Me.CaseSensitive, Me.ColEnabled})
+        Me.ReplacementsListView.ContextMenuStrip = Me.ListViewMenu
         Me.ReplacementsListView.FullRowSelect = True
         Me.ReplacementsListView.HideSelection = False
         Me.ReplacementsListView.Location = New System.Drawing.Point(12, 12)
@@ -100,11 +106,34 @@ Partial Class Replacements
         '
         Me.ColEnabled.Text = "Enabled"
         '
+        'ListViewMenu
+        '
+        Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem})
+        Me.ListViewMenu.Name = "ContextMenuStrip1"
+        Me.ListViewMenu.Size = New System.Drawing.Size(181, 48)
+        '
+        'EnableDisableToolStripMenuItem
+        '
+        Me.EnableDisableToolStripMenuItem.Name = "EnableDisableToolStripMenuItem"
+        Me.EnableDisableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.EnableDisableToolStripMenuItem.Text = "Enable/Disable"
+        '
+        'BtnEnableDisable
+        '
+        Me.BtnEnableDisable.Enabled = False
+        Me.BtnEnableDisable.Location = New System.Drawing.Point(255, 415)
+        Me.BtnEnableDisable.Name = "BtnEnableDisable"
+        Me.BtnEnableDisable.Size = New System.Drawing.Size(75, 23)
+        Me.BtnEnableDisable.TabIndex = 9
+        Me.BtnEnableDisable.Text = "Disable"
+        Me.BtnEnableDisable.UseVisualStyleBackColor = True
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1035, 450)
+        Me.Controls.Add(Me.BtnEnableDisable)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnAdd)
@@ -112,6 +141,7 @@ Partial Class Replacements
         Me.MinimumSize = New System.Drawing.Size(917, 489)
         Me.Name = "Replacements"
         Me.Text = "Replacements"
+        Me.ListViewMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -125,4 +155,7 @@ Partial Class Replacements
     Friend WithEvents CaseSensitive As ColumnHeader
     Friend WithEvents BtnEdit As Button
     Friend WithEvents ColEnabled As ColumnHeader
+    Friend WithEvents ListViewMenu As ContextMenuStrip
+    Friend WithEvents EnableDisableToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BtnEnableDisable As Button
 End Class

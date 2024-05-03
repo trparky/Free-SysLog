@@ -1,6 +1,4 @@
-﻿Imports System.ComponentModel
-
-Public Class Replacements
+﻿Public Class Replacements
     Private boolDoneLoading As Boolean = False
 
     Private Function CheckForExistingItem(strReplace As String, strReplaceWith As String) As Boolean
@@ -55,7 +53,7 @@ Public Class Replacements
         boolDoneLoading = True
     End Sub
 
-    Private Sub Replacements_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    Private Sub Replacements_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
         replacementsList.Clear()
 
         Dim replacementsClass As ReplacementsClass
@@ -124,13 +122,49 @@ Public Class Replacements
         If ReplacementsListView.SelectedItems.Count > 0 Then
             BtnDelete.Enabled = True
             BtnEdit.Enabled = True
+            BtnEnableDisable.Enabled = True
+
+            BtnEnableDisable.Text = If(DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem).BoolEnabled, "Disable", "Enable")
         Else
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
+            BtnEnableDisable.Enabled = False
         End If
     End Sub
 
     Private Sub ReplacementsListView_DoubleClick(sender As Object, e As EventArgs) Handles ReplacementsListView.DoubleClick
         EditItem()
+    End Sub
+
+    Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening
+        If ReplacementsListView.SelectedItems.Count = 0 And ReplacementsListView.SelectedItems.Count > 1 Then
+            e.Cancel = True
+            Exit Sub
+        Else
+            Dim selectedItem As MyReplacementsListViewItem = ReplacementsListView.SelectedItems(0)
+            EnableDisableToolStripMenuItem.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
+        End If
+    End Sub
+
+    Private Sub DisableEnableItem()
+        Dim selectedItem As MyReplacementsListViewItem = ReplacementsListView.SelectedItems(0)
+
+        If selectedItem.BoolEnabled Then
+            selectedItem.BoolEnabled = False
+            selectedItem.SubItems(4).Text = "False"
+            BtnEnableDisable.Text = "Enable"
+        Else
+            selectedItem.BoolEnabled = True
+            selectedItem.SubItems(4).Text = "True"
+            BtnEnableDisable.Text = "Disable"
+        End If
+    End Sub
+
+    Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
+        DisableEnableItem()
+    End Sub
+
+    Private Sub EnableDisableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableToolStripMenuItem.Click
+        DisableEnableItem()
     End Sub
 End Class

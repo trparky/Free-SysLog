@@ -29,8 +29,17 @@
     End Sub
 
     Private Sub AlertsListView_Click(sender As Object, e As EventArgs) Handles AlertsListView.Click
-        BtnDelete.Enabled = AlertsListView.SelectedItems().Count > 0
-        BtnEdit.Enabled = AlertsListView.SelectedItems().Count > 0
+        If AlertsListView.SelectedItems.Count > 0 Then
+            BtnDelete.Enabled = True
+            BtnEdit.Enabled = True
+            BtnEnableDisable.Enabled = True
+
+            BtnEnableDisable.Text = If(DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem).BoolEnabled, "Disable", "Enable")
+        Else
+            BtnDelete.Enabled = False
+            BtnEdit.Enabled = False
+            BtnEnableDisable.Enabled = False
+        End If
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
@@ -139,5 +148,37 @@
 
         My.Settings.alerts = tempAlerts
         My.Settings.Save()
+    End Sub
+
+    Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening
+        If AlertsListView.SelectedItems.Count = 0 And AlertsListView.SelectedItems.Count > 1 Then
+            e.Cancel = True
+            Exit Sub
+        Else
+            Dim selectedItem As AlertsListViewItem = AlertsListView.SelectedItems(0)
+            EnableDisableToolStripMenuItem.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
+        End If
+    End Sub
+
+    Private Sub DisableEnableItem()
+        Dim selectedItem As AlertsListViewItem = AlertsListView.SelectedItems(0)
+
+        If selectedItem.BoolEnabled Then
+            selectedItem.BoolEnabled = False
+            selectedItem.SubItems(5).Text = "False"
+            BtnEnableDisable.Text = "Enable"
+        Else
+            selectedItem.BoolEnabled = True
+            selectedItem.SubItems(5).Text = "True"
+            BtnEnableDisable.Text = "Disable"
+        End If
+    End Sub
+
+    Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
+        DisableEnableItem()
+    End Sub
+
+    Private Sub EnableDisableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableToolStripMenuItem.Click
+        DisableEnableItem()
     End Sub
 End Class

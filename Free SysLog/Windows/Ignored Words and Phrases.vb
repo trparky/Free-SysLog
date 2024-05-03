@@ -81,8 +81,17 @@
     End Sub
 
     Private Sub IgnoredListView_Click(sender As Object, e As EventArgs) Handles IgnoredListView.Click
-        BtnDelete.Enabled = IgnoredListView.SelectedItems().Count > 0
-        BtnEdit.Enabled = IgnoredListView.SelectedItems().Count > 0
+        If IgnoredListView.SelectedItems.Count > 0 Then
+            BtnDelete.Enabled = True
+            BtnEdit.Enabled = True
+            BtnEnableDisable.Enabled = True
+
+            BtnEnableDisable.Text = If(DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem).BoolEnabled, "Disable", "Enable")
+        Else
+            BtnDelete.Enabled = False
+            BtnEdit.Enabled = False
+            BtnEnableDisable.Enabled = False
+        End If
     End Sub
 
     Private Sub Ignored_Words_and_Phrases_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
@@ -122,5 +131,37 @@
 
     Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles BtnEdit.Click
         EditItem()
+    End Sub
+
+    Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening
+        If IgnoredListView.SelectedItems.Count = 0 And IgnoredListView.SelectedItems.Count > 1 Then
+            e.Cancel = True
+            Exit Sub
+        Else
+            Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+            EnableDisableToolStripMenuItem.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
+        End If
+    End Sub
+
+    Private Sub DisableEnableItem()
+        Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+
+        If selectedItem.BoolEnabled Then
+            selectedItem.BoolEnabled = False
+            selectedItem.SubItems(3).Text = "False"
+            BtnEnableDisable.Text = "Enable"
+        Else
+            selectedItem.BoolEnabled = True
+            selectedItem.SubItems(3).Text = "True"
+            BtnEnableDisable.Text = "Disable"
+        End If
+    End Sub
+
+    Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
+        DisableEnableItem()
+    End Sub
+
+    Private Sub EnableDisableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableToolStripMenuItem.Click
+        DisableEnableItem()
     End Sub
 End Class

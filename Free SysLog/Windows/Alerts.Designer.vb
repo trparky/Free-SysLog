@@ -22,6 +22,7 @@ Partial Class Alerts
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.BtnEdit = New System.Windows.Forms.Button()
         Me.AlertsListView = New System.Windows.Forms.ListView()
         Me.AlertLogText = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -29,9 +30,13 @@ Partial Class Alerts
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.AlertTypeColumn = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.BtnAdd = New System.Windows.Forms.Button()
         Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.BtnEnableDisable = New System.Windows.Forms.Button()
+        Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnEdit
@@ -51,6 +56,7 @@ Partial Class Alerts
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.AlertsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.AlertLogText, Me.AlertText, Me.Regex, Me.CaseSensitive, Me.AlertTypeColumn, Me.ColEnabled})
+        Me.AlertsListView.ContextMenuStrip = Me.ListViewMenu
         Me.AlertsListView.FullRowSelect = True
         Me.AlertsListView.HideSelection = False
         Me.AlertsListView.Location = New System.Drawing.Point(12, 12)
@@ -84,6 +90,18 @@ Partial Class Alerts
         Me.AlertTypeColumn.Text = "Alert Type"
         Me.AlertTypeColumn.Width = 90
         '
+        'ListViewMenu
+        '
+        Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem})
+        Me.ListViewMenu.Name = "ContextMenuStrip1"
+        Me.ListViewMenu.Size = New System.Drawing.Size(153, 26)
+        '
+        'EnableDisableToolStripMenuItem
+        '
+        Me.EnableDisableToolStripMenuItem.Name = "EnableDisableToolStripMenuItem"
+        Me.EnableDisableToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.EnableDisableToolStripMenuItem.Text = "Enable/Disable"
+        '
         'BtnDelete
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -109,17 +127,29 @@ Partial Class Alerts
         '
         Me.ColEnabled.Text = "Enabled"
         '
+        'BtnEnableDisable
+        '
+        Me.BtnEnableDisable.Enabled = False
+        Me.BtnEnableDisable.Location = New System.Drawing.Point(235, 248)
+        Me.BtnEnableDisable.Name = "BtnEnableDisable"
+        Me.BtnEnableDisable.Size = New System.Drawing.Size(75, 23)
+        Me.BtnEnableDisable.TabIndex = 13
+        Me.BtnEnableDisable.Text = "Disable"
+        Me.BtnEnableDisable.UseVisualStyleBackColor = True
+        '
         'Alerts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(987, 283)
+        Me.Controls.Add(Me.BtnEnableDisable)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.AlertsListView)
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnAdd)
         Me.Name = "Alerts"
         Me.Text = "Alerts"
+        Me.ListViewMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -134,4 +164,7 @@ Partial Class Alerts
     Friend WithEvents AlertText As ColumnHeader
     Friend WithEvents AlertTypeColumn As ColumnHeader
     Friend WithEvents ColEnabled As ColumnHeader
+    Friend WithEvents ListViewMenu As ContextMenuStrip
+    Friend WithEvents EnableDisableToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BtnEnableDisable As Button
 End Class
