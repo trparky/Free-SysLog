@@ -14,6 +14,7 @@
             .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(2).Value = log
             .Cells(3).Value = If(BoolAlerted, "Yes", "No")
+            .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .DateObject = DateObject
             .BoolAlerted = BoolAlerted
         End With
