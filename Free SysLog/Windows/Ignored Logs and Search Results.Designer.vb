@@ -134,6 +134,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnClearIgnoredLogs.TabIndex = 21
         Me.BtnClearIgnoredLogs.Text = "Clear Ignored Logs"
         Me.BtnClearIgnoredLogs.UseVisualStyleBackColor = True
+        Me.BtnClearIgnoredLogs.Visible = False
         '
         'LogsContextMenu
         '
