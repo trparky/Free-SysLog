@@ -61,6 +61,11 @@
 
         IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
 
+        Replace.Width = My.Settings.colIgnoredReplace
+        Regex.Width = My.Settings.colIgnoredRegex
+        CaseSensitive.Width = My.Settings.colIgnoredCaseSensitive
+        ColEnabled.Width = My.Settings.colIgnoredEnabled
+
         boolDoneLoading = True
     End Sub
 
@@ -163,5 +168,14 @@
 
     Private Sub EnableDisableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableToolStripMenuItem.Click
         DisableEnableItem()
+    End Sub
+
+    Private Sub IgnoredListView_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles IgnoredListView.ColumnWidthChanged
+        If boolDoneLoading Then
+            My.Settings.colIgnoredReplace = Replace.Width
+            My.Settings.colIgnoredRegex = Regex.Width
+            My.Settings.colIgnoredCaseSensitive = CaseSensitive.Width
+            My.Settings.colIgnoredEnabled = ColEnabled.Width
+        End If
     End Sub
 End Class

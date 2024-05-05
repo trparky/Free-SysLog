@@ -17,6 +17,13 @@
 
         AlertsListView.Items.AddRange(MyIgnoredListViewItem.ToArray)
 
+        AlertLogText.Width = My.Settings.colAlertsAlertLogText
+        AlertText.Width = My.Settings.colAlertsAlertText
+        Regex.Width = My.Settings.colAlertsRegex
+        CaseSensitive.Width = My.Settings.colAlertsCaseSensitive
+        AlertTypeColumn.Width = My.Settings.colAlertsType
+        ColEnabled.Width = My.Settings.colAlertsEnabled
+
         boolDoneLoading = True
     End Sub
 
@@ -180,5 +187,16 @@
 
     Private Sub EnableDisableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableToolStripMenuItem.Click
         DisableEnableItem()
+    End Sub
+
+    Private Sub AlertsListView_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles AlertsListView.ColumnWidthChanged
+        If boolDoneLoading Then
+            My.Settings.colAlertsAlertLogText = AlertLogText.Width
+            My.Settings.colAlertsAlertText = AlertText.Width
+            My.Settings.colAlertsRegex = Regex.Width
+            My.Settings.colAlertsCaseSensitive = CaseSensitive.Width
+            My.Settings.colAlertsType = AlertTypeColumn.Width
+            My.Settings.colAlertsEnabled = ColEnabled.Width
+        End If
     End Sub
 End Class

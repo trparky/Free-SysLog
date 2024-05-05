@@ -385,6 +385,186 @@ Namespace My
                 Me("boolShowAlertedColumn") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("345")>  _
+        Public Property colIgnoredReplace() As Integer
+            Get
+                Return CType(Me("colIgnoredReplace"),Integer)
+            End Get
+            Set
+                Me("colIgnoredReplace") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property colIgnoredRegex() As Integer
+            Get
+                Return CType(Me("colIgnoredRegex"),Integer)
+            End Get
+            Set
+                Me("colIgnoredRegex") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("91")>  _
+        Public Property colIgnoredCaseSensitive() As Integer
+            Get
+                Return CType(Me("colIgnoredCaseSensitive"),Integer)
+            End Get
+            Set
+                Me("colIgnoredCaseSensitive") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property colIgnoredEnabled() As Integer
+            Get
+                Return CType(Me("colIgnoredEnabled"),Integer)
+            End Get
+            Set
+                Me("colIgnoredEnabled") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("345")>  _
+        Public Property colReplacementsReplace() As Integer
+            Get
+                Return CType(Me("colReplacementsReplace"),Integer)
+            End Get
+            Set
+                Me("colReplacementsReplace") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("345")>  _
+        Public Property colReplacementsReplaceWith() As Integer
+            Get
+                Return CType(Me("colReplacementsReplaceWith"),Integer)
+            End Get
+            Set
+                Me("colReplacementsReplaceWith") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property colReplacementsRegex() As Integer
+            Get
+                Return CType(Me("colReplacementsRegex"),Integer)
+            End Get
+            Set
+                Me("colReplacementsRegex") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("91")>  _
+        Public Property colReplacementsCaseSensitive() As Integer
+            Get
+                Return CType(Me("colReplacementsCaseSensitive"),Integer)
+            End Get
+            Set
+                Me("colReplacementsCaseSensitive") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property colReplacementsEnabled() As Integer
+            Get
+                Return CType(Me("colReplacementsEnabled"),Integer)
+            End Get
+            Set
+                Me("colReplacementsEnabled") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("308")>  _
+        Public Property colAlertsAlertLogText() As Integer
+            Get
+                Return CType(Me("colAlertsAlertLogText"),Integer)
+            End Get
+            Set
+                Me("colAlertsAlertLogText") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("257")>  _
+        Public Property colAlertsAlertText() As Integer
+            Get
+                Return CType(Me("colAlertsAlertText"),Integer)
+            End Get
+            Set
+                Me("colAlertsAlertText") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property colAlertsRegex() As Integer
+            Get
+                Return CType(Me("colAlertsRegex"),Integer)
+            End Get
+            Set
+                Me("colAlertsRegex") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("91")>  _
+        Public Property colAlertsCaseSensitive() As Integer
+            Get
+                Return CType(Me("colAlertsCaseSensitive"),Integer)
+            End Get
+            Set
+                Me("colAlertsCaseSensitive") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("90")>  _
+        Public Property colAlertsType() As Integer
+            Get
+                Return CType(Me("colAlertsType"),Integer)
+            End Get
+            Set
+                Me("colAlertsType") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property colAlertsEnabled() As Integer
+            Get
+                Return CType(Me("colAlertsEnabled"),Integer)
+            End Get
+            Set
+                Me("colAlertsEnabled") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

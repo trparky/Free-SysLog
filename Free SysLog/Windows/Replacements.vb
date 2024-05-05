@@ -50,6 +50,12 @@
 
         ReplacementsListView.Items.AddRange(listOfReplacementsToAdd.ToArray())
 
+        Replace.Width = My.Settings.colReplacementsReplace
+        ReplaceWith.Width = My.Settings.colReplacementsReplaceWith
+        Regex.Width = My.Settings.colReplacementsRegex
+        CaseSensitive.Width = My.Settings.colReplacementsCaseSensitive
+        ColEnabled.Width = My.Settings.colReplacementsEnabled
+
         boolDoneLoading = True
     End Sub
 
@@ -166,5 +172,15 @@
 
     Private Sub EnableDisableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableToolStripMenuItem.Click
         DisableEnableItem()
+    End Sub
+
+    Private Sub ReplacementsListView_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles ReplacementsListView.ColumnWidthChanged
+        If boolDoneLoading Then
+            My.Settings.colReplacementsReplace = Replace.Width
+            My.Settings.colReplacementsReplaceWith = ReplaceWith.Width
+            My.Settings.colReplacementsRegex = Regex.Width
+            My.Settings.colReplacementsCaseSensitive = CaseSensitive.Width
+            My.Settings.colReplacementsEnabled = ColEnabled.Width
+        End If
     End Sub
 End Class

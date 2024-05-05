@@ -86,5 +86,50 @@
     <Setting Name="boolShowAlertedColumn" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="colIgnoredReplace" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">345</Value>
+    </Setting>
+    <Setting Name="colIgnoredRegex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colIgnoredCaseSensitive" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">91</Value>
+    </Setting>
+    <Setting Name="colIgnoredEnabled" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colReplacementsReplace" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">345</Value>
+    </Setting>
+    <Setting Name="colReplacementsReplaceWith" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">345</Value>
+    </Setting>
+    <Setting Name="colReplacementsRegex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colReplacementsCaseSensitive" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">91</Value>
+    </Setting>
+    <Setting Name="colReplacementsEnabled" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colAlertsAlertLogText" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">308</Value>
+    </Setting>
+    <Setting Name="colAlertsAlertText" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">257</Value>
+    </Setting>
+    <Setting Name="colAlertsRegex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colAlertsCaseSensitive" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">91</Value>
+    </Setting>
+    <Setting Name="colAlertsType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
+    <Setting Name="colAlertsEnabled" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
