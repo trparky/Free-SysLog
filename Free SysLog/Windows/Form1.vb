@@ -721,7 +721,11 @@ Public Class Form1
         My.Settings.recordIgnoredLogs = ChkEnableRecordingOfIgnoredLogs.Checked
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
-        If Not ChkEnableRecordingOfIgnoredLogs.Checked Then IgnoredLogs.Clear()
+
+        If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
+            IgnoredLogs.Clear()
+            LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+        End If
     End Sub
 
     Private Sub LogsOlderThanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LogsOlderThanToolStripMenuItem.Click
