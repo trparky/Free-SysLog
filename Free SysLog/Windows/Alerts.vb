@@ -24,6 +24,8 @@
         AlertTypeColumn.Width = My.Settings.colAlertsType
         ColEnabled.Width = My.Settings.colAlertsEnabled
 
+        Size = My.Settings.ConfigureAlertsSize
+
         boolDoneLoading = True
     End Sub
 
@@ -198,5 +200,9 @@
             My.Settings.colAlertsType = AlertTypeColumn.Width
             My.Settings.colAlertsEnabled = ColEnabled.Width
         End If
+    End Sub
+
+    Private Sub Alerts_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        If boolDoneLoading Then My.Settings.ConfigureAlertsSize = Size
     End Sub
 End Class

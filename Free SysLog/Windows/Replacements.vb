@@ -56,6 +56,8 @@
         CaseSensitive.Width = My.Settings.colReplacementsCaseSensitive
         ColEnabled.Width = My.Settings.colReplacementsEnabled
 
+        Size = My.Settings.ConfigureReplacementsSize
+
         boolDoneLoading = True
     End Sub
 
@@ -182,5 +184,9 @@
             My.Settings.colReplacementsCaseSensitive = CaseSensitive.Width
             My.Settings.colReplacementsEnabled = ColEnabled.Width
         End If
+    End Sub
+
+    Private Sub Replacements_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        If boolDoneLoading Then My.Settings.ConfigureReplacementsSize = Size
     End Sub
 End Class

@@ -565,6 +565,42 @@ Namespace My
                 Me("colAlertsEnabled") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("670, 304")>  _
+        Public Property ConfigureIgnoredSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("ConfigureIgnoredSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("ConfigureIgnoredSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1051, 489")>  _
+        Public Property ConfigureReplacementsSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("ConfigureReplacementsSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("ConfigureReplacementsSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1003, 322")>  _
+        Public Property ConfigureAlertsSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("ConfigureAlertsSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("ConfigureAlertsSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

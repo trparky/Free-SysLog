@@ -131,5 +131,14 @@
     <Setting Name="colAlertsEnabled" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
+    <Setting Name="ConfigureIgnoredSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">670, 304</Value>
+    </Setting>
+    <Setting Name="ConfigureReplacementsSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1051, 489</Value>
+    </Setting>
+    <Setting Name="ConfigureAlertsSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1003, 322</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -66,6 +66,8 @@
         CaseSensitive.Width = My.Settings.colIgnoredCaseSensitive
         ColEnabled.Width = My.Settings.colIgnoredEnabled
 
+        Size = My.Settings.ConfigureIgnoredSize
+
         boolDoneLoading = True
     End Sub
 
@@ -177,5 +179,9 @@
             My.Settings.colIgnoredCaseSensitive = CaseSensitive.Width
             My.Settings.colIgnoredEnabled = ColEnabled.Width
         End If
+    End Sub
+
+    Private Sub IgnoredWordsAndPhrases_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        If boolDoneLoading Then My.Settings.ConfigureIgnoredSize = Size
     End Sub
 End Class
