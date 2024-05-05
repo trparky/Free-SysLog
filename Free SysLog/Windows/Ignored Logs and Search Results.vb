@@ -72,10 +72,12 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        If boolDoneLoading Then
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             My.Settings.ignoredWindowSize = Size
         Else
             My.Settings.searchWindowSize = Size
+        End If
         End If
     End Sub
 
