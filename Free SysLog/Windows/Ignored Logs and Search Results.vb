@@ -200,6 +200,7 @@ Public Class IgnoredLogsAndSearchResults
         If TypeOf parentForm Is Form1 Then
             parentForm.RestoreWindow()
             BtnViewMainWindow.Enabled = False
+            BringToFront()
         End If
     End Sub
 
