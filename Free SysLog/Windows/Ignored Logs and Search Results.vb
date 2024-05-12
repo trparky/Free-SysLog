@@ -149,7 +149,7 @@ Public Class IgnoredLogsAndSearchResults
         SaveFileDialog.Title = "Export Data..."
 
         If SaveFileDialog.ShowDialog() = DialogResult.OK Then
-            Dim fileInfo As New IO.FileInfo(SaveFileDialog.FileName)
+            Dim fileInfo As New FileInfo(SaveFileDialog.FileName)
 
             Dim collectionOfSavedData As New List(Of SavedData)
             Dim myItem As MyDataGridViewRow
