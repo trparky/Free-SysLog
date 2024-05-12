@@ -154,9 +154,9 @@ Public Class IgnoredLogsAndSearchResults
             Dim collectionOfSavedData As New List(Of SavedData)
             Dim myItem As MyDataGridViewRow
             Dim csvStringBuilder As New Text.StringBuilder
-            Dim strTime, strSourceIP, strLogText As String
+            Dim strTime, strSourceIP, strLogText, strAlerted As String
 
-            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text")
+            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
 
             For Each item As DataGridViewRow In Logs.Rows
                 If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
@@ -167,15 +167,17 @@ Public Class IgnoredLogsAndSearchResults
                             strTime = SanitizeForCSV(.Cells(0).Value)
                             strSourceIP = SanitizeForCSV(.Cells(1).Value)
                             strLogText = SanitizeForCSV(.Cells(2).Value)
+                            strAlerted = If(.BoolAlerted, "Yes", "No")
                         End With
 
-                        csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText}")
+                        csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
                     Else
                         collectionOfSavedData.Add(New SavedData With {
                                                 .time = myItem.Cells(0).Value,
                                                 .ip = myItem.Cells(1).Value,
                                                 .log = myItem.Cells(2).Value,
-                                                .DateObject = myItem.DateObject
+                                                .DateObject = myItem.DateObject,
+                                                .BoolAlerted = myItem.BoolAlerted
                                               })
                     End If
                 End If
