@@ -971,7 +971,7 @@ Public Class Form1
                 Dim collectionOfSavedData As New List(Of SavedData)
                 Dim myItem As MyDataGridViewRow
                 Dim csvStringBuilder As New StringBuilder
-                Dim strTime, strSourceIP, strLogText As String
+                Dim strTime, strSourceIP, strLogText, strAlerted As String
 
                 If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
 
@@ -984,9 +984,10 @@ Public Class Form1
                                 strTime = SanitizeForCSV(.Cells(0).Value)
                                 strSourceIP = SanitizeForCSV(.Cells(1).Value)
                                 strLogText = SanitizeForCSV(.Cells(2).Value)
+                                strAlerted = If(.BoolAlerted, "Yes", "No")
                             End With
 
-                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{myItem.BoolAlerted}")
+                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
                         Else
                             collectionOfSavedData.Add(New SavedData With {
                                                     .time = myItem.Cells(0).Value,
