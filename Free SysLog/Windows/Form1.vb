@@ -1235,9 +1235,12 @@ Public Class Form1
                     ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
                         boolDoServerLoop = False
                     ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
-                        strReceivedData = strReceivedData.Replace("proxied|", "", StringComparison.OrdinalIgnoreCase)
-                        ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData)
-                        ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip)
+                        Try
+                            strReceivedData = strReceivedData.Replace("proxied|", "", StringComparison.OrdinalIgnoreCase)
+                            ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData)
+                            ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip)
+                        Catch ex As Exception
+                        End Try
                     Else
                         If serversList.Count > 0 Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
