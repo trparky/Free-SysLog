@@ -30,4 +30,5 @@ End Class
 Public Class SysLogProxyServer
     Public ip As String
     Public port As Integer
+    Public boolEnabled As Boolean = True
 End Class

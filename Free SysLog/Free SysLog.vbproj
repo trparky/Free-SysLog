@@ -243,6 +243,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Configure SysLog Mirror Servers.resx">
       <DependentUpon>Configure SysLog Mirror Servers.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>

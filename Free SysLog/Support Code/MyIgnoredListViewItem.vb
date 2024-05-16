@@ -25,3 +25,13 @@ Public Class AlertsListViewItem
         Me.Text = strInput
     End Sub
 End Class
+
+Public Class ServerListViewItem
+    Inherits ListViewItem
+    Implements ICloneable
+    Public Property BoolEnabled As Boolean
+
+    Public Sub New(strInput As String)
+        Me.Text = strInput
+    End Sub
+End Class

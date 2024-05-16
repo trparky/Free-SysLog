@@ -1,20 +1,25 @@
-﻿Public Class ConfigureSysLogMirrorServers
+﻿Imports System.ComponentModel
+Imports Microsoft.SqlServer
+
+Public Class ConfigureSysLogMirrorServers
     Public boolSuccess As Boolean = False
 
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
-            Dim listViewItem As ListViewItem
+            Dim ServerListView As ServerListViewItem
             Dim SysLogProxyServer As SysLogProxyServer
 
             For Each strJSONString As String In My.Settings.ServersToSendTo
                 SysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString)
 
-                listViewItem = New ListViewItem(SysLogProxyServer.ip)
-                listViewItem.SubItems.Add(SysLogProxyServer.port)
-                servers.Items.Add(listViewItem)
+                ServerListView = New ServerListViewItem(SysLogProxyServer.ip)
+                ServerListView.SubItems.Add(SysLogProxyServer.port)
+                ServerListView.SubItems.Add(If(SysLogProxyServer.boolEnabled, "Yes", "No"))
+                ServerListView.BoolEnabled = SysLogProxyServer.boolEnabled
+                servers.Items.Add(ServerListView)
 
                 SysLogProxyServer = Nothing
-                listViewItem = Nothing
+                ServerListView = Nothing
             Next
         End If
     End Sub
@@ -23,19 +28,25 @@
         If servers.SelectedItems.Count > 0 Then
             BtnDeleteServer.Enabled = True
             BtnEditServer.Enabled = True
+            btnEnableDisable.Enabled = True
+
+            btnEnableDisable.Text = If(DirectCast(servers.SelectedItems(0), ServerListViewItem).BoolEnabled, "Disable", "Enable")
+
         Else
             BtnDeleteServer.Enabled = False
             BtnEditServer.Enabled = False
+            btnEnableDisable.Enabled = False
         End If
     End Sub
 
     Private Sub EditItem()
         Using AddSysLogMirrorServer As New AddSysLogMirrorServer With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-            Dim selectedItemObject As ListViewItem = servers.SelectedItems(0)
+            Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
 
             With AddSysLogMirrorServer
                 .strIP = selectedItemObject.SubItems(0).Text
                 .intPort = selectedItemObject.SubItems(1).Text
+                .boolEnabled = selectedItemObject.BoolEnabled
             End With
 
             AddSysLogMirrorServer.ShowDialog(Me)
@@ -44,6 +55,8 @@
                 With selectedItemObject
                     .SubItems(0).Text = AddSysLogMirrorServer.strIP
                     .SubItems(1).Text = AddSysLogMirrorServer.intPort
+                    .SubItems(2).Text = If(AddSysLogMirrorServer.boolEnabled, "Yes", "No")
+                    .BoolEnabled = AddSysLogMirrorServer.boolEnabled
                 End With
             End If
         End Using
@@ -54,9 +67,9 @@
             AddSysLogMirrorServer.ShowDialog(Me)
 
             If AddSysLogMirrorServer.boolSuccess Then
-                Dim ListViewItem As New ListViewItem(AddSysLogMirrorServer.strIP)
-                ListViewItem.SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
-                servers.Items.Add(ListViewItem)
+                Dim ServerListView As New ServerListViewItem(AddSysLogMirrorServer.strIP)
+                ServerListView.SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
+                servers.Items.Add(ServerListView)
             End If
         End Using
     End Sub
@@ -79,13 +92,32 @@
         Dim SysLogProxyServer As SysLogProxyServer
         Dim tempServer As New Specialized.StringCollection()
 
-        For Each item As ListViewItem In servers.Items
-            SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text)}
+        For Each item As ServerListViewItem In servers.Items
+            SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled}
             serversList.Add(SysLogProxyServer)
             tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
         Next
 
         My.Settings.ServersToSendTo = tempServer
         My.Settings.Save()
+    End Sub
+
+    Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
+        Dim selectedItem As ServerListViewItem = servers.SelectedItems(0)
+        EnableDisableToolStripMenuItem.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
+    End Sub
+
+    Private Sub EnableDisableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableToolStripMenuItem.Click
+        Dim selectedItem As ServerListViewItem = servers.SelectedItems(0)
+        selectedItem.BoolEnabled = Not selectedItem.BoolEnabled
+        selectedItem.SubItems(2).Text = If(selectedItem.BoolEnabled, "Yes", "No")
+        btnEnableDisable.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
+    End Sub
+
+    Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles btnEnableDisable.Click
+        Dim selectedItem As ServerListViewItem = servers.SelectedItems(0)
+        selectedItem.BoolEnabled = Not selectedItem.BoolEnabled
+        selectedItem.SubItems(2).Text = If(selectedItem.BoolEnabled, "Yes", "No")
+        btnEnableDisable.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
     End Sub
 End Class

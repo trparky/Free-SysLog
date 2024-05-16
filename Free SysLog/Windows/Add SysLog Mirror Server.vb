@@ -4,6 +4,7 @@ Public Class AddSysLogMirrorServer
     Public strIP As String, intPort As Integer
     Public boolEditMode As Boolean = False
     Public boolSuccess As Boolean = False
+    Public boolEnabled As Boolean
 
     Private Sub BtnAddServer_Click(sender As Object, e As EventArgs) Handles BtnAddServer.Click
         If Integer.TryParse(txtPort.Text, intPort) Then
@@ -15,6 +16,7 @@ Public Class AddSysLogMirrorServer
             End If
 
             strIP = txtIP.Text
+            boolEnabled = chkEnabled.Checked
             boolSuccess = True
             Close()
         Else
@@ -27,6 +29,7 @@ Public Class AddSysLogMirrorServer
             BtnAddServer.Text = "Edit Server"
             txtIP.Text = strIP
             txtPort.Text = intPort.ToString
+            chkEnabled.Checked = boolEnabled
         Else
             txtPort.Text = My.Settings.sysLogPort.ToString
         End If

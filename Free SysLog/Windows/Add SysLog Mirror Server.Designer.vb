@@ -27,6 +27,7 @@ Partial Class AddSysLogMirrorServer
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtPort = New System.Windows.Forms.TextBox()
         Me.BtnAddServer = New System.Windows.Forms.Button()
+        Me.chkEnabled = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'Label1
@@ -70,11 +71,24 @@ Partial Class AddSysLogMirrorServer
         Me.BtnAddServer.Text = "Add Server"
         Me.BtnAddServer.UseVisualStyleBackColor = True
         '
+        'chkEnabled
+        '
+        Me.chkEnabled.AutoSize = True
+        Me.chkEnabled.Checked = True
+        Me.chkEnabled.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkEnabled.Location = New System.Drawing.Point(149, 35)
+        Me.chkEnabled.Name = "chkEnabled"
+        Me.chkEnabled.Size = New System.Drawing.Size(71, 17)
+        Me.chkEnabled.TabIndex = 5
+        Me.chkEnabled.Text = "Enabled?"
+        Me.chkEnabled.UseVisualStyleBackColor = True
+        '
         'AddSysLogMirrorServer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(316, 91)
+        Me.Controls.Add(Me.chkEnabled)
         Me.Controls.Add(Me.BtnAddServer)
         Me.Controls.Add(Me.txtPort)
         Me.Controls.Add(Me.Label2)
@@ -92,4 +106,5 @@ Partial Class AddSysLogMirrorServer
     Friend WithEvents Label2 As Label
     Friend WithEvents txtPort As TextBox
     Friend WithEvents BtnAddServer As Button
+    Friend WithEvents chkEnabled As CheckBox
 End Class

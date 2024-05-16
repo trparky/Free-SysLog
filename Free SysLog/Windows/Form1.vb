@@ -1247,7 +1247,7 @@ Public Class Form1
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
 
                                                                        For Each item As SysLogProxyServer In serversList
-                                                                           SendMessageToSysLogServer("proxied|" & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
+                                                                           If item.boolEnabled Then SendMessageToSysLogServer("proxied|" & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
                                                                        Next
 
                                                                        ProxiedSysLogData = Nothing
