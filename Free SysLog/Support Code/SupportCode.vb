@@ -11,6 +11,7 @@ Module SupportCode
     Public replacementsList As New List(Of ReplacementsClass)
     Public ignoredList As New List(Of IgnoredClass)
     Public alertsList As New List(Of AlertsClass)
+    Public serversList As New List(Of SysLogProxyServer)
     Public Const strMutexName As String = "Free SysLog Server"
     Public mutex As Threading.Mutex
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
@@ -28,6 +29,14 @@ Module SupportCode
     Public Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
         Using udpClient As New UdpClient()
             udpClient.Connect(Net.IPAddress.Loopback, intPort)
+            Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
+            udpClient.Send(data, data.Length)
+        End Using
+    End Sub
+
+    Public Sub SendMessageToSysLogServer(strMessage As String, strDestinationIP As String, intPort As Integer)
+        Using udpClient As New UdpClient()
+            udpClient.Connect(strDestinationIP, intPort)
             Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
             udpClient.Send(data, data.Length)
         End Using

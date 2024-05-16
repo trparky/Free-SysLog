@@ -251,6 +251,12 @@ Public Class Form1
             Next
         End If
 
+        If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
+            For Each strJSONString As String In My.Settings.ServersToSendTo
+                serversList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString))
+            Next
+        End If
+
         If My.Settings.ignored2 Is Nothing Then
             My.Settings.ignored2 = New Specialized.StringCollection()
 
@@ -1195,6 +1201,16 @@ Public Class Form1
         My.Settings.boolDeselectItemsWhenMinimizing = ChkDeselectItemAfterMinimizingWindow.Checked
     End Sub
 
+    Private Sub ConfigureSysLogMirrorServers_Click(sender As Object, e As EventArgs) Handles ConfigureSysLogMirrorServers.Click
+        Using ConfigureSysLogMirrorServers As New ConfigureSysLogMirrorServers With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            ConfigureSysLogMirrorServers.ShowDialog(Me)
+
+            If ConfigureSysLogMirrorServers.boolSuccess Then
+                MsgBox("Done", MsgBoxStyle.Information, Text)
+            End If
+        End Using
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1204,6 +1220,7 @@ Public Class Form1
                 Dim strReceivedData, strSourceIP As String
                 Dim byteReceivedData() As Byte
                 Dim boolDoServerLoop As Boolean = True
+                Dim ProxiedSysLogData As ProxiedSysLogData
 
                 While boolDoServerLoop
                     byteReceivedData = udpServer.Receive(ipEndPoint)
@@ -1214,7 +1231,23 @@ Public Class Form1
                         Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
                     ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
                         boolDoServerLoop = False
+                    ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
+                        strReceivedData = strReceivedData.Replace("proxied|", "", StringComparison.OrdinalIgnoreCase)
+                        ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData)
+                        ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip)
                     Else
+                        If serversList.Count > 0 Then
+                            Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                       ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
+
+                                                                       For Each item As SysLogProxyServer In serversList
+                                                                           SendMessageToSysLogServer("proxied|" & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
+                                                                       Next
+
+                                                                       ProxiedSysLogData = Nothing
+                                                                   End Sub)
+                        End If
+
                         ProcessIncomingLog(strReceivedData, strSourceIP)
                     End If
 

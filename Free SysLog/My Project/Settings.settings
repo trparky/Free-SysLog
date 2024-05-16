@@ -140,5 +140,8 @@
     <Setting Name="ConfigureAlertsSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">1003, 322</Value>
     </Setting>
+    <Setting Name="ServersToSendTo" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

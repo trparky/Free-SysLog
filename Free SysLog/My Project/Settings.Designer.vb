@@ -601,6 +601,17 @@ Namespace My
                 Me("ConfigureAlertsSize") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property ServersToSendTo() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("ServersToSendTo"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("ServersToSendTo") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -22,3 +22,12 @@
         Return MyDataGridViewRow
     End Function
 End Class
+
+Public Class ProxiedSysLogData
+    Public ip, log As String
+End Class
+
+Public Class SysLogProxyServer
+    Public ip As String
+    Public port As Integer
+End Class

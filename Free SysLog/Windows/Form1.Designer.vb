@@ -88,6 +88,7 @@ Partial Class Form1
         Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureSysLogMirrorServers = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
@@ -155,7 +156,7 @@ Partial Class Form1
         '
         Me.LblItemsSelected.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.LblItemsSelected.Name = "LblItemsSelected"
-        Me.LblItemsSelected.Size = New System.Drawing.Size(193, 17)
+        Me.LblItemsSelected.Size = New System.Drawing.Size(91, 17)
         Me.LblItemsSelected.Text = "Selected Logs: 0"
         Me.LblItemsSelected.Visible = False
         '
@@ -289,7 +290,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ChkDeselectItemAfterMinimizingWindow, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -305,6 +306,12 @@ Partial Class Form1
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Name = "ConfigureIgnoredWordsAndPhrasesToolStripMenuItem"
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Text = "Configure Ignored Words and Phrases"
+        '
+        'ConfigureSysLogMirrorServers
+        '
+        Me.ConfigureSysLogMirrorServers.Name = "ConfigureSysLogMirrorServers"
+        Me.ConfigureSysLogMirrorServers.Size = New System.Drawing.Size(339, 22)
+        Me.ConfigureSysLogMirrorServers.Text = "Configure SysLog Mirror Servers"
         '
         'ChkEnableRecordingOfIgnoredLogs
         '
@@ -479,7 +486,7 @@ Partial Class Form1
         '
         Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
-        Me.LogsMenu.Size = New System.Drawing.Size(189, 114)
+        Me.LogsMenu.Size = New System.Drawing.Size(189, 158)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -545,11 +552,13 @@ Partial Class Form1
         'CreateIgnoredLogToolStripMenuItem
         '
         Me.CreateIgnoredLogToolStripMenuItem.Name = "CreateIgnoredLogToolStripMenuItem"
-        Me.CreateIgnoredLogToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.CreateIgnoredLogToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.CreateIgnoredLogToolStripMenuItem.Text = "Create Ignored Log"
         '
+        'CreateReplacementToolStripMenuItem
+        '
         Me.CreateReplacementToolStripMenuItem.Name = "CreateReplacementToolStripMenuItem"
-        Me.CreateReplacementToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
+        Me.CreateReplacementToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.CreateReplacementToolStripMenuItem.Text = "Create Replacement"
         '
         'Form1
@@ -648,4 +657,5 @@ Partial Class Form1
     Friend WithEvents LblItemsSelected As ToolStripStatusLabel
     Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
     Friend WithEvents ChkShowAlertedColumn As ToolStripMenuItem
+    Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
 End Class
