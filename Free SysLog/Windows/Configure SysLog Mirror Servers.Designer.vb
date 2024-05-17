@@ -78,6 +78,7 @@ Partial Class ConfigureSysLogMirrorServers
         '
         'BtnAddServer
         '
+        Me.BtnAddServer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnAddServer.Location = New System.Drawing.Point(12, 115)
         Me.BtnAddServer.Name = "BtnAddServer"
         Me.BtnAddServer.Size = New System.Drawing.Size(75, 23)
@@ -87,6 +88,7 @@ Partial Class ConfigureSysLogMirrorServers
         '
         'BtnEditServer
         '
+        Me.BtnEditServer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEditServer.Enabled = False
         Me.BtnEditServer.Location = New System.Drawing.Point(93, 115)
         Me.BtnEditServer.Name = "BtnEditServer"
@@ -97,6 +99,7 @@ Partial Class ConfigureSysLogMirrorServers
         '
         'BtnDeleteServer
         '
+        Me.BtnDeleteServer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDeleteServer.Enabled = False
         Me.BtnDeleteServer.Location = New System.Drawing.Point(174, 115)
         Me.BtnDeleteServer.Name = "BtnDeleteServer"
@@ -107,6 +110,7 @@ Partial Class ConfigureSysLogMirrorServers
         '
         'btnEnableDisable
         '
+        Me.btnEnableDisable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnEnableDisable.Enabled = False
         Me.btnEnableDisable.Location = New System.Drawing.Point(262, 115)
         Me.btnEnableDisable.Name = "btnEnableDisable"
