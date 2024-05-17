@@ -129,6 +129,7 @@ Partial Class Alerts
         '
         'BtnEnableDisable
         '
+        Me.BtnEnableDisable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEnableDisable.Enabled = False
         Me.BtnEnableDisable.Location = New System.Drawing.Point(235, 248)
         Me.BtnEnableDisable.Name = "BtnEnableDisable"
