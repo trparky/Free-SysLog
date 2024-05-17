@@ -308,7 +308,7 @@ Public Class Form1
                         My.Settings.Save()
                         Exit Do
                     Else
-                        MsgBox("You must set a location to save the syslog data file to.", MsgBoxStyle.Information, Text)
+                        If MsgBox("You must set a location to save the syslog data file to. Do you want to continue?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo + MsgBoxStyle.SystemModal, Text) = MsgBoxResult.No Then Process.GetCurrentProcess.Kill()
                     End If
                 Loop While True
             End Using
