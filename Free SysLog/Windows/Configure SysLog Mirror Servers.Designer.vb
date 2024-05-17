@@ -33,17 +33,18 @@ Partial Class ConfigureSysLogMirrorServers
         Me.BtnEditServer = New System.Windows.Forms.Button()
         Me.BtnDeleteServer = New System.Windows.Forms.Button()
         Me.btnEnableDisable = New System.Windows.Forms.Button()
+        Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'servers
         '
-        Me.servers.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colServer, Me.colPort, Me.colEnabled})
+        Me.servers.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colServer, Me.colPort, Me.colEnabled, Me.colName})
         Me.servers.ContextMenuStrip = Me.ContextMenuStrip1
         Me.servers.HideSelection = False
         Me.servers.Location = New System.Drawing.Point(12, 12)
         Me.servers.Name = "servers"
-        Me.servers.Size = New System.Drawing.Size(415, 97)
+        Me.servers.Size = New System.Drawing.Size(613, 97)
         Me.servers.TabIndex = 0
         Me.servers.UseCompatibleStateImageBehavior = False
         Me.servers.View = System.Windows.Forms.View.Details
@@ -113,17 +114,24 @@ Partial Class ConfigureSysLogMirrorServers
         Me.btnEnableDisable.Text = "Enable"
         Me.btnEnableDisable.UseVisualStyleBackColor = True
         '
+        'colName
+        '
+        Me.colName.Text = "Server Name"
+        Me.colName.Width = 180
+        '
         'ConfigureSysLogMirrorServers
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(439, 147)
+        Me.ClientSize = New System.Drawing.Size(637, 147)
         Me.Controls.Add(Me.btnEnableDisable)
         Me.Controls.Add(Me.BtnDeleteServer)
         Me.Controls.Add(Me.BtnEditServer)
         Me.Controls.Add(Me.BtnAddServer)
         Me.Controls.Add(Me.servers)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "ConfigureSysLogMirrorServers"
         Me.Text = "Configure SysLog Mirror Servers"
         Me.ContextMenuStrip1.ResumeLayout(False)
@@ -141,4 +149,5 @@ Partial Class ConfigureSysLogMirrorServers
     Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
     Friend WithEvents EnableDisableToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnEnableDisable As Button
+    Friend WithEvents colName As ColumnHeader
 End Class

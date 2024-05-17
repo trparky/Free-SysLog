@@ -30,6 +30,7 @@ Public Class ServerListViewItem
     Inherits ListViewItem
     Implements ICloneable
     Public Property BoolEnabled As Boolean
+    Public Property StrName As String = Nothing
 
     Public Sub New(strInput As String)
         Me.Text = strInput

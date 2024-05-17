@@ -28,6 +28,8 @@ Partial Class AddSysLogMirrorServer
         Me.txtPort = New System.Windows.Forms.TextBox()
         Me.BtnAddServer = New System.Windows.Forms.Button()
         Me.chkEnabled = New System.Windows.Forms.CheckBox()
+        Me.txtName = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -64,7 +66,7 @@ Partial Class AddSysLogMirrorServer
         '
         'BtnAddServer
         '
-        Me.BtnAddServer.Location = New System.Drawing.Point(15, 58)
+        Me.BtnAddServer.Location = New System.Drawing.Point(15, 84)
         Me.BtnAddServer.Name = "BtnAddServer"
         Me.BtnAddServer.Size = New System.Drawing.Size(75, 23)
         Me.BtnAddServer.TabIndex = 4
@@ -83,11 +85,29 @@ Partial Class AddSysLogMirrorServer
         Me.chkEnabled.Text = "Enabled?"
         Me.chkEnabled.UseVisualStyleBackColor = True
         '
+        'txtName
+        '
+        Me.txtName.Location = New System.Drawing.Point(76, 58)
+        Me.txtName.Name = "txtName"
+        Me.txtName.Size = New System.Drawing.Size(229, 20)
+        Me.txtName.TabIndex = 7
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(35, 61)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(35, 13)
+        Me.Label3.TabIndex = 6
+        Me.Label3.Text = "Name"
+        '
         'AddSysLogMirrorServer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(316, 91)
+        Me.ClientSize = New System.Drawing.Size(316, 117)
+        Me.Controls.Add(Me.txtName)
+        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.chkEnabled)
         Me.Controls.Add(Me.BtnAddServer)
         Me.Controls.Add(Me.txtPort)
@@ -107,4 +127,6 @@ Partial Class AddSysLogMirrorServer
     Friend WithEvents txtPort As TextBox
     Friend WithEvents BtnAddServer As Button
     Friend WithEvents chkEnabled As CheckBox
+    Friend WithEvents txtName As TextBox
+    Friend WithEvents Label3 As Label
 End Class

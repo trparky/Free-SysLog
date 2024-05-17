@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports Microsoft.SqlServer
 
 Public Class ConfigureSysLogMirrorServers
     Public boolSuccess As Boolean = False
@@ -15,6 +14,7 @@ Public Class ConfigureSysLogMirrorServers
                 ServerListView = New ServerListViewItem(SysLogProxyServer.ip)
                 ServerListView.SubItems.Add(SysLogProxyServer.port)
                 ServerListView.SubItems.Add(If(SysLogProxyServer.boolEnabled, "Yes", "No"))
+                ServerListView.SubItems.Add(SysLogProxyServer.name)
                 ServerListView.BoolEnabled = SysLogProxyServer.boolEnabled
                 servers.Items.Add(ServerListView)
 
@@ -46,6 +46,7 @@ Public Class ConfigureSysLogMirrorServers
             With AddSysLogMirrorServer
                 .strIP = selectedItemObject.SubItems(0).Text
                 .intPort = selectedItemObject.SubItems(1).Text
+                .strName = selectedItemObject.SubItems(3).Text
                 .boolEnabled = selectedItemObject.BoolEnabled
             End With
 
@@ -56,6 +57,7 @@ Public Class ConfigureSysLogMirrorServers
                     .SubItems(0).Text = AddSysLogMirrorServer.strIP
                     .SubItems(1).Text = AddSysLogMirrorServer.intPort
                     .SubItems(2).Text = If(AddSysLogMirrorServer.boolEnabled, "Yes", "No")
+                    .SubItems(3).Text = AddSysLogMirrorServer.strName
                     .BoolEnabled = AddSysLogMirrorServer.boolEnabled
                 End With
             End If
@@ -69,6 +71,8 @@ Public Class ConfigureSysLogMirrorServers
             If AddSysLogMirrorServer.boolSuccess Then
                 Dim ServerListView As New ServerListViewItem(AddSysLogMirrorServer.strIP)
                 ServerListView.SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
+                ServerListView.SubItems.Add(If(AddSysLogMirrorServer.boolEnabled, "Yes", "No"))
+                ServerListView.SubItems.Add(AddSysLogMirrorServer.strName)
                 servers.Items.Add(ServerListView)
             End If
         End Using
@@ -93,7 +97,7 @@ Public Class ConfigureSysLogMirrorServers
         Dim tempServer As New Specialized.StringCollection()
 
         For Each item As ServerListViewItem In servers.Items
-            SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled}
+            SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text}
             serversList.Add(SysLogProxyServer)
             tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
         Next
