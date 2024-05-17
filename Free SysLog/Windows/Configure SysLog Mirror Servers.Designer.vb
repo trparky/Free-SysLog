@@ -41,6 +41,7 @@ Partial Class ConfigureSysLogMirrorServers
         '
         Me.servers.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colServer, Me.colPort, Me.colEnabled, Me.colName})
         Me.servers.ContextMenuStrip = Me.ContextMenuStrip1
+        Me.servers.FullRowSelect = True
         Me.servers.HideSelection = False
         Me.servers.Location = New System.Drawing.Point(12, 12)
         Me.servers.Name = "servers"
