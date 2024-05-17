@@ -148,3 +148,28 @@ Public Class AlertsClass
         Return listViewItem
     End Function
 End Class
+
+Public Class ProxiedSysLogData
+    Public ip, log As String
+End Class
+
+Public Class SysLogProxyServer
+    Public ip As String
+    Public name As String = Nothing
+    Public port As Integer
+    Public boolEnabled As Boolean = True
+
+    Public Function ToListViewItem() As ServerListViewItem
+        Dim ServerListView As New ServerListViewItem(ip)
+
+        With ServerListView
+            .SubItems.Add(port.ToString)
+            .SubItems.Add(If(boolEnabled, "Yes", "No"))
+            .SubItems.Add(name)
+            .StrName = name
+            .BoolEnabled = boolEnabled
+        End With
+
+        Return ServerListView
+    End Function
+End Class
