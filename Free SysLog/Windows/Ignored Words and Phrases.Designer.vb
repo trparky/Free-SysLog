@@ -39,6 +39,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         'BtnAdd
         '
+        Me.BtnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnAdd.Location = New System.Drawing.Point(12, 236)
         Me.BtnAdd.Name = "BtnAdd"
         Me.BtnAdd.Size = New System.Drawing.Size(65, 23)
@@ -48,6 +49,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         'BtnDelete
         '
+        Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
         Me.BtnDelete.Location = New System.Drawing.Point(83, 236)
         Me.BtnDelete.Name = "BtnDelete"
@@ -100,6 +102,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         'BtnEdit
         '
+        Me.BtnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEdit.Enabled = False
         Me.BtnEdit.Location = New System.Drawing.Point(154, 236)
         Me.BtnEdit.Name = "BtnEdit"
@@ -114,6 +117,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         'BtnEnableDisable
         '
+        Me.BtnEnableDisable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEnableDisable.Enabled = False
         Me.BtnEnableDisable.Location = New System.Drawing.Point(235, 236)
         Me.BtnEnableDisable.Name = "BtnEnableDisable"
