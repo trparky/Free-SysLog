@@ -22,6 +22,7 @@ Public Class Form1
     Private ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
+    Private boolAreAllServersDisabled As Boolean = False
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -256,6 +257,8 @@ Public Class Form1
                 serversList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString))
             Next
         End If
+
+        boolAreAllServersDisabled = serversList.All(Function(server As SysLogProxyServer) Not server.boolEnabled)
 
         If My.Settings.ignored2 Is Nothing Then
             My.Settings.ignored2 = New Specialized.StringCollection()
@@ -1209,6 +1212,9 @@ Public Class Form1
             ConfigureSysLogMirrorServers.ShowDialog(Me)
 
             If ConfigureSysLogMirrorServers.boolSuccess Then
+                boolAreAllServersDisabled = False
+                boolAreAllServersDisabled = serversList.All(Function(server As SysLogProxyServer) Not server.boolEnabled)
+
                 MsgBox("Done", MsgBoxStyle.Information, Text)
             End If
         End Using
@@ -1242,7 +1248,7 @@ Public Class Form1
                         Catch ex As Exception
                         End Try
                     Else
-                        If serversList.Count > 0 Then
+                        If serversList.Count > 0 AndAlso Not boolAreAllServersDisabled Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
 
