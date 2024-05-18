@@ -191,6 +191,11 @@
     End Sub
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        If ReplacementsListView.Items.Count() = 0 Then
+            MsgBox("There's nothing to export.", MsgBoxStyle.Critical, Text)
+            Exit Sub
+        End If
+
         Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Replacements", .Filter = "JSON File|*.json", .OverwritePrompt = True}
         Dim listOfReplacementsClass As New List(Of ReplacementsClass)
 

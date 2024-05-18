@@ -188,6 +188,11 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        If IgnoredListView.Items.Count() = 0 Then
+            MsgBox("There's nothing to export.", MsgBoxStyle.Critical, Text)
+            Exit Sub
+        End If
+
         Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Ignored Words and Phrases", .Filter = "JSON File|*.json", .OverwritePrompt = True}
         Dim listOfIgnoredClass As New List(Of IgnoredClass)
 
