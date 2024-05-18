@@ -5,21 +5,12 @@ Public Class ConfigureSysLogMirrorServers
 
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
-            Dim ServerListView As ServerListViewItem
             Dim SysLogProxyServer As SysLogProxyServer
 
             For Each strJSONString As String In My.Settings.ServersToSendTo
                 SysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString)
-
-                ServerListView = New ServerListViewItem(SysLogProxyServer.ip)
-                ServerListView.SubItems.Add(SysLogProxyServer.port)
-                ServerListView.SubItems.Add(If(SysLogProxyServer.boolEnabled, "Yes", "No"))
-                ServerListView.SubItems.Add(SysLogProxyServer.name)
-                ServerListView.BoolEnabled = SysLogProxyServer.boolEnabled
-                servers.Items.Add(ServerListView)
-
+                servers.Items.Add(SysLogProxyServer.ToListViewItem())
                 SysLogProxyServer = Nothing
-                ServerListView = Nothing
             Next
         End If
     End Sub
