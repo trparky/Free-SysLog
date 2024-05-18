@@ -124,4 +124,40 @@ Public Class ConfigureSysLogMirrorServers
         selectedItem.SubItems(2).Text = If(selectedItem.BoolEnabled, "Yes", "No")
         btnEnableDisable.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
     End Sub
+
+    Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Servers", .Filter = "JSON File|*.json", .OverwritePrompt = True}
+        Dim listOfSysLogProxyServer As New List(Of SysLogProxyServer)
+
+        If saveFileDialog.ShowDialog() = DialogResult.OK Then
+            For Each item As ServerListViewItem In servers.Items
+                listOfSysLogProxyServer.Add(New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text})
+            Next
+
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer))
+        End If
+    End Sub
+
+    Private Sub BtnImport_Click(sender As Object, e As EventArgs) Handles BtnImport.Click
+        Dim openFileDialog As New OpenFileDialog() With {.Title = "Import Alerts", .Filter = "JSON File|*.json"}
+        Dim listOfSysLogProxyServer As New List(Of SysLogProxyServer)
+
+        If openFileDialog.ShowDialog() = DialogResult.OK Then
+            listOfSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SysLogProxyServer))(IO.File.ReadAllText(openFileDialog.FileName))
+
+            servers.Items.Clear()
+            serversList.Clear()
+
+            Dim tempServer As New Specialized.StringCollection()
+
+            For Each item As SysLogProxyServer In listOfSysLogProxyServer
+                serversList.Add(item)
+                tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                servers.Items.Add(item.ToListViewItem())
+            Next
+
+            My.Settings.ServersToSendTo = tempServer
+            My.Settings.Save()
+        End If
+    End Sub
 End Class

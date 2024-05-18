@@ -189,4 +189,40 @@
     Private Sub Replacements_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         If boolDoneLoading Then My.Settings.ConfigureReplacementsSize = Size
     End Sub
+
+    Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Replacements", .Filter = "JSON File|*.json", .OverwritePrompt = True}
+        Dim listOfReplacementsClass As New List(Of ReplacementsClass)
+
+        If saveFileDialog.ShowDialog() = DialogResult.OK Then
+            For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
+                listOfReplacementsClass.Add(New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled})
+            Next
+
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass))
+        End If
+    End Sub
+
+    Private Sub BtnImport_Click(sender As Object, e As EventArgs) Handles BtnImport.Click
+        Dim openFileDialog As New OpenFileDialog() With {.Title = "Import Alerts", .Filter = "JSON File|*.json"}
+        Dim listOfReplacementsClass As New List(Of ReplacementsClass)
+
+        If openFileDialog.ShowDialog() = DialogResult.OK Then
+            listOfReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ReplacementsClass))(IO.File.ReadAllText(openFileDialog.FileName))
+
+            ReplacementsListView.Items.Clear()
+            replacementsList.Clear()
+
+            Dim tempReplacements As New Specialized.StringCollection()
+
+            For Each item As ReplacementsClass In listOfReplacementsClass
+                replacementsList.Add(item)
+                tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                ReplacementsListView.Items.Add(item.ToListViewItem())
+            Next
+
+            My.Settings.replacements = tempReplacements
+            My.Settings.Save()
+        End If
+    End Sub
 End Class

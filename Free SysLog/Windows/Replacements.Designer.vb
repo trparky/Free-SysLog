@@ -35,6 +35,8 @@ Partial Class Replacements
         Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
+        Me.BtnExport = New System.Windows.Forms.Button()
+        Me.BtnImport = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -132,11 +134,33 @@ Partial Class Replacements
         Me.BtnEnableDisable.Text = "Disable"
         Me.BtnEnableDisable.UseVisualStyleBackColor = True
         '
+        'BtnExport
+        '
+        Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnExport.Location = New System.Drawing.Point(867, 415)
+        Me.BtnExport.Name = "BtnExport"
+        Me.BtnExport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnExport.TabIndex = 14
+        Me.BtnExport.Text = "Export"
+        Me.BtnExport.UseVisualStyleBackColor = True
+        '
+        'BtnImport
+        '
+        Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnImport.Location = New System.Drawing.Point(948, 415)
+        Me.BtnImport.Name = "BtnImport"
+        Me.BtnImport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnImport.TabIndex = 13
+        Me.BtnImport.Text = "Import"
+        Me.BtnImport.UseVisualStyleBackColor = True
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1035, 450)
+        Me.Controls.Add(Me.BtnExport)
+        Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.BtnEnableDisable)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.BtnDelete)
@@ -162,4 +186,6 @@ Partial Class Replacements
     Friend WithEvents ListViewMenu As ContextMenuStrip
     Friend WithEvents EnableDisableToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BtnEnableDisable As Button
+    Friend WithEvents BtnExport As Button
+    Friend WithEvents BtnImport As Button
 End Class

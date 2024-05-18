@@ -33,6 +33,8 @@ Partial Class ConfigureSysLogMirrorServers
         Me.BtnEditServer = New System.Windows.Forms.Button()
         Me.BtnDeleteServer = New System.Windows.Forms.Button()
         Me.btnEnableDisable = New System.Windows.Forms.Button()
+        Me.BtnExport = New System.Windows.Forms.Button()
+        Me.BtnImport = New System.Windows.Forms.Button()
         Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -124,11 +126,33 @@ Partial Class ConfigureSysLogMirrorServers
         Me.colName.Text = "Server Name"
         Me.colName.Width = 180
         '
+        'BtnExport
+        '
+        Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnExport.Location = New System.Drawing.Point(469, 115)
+        Me.BtnExport.Name = "BtnExport"
+        Me.BtnExport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnExport.TabIndex = 14
+        Me.BtnExport.Text = "Export"
+        Me.BtnExport.UseVisualStyleBackColor = True
+        '
+        'BtnImport
+        '
+        Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnImport.Location = New System.Drawing.Point(550, 115)
+        Me.BtnImport.Name = "BtnImport"
+        Me.BtnImport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnImport.TabIndex = 13
+        Me.BtnImport.Text = "Import"
+        Me.BtnImport.UseVisualStyleBackColor = True
+        '
         'ConfigureSysLogMirrorServers
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(637, 147)
+        Me.Controls.Add(Me.BtnExport)
+        Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.btnEnableDisable)
         Me.Controls.Add(Me.BtnDeleteServer)
         Me.Controls.Add(Me.BtnEditServer)
@@ -155,4 +179,6 @@ Partial Class ConfigureSysLogMirrorServers
     Friend WithEvents EnableDisableToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnEnableDisable As Button
     Friend WithEvents colName As ColumnHeader
+    Friend WithEvents BtnExport As Button
+    Friend WithEvents BtnImport As Button
 End Class

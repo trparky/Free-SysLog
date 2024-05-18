@@ -1,4 +1,6 @@
-﻿Public Class IgnoredWordsAndPhrases
+﻿Imports Microsoft.SqlServer
+
+Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
@@ -183,5 +185,41 @@
 
     Private Sub IgnoredWordsAndPhrases_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         If boolDoneLoading Then My.Settings.ConfigureIgnoredSize = Size
+    End Sub
+
+    Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Ignored Words and Phrases", .Filter = "JSON File|*.json", .OverwritePrompt = True}
+        Dim listOfIgnoredClass As New List(Of IgnoredClass)
+
+        If saveFileDialog.ShowDialog() = DialogResult.OK Then
+            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled})
+            Next
+
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass))
+        End If
+    End Sub
+
+    Private Sub BtnImport_Click(sender As Object, e As EventArgs) Handles BtnImport.Click
+        Dim openFileDialog As New OpenFileDialog() With {.Title = "Import Ignored Words and Phrases", .Filter = "JSON File|*.json"}
+        Dim listOfIgnoredClass As New List(Of IgnoredClass)
+
+        If openFileDialog.ShowDialog() = DialogResult.OK Then
+            listOfIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of IgnoredClass))(IO.File.ReadAllText(openFileDialog.FileName))
+
+            IgnoredListView.Items.Clear()
+            ignoredList.Clear()
+
+            Dim tempIgnored As New Specialized.StringCollection()
+
+            For Each item As IgnoredClass In listOfIgnoredClass
+                ignoredList.Add(item)
+                tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                IgnoredListView.Items.Add(item.ToListViewItem())
+            Next
+
+            My.Settings.ignored2 = tempIgnored
+            My.Settings.Save()
+        End If
     End Sub
 End Class

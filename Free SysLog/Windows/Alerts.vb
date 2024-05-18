@@ -205,4 +205,40 @@
     Private Sub Alerts_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         If boolDoneLoading Then My.Settings.ConfigureAlertsSize = Size
     End Sub
+
+    Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Alerts", .Filter = "JSON File|*.json", .OverwritePrompt = True}
+        Dim listOfAlertsClass As New List(Of AlertsClass)
+
+        If saveFileDialog.ShowDialog() = DialogResult.OK Then
+            For Each item As AlertsListViewItem In AlertsListView.Items
+                listOfAlertsClass.Add(New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled})
+            Next
+
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfAlertsClass))
+        End If
+    End Sub
+
+    Private Sub BtnImport_Click(sender As Object, e As EventArgs) Handles BtnImport.Click
+        Dim openFileDialog As New OpenFileDialog() With {.Title = "Import Alerts", .Filter = "JSON File|*.json"}
+        Dim listOfAlertsClass As New List(Of AlertsClass)
+
+        If openFileDialog.ShowDialog() = DialogResult.OK Then
+            listOfAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of AlertsClass))(IO.File.ReadAllText(openFileDialog.FileName))
+
+            AlertsListView.Items.Clear()
+            alertsList.Clear()
+
+            Dim tempAlerts As New Specialized.StringCollection()
+
+            For Each item As AlertsClass In listOfAlertsClass
+                alertsList.Add(item)
+                tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                AlertsListView.Items.Add(item.ToListViewItem())
+            Next
+
+            My.Settings.alerts = tempAlerts
+            My.Settings.Save()
+        End If
+    End Sub
 End Class

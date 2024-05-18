@@ -36,6 +36,8 @@ Partial Class Alerts
         Me.BtnAdd = New System.Windows.Forms.Button()
         Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
+        Me.BtnExport = New System.Windows.Forms.Button()
+        Me.BtnImport = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -138,11 +140,33 @@ Partial Class Alerts
         Me.BtnEnableDisable.Text = "Disable"
         Me.BtnEnableDisable.UseVisualStyleBackColor = True
         '
+        'BtnExport
+        '
+        Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnExport.Location = New System.Drawing.Point(819, 248)
+        Me.BtnExport.Name = "BtnExport"
+        Me.BtnExport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnExport.TabIndex = 15
+        Me.BtnExport.Text = "Export"
+        Me.BtnExport.UseVisualStyleBackColor = True
+        '
+        'BtnImport
+        '
+        Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnImport.Location = New System.Drawing.Point(900, 248)
+        Me.BtnImport.Name = "BtnImport"
+        Me.BtnImport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnImport.TabIndex = 14
+        Me.BtnImport.Text = "Import"
+        Me.BtnImport.UseVisualStyleBackColor = True
+        '
         'Alerts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(987, 283)
+        Me.Controls.Add(Me.BtnExport)
+        Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.BtnEnableDisable)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.AlertsListView)
@@ -168,4 +192,6 @@ Partial Class Alerts
     Friend WithEvents ListViewMenu As ContextMenuStrip
     Friend WithEvents EnableDisableToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BtnEnableDisable As Button
+    Friend WithEvents BtnExport As Button
+    Friend WithEvents BtnImport As Button
 End Class
