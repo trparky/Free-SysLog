@@ -125,6 +125,14 @@ Public Class ConfigureSysLogMirrorServers
         btnEnableDisable.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
     End Sub
 
+    Private Sub Servers_KeyUp(sender As Object, e As KeyEventArgs) Handles servers.KeyUp
+        If e.KeyCode = Keys.Delete And servers.SelectedItems().Count > 0 Then
+            servers.Items.Remove(servers.SelectedItems(0))
+            BtnDeleteServer.Enabled = False
+            BtnEditServer.Enabled = False
+        End If
+    End Sub
+
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
         Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Servers", .Filter = "JSON File|*.json", .OverwritePrompt = True}
         Dim listOfSysLogProxyServer As New List(Of SysLogProxyServer)

@@ -159,6 +159,7 @@ Partial Class ConfigureSysLogMirrorServers
         Me.Controls.Add(Me.BtnAddServer)
         Me.Controls.Add(Me.servers)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "ConfigureSysLogMirrorServers"
