@@ -229,21 +229,25 @@
         Dim listOfAlertsClass As New List(Of AlertsClass)
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
-            listOfAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of AlertsClass))(IO.File.ReadAllText(openFileDialog.FileName))
+            Try
+                listOfAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of AlertsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
 
-            AlertsListView.Items.Clear()
-            alertsList.Clear()
+                AlertsListView.Items.Clear()
+                alertsList.Clear()
 
-            Dim tempAlerts As New Specialized.StringCollection()
+                Dim tempAlerts As New Specialized.StringCollection()
 
-            For Each item As AlertsClass In listOfAlertsClass
-                alertsList.Add(item)
-                tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
-                AlertsListView.Items.Add(item.ToListViewItem())
-            Next
+                For Each item As AlertsClass In listOfAlertsClass
+                    alertsList.Add(item)
+                    tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                    AlertsListView.Items.Add(item.ToListViewItem())
+                Next
 
-            My.Settings.alerts = tempAlerts
-            My.Settings.Save()
+                My.Settings.alerts = tempAlerts
+                My.Settings.Save()
+            Catch ex As Newtonsoft.Json.JsonSerializationException
+                MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+            End Try
         End If
     End Sub
 End Class

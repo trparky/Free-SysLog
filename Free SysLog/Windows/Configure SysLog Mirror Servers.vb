@@ -147,21 +147,25 @@ Public Class ConfigureSysLogMirrorServers
         Dim listOfSysLogProxyServer As New List(Of SysLogProxyServer)
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
-            listOfSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SysLogProxyServer))(IO.File.ReadAllText(openFileDialog.FileName))
+            Try
+                listOfSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SysLogProxyServer))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
 
-            servers.Items.Clear()
-            serversList.Clear()
+                servers.Items.Clear()
+                serversList.Clear()
 
-            Dim tempServer As New Specialized.StringCollection()
+                Dim tempServer As New Specialized.StringCollection()
 
-            For Each item As SysLogProxyServer In listOfSysLogProxyServer
-                serversList.Add(item)
-                tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
-                servers.Items.Add(item.ToListViewItem())
-            Next
+                For Each item As SysLogProxyServer In listOfSysLogProxyServer
+                    serversList.Add(item)
+                    tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                    servers.Items.Add(item.ToListViewItem())
+                Next
 
-            My.Settings.ServersToSendTo = tempServer
-            My.Settings.Save()
+                My.Settings.ServersToSendTo = tempServer
+                My.Settings.Save()
+            Catch ex As Newtonsoft.Json.JsonSerializationException
+                MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+            End Try
         End If
     End Sub
 End Class

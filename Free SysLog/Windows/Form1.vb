@@ -315,15 +315,19 @@ Public Class Form1
         End If
 
         Dim worker As New BackgroundWorker()
-        AddHandler worker.DoWork, Sub() LoadDataFile()
-        AddHandler worker.RunWorkerCompleted, Sub()
-                                                  serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
-                                                  serverThread.Start()
-                                              End Sub
+        AddHandler worker.DoWork, AddressOf LoadDataFile
+        AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
         worker.RunWorkerAsync()
     End Sub
 
-    Private Sub LoadDataFile()
+    Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+        If Not e.Cancelled Then
+            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+            serverThread.Start()
+        End If
+    End Sub
+
+    Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
         If File.Exists(My.Settings.logFileLocation) Then
             Try
                 Invoke(Sub()
@@ -334,7 +338,7 @@ Public Class Form1
                 Dim collectionOfSavedData As New List(Of SavedData)
 
                 Using fileStream As New StreamReader(My.Settings.logFileLocation)
-                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim)
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
                 End Using
 
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
@@ -354,7 +358,10 @@ Public Class Form1
                                UpdateLogCount()
                            End Sub)
                 End SyncLock
-            Catch ex As Exception
+            Catch ex As Newtonsoft.Json.JsonSerializationException
+                e.Result = ex
+                e.Cancel = True
+                MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try
         End If
     End Sub

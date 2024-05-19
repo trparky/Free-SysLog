@@ -213,21 +213,25 @@
         Dim listOfReplacementsClass As New List(Of ReplacementsClass)
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
-            listOfReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ReplacementsClass))(IO.File.ReadAllText(openFileDialog.FileName))
+            Try
+                listOfReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ReplacementsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
 
-            ReplacementsListView.Items.Clear()
-            replacementsList.Clear()
+                ReplacementsListView.Items.Clear()
+                replacementsList.Clear()
 
-            Dim tempReplacements As New Specialized.StringCollection()
+                Dim tempReplacements As New Specialized.StringCollection()
 
-            For Each item As ReplacementsClass In listOfReplacementsClass
-                replacementsList.Add(item)
-                tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
-                ReplacementsListView.Items.Add(item.ToListViewItem())
-            Next
+                For Each item As ReplacementsClass In listOfReplacementsClass
+                    replacementsList.Add(item)
+                    tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                    ReplacementsListView.Items.Add(item.ToListViewItem())
+                Next
 
-            My.Settings.replacements = tempReplacements
-            My.Settings.Save()
+                My.Settings.replacements = tempReplacements
+                My.Settings.Save()
+            Catch ex As Newtonsoft.Json.JsonSerializationException
+                MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+            End Try
         End If
     End Sub
 End Class

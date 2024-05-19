@@ -16,6 +16,7 @@ Module SupportCode
     Public mutex As Threading.Mutex
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
     Public boolDoWeOwnTheMutex As Boolean = False
+    Public JSONDecoderSettings As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error}
 
     Public Function IsRegexPatternValid(pattern As String) As Boolean
         Try

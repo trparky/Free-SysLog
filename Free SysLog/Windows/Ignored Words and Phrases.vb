@@ -210,21 +210,25 @@ Public Class IgnoredWordsAndPhrases
         Dim listOfIgnoredClass As New List(Of IgnoredClass)
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
-            listOfIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of IgnoredClass))(IO.File.ReadAllText(openFileDialog.FileName))
+            Try
+                listOfIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of IgnoredClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
 
-            IgnoredListView.Items.Clear()
-            ignoredList.Clear()
+                IgnoredListView.Items.Clear()
+                ignoredList.Clear()
 
-            Dim tempIgnored As New Specialized.StringCollection()
+                Dim tempIgnored As New Specialized.StringCollection()
 
-            For Each item As IgnoredClass In listOfIgnoredClass
-                ignoredList.Add(item)
-                tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
-                IgnoredListView.Items.Add(item.ToListViewItem())
-            Next
+                For Each item As IgnoredClass In listOfIgnoredClass
+                    ignoredList.Add(item)
+                    tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
+                    IgnoredListView.Items.Add(item.ToListViewItem())
+                Next
 
-            My.Settings.ignored2 = tempIgnored
-            My.Settings.Save()
+                My.Settings.ignored2 = tempIgnored
+                My.Settings.Save()
+            Catch ex As Newtonsoft.Json.JsonSerializationException
+                MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+            End Try
         End If
     End Sub
 End Class
