@@ -114,6 +114,9 @@ Partial Class AddSysLogMirrorServer
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtIP)
         Me.Controls.Add(Me.Label1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "AddSysLogMirrorServer"
         Me.Text = "Add SysLog Mirror Server"
         Me.ResumeLayout(False)
