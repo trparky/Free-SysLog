@@ -168,4 +168,8 @@ Public Class ConfigureSysLogMirrorServers
             End Try
         End If
     End Sub
+
+    Private Sub ConfigureSysLogMirrorServers_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Escape Then Close()
+    End Sub
 End Class

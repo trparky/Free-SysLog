@@ -37,4 +37,12 @@ Public Class AddSysLogMirrorServer
             txtPort.Text = My.Settings.sysLogPort.ToString
         End If
     End Sub
+
+    Private Sub AddSysLogMirrorServer_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Enter AndAlso Not String.IsNullOrWhiteSpace(txtIP.Text) Then
+            BtnAddServer.PerformClick()
+        ElseIf e.KeyCode = Keys.Escape Then
+            Close()
+        End If
+    End Sub
 End Class

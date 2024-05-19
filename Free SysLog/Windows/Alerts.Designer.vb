@@ -172,6 +172,7 @@ Partial Class Alerts
         Me.Controls.Add(Me.AlertsListView)
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnAdd)
+        Me.KeyPreview = True
         Me.Name = "Alerts"
         Me.Text = "Alerts"
         Me.ListViewMenu.ResumeLayout(False)
