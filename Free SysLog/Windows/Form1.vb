@@ -1262,9 +1262,9 @@ Public Class Form1
                     ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
                         Try
                             strReceivedData = strReceivedData.Replace("proxied|", "", StringComparison.OrdinalIgnoreCase)
-                            ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData)
+                            ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData, JSONDecoderSettings)
                             ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip)
-                        Catch ex As Exception
+                        Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
                         If serversList.Count > 0 AndAlso Not boolAreAllServersDisabled Then
