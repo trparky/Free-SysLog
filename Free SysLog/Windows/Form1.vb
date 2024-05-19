@@ -321,10 +321,8 @@ Public Class Form1
     End Sub
 
     Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
-        If Not e.Cancelled Then
-            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
-            serverThread.Start()
-        End If
+        serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+        serverThread.Start()
     End Sub
 
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
@@ -359,9 +357,23 @@ Public Class Form1
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
-                e.Result = ex
-                e.Cancel = True
-                MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+                File.Copy(My.Settings.logFileLocation, $"{My.Settings.logFileLocation}.bad")
+                File.WriteAllText(My.Settings.logFileLocation, "{}")
+                LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+
+                SyncLock dataGridLockObject
+                    Invoke(Sub()
+                               Logs.Rows.Clear()
+
+                               Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
+                                   MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs),
+                                   MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs)
+                               }
+
+                               Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                               UpdateLogCount()
+                           End Sub)
+                End SyncLock
             End Try
         End If
     End Sub
