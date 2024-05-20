@@ -84,7 +84,7 @@ Public Class ReplacementsClass
         listViewItem.SubItems.Add(StrReplaceWith)
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
-        listViewItem.SubItems.Add(BoolEnabled.ToString)
+        listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
@@ -102,7 +102,7 @@ Public Class IgnoredClass
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
-        listViewItem.SubItems.Add(BoolEnabled.ToString)
+        listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
@@ -140,7 +140,7 @@ Public Class AlertsClass
             listViewItem.SubItems.Add("None")
         End If
 
-        listViewItem.SubItems.Add(BoolEnabled.ToString)
+        listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
 
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
