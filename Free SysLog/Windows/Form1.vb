@@ -357,7 +357,7 @@ Public Class Form1
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
-                File.Copy(My.Settings.logFileLocation, $"{My.Settings.logFileLocation}.bad")
+                File.Copy(My.Settings.logFileLocation, $"{My.Settings.logFileLocation}.bad", True)
                 File.WriteAllText(My.Settings.logFileLocation, "{}")
                 LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
 
