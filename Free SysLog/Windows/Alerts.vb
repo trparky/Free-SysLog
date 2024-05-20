@@ -151,7 +151,7 @@
 
         For Each item As AlertsListViewItem In AlertsListView.Items
             AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled}
-            alertsList.Add(AlertsClass)
+            If AlertsClass.BoolEnabled Then alertsList.Add(AlertsClass)
             tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
         Next
 

@@ -69,7 +69,7 @@
 
         For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
             replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled}
-            replacementsList.Add(replacementsClass)
+            If replacementsClass.BoolEnabled Then replacementsList.Add(replacementsClass)
             tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
         Next
 

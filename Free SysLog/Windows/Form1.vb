@@ -22,7 +22,6 @@ Public Class Form1
     Private ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
-    Private boolAreAllServersDisabled As Boolean = False
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -180,12 +179,10 @@ Public Class Form1
 
     Private Function ProcessReplacements(input As String) As String
         For Each item As ReplacementsClass In replacementsList
-            If item.BoolEnabled Then
-                Try
-                    input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
-                Catch ex As Exception
-                End Try
-            End If
+            Try
+                input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+            Catch ex As Exception
+            End Try
         Next
 
         Return input
@@ -246,19 +243,26 @@ Public Class Form1
         Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
         Logs.AlternatingRowsDefaultCellStyle = rowStyle
 
+        Dim tempReplacementsClass As ReplacementsClass
+        Dim tempSysLogProxyServer As SysLogProxyServer
+        Dim tempIgnoredClass As IgnoredClass
+        Dim tempAlertsClass As AlertsClass
+
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
             For Each strJSONString As String In My.Settings.replacements
-                replacementsList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString))
+                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString)
+                If tempReplacementsClass.BoolEnabled Then replacementsList.Add(tempReplacementsClass)
+                tempReplacementsClass = Nothing
             Next
         End If
 
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             For Each strJSONString As String In My.Settings.ServersToSendTo
-                serversList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString))
+                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString)
+                If tempSysLogProxyServer.boolEnabled Then serversList.Add(tempSysLogProxyServer)
+                tempSysLogProxyServer = Nothing
             Next
         End If
-
-        boolAreAllServersDisabled = serversList.All(Function(server As SysLogProxyServer) Not server.boolEnabled)
 
         If My.Settings.ignored2 Is Nothing Then
             My.Settings.ignored2 = New Specialized.StringCollection()
@@ -275,13 +279,17 @@ Public Class Form1
 
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                ignoredList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString))
+                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString)
+                If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
+                tempIgnoredClass = Nothing
             Next
         End If
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
-                alertsList.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString))
+                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString)
+                If tempAlertsClass.BoolEnabled Then alertsList.Add(tempAlertsClass)
+                tempAlertsClass = Nothing
             Next
         End If
 
@@ -398,7 +406,7 @@ Public Class Form1
 
             If ignoredList.Count > 0 Then
                 For Each ignoredClassInstance As IgnoredClass In ignoredList
-                    If ignoredClassInstance.BoolEnabled AndAlso GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(strLogText) Then
+                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(strLogText) Then
                         Invoke(Sub()
                                    longNumberOfIgnoredLogs += 1
 
@@ -433,33 +441,31 @@ Public Class Form1
         Dim regExGroupCollection As GroupCollection
 
         For Each alert As AlertsClass In alertsList
-            If alert.BoolEnabled Then
-                RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
+            RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
 
-                If RegExObject.IsMatch(strLogText) Then
-                    If alert.alertType = AlertType.Warning Then
-                        ToolTipIcon = ToolTipIcon.Warning
-                    ElseIf alert.alertType = AlertType.ErrorMsg Then
-                        ToolTipIcon = ToolTipIcon.Error
-                    ElseIf alert.alertType = AlertType.Info Then
-                        ToolTipIcon = ToolTipIcon.Info
-                    End If
-
-                    strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
-
-                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
-                        regExGroupCollection = RegExObject.Match(strLogText).Groups
-
-                        If regExGroupCollection.Count > 0 Then
-                            For index As Integer = 0 To regExGroupCollection.Count - 1
-                                strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
-                            Next
-                        End If
-                    End If
-
-                    NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
-                    Return True
+            If RegExObject.IsMatch(strLogText) Then
+                If alert.alertType = AlertType.Warning Then
+                    ToolTipIcon = ToolTipIcon.Warning
+                ElseIf alert.alertType = AlertType.ErrorMsg Then
+                    ToolTipIcon = ToolTipIcon.Error
+                ElseIf alert.alertType = AlertType.Info Then
+                    ToolTipIcon = ToolTipIcon.Info
                 End If
+
+                strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
+
+                If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                    regExGroupCollection = RegExObject.Match(strLogText).Groups
+
+                    If regExGroupCollection.Count > 0 Then
+                        For index As Integer = 0 To regExGroupCollection.Count - 1
+                            strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
+                        Next
+                    End If
+                End If
+
+                NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
+                Return True
             End If
         Next
 
@@ -1231,9 +1237,6 @@ Public Class Form1
             ConfigureSysLogMirrorServers.ShowDialog(Me)
 
             If ConfigureSysLogMirrorServers.boolSuccess Then
-                boolAreAllServersDisabled = False
-                boolAreAllServersDisabled = serversList.All(Function(server As SysLogProxyServer) Not server.boolEnabled)
-
                 MsgBox("Done", MsgBoxStyle.Information, Text)
             End If
         End Using
@@ -1267,12 +1270,12 @@ Public Class Form1
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList.Count > 0 AndAlso Not boolAreAllServersDisabled Then
+                        If serversList.Count > 0 Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
 
                                                                        For Each item As SysLogProxyServer In serversList
-                                                                           If item.boolEnabled Then SendMessageToSysLogServer("proxied|" & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
+                                                                           SendMessageToSysLogServer("proxied|" & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
                                                                        Next
 
                                                                        ProxiedSysLogData = Nothing

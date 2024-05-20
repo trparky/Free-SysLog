@@ -219,7 +219,7 @@ Public Class IgnoredWordsAndPhrases
                 Dim tempIgnored As New Specialized.StringCollection()
 
                 For Each item As IgnoredClass In listOfIgnoredClass
-                    ignoredList.Add(item)
+                    If item.BoolEnabled Then ignoredList.Add(item)
                     tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(item))
                     IgnoredListView.Items.Add(item.ToListViewItem())
                 Next
