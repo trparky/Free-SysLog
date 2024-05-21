@@ -391,6 +391,7 @@ Partial Class Form1
         Me.ColIPAddress.HeaderText = "IP Address"
         Me.ColIPAddress.Name = "ColIPAddress"
         Me.ColIPAddress.ReadOnly = True
+        Me.ColIPAddress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColIPAddress.ToolTipText = "The IP address of the system from which the log came from."
         '
         'ColAlerts
@@ -398,6 +399,7 @@ Partial Class Form1
         Me.ColAlerts.HeaderText = "Alerted"
         Me.ColAlerts.Name = "ColAlerts"
         Me.ColAlerts.ReadOnly = True
+        Me.ColAlerts.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColAlerts.Width = 50
         Me.ColAlerts.ToolTipText = "Yes or No. Indicates if the log entry triggered an alert from this program."
         '
@@ -407,6 +409,7 @@ Partial Class Form1
         Me.ColLog.HeaderText = "Log"
         Me.ColLog.Name = "ColLog"
         Me.ColLog.ReadOnly = True
+        Me.ColLog.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColLog.ToolTipText = "The text contents of the log."
         '
         'ConfigureAlertsToolStripMenuItem

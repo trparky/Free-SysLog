@@ -681,22 +681,18 @@ Public Class Form1
 
         Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
 
-        If e.ColumnIndex = 0 Then
-            If sortOrder = SortOrder.Descending Then
-                sortOrder = SortOrder.Ascending
-            ElseIf sortOrder = SortOrder.Ascending Then
-                sortOrder = SortOrder.Descending
-            Else
-                sortOrder = SortOrder.Ascending
-            End If
-
-            ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
-            ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
-
-            SortLogsByDateObject(column.Index, sortOrder)
+        If sortOrder = SortOrder.Descending Then
+            sortOrder = SortOrder.Ascending
+        ElseIf sortOrder = SortOrder.Ascending Then
+            sortOrder = SortOrder.Descending
         Else
-            sortOrder = SortOrder.None
+            sortOrder = SortOrder.Ascending
         End If
+
+        ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
+        ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
+
+        SortLogsByDateObject(column.Index, sortOrder)
     End Sub
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
@@ -707,7 +703,7 @@ Public Class Form1
             Dim comparer As New DataGridViewComparer(columnIndex, order)
             Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
 
-            Array.Sort(rows, Function(row1, row2) comparer.Compare(row1, row2))
+            Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
             Logs.Rows.Clear()
             Logs.Rows.AddRange(rows)
