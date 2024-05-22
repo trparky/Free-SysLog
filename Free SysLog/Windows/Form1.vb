@@ -463,6 +463,10 @@ Public Class Form1
                         For index As Integer = 0 To regExGroupCollection.Count - 1
                             strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
                         Next
+
+                        For Each item As Group In regExGroupCollection
+                            strAlertText = strAlertText.Replace($"$({item.Name})", regExGroupCollection(item.Name).Value)
+                        Next
                     End If
                 End If
 
