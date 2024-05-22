@@ -21,9 +21,9 @@
         If intColumnNumber = 0 Then
             date1 = row1.DateObject
             date2 = row2.DateObject
-            Return If(soSortOrder = SortOrder.Ascending, Date.Compare(date1, date2), Date.Compare(date2, date1))
+            Return If(soSortOrder = SortOrder.Descending, Date.Compare(date1, date2), Date.Compare(date2, date1))
         Else
-            Return If(soSortOrder = SortOrder.Ascending, String.Compare(strFirstString, strSecondString), String.Compare(strSecondString, strFirstString))
+            Return If(soSortOrder = SortOrder.Descending, String.Compare(strFirstString, strSecondString), String.Compare(strSecondString, strFirstString))
         End If
 
         Return 0
