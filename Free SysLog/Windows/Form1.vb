@@ -689,8 +689,12 @@ Public Class Form1
             sortOrder = SortOrder.Ascending
         End If
 
+        ColAlerts.HeaderCell.SortGlyphDirection = SortOrder.None
         ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
         ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
+        ColTime.HeaderCell.SortGlyphDirection = SortOrder.None
+
+        Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
         SortLogsByDateObject(column.Index, sortOrder)
     End Sub
