@@ -227,6 +227,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\AddAlert.resx">
       <DependentUpon>AddAlert.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\AddIgnored.resx">
       <DependentUpon>AddIgnored.vb</DependentUpon>

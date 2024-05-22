@@ -23,6 +23,7 @@ Partial Class AddAlert
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AddAlert))
         Me.ChkCaseSensitive = New System.Windows.Forms.CheckBox()
         Me.BtnAdd = New System.Windows.Forms.Button()
         Me.ChkRegex = New System.Windows.Forms.CheckBox()
@@ -35,6 +36,7 @@ Partial Class AddAlert
         Me.AlertTypeComboBox = New System.Windows.Forms.ComboBox()
         Me.IconPictureBox = New System.Windows.Forms.PictureBox()
         Me.ChkEnabled = New System.Windows.Forms.CheckBox()
+        Me.lblRegExBackReferences = New System.Windows.Forms.Label()
         CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -142,11 +144,21 @@ Partial Class AddAlert
         Me.ToolTip.SetToolTip(Me.ChkEnabled, "Allows for an alert to be disabled without deleting it.")
         Me.ChkEnabled.UseVisualStyleBackColor = True
         '
+        'lblRegExBackReferences
+        '
+        Me.lblRegExBackReferences.AutoSize = True
+        Me.lblRegExBackReferences.Location = New System.Drawing.Point(196, 55)
+        Me.lblRegExBackReferences.Name = "lblRegExBackReferences"
+        Me.lblRegExBackReferences.Size = New System.Drawing.Size(602, 26)
+        Me.lblRegExBackReferences.TabIndex = 26
+        Me.lblRegExBackReferences.Text = resources.GetString("lblRegExBackReferences.Text")
+        '
         'AddAlert
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 150)
+        Me.Controls.Add(Me.lblRegExBackReferences)
         Me.Controls.Add(Me.ChkEnabled)
         Me.Controls.Add(Me.IconPictureBox)
         Me.Controls.Add(Me.AlertTypeComboBox)
@@ -179,4 +191,5 @@ Partial Class AddAlert
     Friend WithEvents AlertTypeComboBox As ComboBox
     Friend WithEvents IconPictureBox As PictureBox
     Friend WithEvents ChkEnabled As CheckBox
+    Friend WithEvents lblRegExBackReferences As Label
 End Class
