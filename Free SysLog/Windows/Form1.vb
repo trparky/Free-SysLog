@@ -17,7 +17,7 @@ Public Class Form1
     Private IgnoredLogs As New List(Of MyDataGridViewRow)
     Private regexCache As New Dictionary(Of String, Regex)
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
-    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
+    Private sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
     Private ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
@@ -212,6 +212,8 @@ Public Class Form1
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+
+        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
