@@ -202,6 +202,8 @@ Public Class IgnoredWordsAndPhrases
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass))
+
+            MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
@@ -226,6 +228,8 @@ Public Class IgnoredWordsAndPhrases
 
                 My.Settings.ignored2 = tempIgnored
                 My.Settings.Save()
+
+                MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try

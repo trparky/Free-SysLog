@@ -205,6 +205,8 @@
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass))
+
+            MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
@@ -229,6 +231,8 @@
 
                 My.Settings.replacements = tempReplacements
                 My.Settings.Save()
+
+                MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try

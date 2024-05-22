@@ -139,6 +139,8 @@ Public Class ConfigureSysLogMirrorServers
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer))
+
+            MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
@@ -163,6 +165,8 @@ Public Class ConfigureSysLogMirrorServers
 
                 My.Settings.ServersToSendTo = tempServer
                 My.Settings.Save()
+
+                MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try
