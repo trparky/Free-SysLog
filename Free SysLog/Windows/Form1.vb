@@ -461,11 +461,11 @@ Public Class Form1
 
                     If regExGroupCollection.Count > 0 Then
                         For index As Integer = 0 To regExGroupCollection.Count - 1
-                            strAlertText = strAlertText.Replace($"${index}", regExGroupCollection(index).Value)
+                            strAlertText = GetCachedRegex(Regex.Escape($"${index}"), False).Replace(strAlertText, regExGroupCollection(index).Value)
                         Next
 
                         For Each item As Group In regExGroupCollection
-                            strAlertText = strAlertText.Replace($"$({item.Name})", regExGroupCollection(item.Name).Value)
+                            strAlertText = GetCachedRegex(Regex.Escape($"$({item.Name})"), True).Replace(strAlertText, regExGroupCollection(item.Name).Value)
                         Next
                     End If
                 End If
