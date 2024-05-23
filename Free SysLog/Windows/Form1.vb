@@ -97,9 +97,17 @@ Public Class Form1
                 Next
             End SyncLock
 
-            Using fileStream As New StreamWriter(My.Settings.logFileLocation)
-                fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
-            End Using
+            Try
+                Using fileStream As New StreamWriter(My.Settings.logFileLocation & ".new")
+                    fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                End Using
+
+                File.Delete(My.Settings.logFileLocation)
+                File.Move(My.Settings.logFileLocation & ".new", My.Settings.logFileLocation)
+            Catch ex As Exception
+                MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption.", MsgBoxStyle.Critical, Text)
+                Process.GetCurrentProcess.Kill()
+            End Try
 
             LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
 
