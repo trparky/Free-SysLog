@@ -494,7 +494,7 @@ Public Class Form1
             Invoke(Sub()
                        SyncLock dataGridLockObject
                            Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, boolAlerted, Logs))
-                           SortLogsByDateObject(intSortColumnIndex, SortOrder.Descending)
+                           SortLogsByDateObjectNoLocking(intSortColumnIndex, SortOrder.Descending)
                        End SyncLock
 
                        NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -720,20 +720,24 @@ Public Class Form1
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
         SyncLock dataGridLockObject
-            Logs.AllowUserToOrderColumns = False
-            Logs.Enabled = False
-
-            Dim comparer As New DataGridViewComparer(columnIndex, order)
-            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
-
-            Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
-
-            Logs.Rows.Clear()
-            Logs.Rows.AddRange(rows)
-
-            Logs.Enabled = True
-            Logs.AllowUserToOrderColumns = True
+            SortLogsByDateObjectNoLocking(columnIndex, order)
         End SyncLock
+    End Sub
+
+    Private Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
+        Logs.AllowUserToOrderColumns = False
+        Logs.Enabled = False
+
+        Dim comparer As New DataGridViewComparer(columnIndex, order)
+        Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
+
+        Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
+
+        Logs.Rows.Clear()
+        Logs.Rows.AddRange(rows)
+
+        Logs.Enabled = True
+        Logs.AllowUserToOrderColumns = True
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
