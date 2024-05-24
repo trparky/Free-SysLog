@@ -407,38 +407,40 @@ Public Class Form1
 
     Private Sub ProcessIncomingLog(strLogText As String, strSourceIP As String)
         Try
-            Dim boolIgnored As Boolean = False
+            If Not String.IsNullOrWhiteSpace(strLogText) And Not String.IsNullOrWhiteSpace(strSourceIP) Then
+                Dim boolIgnored As Boolean = False
 
-            strLogText = strLogText.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
-            strLogText = strLogText.Replace(vbCrLf, Nothing)
-            strLogText = Mid(strLogText, InStr(strLogText, ">") + 1, Len(strLogText))
-            strLogText = strLogText.Trim
+                strLogText = strLogText.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
+                strLogText = strLogText.Replace(vbCrLf, Nothing)
+                strLogText = Mid(strLogText, InStr(strLogText, ">") + 1, Len(strLogText))
+                strLogText = strLogText.Trim
 
-            If ignoredList.Count > 0 Then
-                For Each ignoredClassInstance As IgnoredClass In ignoredList
-                    If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(strLogText) Then
-                        Invoke(Sub()
-                                   longNumberOfIgnoredLogs += 1
+                If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then
+                    For Each ignoredClassInstance As IgnoredClass In ignoredList
+                        If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(strLogText) Then
+                            Invoke(Sub()
+                                       longNumberOfIgnoredLogs += 1
 
-                                   If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
-                                       ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                                   End If
+                                       If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
+                                           ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                                       End If
 
-                                   LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
-                               End Sub)
+                                       LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                                   End Sub)
 
-                        boolIgnored = True
-                        Exit For
-                    End If
-                Next
+                            boolIgnored = True
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                Dim boolAlerted As Boolean = False
+
+                If replacementsList IsNot Nothing AndAlso replacementsList.Count > 0 Then strLogText = ProcessReplacements(strLogText)
+                If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(strLogText)
+
+                AddToLogList(strSourceIP, strLogText, boolIgnored, boolAlerted)
             End If
-
-            Dim boolAlerted As Boolean = False
-
-            If replacementsList.Count > 0 Then strLogText = ProcessReplacements(strLogText)
-            If alertsList.Count > 0 Then boolAlerted = ProcessAlerts(strLogText)
-
-            AddToLogList(strSourceIP, strLogText, boolIgnored, boolAlerted)
         Catch ex As Exception
             AddToLogList("local", $"{ex.Message} -- {ex.StackTrace}", False, False)
         End Try
