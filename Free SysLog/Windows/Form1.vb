@@ -12,11 +12,10 @@ Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
     Private lockObject As New Object
-    Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private longNumberOfIgnoredLogs As Long = 0
     Private IgnoredLogs As New List(Of MyDataGridViewRow)
     Private regexCache As New Dictionary(Of String, Regex)
-    Private intColumnNumber As Integer ' Define intColumnNumber at class level
+    Private intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
     Private ReadOnly IgnoredLogsLockObject As New Object
@@ -495,13 +494,16 @@ Public Class Form1
             Invoke(Sub()
                        SyncLock dataGridLockObject
                            Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, boolAlerted, Logs))
+                           SortLogsByDateObject(intSortColumnIndex, SortOrder.Descending)
                        End SyncLock
 
                        NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
                        UpdateLogCount()
                        BtnSaveLogsToDisk.Enabled = True
 
-                       If ChkEnableAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                       If ChkEnableAutoScroll.Checked And intSortColumnIndex = 0 Then
+                           Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                       End If
                    End Sub)
         ElseIf boolIgnored And ChkEnableRecordingOfIgnoredLogs.Checked Then
             SyncLock IgnoredLogsLockObject
@@ -696,6 +698,7 @@ Public Class Form1
         Logs.AllowUserToOrderColumns = False
 
         Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
+        intSortColumnIndex = e.ColumnIndex
 
         If sortOrder = SortOrder.Descending Then
             sortOrder = SortOrder.Ascending
