@@ -10,7 +10,7 @@ Public Class IgnoredLogsAndSearchResults
     Private boolDoneLoading As Boolean = False
 
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
-    Private sortOrder As SortOrder = SortOrder.Descending ' Define soSortOrder at class level
+    Private sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
 
     Private Sub OpenLogViewerWindow()
@@ -39,8 +39,12 @@ Public Class IgnoredLogsAndSearchResults
             sortOrder = SortOrder.Ascending
         End If
 
+        ColAlerts.HeaderCell.SortGlyphDirection = SortOrder.None
         ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
         ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
+        ColTime.HeaderCell.SortGlyphDirection = SortOrder.None
+
+        Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
         SortLogsByDateObject(column.Index, sortOrder)
     End Sub
@@ -95,6 +99,8 @@ Public Class IgnoredLogsAndSearchResults
         ColIPAddress.Width = My.Settings.columnIPSize
         ColLog.Width = My.Settings.columnLogSize
         ColAlerts.Visible = My.Settings.boolShowAlertedColumn
+
+        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
