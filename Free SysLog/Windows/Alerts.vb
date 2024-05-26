@@ -131,6 +131,18 @@
                     .SubItems.Add(If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText))
                     .SubItems.Add(AddAlert.boolRegex.ToString)
                     .SubItems.Add(AddAlert.boolCaseSensitive.ToString)
+
+                    Select Case .AlertType
+                        Case AlertType.Warning
+                            .SubItems.Add("Warning")
+                        Case AlertType.ErrorMsg
+                            .SubItems.Add("Error")
+                        Case AlertType.Info
+                            .SubItems.Add("Information")
+                        Case AlertType.None
+                            .SubItems.Add("None")
+                    End Select
+
                     .SubItems.Add(AddAlert.boolEnabled.ToString)
                     .BoolRegex = AddAlert.boolRegex
                     .BoolCaseSensitive = AddAlert.boolCaseSensitive
