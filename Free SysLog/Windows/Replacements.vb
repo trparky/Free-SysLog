@@ -159,11 +159,11 @@
 
         If selectedItem.BoolEnabled Then
             selectedItem.BoolEnabled = False
-            selectedItem.SubItems(4).Text = "False"
+            selectedItem.SubItems(4).Text = "No"
             BtnEnableDisable.Text = "Enable"
         Else
             selectedItem.BoolEnabled = True
-            selectedItem.SubItems(4).Text = "True"
+            selectedItem.SubItems(4).Text = "Yes"
             BtnEnableDisable.Text = "Disable"
         End If
     End Sub
