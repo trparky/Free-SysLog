@@ -503,7 +503,7 @@ Public Class Form1
             Invoke(Sub()
                        SyncLock dataGridLockObject
                            Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strLogText, boolAlerted, Logs))
-                           SortLogsByDateObjectNoLocking(intSortColumnIndex, SortOrder.Descending)
+                           If intSortColumnIndex = 0 And sortOrder = SortOrder.Descending Then SortLogsByDateObjectNoLocking(intSortColumnIndex, SortOrder.Descending)
                        End SyncLock
 
                        NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
