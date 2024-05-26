@@ -11,8 +11,8 @@
         Location = VerifyWindowLocation(My.Settings.alertsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of AlertsListViewItem)
 
-        For Each alertsClass In alertsList
-            MyIgnoredListViewItem.Add(alertsClass.ToListViewItem)
+        For Each strJSONString As String In My.Settings.alerts
+            MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString).ToListViewItem)
         Next
 
         AlertsListView.Items.AddRange(MyIgnoredListViewItem.ToArray)
