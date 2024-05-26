@@ -1,6 +1,4 @@
-﻿Imports Microsoft.SqlServer
-
-Public Class IgnoredWordsAndPhrases
+﻿Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
