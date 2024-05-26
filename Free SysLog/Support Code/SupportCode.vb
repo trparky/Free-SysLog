@@ -130,15 +130,16 @@ Public Class AlertsClass
         listViewItem.SubItems.Add(BoolRegex.ToString)
         listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
 
-        If alertType = AlertType.Warning Then
-            listViewItem.SubItems.Add("Warning")
-        ElseIf alertType = AlertType.ErrorMsg Then
-            listViewItem.SubItems.Add("Error")
-        ElseIf alertType = AlertType.Info Then
-            listViewItem.SubItems.Add("Information")
-        ElseIf alertType = AlertType.None Then
-            listViewItem.SubItems.Add("None")
-        End If
+        Select Case alertType
+            Case AlertType.Warning
+                listViewItem.SubItems.Add("Warning")
+            Case AlertType.ErrorMsg
+                listViewItem.SubItems.Add("Error")
+            Case AlertType.Info
+                listViewItem.SubItems.Add("Information")
+            Case AlertType.None
+                listViewItem.SubItems.Add("None")
+        End Select
 
         listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
 

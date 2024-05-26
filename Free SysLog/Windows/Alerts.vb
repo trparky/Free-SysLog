@@ -91,15 +91,16 @@
                     .AlertType = AddAlert.AlertType
                     .BoolEnabled = AddAlert.boolEnabled
 
-                    If .AlertType = AlertType.Warning Then
-                        .SubItems(4).Text = "Warning"
-                    ElseIf .AlertType = AlertType.ErrorMsg Then
-                        .SubItems(4).Text = "Error"
-                    ElseIf .AlertType = AlertType.Info Then
-                        .SubItems(4).Text = "Information"
-                    ElseIf .AlertType = AlertType.None Then
-                        .SubItems(4).Text = "None"
-                    End If
+                    Select Case .AlertType
+                        Case AlertType.Warning
+                            .SubItems(4).Text = "Warning"
+                        Case AlertType.ErrorMsg
+                            .SubItems(4).Text = "Error"
+                        Case AlertType.Info
+                            .SubItems(4).Text = "Information"
+                        Case AlertType.None
+                            .SubItems(4).Text = "None"
+                    End Select
 
                     .SubItems(5).Text = AddAlert.boolEnabled.ToString
                 End With
