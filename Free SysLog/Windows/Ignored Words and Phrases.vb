@@ -22,9 +22,9 @@ Public Class IgnoredWordsAndPhrases
                 Dim IgnoredListViewItem As New MyIgnoredListViewItem(AddIgnored.strIgnored)
 
                 With IgnoredListViewItem
-                    .SubItems.Add(AddIgnored.boolRegex.ToString)
-                    .SubItems.Add(AddIgnored.boolCaseSensitive.ToString)
-                    .SubItems.Add(AddIgnored.boolEnabled.ToString)
+                    .SubItems.Add(If(AddIgnored.boolRegex, "Yes", "No"))
+                    .SubItems.Add(If(AddIgnored.boolCaseSensitive, "Yes", "No"))
+                    .SubItems.Add(If(AddIgnored.boolEnabled, "Yes", "No"))
                     .BoolRegex = AddIgnored.boolRegex
                     .BoolCaseSensitive = AddIgnored.boolCaseSensitive
                     .BoolEnabled = AddIgnored.boolEnabled
@@ -123,9 +123,9 @@ Public Class IgnoredWordsAndPhrases
             If AddIgnored.boolSuccess Then
                 With selectedItemObject
                     .SubItems(0).Text = AddIgnored.strIgnored
-                    .SubItems(1).Text = AddIgnored.boolRegex.ToString
-                    .SubItems(2).Text = AddIgnored.boolCaseSensitive.ToString
-                    .SubItems(3).Text = AddIgnored.boolEnabled.ToString
+                    .SubItems(1).Text = If(AddIgnored.boolRegex, "Yes", "No")
+                    .SubItems(2).Text = If(AddIgnored.boolCaseSensitive, "Yes", "No")
+                    .SubItems(3).Text = If(AddIgnored.boolEnabled, "Yes", "No")
                     .BoolRegex = AddIgnored.boolRegex
                     .BoolCaseSensitive = AddIgnored.boolCaseSensitive
                     .BoolEnabled = AddIgnored.boolEnabled

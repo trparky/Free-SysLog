@@ -21,9 +21,9 @@
 
                 With MyReplacementsListViewItem
                     .SubItems.Add(AddReplacement.strReplaceWith)
-                    .SubItems.Add(AddReplacement.boolRegex.ToString)
-                    .SubItems.Add(AddReplacement.boolCaseSensitive.ToString)
-                    .SubItems.Add(AddReplacement.boolEnabled.ToString)
+                    .SubItems.Add(If(AddReplacement.boolRegex, "Yes", "No"))
+                    .SubItems.Add(If(AddReplacement.boolCaseSensitive, "Yes", "No"))
+                    .SubItems.Add(If(AddReplacement.boolEnabled, "Yes", "No"))
                     .BoolRegex = AddReplacement.boolRegex
                     .BoolCaseSensitive = AddReplacement.boolCaseSensitive
                     .BoolEnabled = AddIgnored.boolEnabled
@@ -111,9 +111,9 @@
                 With selectedItemObject
                     .SubItems(0).Text = AddReplacement.strReplace
                     .SubItems(1).Text = AddReplacement.strReplaceWith
-                    .SubItems(2).Text = AddReplacement.boolRegex.ToString
-                    .SubItems(3).Text = AddReplacement.boolCaseSensitive.ToString
-                    .SubItems(4).Text = AddReplacement.boolEnabled.ToString
+                    .SubItems(2).Text = If(AddReplacement.boolRegex, "Yes", "No")
+                    .SubItems(3).Text = If(AddReplacement.boolCaseSensitive, "Yes", "No")
+                    .SubItems(4).Text = If(AddReplacement.boolEnabled, "Yes", "No")
                     .BoolRegex = AddReplacement.boolRegex
                     .BoolCaseSensitive = AddReplacement.boolCaseSensitive
                     .BoolEnabled = AddReplacement.boolEnabled

@@ -84,8 +84,8 @@
                     .StrAlertText = AddAlert.strAlertText
                     .SubItems(0).Text = AddAlert.strLogText
                     .SubItems(1).Text = If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText)
-                    .SubItems(2).Text = AddAlert.boolRegex.ToString
-                    .SubItems(3).Text = AddAlert.boolCaseSensitive.ToString
+                    .SubItems(2).Text = If(AddAlert.boolRegex, "Yes", "No")
+                    .SubItems(3).Text = If(AddAlert.boolCaseSensitive, "Yes", "No")
                     .BoolRegex = AddAlert.boolRegex
                     .BoolCaseSensitive = AddAlert.boolCaseSensitive
                     .AlertType = AddAlert.AlertType
@@ -102,7 +102,7 @@
                             .SubItems(4).Text = "None"
                     End Select
 
-                    .SubItems(5).Text = AddAlert.boolEnabled.ToString
+                    .SubItems(5).Text = If(AddAlert.boolEnabled, "Yes", "No")
                 End With
             End If
         End Using
@@ -130,8 +130,8 @@
 
                 With AlertsListViewItem
                     .SubItems.Add(If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText))
-                    .SubItems.Add(AddAlert.boolRegex.ToString)
-                    .SubItems.Add(AddAlert.boolCaseSensitive.ToString)
+                    .SubItems.Add(If(AddAlert.boolRegex, "Yes", "No"))
+                    .SubItems.Add(If(AddAlert.boolCaseSensitive, "Yes", "No"))
 
                     Select Case .AlertType
                         Case AlertType.Warning
@@ -144,7 +144,7 @@
                             .SubItems.Add("None")
                     End Select
 
-                    .SubItems.Add(AddAlert.boolEnabled.ToString)
+                    .SubItems.Add(If(AddAlert.boolEnabled, "Yes", "No"))
                     .BoolRegex = AddAlert.boolRegex
                     .BoolCaseSensitive = AddAlert.boolCaseSensitive
                     .AlertType = AddAlert.AlertType
