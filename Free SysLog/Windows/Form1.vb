@@ -367,7 +367,7 @@ Public Class Form1
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs))
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -392,8 +392,8 @@ Public Class Form1
                                Logs.Rows.Clear()
 
                                Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
-                                   MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs),
-                                   MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs)
+                                   MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs),
+                                   MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs)
                                }
 
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
@@ -551,7 +551,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", False, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -593,7 +593,7 @@ Public Class Form1
             SyncLock dataGridLockObject
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", False, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -827,7 +827,7 @@ Public Class Form1
                         Logs.AllowUserToOrderColumns = True
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
 
                         If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                             Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -935,7 +935,7 @@ Public Class Form1
                 Logs.AllowUserToOrderColumns = True
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1034,7 +1034,7 @@ Public Class Form1
                 Logs.Rows.Remove(item)
             Next
 
-            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", False, Logs))
+            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", False, Logs))
 
             If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1115,7 +1115,7 @@ Public Class Form1
             serverThread.Start()
 
             SyncLock dataGridLockObject
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1191,7 +1191,7 @@ Public Class Form1
                         serverThread.Start()
 
                         SyncLock dataGridLockObject
-                            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, "127.0.0.1", "Free SysLog Server Started.", False, Logs))
+                            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))
 
                             If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
