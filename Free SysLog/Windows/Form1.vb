@@ -254,8 +254,9 @@ Public Class Form1
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
         propInfo?.SetValue(Logs, True, Nothing)
 
-        Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
-        Logs.AlternatingRowsDefaultCellStyle = rowStyle
+        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+        ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         Dim tempReplacementsClass As ReplacementsClass
         Dim tempSysLogProxyServer As SysLogProxyServer
@@ -347,6 +348,13 @@ Public Class Form1
         serverThread.Start()
     End Sub
 
+    Private Function GetMinimumHeight(strInput As String, font As Font) As Integer
+        Dim numberOfLines As Integer = strInput.Split(New String() {Environment.NewLine, vbCrLf, vbLf, vbCr}, StringSplitOptions.None).Count
+        Dim lineHeight As Integer = TextRenderer.MeasureText("A", font).Height
+
+        Return lineHeight * numberOfLines + 10
+    End Function
+
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
         If File.Exists(My.Settings.logFileLocation) Then
             Try
@@ -364,7 +372,7 @@ Public Class Form1
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
                 For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(item.MakeDataGridRow(Logs))
+                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
                 Next
 
                 listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))

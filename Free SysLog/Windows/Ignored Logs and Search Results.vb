@@ -106,8 +106,9 @@ Public Class IgnoredLogsAndSearchResults
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
         propInfo?.SetValue(Logs, True, Nothing)
 
-        Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
-        Logs.AlternatingRowsDefaultCellStyle = rowStyle
+        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+        ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
 
