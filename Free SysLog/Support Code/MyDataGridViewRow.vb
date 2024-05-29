@@ -14,6 +14,7 @@
             With newDataGridRow
                 .Cells(index).Value = Me.Cells(index).Value
                 .Cells(index).Style.Alignment = Me.Cells(index).Style.Alignment
+                .MinimumHeight = Me.MinimumHeight
             End With
         Next
 
