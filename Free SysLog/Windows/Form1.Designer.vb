@@ -28,6 +28,7 @@ Partial Class Form1
         Me.BtnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExportAllLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
@@ -255,7 +256,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -509,6 +510,12 @@ Partial Class Form1
         Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.DeleteLogsToolStripMenuItem.Text = "Delete Selected Logs"
         '
+        'ExportAllLogsToolStripMenuItem
+        '
+        Me.ExportAllLogsToolStripMenuItem.Name = "ExportAllLogsToolStripMenuItem"
+        Me.ExportAllLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.ExportAllLogsToolStripMenuItem.Text = "Export All Logs"
+        '
         'ExportsLogsToolStripMenuItem
         '
         Me.ExportsLogsToolStripMenuItem.Name = "ExportsLogsToolStripMenuItem"
@@ -649,6 +656,7 @@ Partial Class Form1
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExportsLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ExportAllLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DonationStripMenuItem As ToolStripMenuItem
     Friend WithEvents StopServerStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenWindowsExplorerToAppConfigFile As ToolStripMenuItem
