@@ -36,6 +36,7 @@ Public Class Form1
             .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .DateObject = dateObject
             .BoolAlerted = boolAlerted
+            .MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font)
         End With
 
         Return MyDataGridViewRow
