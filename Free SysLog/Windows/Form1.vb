@@ -1347,10 +1347,7 @@ Public Class Form1
     Private Sub ConfigureSysLogMirrorServers_Click(sender As Object, e As EventArgs) Handles ConfigureSysLogMirrorServers.Click
         Using ConfigureSysLogMirrorServers As New ConfigureSysLogMirrorServers With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
             ConfigureSysLogMirrorServers.ShowDialog(Me)
-
-            If ConfigureSysLogMirrorServers.boolSuccess Then
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+            If ConfigureSysLogMirrorServers.boolSuccess Then MsgBox("Done", MsgBoxStyle.Information, Text)
         End Using
     End Sub
 
