@@ -46,6 +46,7 @@ Module SupportCode
     Public Function SanitizeForCSV(input As String) As String
         If input.Contains(Chr(34)) Then input = input.Replace(Chr(34), Chr(34) & Chr(34))
         If input.Contains(",") Then input = $"{Chr(34)}{input}{Chr(34)}"
+        input = input.Replace(vbCrLf, "\n")
         Return input
     End Function
 
