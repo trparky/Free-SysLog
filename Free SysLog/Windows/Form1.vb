@@ -419,6 +419,7 @@ Public Class Form1
                 Dim boolIgnored As Boolean = False
 
                 strLogText = strLogText.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
+                strLogText = strLogText.Replace(vbLf, vbCrLf)
                 strLogText = Mid(strLogText, InStr(strLogText, ">") + 1, Len(strLogText))
                 strLogText = strLogText.Trim
 
