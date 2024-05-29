@@ -1354,6 +1354,11 @@ Public Class Form1
         End Using
     End Sub
 
+    Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
+        My.Settings.boolShowAlertedColumn = ChkShowAlertedColumn.Checked
+        ColAlerts.Visible = ChkShowAlertedColumn.Checked
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1422,11 +1427,6 @@ Public Class Form1
         If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
             Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
         End If
-    End Sub
-
-    Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
-        My.Settings.boolShowAlertedColumn = ChkShowAlertedColumn.Checked
-        ColAlerts.Visible = ChkShowAlertedColumn.Checked
     End Sub
 #End Region
 End Class
