@@ -520,7 +520,7 @@ Partial Class Form1
         '
         Me.ExportsLogsToolStripMenuItem.Name = "ExportsLogsToolStripMenuItem"
         Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.ExportsLogsToolStripMenuItem.Text = "Exports Selected Logs"
+        Me.ExportsLogsToolStripMenuItem.Text = "Export Selected Logs"
         '
         'DonationStripMenuItem
         '
