@@ -434,8 +434,9 @@ Public Class Form1
             If Not String.IsNullOrWhiteSpace(strLogText) And Not String.IsNullOrWhiteSpace(strSourceIP) Then
                 Dim boolIgnored As Boolean = False
 
-                strLogText = strLogText.Replace(vbCr, vbCrLf) ' Converts from UNIX to DOS/Windows.
-                strLogText = strLogText.Replace(vbLf, vbCrLf)
+                strLogText = strLogText.Replace(vbCrLf, vbLf) ' Temporarily replace all CRLF with LF
+                strLogText = strLogText.Replace(vbCr, vbLf)   ' Convert standalone CR to LF
+                strLogText = strLogText.Replace(vbLf, vbCrLf) ' Finally, replace all LF with CRLF
                 strLogText = Mid(strLogText, InStr(strLogText, ">") + 1, Len(strLogText))
                 strLogText = strLogText.Trim
 
