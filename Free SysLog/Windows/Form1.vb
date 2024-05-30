@@ -370,11 +370,18 @@ Public Class Form1
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
                 End Using
 
+                Dim intProgress As Integer = 0
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+
+                Invoke(Sub() LoadingProgressBar.Visible = True)
 
                 For Each item As SavedData In collectionOfSavedData
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
+                    intProgress += 1
+                    Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
                 Next
+
+                Invoke(Sub() LoadingProgressBar.Visible = False)
 
                 listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))
 

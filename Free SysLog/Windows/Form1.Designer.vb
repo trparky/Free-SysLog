@@ -91,6 +91,7 @@ Partial Class Form1
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureSysLogMirrorServers = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -571,11 +572,22 @@ Partial Class Form1
         Me.CreateReplacementToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.CreateReplacementToolStripMenuItem.Text = "Create Replacement"
         '
+        'LoadingProgressBar
+        '
+        Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LoadingProgressBar.Location = New System.Drawing.Point(474, 27)
+        Me.LoadingProgressBar.Name = "LoadingProgressBar"
+        Me.LoadingProgressBar.Size = New System.Drawing.Size(689, 23)
+        Me.LoadingProgressBar.TabIndex = 19
+        Me.LoadingProgressBar.Visible = False
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1175, 446)
+        Me.Controls.Add(Me.LoadingProgressBar)
         Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
         Me.Controls.Add(Me.ChkRegExSearch)
@@ -669,4 +681,5 @@ Partial Class Form1
     Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
     Friend WithEvents ChkShowAlertedColumn As ToolStripMenuItem
     Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
+    Friend WithEvents LoadingProgressBar As ProgressBar
 End Class
