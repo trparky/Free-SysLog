@@ -372,6 +372,7 @@ Public Class Form1
                 End Using
 
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+                Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
                 If collectionOfSavedData.Count > 0 Then
                     Dim intProgress As Integer = 0
@@ -387,7 +388,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = False)
                 End If
 
-                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", False, Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
