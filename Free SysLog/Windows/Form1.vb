@@ -138,7 +138,7 @@ Public Class Form1
             End If
 
             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
-            ShowInTaskbar = WindowState <> FormWindowState.Minimized
+            If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
         End If
     End Sub
 
@@ -238,6 +238,7 @@ Public Class Form1
         LblAutoSaved.Visible = ChkEnableAutoSave.Checked
         ColAlerts.Visible = My.Settings.boolShowAlertedColumn
         ChkShowAlertedColumn.Checked = My.Settings.boolShowAlertedColumn
+        MinimizeToClockTray.Checked = My.Settings.MinimizeToClockTray
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
         ChkEnableStartAtUserStartup.Checked = DoesStartupEntryExist()
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
@@ -1374,6 +1375,10 @@ Public Class Form1
     Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
         My.Settings.boolShowAlertedColumn = ChkShowAlertedColumn.Checked
         ColAlerts.Visible = ChkShowAlertedColumn.Checked
+    End Sub
+
+    Private Sub MinimizeToClockTray_Click(sender As Object, e As EventArgs) Handles MinimizeToClockTray.Click
+        My.Settings.MinimizeToClockTray = MinimizeToClockTray.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
