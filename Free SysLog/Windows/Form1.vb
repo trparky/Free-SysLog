@@ -835,17 +835,19 @@ Public Class Form1
                         Logs.Enabled = False
 
                         Dim intOldCount As Integer = Logs.Rows.Count
+                        Dim newListOfLogs As New List(Of MyDataGridViewRow)
 
-                        For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
-                            Dim item As MyDataGridViewRow = CType(Logs.Rows(i), MyDataGridViewRow)
-
-                            If item.DateObject.Date <= dateChosenDate.Date Then
-                                Logs.Rows.RemoveAt(i)
+                        For Each item As MyDataGridViewRow In Logs.Rows
+                            If item.DateObject.Date >= dateChosenDate.Date Then
+                                newListOfLogs.Add(item.Clone())
                             End If
                         Next
 
                         Logs.Enabled = True
                         Logs.AllowUserToOrderColumns = True
+
+                        Logs.Rows.Clear()
+                        Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                         Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
@@ -943,17 +945,19 @@ Public Class Form1
                 Logs.Enabled = False
 
                 Dim intOldCount As Integer = Logs.Rows.Count
+                Dim newListOfLogs As New List(Of MyDataGridViewRow)
 
-                For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
-                    Dim item As MyDataGridViewRow = CType(Logs.Rows(i), MyDataGridViewRow)
-
-                    If item.DateObject.Date <= dateChosenDate.Date Then
-                        Logs.Rows.RemoveAt(i)
+                For Each item As MyDataGridViewRow In Logs.Rows
+                    If item.DateObject.Date >= dateChosenDate.Date Then
+                        newListOfLogs.Add(item.Clone())
                     End If
                 Next
 
                 Logs.Enabled = True
                 Logs.AllowUserToOrderColumns = True
+
+                Logs.Rows.Clear()
+                Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", False, Logs))
