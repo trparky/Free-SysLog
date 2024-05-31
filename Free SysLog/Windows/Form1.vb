@@ -403,8 +403,13 @@ Public Class Form1
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
-                File.Copy(My.Settings.logFileLocation, $"{My.Settings.logFileLocation}.bad", True)
-                File.WriteAllText(My.Settings.logFileLocation, "{}")
+                If File.Exists($"{My.Settings.logFileLocation}.bad") Then
+                    File.Copy(My.Settings.logFileLocation, GetUniqueFileName($"{My.Settings.logFileLocation}.bad"))
+                Else
+                    File.Copy(My.Settings.logFileLocation, $"{My.Settings.logFileLocation}.bad")
+                End If
+
+                File.WriteAllText(My.Settings.logFileLocation, "[]")
                 LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
 
                 SyncLock dataGridLockObject
@@ -423,6 +428,26 @@ Public Class Form1
             End Try
         End If
     End Sub
+
+    Private Function GetUniqueFileName(fileName As String) As String
+        Dim fileInfo As New FileInfo(fileName)
+
+        Dim strDirectory As String = fileInfo.DirectoryName
+        Dim strFileBase As String = Path.GetFileNameWithoutExtension(fileInfo.Name)
+        Dim strFileExtension As String = fileInfo.Extension
+
+        If String.IsNullOrWhiteSpace(strDirectory) Then strDirectory = Directory.GetCurrentDirectory
+
+        Dim strNewFileName As String = Path.Combine(strDirectory, fileInfo.Name)
+        Dim intCount As Integer = 1
+
+        While File.Exists(strNewFileName)
+            strNewFileName = Path.Combine(strDirectory, $"{strFileBase} ({intCount}){strFileExtension}")
+            intCount += 1
+        End While
+
+        Return strNewFileName
+    End Function
 
     Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles BtnOpenLogLocation.Click
         SelectFileInWindowsExplorer(My.Settings.logFileLocation)
