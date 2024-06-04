@@ -854,7 +854,7 @@ Public Class Form1
 
             If ClearLogsOlderThanInstance.boolSuccess Then
                 Try
-                    Dim dateChosenDate As Date = ClearLogsOlderThanInstance.dateChosenDate.AddDays(-1)
+                    Dim dateChosenDate As Date = ClearLogsOlderThanInstance.dateChosenDate
 
                     SyncLock dataGridLockObject
                         Logs.AllowUserToOrderColumns = False
@@ -972,9 +972,10 @@ Public Class Form1
 
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Dim newListOfLogs As New List(Of MyDataGridViewRow)
+                Dim newDate As Date = Now.AddDays(-1)
 
                 For Each item As MyDataGridViewRow In Logs.Rows
-                    If item.DateObject.Date >= dateChosenDate.Date Then
+                    If item.DateObject.Date >= newDate Then
                         newListOfLogs.Add(item.Clone())
                     End If
                 Next
