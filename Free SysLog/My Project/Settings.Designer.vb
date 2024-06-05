@@ -624,6 +624,18 @@ Namespace My
                 Me("MinimizeToClockTray") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property DeleteOldLogsAtMidnight() As Boolean
+            Get
+                Return CType(Me("DeleteOldLogsAtMidnight"),Boolean)
+            End Get
+            Set
+                Me("DeleteOldLogsAtMidnight") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

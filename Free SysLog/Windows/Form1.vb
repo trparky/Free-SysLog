@@ -22,6 +22,72 @@ Public Class Form1
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
 
+#Region "--== Midnight Timer Code ==--"
+    ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
+    ' I have rewritten the code to ensure that I fully understand it and to avoid blatantly copying someone else's work.
+    ' Using their code as-is without making an effort to learn from it or to create my own implementation doesn't sit well with me.
+
+    Private MyMidnightTimer As Timers.Timer
+
+    Private Sub CreateNewMidnightTimer()
+        If MyMidnightTimer IsNot Nothing Then
+            MyMidnightTimer.Stop()
+            MyMidnightTimer.Dispose()
+            MyMidnightTimer = Nothing
+        End If
+
+        ' Calculate the time span until midnight
+        Dim ts As TimeSpan = GetMidnight(1).Subtract(Date.Now)
+        Dim tsMidnight As New TimeSpan(ts.Hours, ts.Minutes, ts.Seconds)
+
+        ' Create and start the new timer
+        MyMidnightTimer = New Timers.Timer(tsMidnight.TotalMilliseconds)
+
+        AddHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
+        AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
+
+        MyMidnightTimer.Start()
+    End Sub
+
+    Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
+        SyncLock dataGridLockObject
+            Dim oldLogCount As Integer = Logs.Rows.Count
+            Logs.Rows.Clear()
+
+            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", False, Logs))
+
+            If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
+                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+            End If
+        End SyncLock
+
+        CreateNewMidnightTimer()
+    End Sub
+
+    Private Sub WindowsTimeChangeHandler(sender As Object, e As EventArgs)
+        CreateNewMidnightTimer()
+    End Sub
+
+    Private Function GetMidnight(minutesAfterMidnight As Integer) As Date
+        Dim tomorrow As Date = Date.Now.AddDays(1)
+        Return New Date(tomorrow.Year, tomorrow.Month, tomorrow.Day, 0, minutesAfterMidnight, 0)
+    End Function
+
+    Private Sub DeleteOldLogsAtMidnight_Click(sender As Object, e As EventArgs) Handles DeleteOldLogsAtMidnight.Click
+        My.Settings.DeleteOldLogsAtMidnight = DeleteOldLogsAtMidnight.Checked
+
+        If DeleteOldLogsAtMidnight.Checked Then
+            CreateNewMidnightTimer()
+        Else
+            If MyMidnightTimer IsNot Nothing Then
+                MyMidnightTimer.Stop()
+                MyMidnightTimer.Dispose()
+                MyMidnightTimer = Nothing
+            End If
+        End If
+    End Sub
+#End Region
+
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
 
@@ -218,6 +284,8 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
+
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
 
@@ -241,6 +309,7 @@ Public Class Form1
         MinimizeToClockTray.Checked = My.Settings.MinimizeToClockTray
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
         ChkEnableStartAtUserStartup.Checked = DoesStartupEntryExist()
+        DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
