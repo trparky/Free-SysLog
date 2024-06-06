@@ -29,6 +29,10 @@ Namespace My
                 e.Cancel = True
                 Exit Sub
             End If
+
+            If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then
+                Threading.Thread.Sleep(TimeSpan.FromSeconds(30).TotalMilliseconds)
+            End If
         End Sub
     End Class
 End Namespace
