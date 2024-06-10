@@ -42,6 +42,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.BtnClearIgnoredLogs = New System.Windows.Forms.Button()
         Me.BtnViewMainWindow = New System.Windows.Forms.Button()
+        Me.BtnOpenLogFile = New System.Windows.Forms.Button()
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -169,11 +170,23 @@ Partial Class IgnoredLogsAndSearchResults
         Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
+        'BtnOpenLogFile
+        '
+        Me.BtnOpenLogFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnOpenLogFile.Location = New System.Drawing.Point(135, 377)
+        Me.BtnOpenLogFile.Name = "BtnOpenLogFile"
+        Me.BtnOpenLogFile.Size = New System.Drawing.Size(75, 23)
+        Me.BtnOpenLogFile.TabIndex = 23
+        Me.BtnOpenLogFile.Text = "Open Log File"
+        Me.BtnOpenLogFile.UseVisualStyleBackColor = True
+        Me.BtnOpenLogFile.Visible = False
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 425)
+        Me.Controls.Add(Me.BtnOpenLogFile)
         Me.Controls.Add(Me.BtnViewMainWindow)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.Logs)
@@ -205,4 +218,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
+    Friend WithEvents BtnOpenLogFile As Button
 End Class

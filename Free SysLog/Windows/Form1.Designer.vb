@@ -24,6 +24,7 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.BtnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BtnOpenLogForViewing = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -110,6 +111,12 @@ Partial Class Form1
         Me.BtnOpenLogLocation.Name = "BtnOpenLogLocation"
         Me.BtnOpenLogLocation.Size = New System.Drawing.Size(239, 22)
         Me.BtnOpenLogLocation.Text = "Open Log File Location"
+        '
+        'BtnOpenLogForViewing
+        '
+        Me.BtnOpenLogForViewing.Name = "BtnOpenLogLocation"
+        Me.BtnOpenLogForViewing.Size = New System.Drawing.Size(239, 22)
+        Me.BtnOpenLogForViewing.Text = "Open Log File for Viewing"
         '
         'BtnClearLog
         '
@@ -266,7 +273,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -620,6 +627,7 @@ Partial Class Form1
 
     End Sub
     Friend WithEvents BtnOpenLogLocation As ToolStripMenuItem
+    Friend WithEvents BtnOpenLogForViewing As ToolStripMenuItem
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents StatusStrip As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel

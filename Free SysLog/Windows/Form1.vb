@@ -389,13 +389,6 @@ Public Class Form1
         serverThread.Start()
     End Sub
 
-    Private Function GetMinimumHeight(strInput As String, font As Font) As Integer
-        Dim numberOfLines As Integer = strInput.Split(New String() {Environment.NewLine, vbCrLf, vbLf, vbCr}, StringSplitOptions.None).Count
-        Dim lineHeight As Integer = TextRenderer.MeasureText("A", font).Height
-
-        Return lineHeight * numberOfLines + 10
-    End Function
-
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
         If File.Exists(strPathToDataFile) Then
             Try
@@ -1447,6 +1440,11 @@ Public Class Form1
 
     Private Sub MinimizeToClockTray_Click(sender As Object, e As EventArgs) Handles MinimizeToClockTray.Click
         My.Settings.MinimizeToClockTray = MinimizeToClockTray.Checked
+    End Sub
+
+    Private Sub BtnOpenLogForViewing_Click(sender As Object, e As EventArgs) Handles BtnOpenLogForViewing.Click
+        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer}
+        logFileViewer.Show(Me)
     End Sub
 
 #Region "-- SysLog Server Code --"

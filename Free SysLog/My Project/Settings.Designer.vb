@@ -636,6 +636,30 @@ Namespace My
                 Me("DeleteOldLogsAtMidnight") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1168, 464")>  _
+        Public Property logFileViewerSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("logFileViewerSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("logFileViewerSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property logFileViewerLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("logFileViewerLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("logFileViewerLocation") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

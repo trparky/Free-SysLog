@@ -4,6 +4,7 @@ Imports System.Text
 Public Enum IgnoreOrSearchWindowDisplayMode As Byte
     ignored
     search
+    viewer
 End Enum
 
 Module SupportCode
@@ -20,6 +21,13 @@ Module SupportCode
     Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Free SysLog")
     Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Free SysLog", "Backup")
     Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
+
+    Public Function GetMinimumHeight(strInput As String, font As Font) As Integer
+        Dim numberOfLines As Integer = strInput.Split(New String() {Environment.NewLine, vbCrLf, vbLf, vbCr}, StringSplitOptions.None).Count
+        Dim lineHeight As Integer = TextRenderer.MeasureText("A", font).Height
+
+        Return lineHeight * numberOfLines + 10
+    End Function
 
     Public Function IsRegexPatternValid(pattern As String) As Boolean
         Try

@@ -73,11 +73,13 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub Ignored_Logs_and_Search_Results_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         If boolDoneLoading Then
-        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
-            My.Settings.ignoredWindowSize = Size
-        Else
-            My.Settings.searchWindowSize = Size
-        End If
+            If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+                My.Settings.ignoredWindowSize = Size
+            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
+                My.Settings.searchWindowSize = Size
+            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+                My.Settings.logFileViewerSize = Size
+            End If
         End If
     End Sub
 
@@ -85,14 +87,21 @@ Public Class IgnoredLogsAndSearchResults
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             BtnClearIgnoredLogs.Visible = True
             BtnViewMainWindow.Visible = True
+        ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+            BtnExport.Visible = False
+            BtnOpenLogFile.Visible = True
+            BtnViewMainWindow.Visible = True
         End If
 
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             Size = My.Settings.ignoredWindowSize
             Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
-        Else
+        ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
             Size = My.Settings.searchWindowSize
             Location = VerifyWindowLocation(My.Settings.searchWindowLocation, Me)
+        ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+            Size = My.Settings.logFileViewerSize
+            Location = VerifyWindowLocation(My.Settings.logFileViewerLocation, Me)
         End If
 
         ColTime.Width = My.Settings.columnTimeSize
@@ -110,12 +119,14 @@ Public Class IgnoredLogsAndSearchResults
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
-        Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
+        If WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
+            Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
 
-        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
-            LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
-        Else
-            LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
+            If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+                LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+            Else
+                LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
+            End If
         End If
 
         boolDoneLoading = True
@@ -133,8 +144,10 @@ Public Class IgnoredLogsAndSearchResults
         If boolDoneLoading Then
             If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 My.Settings.ignoredWindowLocation = Location
-            Else
+            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
                 My.Settings.searchWindowLocation = Location
+            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+                My.Settings.logFileViewerLocation = Location
             End If
         End If
     End Sub
@@ -242,6 +255,29 @@ Public Class IgnoredLogsAndSearchResults
                 My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
 
                 MsgBox("Done", MsgBoxStyle.Information, Text)
+            End If
+        End Using
+    End Sub
+
+    Private Sub BtnOpenLogFile_Click(sender As Object, e As EventArgs) Handles BtnOpenLogFile.Click
+        Using OpenFileDialog As New OpenFileDialog With {.Title = "Open Log File", .Filter = "JSON File|*.json"}
+            If OpenFileDialog.ShowDialog() = DialogResult.OK Then
+                Dim collectionOfSavedData As New List(Of SavedData)
+
+                Using fileStream As New StreamReader(OpenFileDialog.FileName)
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+                End Using
+
+                If collectionOfSavedData.Count > 0 Then
+                    Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+
+                    For Each item As SavedData In collectionOfSavedData
+                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
+                    Next
+
+                    Logs.Rows.Clear()
+                    Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                End If
             End If
         End Using
     End Sub

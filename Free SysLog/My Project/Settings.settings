@@ -149,5 +149,11 @@
     <Setting Name="DeleteOldLogsAtMidnight" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="logFileViewerSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1168, 464</Value>
+    </Setting>
+    <Setting Name="logFileViewerLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
