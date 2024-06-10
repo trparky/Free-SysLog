@@ -53,7 +53,8 @@ Public Class Form1
         SyncLock dataGridLockObject
             WriteLogsToDisk()
 
-            File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{Now.Month}-{Now.Day}-{Now.Year} Backup.json"))
+            Dim backupDate As Date = Now.AddDays(-1)
+            File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{backupDate.Month}-{backupDate.Day}-{backupDate.Year} Backup.json"))
 
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
