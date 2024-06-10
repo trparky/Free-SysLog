@@ -51,10 +51,12 @@ Public Class Form1
 
     Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
         SyncLock dataGridLockObject
-            WriteLogsToDisk()
+            If My.Settings.DeleteOldLogsAtMidnight Then
+                WriteLogsToDisk()
 
-            Dim backupDate As Date = Now.AddDays(-1)
-            File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{backupDate.Month}-{backupDate.Day}-{backupDate.Year} Backup.json"))
+                Dim backupDate As Date = Now.AddDays(-1)
+                File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{backupDate.Month}-{backupDate.Day}-{backupDate.Year} Backup.json"))
+            End If
 
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
@@ -78,8 +80,18 @@ Public Class Form1
         Return New Date(tomorrow.Year, tomorrow.Month, tomorrow.Day, 0, minutesAfterMidnight, 0)
     End Function
 
+    Private Sub BackupOldLogsAfterClearingAtMidnight_Click(sender As Object, e As EventArgs) Handles BackupOldLogsAfterClearingAtMidnight.Click
+        My.Settings.DeleteOldLogsAtMidnight = BackupOldLogsAfterClearingAtMidnight.Checked
+    End Sub
+
     Private Sub DeleteOldLogsAtMidnight_Click(sender As Object, e As EventArgs) Handles DeleteOldLogsAtMidnight.Click
         My.Settings.DeleteOldLogsAtMidnight = DeleteOldLogsAtMidnight.Checked
+        BackupOldLogsAfterClearingAtMidnight.Enabled = DeleteOldLogsAtMidnight.Checked
+
+        If Not DeleteOldLogsAtMidnight.Checked Then
+            DeleteOldLogsAtMidnight.Checked = False
+            My.Settings.DeleteOldLogsAtMidnight = False
+        End If
 
         If DeleteOldLogsAtMidnight.Checked Then
             CreateNewMidnightTimer()
@@ -297,6 +309,8 @@ Public Class Form1
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
         ChkEnableStartAtUserStartup.Checked = DoesStartupEntryExist()
         DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
+        BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
+        BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized

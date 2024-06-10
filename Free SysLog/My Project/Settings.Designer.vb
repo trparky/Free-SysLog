@@ -660,6 +660,18 @@ Namespace My
                 Me("logFileViewerLocation") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property BackupOldLogsAfterClearingAtMidnight() As Boolean
+            Get
+                Return CType(Me("BackupOldLogsAfterClearingAtMidnight"),Boolean)
+            End Get
+            Set
+                Me("BackupOldLogsAfterClearingAtMidnight") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
