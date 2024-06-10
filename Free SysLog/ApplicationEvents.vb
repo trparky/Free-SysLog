@@ -9,6 +9,14 @@ Namespace My
     ' NetworkAvailabilityChanged: Raised when the network connection is connected or disconnected.
     Partial Friend Class MyApplication
         Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
+            If Not IO.Directory.Exists(strPathToDataFolder) Then IO.Directory.CreateDirectory(strPathToDataFolder)
+            If Not IO.Directory.Exists(strPathToDataBackupFolder) Then IO.Directory.CreateDirectory(strPathToDataBackupFolder)
+
+            If Not String.IsNullOrWhiteSpace(Settings.logFileLocation) Then
+                If Not IO.File.Exists(strPathToDataFile) Then IO.File.Move(Settings.logFileLocation, strPathToDataFile)
+                Settings.logFileLocation = Nothing
+            End If
+
             If IO.File.Exists("updater.exe") Then
                 SearchForProcessAndKillIt("updater.exe", False)
                 IO.File.Delete("updater.exe")

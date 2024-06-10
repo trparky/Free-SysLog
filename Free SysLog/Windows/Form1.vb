@@ -51,6 +51,10 @@ Public Class Form1
 
     Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
         SyncLock dataGridLockObject
+            WriteLogsToDisk()
+
+            File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{Now.Month}-{Now.Day}-{Now.Year} Backup.json"))
+
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
 
@@ -124,24 +128,6 @@ Public Class Form1
         End Using
     End Function
 
-    Private Sub BtnMoveLogFile_Click(sender As Object, e As EventArgs) Handles BtnMoveLogFile.Click
-        SyncLock lockObject
-            Using SaveFileDialog As New SaveFileDialog()
-                SaveFileDialog.Filter = "JSON Data File|*.json"
-
-                Do
-                    If SaveFileDialog.ShowDialog() = DialogResult.OK Then
-                        If File.Exists(SaveFileDialog.FileName) Then File.Delete(SaveFileDialog.FileName)
-                        File.Move(My.Settings.logFileLocation, SaveFileDialog.FileName)
-                        My.Settings.logFileLocation = SaveFileDialog.FileName
-                        My.Settings.Save()
-                        Exit Do
-                    End If
-                Loop While True
-            End Using
-        End SyncLock
-    End Sub
-
     Private Sub WriteLogsToDisk()
         SyncLock lockObject
             Dim collectionOfSavedData As New List(Of SavedData)
@@ -164,18 +150,18 @@ Public Class Form1
             End SyncLock
 
             Try
-                Using fileStream As New StreamWriter(My.Settings.logFileLocation & ".new")
+                Using fileStream As New StreamWriter(strPathToDataFile & ".new")
                     fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
                 End Using
 
-                File.Delete(My.Settings.logFileLocation)
-                File.Move(My.Settings.logFileLocation & ".new", My.Settings.logFileLocation)
+                File.Delete(strPathToDataFile)
+                File.Move(strPathToDataFile & ".new", strPathToDataFile)
             Catch ex As Exception
                 MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption.", MsgBoxStyle.Critical, Text)
                 Process.GetCurrentProcess.Kill()
             End Try
 
-            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
 
             BtnSaveLogsToDisk.Enabled = False
         End SyncLock
@@ -392,22 +378,6 @@ Public Class Form1
 
         boolDoneLoading = True
 
-        If String.IsNullOrWhiteSpace(My.Settings.logFileLocation) Then
-            Using SaveFileDialog As New SaveFileDialog()
-                SaveFileDialog.Filter = "JSON Data File|*.json"
-
-                Do
-                    If SaveFileDialog.ShowDialog() = DialogResult.OK Then
-                        My.Settings.logFileLocation = SaveFileDialog.FileName
-                        My.Settings.Save()
-                        Exit Do
-                    Else
-                        If MsgBox("You must set a location to save the syslog data file to. Do you want to continue?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo + MsgBoxStyle.SystemModal, Text) = MsgBoxResult.No Then Process.GetCurrentProcess.Kill()
-                    End If
-                Loop While True
-            End Using
-        End If
-
         Dim worker As New BackgroundWorker()
         AddHandler worker.DoWork, AddressOf LoadDataFile
         AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
@@ -427,16 +397,16 @@ Public Class Form1
     End Function
 
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
-        If File.Exists(My.Settings.logFileLocation) Then
+        If File.Exists(strPathToDataFile) Then
             Try
                 Invoke(Sub()
                            Logs.Rows.Add(MakeDataGridRow(Now, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", False, Logs))
-                           LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+                           LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
                        End Sub)
 
                 Dim collectionOfSavedData As New List(Of SavedData)
 
-                Using fileStream As New StreamReader(My.Settings.logFileLocation)
+                Using fileStream As New StreamReader(strPathToDataFile)
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
                 End Using
 
@@ -473,14 +443,14 @@ Public Class Form1
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
-                If File.Exists($"{My.Settings.logFileLocation}.bad") Then
-                    File.Copy(My.Settings.logFileLocation, GetUniqueFileName($"{My.Settings.logFileLocation}.bad"))
+                If File.Exists($"{strPathToDataFile}.bad") Then
+                    File.Copy(strPathToDataFile, GetUniqueFileName($"{strPathToDataFile}.bad"))
                 Else
-                    File.Copy(My.Settings.logFileLocation, $"{My.Settings.logFileLocation}.bad")
+                    File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
                 End If
 
-                File.WriteAllText(My.Settings.logFileLocation, "[]")
-                LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(My.Settings.logFileLocation).Length)}"
+                File.WriteAllText(strPathToDataFile, "[]")
+                LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -520,7 +490,7 @@ Public Class Form1
     End Function
 
     Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles BtnOpenLogLocation.Click
-        SelectFileInWindowsExplorer(My.Settings.logFileLocation)
+        SelectFileInWindowsExplorer(strPathToDataFile)
     End Sub
 
     Private Function GetCachedRegex(pattern As String, Optional boolCaseInsensitive As Boolean = True) As Regex

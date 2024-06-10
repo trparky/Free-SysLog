@@ -41,7 +41,6 @@ Partial Class Form1
         Me.ChkEnableAutoSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteOldLogsAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkEnableStartAtUserStartup = New System.Windows.Forms.ToolStripMenuItem()
-        Me.BtnMoveLogFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
@@ -236,12 +235,6 @@ Partial Class Form1
         Me.ChkEnableStartAtUserStartup.Size = New System.Drawing.Size(339, 22)
         Me.ChkEnableStartAtUserStartup.Text = "Enable Start at Startup"
         '
-        'BtnMoveLogFile
-        '
-        Me.BtnMoveLogFile.Name = "BtnMoveLogFile"
-        Me.BtnMoveLogFile.Size = New System.Drawing.Size(339, 22)
-        Me.BtnMoveLogFile.Text = "Move Log File"
-        '
         'ChkRegExSearch
         '
         Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -308,7 +301,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.BtnMoveLogFile, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -640,7 +633,6 @@ Partial Class Form1
     Friend WithEvents LblAutoSaved As ToolStripStatusLabel
     Friend WithEvents ChkEnableStartAtUserStartup As ToolStripMenuItem
     Friend WithEvents LblLogFileSize As ToolStripStatusLabel
-    Friend WithEvents BtnMoveLogFile As ToolStripMenuItem
     Friend WithEvents ToolTip As ToolTip
     Friend WithEvents MenuStrip As MenuStrip
     Friend WithEvents MainMenuToolStripMenuItem As ToolStripMenuItem
