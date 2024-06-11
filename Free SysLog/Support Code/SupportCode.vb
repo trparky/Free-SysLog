@@ -18,8 +18,8 @@ Module SupportCode
     Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
     Public boolDoWeOwnTheMutex As Boolean = False
     Public JSONDecoderSettings As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error}
-    Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Free SysLog")
-    Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Free SysLog", "Backup")
+    Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
+    Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
     Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
 
     Public Function GetMinimumHeight(strInput As String, font As Font) As Integer
