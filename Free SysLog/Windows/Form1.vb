@@ -54,8 +54,11 @@ Public Class Form1
             If My.Settings.DeleteOldLogsAtMidnight Then
                 WriteLogsToDisk()
 
-                Dim backupDate As Date = Now.AddDays(-1)
-                File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{backupDate.Month}-{backupDate.Day}-{backupDate.Year} Backup.json"))
+                Dim strBackupDate As String = Now.AddDays(-1).ToLongDateString
+                strBackupDate = strBackupDate.Replace("/", "")
+                strBackupDate = strBackupDate.Replace("\", "")
+
+                File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{strBackupDate} Backup.json"))
             End If
 
             Dim oldLogCount As Integer = Logs.Rows.Count
