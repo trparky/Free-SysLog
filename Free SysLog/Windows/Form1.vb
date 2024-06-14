@@ -51,15 +51,7 @@ Public Class Form1
 
     Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
         SyncLock dataGridLockObject
-            If My.Settings.BackupOldLogsAfterClearingAtMidnight Then
-                WriteLogsToDisk()
-
-                Dim strBackupDate As String = Now.AddDays(-1).ToLongDateString
-                strBackupDate = strBackupDate.Replace("/", "")
-                strBackupDate = strBackupDate.Replace("\", "")
-
-                File.Copy(strPathToDataFile, Path.Combine(strPathToDataBackupFolder, $"{strBackupDate} Backup.json"))
-            End If
+            If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
 
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
@@ -107,6 +99,16 @@ Public Class Form1
         End If
     End Sub
 #End Region
+
+    Private Sub MakeLogBackup()
+        WriteLogsToDisk()
+
+        Dim strBackupDate As String = Now.AddDays(-1).ToLongDateString
+        strBackupDate = strBackupDate.Replace("/", "")
+        strBackupDate = strBackupDate.Replace("\", "")
+
+        File.Copy(strPathToDataFile, GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{strBackupDate} Backup.json")))
+    End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
@@ -642,6 +644,8 @@ Public Class Form1
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
+                If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+
                 Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
@@ -688,6 +692,8 @@ Public Class Form1
     Private Sub BtnClearAllLogs_Click(sender As Object, e As EventArgs) Handles BtnClearAllLogs.Click
         If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             SyncLock dataGridLockObject
+                If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
                 Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", False, Logs))
@@ -922,6 +928,8 @@ Public Class Form1
                         Logs.Enabled = True
                         Logs.AllowUserToOrderColumns = True
 
+                        If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+
                         Logs.Rows.Clear()
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
 
@@ -1028,6 +1036,8 @@ Public Class Form1
                     End If
                 Next
 
+                If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+
                 Logs.Enabled = True
                 Logs.AllowUserToOrderColumns = True
 
@@ -1128,6 +1138,8 @@ Public Class Form1
 
     Private Sub DeleteLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteLogsToolStripMenuItem.Click
         SyncLock dataGridLockObject
+            If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+
             Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
 
             For Each item As DataGridViewRow In Logs.SelectedRows
