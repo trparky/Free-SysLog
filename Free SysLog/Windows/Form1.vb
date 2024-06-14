@@ -51,7 +51,7 @@ Public Class Form1
 
     Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
         SyncLock dataGridLockObject
-            If My.Settings.DeleteOldLogsAtMidnight Then
+            If My.Settings.BackupOldLogsAfterClearingAtMidnight Then
                 WriteLogsToDisk()
 
                 Dim strBackupDate As String = Now.AddDays(-1).ToLongDateString
