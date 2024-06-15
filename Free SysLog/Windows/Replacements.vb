@@ -1,5 +1,6 @@
 ﻿Public Class Replacements
     Private boolDoneLoading As Boolean = False
+    Public boolChanged As Boolean = False
 
     Private Function CheckForExistingItem(strReplace As String, strReplaceWith As String) As Boolean
         Return ReplacementsListView.Items.Cast(Of MyReplacementsListViewItem).Any(Function(item As MyReplacementsListViewItem)
@@ -30,6 +31,7 @@
                 End With
 
                 ReplacementsListView.Items.Add(MyReplacementsListViewItem)
+                boolChanged = True
             End If
         End Using
     End Sub
@@ -62,19 +64,21 @@
     End Sub
 
     Private Sub Replacements_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
-        replacementsList.Clear()
+        If boolChanged Then
+            replacementsList.Clear()
 
-        Dim replacementsClass As ReplacementsClass
-        Dim tempReplacements As New Specialized.StringCollection()
+            Dim replacementsClass As ReplacementsClass
+            Dim tempReplacements As New Specialized.StringCollection()
 
-        For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
-            replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled}
-            If replacementsClass.BoolEnabled Then replacementsList.Add(replacementsClass)
-            tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
-        Next
+            For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
+                replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled}
+                If replacementsClass.BoolEnabled Then replacementsList.Add(replacementsClass)
+                tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
+            Next
 
-        My.Settings.replacements = tempReplacements
-        My.Settings.Save()
+            My.Settings.replacements = tempReplacements
+            My.Settings.Save()
+        End If
     End Sub
 
     Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles ReplacementsListView.KeyUp
@@ -83,6 +87,7 @@
                 ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
                 BtnDelete.Enabled = False
                 BtnEdit.Enabled = False
+                boolChanged = True
             ElseIf e.KeyCode = Keys.Enter Then
                 EditItem()
             End If
@@ -118,6 +123,8 @@
                     .BoolCaseSensitive = AddReplacement.boolCaseSensitive
                     .BoolEnabled = AddReplacement.boolEnabled
                 End With
+
+                boolChanged = True
             End If
         End Using
     End Sub
@@ -166,6 +173,8 @@
             selectedItem.SubItems(4).Text = "Yes"
             BtnEnableDisable.Text = "Disable"
         End If
+
+        boolChanged = True
     End Sub
 
     Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
@@ -233,6 +242,7 @@
                 My.Settings.Save()
 
                 MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
+                boolChanged = True
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try

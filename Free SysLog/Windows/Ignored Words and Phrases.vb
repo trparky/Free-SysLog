@@ -1,5 +1,6 @@
 ﻿Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
+    Public boolChanged As Boolean = False
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Any(Function(item As MyIgnoredListViewItem)
@@ -29,24 +30,27 @@
                 End With
 
                 IgnoredListView.Items.Add(IgnoredListViewItem)
+                boolChanged = True
             End If
         End Using
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        ignoredList.Clear()
+        If boolChanged Then
+            ignoredList.Clear()
 
-        Dim ignoredClass As IgnoredClass
-        Dim tempIgnored As New Specialized.StringCollection()
+            Dim ignoredClass As IgnoredClass
+            Dim tempIgnored As New Specialized.StringCollection()
 
-        For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
-            ignoredList.Add(ignoredClass)
-            tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-        Next
+            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
+                ignoredList.Add(ignoredClass)
+                tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+            Next
 
-        My.Settings.ignored2 = tempIgnored
-        My.Settings.Save()
+            My.Settings.ignored2 = tempIgnored
+            My.Settings.Save()
+        End If
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -76,6 +80,7 @@
             IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
+            boolChanged = True
         End If
     End Sub
 
@@ -84,6 +89,7 @@
             IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
+            boolChanged = True
         End If
     End Sub
 
@@ -128,6 +134,8 @@
                     .BoolCaseSensitive = AddIgnored.boolCaseSensitive
                     .BoolEnabled = AddIgnored.boolEnabled
                 End With
+
+                boolChanged = True
             End If
         End Using
     End Sub
@@ -162,6 +170,8 @@
             selectedItem.SubItems(3).Text = "Yes"
             BtnEnableDisable.Text = "Disable"
         End If
+
+        boolChanged = True
     End Sub
 
     Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
@@ -228,6 +238,7 @@
                 My.Settings.Save()
 
                 MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
+                boolChanged = True
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try

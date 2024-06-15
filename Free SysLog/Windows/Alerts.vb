@@ -1,5 +1,6 @@
 ﻿Public Class Alerts
     Private boolDoneLoading As Boolean = False
+    Public boolChanged As Boolean = False
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return AlertsListView.Items.Cast(Of AlertsListViewItem).Any(Function(item As AlertsListViewItem)
@@ -34,6 +35,7 @@
             AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
+            boolChanged = True
         End If
     End Sub
 
@@ -56,6 +58,7 @@
             AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
+            boolChanged = True
         End If
     End Sub
 
@@ -104,6 +107,8 @@
 
                     .SubItems(5).Text = If(AddAlert.boolEnabled, "Yes", "No")
                 End With
+
+                boolChanged = True
             End If
         End Using
     End Sub
@@ -152,24 +157,27 @@
                 End With
 
                 AlertsListView.Items.Add(AlertsListViewItem)
+                boolChanged = True
             End If
         End Using
     End Sub
 
     Private Sub Alerts_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        alertsList.Clear()
+        If boolChanged Then
+            alertsList.Clear()
 
-        Dim AlertsClass As AlertsClass
-        Dim tempAlerts As New Specialized.StringCollection()
+            Dim AlertsClass As AlertsClass
+            Dim tempAlerts As New Specialized.StringCollection()
 
-        For Each item As AlertsListViewItem In AlertsListView.Items
-            AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled}
-            If AlertsClass.BoolEnabled Then alertsList.Add(AlertsClass)
-            tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
-        Next
+            For Each item As AlertsListViewItem In AlertsListView.Items
+                AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled}
+                If AlertsClass.BoolEnabled Then alertsList.Add(AlertsClass)
+                tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
+            Next
 
-        My.Settings.alerts = tempAlerts
-        My.Settings.Save()
+            My.Settings.alerts = tempAlerts
+            My.Settings.Save()
+        End If
     End Sub
 
     Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening
@@ -194,6 +202,8 @@
             selectedItem.SubItems(5).Text = "Yes"
             BtnEnableDisable.Text = "Disable"
         End If
+
+        boolChanged = True
     End Sub
 
     Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
@@ -262,6 +272,7 @@
                 My.Settings.Save()
 
                 MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
+                boolChanged = True
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try

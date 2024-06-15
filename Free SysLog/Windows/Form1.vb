@@ -866,7 +866,7 @@ Public Class Form1
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
         Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
-            regexCache.Clear()
+            If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then regexCache.Clear()
         End Using
     End Sub
 
@@ -963,7 +963,7 @@ Public Class Form1
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
         Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsInstance.ShowDialog(Me)
-            regexCache.Clear()
+            If ReplacementsInstance.boolChanged Then regexCache.Clear()
         End Using
     End Sub
 
@@ -1305,7 +1305,7 @@ Public Class Form1
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
         Using Alerts As New Alerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             Alerts.ShowDialog(Me)
-            regexCache.Clear()
+            If Alerts.boolChanged Then regexCache.Clear()
         End Using
     End Sub
 
