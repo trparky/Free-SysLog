@@ -94,8 +94,8 @@ Public Class ReplacementsClass
     Public Function ToListViewItem() As MyReplacementsListViewItem
         Dim listViewItem As New MyReplacementsListViewItem(StrReplace)
         listViewItem.SubItems.Add(StrReplaceWith)
-        listViewItem.SubItems.Add(BoolRegex.ToString)
-        listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+        listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
+        listViewItem.SubItems.Add(If(BoolCaseSensitive, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
@@ -112,8 +112,8 @@ Public Class IgnoredClass
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
-        listViewItem.SubItems.Add(BoolRegex.ToString)
-        listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+        listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
+        listViewItem.SubItems.Add(If(BoolCaseSensitive, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
@@ -139,8 +139,8 @@ Public Class AlertsClass
     Public Function ToListViewItem() As AlertsListViewItem
         Dim listViewItem As New AlertsListViewItem(StrLogText) With {.StrLogText = StrLogText, .StrAlertText = StrAlertText}
         listViewItem.SubItems.Add(If(String.IsNullOrWhiteSpace(StrAlertText), "(Shows Log Text)", StrAlertText))
-        listViewItem.SubItems.Add(BoolRegex.ToString)
-        listViewItem.SubItems.Add(BoolCaseSensitive.ToString)
+        listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
+        listViewItem.SubItems.Add(If(BoolCaseSensitive, "Yes", "No"))
 
         Select Case alertType
             Case AlertType.Warning
