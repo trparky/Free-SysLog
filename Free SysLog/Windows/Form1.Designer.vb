@@ -37,6 +37,7 @@ Partial Class Form1
         Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ChkEnableAutoSave = New System.Windows.Forms.ToolStripMenuItem()
@@ -191,6 +192,13 @@ Partial Class Form1
         Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
         Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         '
+        'AutomaticallyCheckForUpdates
+        '
+        Me.AutomaticallyCheckForUpdates.CheckOnClick = True
+        Me.AutomaticallyCheckForUpdates.Name = "ChkEnableAutoScroll"
+        Me.AutomaticallyCheckForUpdates.Size = New System.Drawing.Size(339, 22)
+        Me.AutomaticallyCheckForUpdates.Text = "Automatically Check for Updates"
+        '
         'ChkEnableAutoScroll
         '
         Me.ChkEnableAutoScroll.CheckOnClick = True
@@ -317,7 +325,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -641,6 +649,7 @@ Partial Class Form1
     Friend WithEvents StatusStrip As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
     Friend WithEvents ChkEnableAutoScroll As ToolStripMenuItem
+    Friend WithEvents AutomaticallyCheckForUpdates As ToolStripMenuItem
     Friend WithEvents BtnClearLog As ToolStripMenuItem
     Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
     Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem

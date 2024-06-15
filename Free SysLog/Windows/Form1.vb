@@ -288,6 +288,10 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
+                                                                                       End Sub)
         If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
@@ -300,6 +304,7 @@ Public Class Form1
 
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
+        AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
@@ -1475,6 +1480,10 @@ Public Class Form1
     Private Sub BtnOpenLogForViewing_Click(sender As Object, e As EventArgs) Handles BtnOpenLogForViewing.Click
         Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer}
         logFileViewer.Show(Me)
+    End Sub
+
+    Private Sub AutomaticallyCheckForUpdates_Click(sender As Object, e As EventArgs) Handles AutomaticallyCheckForUpdates.Click
+        My.Settings.boolCheckForUpdates = AutomaticallyCheckForUpdates.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
