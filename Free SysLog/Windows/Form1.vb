@@ -113,19 +113,17 @@ Public Class Form1
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Dim MyDataGridViewRow As New MyDataGridViewRow
 
-        With MyDataGridViewRow
-            .CreateCells(dataGrid)
-            .Cells(0).Value = strTime
-            .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Cells(1).Value = strSourceAddress
-            .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Cells(2).Value = strLog
-            .Cells(3).Value = If(boolAlerted, "Yes", "No")
-            .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .DateObject = dateObject
-            .BoolAlerted = boolAlerted
-            .MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font)
-        End With
+        MyDataGridViewRow.CreateCells(dataGrid)
+        MyDataGridViewRow.Cells(0).Value = strTime
+        MyDataGridViewRow.Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        MyDataGridViewRow.Cells(1).Value = strSourceAddress
+        MyDataGridViewRow.Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        MyDataGridViewRow.Cells(2).Value = strLog
+        MyDataGridViewRow.Cells(3).Value = If(boolAlerted, "Yes", "No")
+        MyDataGridViewRow.Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        MyDataGridViewRow.DateObject = dateObject
+        MyDataGridViewRow.BoolAlerted = boolAlerted
+        MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font)
 
         Return MyDataGridViewRow
     End Function
@@ -1181,12 +1179,10 @@ Public Class Form1
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
-                            With myItem
-                                strTime = SanitizeForCSV(.Cells(0).Value)
-                                strSourceIP = SanitizeForCSV(.Cells(1).Value)
-                                strLogText = SanitizeForCSV(.Cells(2).Value)
-                                strAlerted = If(.BoolAlerted, "Yes", "No")
-                            End With
+                            strTime = SanitizeForCSV(myItem.Cells(0).Value)
+                            strSourceIP = SanitizeForCSV(myItem.Cells(1).Value)
+                            strLogText = SanitizeForCSV(myItem.Cells(2).Value)
+                            strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
                             csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
                         Else
@@ -1238,12 +1234,10 @@ Public Class Form1
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
-                            With myItem
-                                strTime = SanitizeForCSV(.Cells(0).Value)
-                                strSourceIP = SanitizeForCSV(.Cells(1).Value)
-                                strLogText = SanitizeForCSV(.Cells(2).Value)
-                                strAlerted = If(.BoolAlerted, "Yes", "No")
-                            End With
+                            strTime = SanitizeForCSV(myItem.Cells(0).Value)
+                            strSourceIP = SanitizeForCSV(myItem.Cells(1).Value)
+                            strLogText = SanitizeForCSV(myItem.Cells(2).Value)
+                            strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
                             csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
                         Else
@@ -1342,61 +1336,57 @@ Public Class Form1
 
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
         Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent, .intMax = 65535, .intMin = 1}
-            With IntegerInputForm
-                .lblSetting.Text = "Server Port"
-                .TxtSetting.Text = My.Settings.sysLogPort
+            IntegerInputForm.lblSetting.Text = "Server Port"
+            IntegerInputForm.TxtSetting.Text = My.Settings.sysLogPort
 
-                .ShowDialog(Me)
+            IntegerInputForm.ShowDialog(Me)
 
-                If .boolSuccess Then
-                    If .intResult < 1 Or .intResult > 65535 Then
-                        MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
-                    Else
-                        If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+            If IntegerInputForm.boolSuccess Then
+                If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 65535 Then
+                    MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
+                Else
+                    If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
 
-                        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
+                    ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
 
-                        My.Settings.sysLogPort = .intResult
-                        My.Settings.Save()
+                    My.Settings.sysLogPort = IntegerInputForm.intResult
+                    My.Settings.Save()
 
-                        If serverThread.IsAlive Then serverThread.Abort()
+                    If serverThread.IsAlive Then serverThread.Abort()
 
-                        serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
-                        serverThread.Start()
+                    serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+                    serverThread.Start()
 
-                        SyncLock dataGridLockObject
-                            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))
+                    SyncLock dataGridLockObject
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs))
 
-                            If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                            End If
+                        If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
+                            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                        End If
 
-                            UpdateLogCount()
-                        End SyncLock
+                        UpdateLogCount()
+                    End SyncLock
 
-                        MsgBox("Done.", MsgBoxStyle.Information, Text)
-                    End If
+                    MsgBox("Done.", MsgBoxStyle.Information, Text)
                 End If
-            End With
+            End If
         End Using
     End Sub
 
     Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeLogAutosaveIntervalToolStripMenuItem.Click
         Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Log Autosave Interval", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
-            With IntegerInputForm
-                .lblSetting.Text = "Auto Save (In Minutes)"
-                .TxtSetting.Text = My.Settings.autoSaveMinutes
+            IntegerInputForm.lblSetting.Text = "Auto Save (In Minutes)"
+            IntegerInputForm.TxtSetting.Text = My.Settings.autoSaveMinutes
 
-                .ShowDialog(Me)
+            IntegerInputForm.ShowDialog(Me)
 
-                If .boolSuccess Then
-                    ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({IntegerInputForm.intResult} Minutes)"
-                    SaveTimer.Interval = TimeSpan.FromMinutes(.intResult).TotalMilliseconds
-                    My.Settings.autoSaveMinutes = .intResult
+            If IntegerInputForm.boolSuccess Then
+                ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({IntegerInputForm.intResult} Minutes)"
+                SaveTimer.Interval = TimeSpan.FromMinutes(IntegerInputForm.intResult).TotalMilliseconds
+                My.Settings.autoSaveMinutes = IntegerInputForm.intResult
 
-                    MsgBox("Done.", MsgBoxStyle.Information, Text)
-                End If
-            End With
+                MsgBox("Done.", MsgBoxStyle.Information, Text)
+            End If
         End Using
     End Sub
 
