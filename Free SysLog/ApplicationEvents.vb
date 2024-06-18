@@ -30,8 +30,10 @@ Namespace My
                 Exit Sub
             End If
 
-            If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then
+            If Application.CommandLineArgs.Count > 0 AndAlso Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then
                 Threading.Thread.Sleep(TimeSpan.FromSeconds(30).TotalMilliseconds)
+                Process.Start(IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, New IO.FileInfo(Process.GetCurrentProcess.MainModule.FileName).Name))
+                Process.GetCurrentProcess.Kill()
             End If
         End Sub
     End Class
