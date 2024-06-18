@@ -94,6 +94,7 @@ Partial Class Form1
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureSysLogMirrorServers = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BackupFileNameDateFormatChooser = New System.Windows.Forms.ToolStripMenuItem()
         Me.MinimizeToClockTray = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.StatusStrip.SuspendLayout()
@@ -252,6 +253,12 @@ Partial Class Form1
         Me.ChkDeselectItemAfterMinimizingWindow.Size = New System.Drawing.Size(339, 22)
         Me.ChkDeselectItemAfterMinimizingWindow.Text = "De-Select Items When Minimizing Window"
         '
+        'BackupFileNameDateFormatChooser
+        '
+        Me.BackupFileNameDateFormatChooser.Name = "BackupFileNameDateFormatChooser"
+        Me.BackupFileNameDateFormatChooser.Size = New System.Drawing.Size(339, 22)
+        Me.BackupFileNameDateFormatChooser.Text = "Backup File Name Date Format Chooser"
+        '
         'ChkEnableStartAtUserStartup
         '
         Me.ChkEnableStartAtUserStartup.CheckOnClick = True
@@ -325,7 +332,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableStartAtUserStartup, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -719,4 +726,5 @@ Partial Class Form1
     Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
     Friend WithEvents LoadingProgressBar As ProgressBar
     Friend WithEvents MinimizeToClockTray As ToolStripMenuItem
+    Friend WithEvents BackupFileNameDateFormatChooser As ToolStripMenuItem
 End Class

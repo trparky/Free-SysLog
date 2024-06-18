@@ -684,6 +684,42 @@ Namespace My
                 Me("boolCheckForUpdates") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property DateChooserWindowLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("DateChooserWindowLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("DateChooserWindowLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property DateFormat() As Byte
+            Get
+                Return CType(Me("DateFormat"),Byte)
+            End Get
+            Set
+                Me("DateFormat") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property CustomDateFormat() As String
+            Get
+                Return CType(Me("CustomDateFormat"),String)
+            End Get
+            Set
+                Me("CustomDateFormat") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

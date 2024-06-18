@@ -158,6 +158,12 @@
     <Compile Include="Windows\Configure SysLog Mirror Servers.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Windows\Date Format Chooser.Designer.vb">
+      <DependentUpon>Date Format Chooser.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Date Format Chooser.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -245,6 +251,9 @@
     <EmbeddedResource Include="Windows\Configure SysLog Mirror Servers.resx">
       <DependentUpon>Configure SysLog Mirror Servers.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Date Format Chooser.resx">
+      <DependentUpon>Date Format Chooser.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>

@@ -100,14 +100,22 @@ Public Class Form1
     End Sub
 #End Region
 
+    Private Function GetDateStringBasedOnUserPreference(dateObject As Date) As String
+        Select Case My.Settings.DateFormat
+            Case 1
+                Return dateObject.ToLongDateString.Replace("/", "-").Replace("\", "-")
+            Case 2
+                Return dateObject.ToShortDateString.Replace("/", "-").Replace("\", "-")
+            Case 3
+                Return dateObject.ToString(My.Settings.CustomDateFormat).Replace("/", "-").Replace("\", "-")
+            Case Else
+                Return dateObject.ToLongDateString().Replace("/", "-").Replace("\", "-")
+        End Select
+    End Function
+
     Private Sub MakeLogBackup()
         WriteLogsToDisk()
-
-        Dim strBackupDate As String = Now.AddDays(-1).ToLongDateString
-        strBackupDate = strBackupDate.Replace("/", "")
-        strBackupDate = strBackupDate.Replace("\", "")
-
-        File.Copy(strPathToDataFile, GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{strBackupDate} Backup.json")))
+        File.Copy(strPathToDataFile, GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json")))
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
@@ -1474,6 +1482,11 @@ Public Class Form1
 
     Private Sub AutomaticallyCheckForUpdates_Click(sender As Object, e As EventArgs) Handles AutomaticallyCheckForUpdates.Click
         My.Settings.boolCheckForUpdates = AutomaticallyCheckForUpdates.Checked
+    End Sub
+
+    Private Sub BackupFileNameDateFormatChooser_Click(sender As Object, e As EventArgs) Handles BackupFileNameDateFormatChooser.Click
+        Dim DateFormatChooser As New DateFormatChooser() With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+        DateFormatChooser.Show(Me)
     End Sub
 
 #Region "-- SysLog Server Code --"
