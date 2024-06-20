@@ -22,6 +22,16 @@ Module SupportCode
     Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
     Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
 
+    Public Sub CenterFormOverParent(parent As Form, child As Form)
+        Dim parentCenterX As Integer = parent.Left + (parent.Width \ 2)
+        Dim parentCenterY As Integer = parent.Top + (parent.Height \ 2)
+
+        Dim childLeft As Integer = parentCenterX - (child.Width \ 2)
+        Dim childTop As Integer = parentCenterY - (child.Height \ 2)
+
+        child.Location = New Point(childLeft, childTop)
+    End Sub
+
     Public Function GetMinimumHeight(strInput As String, font As Font) As Integer
         Dim numberOfLines As Integer = strInput.Split(New String() {Environment.NewLine, vbCrLf, vbLf, vbCr}, StringSplitOptions.None).Count
         Dim lineHeight As Integer = TextRenderer.MeasureText("A", font).Height
