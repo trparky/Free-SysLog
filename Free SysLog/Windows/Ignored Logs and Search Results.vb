@@ -18,7 +18,7 @@ Public Class IgnoredLogsAndSearchResults
     Private ReadOnly dataGridLockObject As New Object
 
     Private Sub OpenLogViewerWindow()
-        If Logs.Rows.Count > 0 Then
+        If Logs.Rows.Count > 0 AndAlso TypeOf Logs.Rows(Logs.SelectedCells(0).RowIndex) Is MyDataGridViewRow Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
             Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
@@ -59,7 +59,7 @@ Public Class IgnoredLogsAndSearchResults
             Logs.Enabled = False
 
             Dim comparer As New DataGridViewComparer(columnIndex, order)
-            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
+            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
 
             Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
@@ -191,7 +191,7 @@ Public Class IgnoredLogsAndSearchResults
             If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
 
             For Each item As DataGridViewRow In Logs.Rows
-                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                If TypeOf item.Cells(0).Value Is String AndAlso Not String.IsNullOrWhiteSpace(item.Cells(0).Value) AndAlso TypeOf item Is MyDataGridViewRow Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 
                     If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
@@ -245,8 +245,10 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
-        Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-        Clipboard.SetText(selectedRow.Cells(2).Value)
+        If TypeOf Logs.Rows(Logs.SelectedCells(0).RowIndex) Is MyDataGridViewRow Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Clipboard.SetText(selectedRow.Cells(2).Value)
+        End If
     End Sub
 
     Private Sub LoadData(strFileName As String)

@@ -154,7 +154,7 @@ Public Class Form1
 
             SyncLock dataGridLockObject
                 For Each item As DataGridViewRow In Logs.Rows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    If TypeOf item.Cells(0).Value Is String AndAlso Not String.IsNullOrWhiteSpace(item.Cells(0).Value) AndAlso TypeOf item Is MyDataGridViewRow Then
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         collectionOfSavedData.Add(New SavedData With {
@@ -681,7 +681,7 @@ Public Class Form1
     End Sub
 
     Private Sub OpenLogViewerWindow()
-        If Logs.Rows.Count > 0 Then
+        If Logs.Rows.Count > 0 AndAlso TypeOf Logs.Rows(Logs.SelectedCells(0).RowIndex) Is MyDataGridViewRow Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
             Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
@@ -830,13 +830,15 @@ Public Class Form1
 
                                               SyncLock dataGridLockObject
                                                   For Each item As DataGridViewRow In Logs.Rows
-                                                      MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+                                                      If TypeOf item Is MyDataGridViewRow Then
+                                                          MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
-                                                      If MyDataGridRowItem IsNot Nothing Then
-                                                          strLogText = MyDataGridRowItem.Cells(2).Value
+                                                          If MyDataGridRowItem IsNot Nothing Then
+                                                              strLogText = MyDataGridRowItem.Cells(2).Value
 
-                                                          If regexCompiledObject.IsMatch(strLogText) Then
-                                                              listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                              If regexCompiledObject.IsMatch(strLogText) Then
+                                                                  listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                              End If
                                                           End If
                                                       End If
                                                   Next
@@ -904,7 +906,7 @@ Public Class Form1
         Logs.Enabled = False
 
         Dim comparer As New DataGridViewComparer(columnIndex, order)
-        Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
+        Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow)().OfType(Of MyDataGridViewRow)().ToArray()
 
         Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
@@ -976,8 +978,8 @@ Public Class Form1
                         Dim intOldCount As Integer = Logs.Rows.Count
                         Dim newListOfLogs As New List(Of MyDataGridViewRow)
 
-                        For Each item As MyDataGridViewRow In Logs.Rows
-                            If item.DateObject.Date >= dateChosenDate.Date Then
+                        For Each item As DataGridViewRow In Logs.Rows
+                            If TypeOf item Is MyDataGridViewRow AndAlso DirectCast(item, MyDataGridViewRow).DateObject.Date >= dateChosenDate.Date Then
                                 newListOfLogs.Add(item.Clone())
                             End If
                         Next
@@ -1087,8 +1089,8 @@ Public Class Form1
                 Dim newListOfLogs As New List(Of MyDataGridViewRow)
                 Dim dateChosenDate As Date = Now.AddDays(daysToKeep * -1)
 
-                For Each item As MyDataGridViewRow In Logs.Rows
-                    If item.DateObject.Date >= dateChosenDate Then
+                For Each item As DataGridViewRow In Logs.Rows
+                    If TypeOf item Is MyDataGridViewRow AndAlso DirectCast(item, MyDataGridViewRow).DateObject.Date >= dateChosenDate Then
                         newListOfLogs.Add(item.Clone())
                     End If
                 Next
@@ -1229,7 +1231,7 @@ Public Class Form1
                 If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
 
                 For Each item As DataGridViewRow In Logs.Rows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    If TypeOf item.Cells(0).Value Is String AndAlso Not String.IsNullOrWhiteSpace(item.Cells(0).Value) AndAlso TypeOf item Is MyDataGridViewRow Then
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
@@ -1284,7 +1286,7 @@ Public Class Form1
                 If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    If TypeOf item.Cells(0).Value Is String AndAlso Not String.IsNullOrWhiteSpace(item.Cells(0).Value) AndAlso TypeOf item Is MyDataGridViewRow Then
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
