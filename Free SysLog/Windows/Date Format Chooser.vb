@@ -27,7 +27,7 @@
     End Sub
 
     Private Sub DateFormatChooser_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        My.Settings.DateChooserWindowLocation = Location
+        If boolDoneLoading Then My.Settings.DateChooserWindowLocation = Location
     End Sub
 
     Private Sub DateFormat3_CheckedChanged(sender As Object, e As EventArgs) Handles DateFormat3.CheckedChanged
