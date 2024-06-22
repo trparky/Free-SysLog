@@ -7,6 +7,7 @@ Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 Imports System.Reflection
 Imports System.Configuration
+Imports Microsoft.Win32.TaskScheduler
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
@@ -137,20 +138,14 @@ Public Class Form1
     End Function
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
-        Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
-            If ChkEnableStartAtUserStartup.Checked Then
-                registryKey.SetValue("Free Syslog", $"""{strEXEPath}"" /background")
-            Else
-                registryKey.DeleteValue("Free Syslog", False)
-            End If
-        End Using
+        If ChkEnableStartAtUserStartup.Checked Then
+            CreateTask()
+        Else
+            Using taskService As New TaskService
+                taskService.RootFolder.DeleteTask($"Free SysLog for {Environment.UserName}")
+            End Using
+        End If
     End Sub
-
-    Private Function DoesStartupEntryExist() As Boolean
-        Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", False)
-            Return registryKey.GetValue("Free Syslog") IsNot Nothing
-        End Using
-    End Function
 
     Private Sub WriteLogsToDisk()
         SyncLock lockObject
@@ -295,7 +290,98 @@ Public Class Form1
         RestoreWindow()
     End Sub
 
+    Private Function GetTaskObject(ByRef taskServiceObject As TaskService, nameOfTask As String, ByRef taskObject As Task) As Boolean
+        Try
+            taskObject = taskServiceObject.GetTask($"\{nameOfTask}")
+            Return taskObject IsNot Nothing
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Private Function DoesTaskExist()
+        Using taskService As New TaskService
+            Dim task As Task = Nothing
+            Dim boolValidAction As Boolean = True
+
+            If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                If Not Debugger.IsAttached Then
+                    Dim action As Action = task.Definition.Actions(0)
+
+                    If action.ActionType = TaskActionType.Execute Then
+                        If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
+                            task.Definition.Actions.Remove(action)
+                            boolValidAction = False
+                        End If
+                    End If
+
+                    If Not boolValidAction Then
+                        Dim exeFileInfo As New FileInfo(strEXEPath)
+                        task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", "/background", exeFileInfo.DirectoryName))
+                        task.RegisterChanges()
+                    End If
+                End If
+
+                Return True
+            End If
+        End Using
+
+        Return False
+    End Function
+
+    Private Sub CreateTask()
+        Using taskService As New TaskService
+            Dim newTask As TaskDefinition = taskService.NewTask
+            newTask.RegistrationInfo.Description = "Runs Free SysLog at User Logon"
+
+            Dim logonTriggerObject As New LogonTrigger With {
+                .Delay = New TimeSpan(0, 0, 30),
+                .UserId = Environment.UserName
+            }
+            newTask.Triggers.Add(logonTriggerObject)
+
+            Dim exeFileInfo As New FileInfo(strEXEPath)
+
+            With newTask
+                .Actions.Add(New ExecAction($"""{strEXEPath}""", "/background", exeFileInfo.DirectoryName))
+                .Settings.Compatibility = TaskCompatibility.V2
+                .Settings.AllowDemandStart = True
+                .Settings.DisallowStartIfOnBatteries = False
+                .Settings.RunOnlyIfIdle = False
+                .Settings.StopIfGoingOnBatteries = False
+                .Settings.AllowHardTerminate = False
+                .Settings.UseUnifiedSchedulingEngine = True
+                .Settings.ExecutionTimeLimit = Nothing
+                .Settings.Priority = ProcessPriorityClass.Normal
+                .Principal.LogonType = TaskLogonType.InteractiveToken
+            End With
+
+            taskService.RootFolder.RegisterTaskDefinition($"Free SysLog for {Environment.UserName}", newTask)
+
+            newTask.Dispose()
+        End Using
+    End Sub
+
+    Public Sub ConvertRegistryRunCommandToTask()
+        Dim boolDoesRegistryStartupKeyExist As Boolean = False
+
+        Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", False)
+            If registryKey.GetValue("Free Syslog") IsNot Nothing Then
+                boolDoesRegistryStartupKeyExist = True
+                CreateTask()
+            End If
+        End Using
+
+        If boolDoesRegistryStartupKeyExist Then
+            Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
+                registryKey.DeleteValue("Free Syslog")
+            End Using
+        End If
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ConvertRegistryRunCommandToTask()
+
         If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                                            Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
                                                                                            checkForUpdatesClassObject.CheckForUpdates(False)
@@ -325,7 +411,7 @@ Public Class Form1
         ChkShowAlertedColumn.Checked = My.Settings.boolShowAlertedColumn
         MinimizeToClockTray.Checked = My.Settings.MinimizeToClockTray
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
-        ChkEnableStartAtUserStartup.Checked = DoesStartupEntryExist()
+        ChkEnableStartAtUserStartup.Checked = DoesTaskExist()
         DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
