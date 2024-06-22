@@ -308,7 +308,7 @@ Public Class Form1
                     Dim action As Action = task.Definition.Actions(0)
 
                     If action.ActionType = TaskActionType.Execute Then
-                        If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
+                        If TypeOf action Is ExecAction AndAlso Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
                             task.Definition.Actions.Remove(action)
 
                             Dim exeFileInfo As New FileInfo(strEXEPath)
