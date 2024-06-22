@@ -302,7 +302,6 @@ Public Class Form1
     Private Function DoesTaskExist()
         Using taskService As New TaskService
             Dim task As Task = Nothing
-            Dim boolValidAction As Boolean = True
 
             If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                 If Not Debugger.IsAttached Then
@@ -311,14 +310,11 @@ Public Class Form1
                     If action.ActionType = TaskActionType.Execute Then
                         If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
                             task.Definition.Actions.Remove(action)
-                            boolValidAction = False
-                        End If
-                    End If
 
-                    If Not boolValidAction Then
-                        Dim exeFileInfo As New FileInfo(strEXEPath)
-                        task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", "/background", exeFileInfo.DirectoryName))
-                        task.RegisterChanges()
+                            Dim exeFileInfo As New FileInfo(strEXEPath)
+                            task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", "/background", exeFileInfo.DirectoryName))
+                            task.RegisterChanges()
+                        End If
                     End If
                 End If
 
