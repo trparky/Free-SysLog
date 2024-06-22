@@ -284,6 +284,8 @@ Public Class Form1
             WindowState = FormWindowState.Normal
         End If
 
+        BringToFront()
+
         If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
             Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
         End If
