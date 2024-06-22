@@ -349,6 +349,7 @@ Public Class Form1
                 .Settings.UseUnifiedSchedulingEngine = True
                 .Settings.ExecutionTimeLimit = Nothing
                 .Settings.Priority = ProcessPriorityClass.Normal
+                .Settings.Compatibility = TaskCompatibility.V2_3
                 .Principal.LogonType = TaskLogonType.InteractiveToken
             End With
 
