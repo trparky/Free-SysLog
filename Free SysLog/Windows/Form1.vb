@@ -312,7 +312,7 @@ Public Class Form1
                             task.Definition.Actions.Remove(action)
 
                             Dim exeFileInfo As New FileInfo(strEXEPath)
-                            task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", "/background", exeFileInfo.DirectoryName))
+                            task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
                             task.RegisterChanges()
                         End If
                     End If
@@ -339,7 +339,7 @@ Public Class Form1
             Dim exeFileInfo As New FileInfo(strEXEPath)
 
             With newTask
-                .Actions.Add(New ExecAction($"""{strEXEPath}""", "/background", exeFileInfo.DirectoryName))
+                .Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
                 .Settings.Compatibility = TaskCompatibility.V2
                 .Settings.AllowDemandStart = True
                 .Settings.DisallowStartIfOnBatteries = False
@@ -417,11 +417,6 @@ Public Class Form1
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
         NotifyIcon.Icon = Icon
         NotifyIcon.Text = "Free SysLog"
-
-        If My.Application.CommandLineArgs.Count > 0 AndAlso My.Application.CommandLineArgs(0).Trim.Equals("/background", StringComparison.OrdinalIgnoreCase) Then
-            WindowState = FormWindowState.Minimized
-            ShowInTaskbar = False
-        End If
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
