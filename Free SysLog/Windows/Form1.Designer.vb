@@ -53,6 +53,7 @@ Partial Class Form1
         Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ViewLogBackups = New System.Windows.Forms.ToolStripMenuItem()
         Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -297,7 +298,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ViewLogBackups, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -329,6 +330,13 @@ Partial Class Form1
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Text = "Zero-out Ignored Logs Counter"
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = False
+        '
+        'ViewLogBackups
+        '
+        Me.ViewLogBackups.Name = "ViewLogBackups"
+        Me.ViewLogBackups.Size = New System.Drawing.Size(239, 22)
+        Me.ViewLogBackups.Text = "View Log Backups"
+        Me.ViewLogBackups.Visible = False
         '
         'SettingsToolStripMenuItem
         '
@@ -684,6 +692,7 @@ Partial Class Form1
     Friend WithEvents BtnClearAllLogs As ToolStripMenuItem
     Friend WithEvents LogsOlderThanToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ZerooutIgnoredLogsCounterToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ViewLogBackups As ToolStripMenuItem
     Friend WithEvents ConfigureReplacementsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChkRegExSearch As CheckBox
     Friend WithEvents ChkCaseInsensitiveSearch As CheckBox

@@ -230,6 +230,12 @@
     <Compile Include="Support Code\Search for Process and Kill It.vb" />
     <Compile Include="Support Code\StringExtensions.vb" />
     <Compile Include="Support Code\SupportCode.vb" />
+    <Compile Include="Windows\ViewLogBackups.Designer.vb">
+      <DependentUpon>ViewLogBackups.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ViewLogBackups.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Windows\Add SysLog Mirror Server.resx">
@@ -286,6 +292,9 @@
     <EmbeddedResource Include="Windows\Replacements.resx">
       <DependentUpon>Replacements.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ViewLogBackups.resx">
+      <DependentUpon>ViewLogBackups.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
