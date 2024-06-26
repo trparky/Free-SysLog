@@ -9,6 +9,9 @@ Public Class IgnoredLogsAndSearchResults
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
 
+    Public boolLoadExternalData As Boolean = False
+    Public strFileToLoad As String
+
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
@@ -129,6 +132,12 @@ Public Class IgnoredLogsAndSearchResults
             End If
         End If
 
+        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
+            LoadData(strFileToLoad)
+            LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+            BtnOpenLogFile.Visible = False
+        End If
+
         boolDoneLoading = True
     End Sub
 
@@ -233,6 +242,25 @@ Public Class IgnoredLogsAndSearchResults
         Clipboard.SetText(selectedRow.Cells(2).Value)
     End Sub
 
+    Private Sub LoadData(strFileName As String)
+        Dim collectionOfSavedData As New List(Of SavedData)
+
+        Using fileStream As New StreamReader(strFileName)
+            collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+        End Using
+
+        If collectionOfSavedData.Count > 0 Then
+            Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+
+            For Each item As SavedData In collectionOfSavedData
+                listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
+            Next
+
+            Logs.Rows.Clear()
+            Logs.Rows.AddRange(listOfLogEntries.ToArray)
+        End If
+    End Sub
+
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
         Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
             Dim strLogText As String = Logs.SelectedRows(0).Cells(2).Value
@@ -261,24 +289,7 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub BtnOpenLogFile_Click(sender As Object, e As EventArgs) Handles BtnOpenLogFile.Click
         Using OpenFileDialog As New OpenFileDialog With {.Title = "Open Log File", .Filter = "JSON File|*.json"}
-            If OpenFileDialog.ShowDialog() = DialogResult.OK Then
-                Dim collectionOfSavedData As New List(Of SavedData)
-
-                Using fileStream As New StreamReader(OpenFileDialog.FileName)
-                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
-                End Using
-
-                If collectionOfSavedData.Count > 0 Then
-                    Dim listOfLogEntries As New List(Of MyDataGridViewRow)
-
-                    For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
-                    Next
-
-                    Logs.Rows.Clear()
-                    Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                End If
-            End If
+            If OpenFileDialog.ShowDialog() = DialogResult.OK Then LoadData(OpenFileDialog.FileName)
         End Using
     End Sub
 

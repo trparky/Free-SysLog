@@ -377,6 +377,7 @@ Public Class Form1
         DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
+        ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
@@ -1532,6 +1533,11 @@ Public Class Form1
     Private Sub BackupFileNameDateFormatChooser_Click(sender As Object, e As EventArgs) Handles BackupFileNameDateFormatChooser.Click
         Dim DateFormatChooser As New DateFormatChooser() With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
         DateFormatChooser.Show(Me)
+    End Sub
+
+    Private Sub ViewLogBackups_Click(sender As Object, e As EventArgs) Handles ViewLogBackups.Click
+        Dim ViewLogBackups As New ViewLogBackups With {.Icon = Icon, .MyParentForm = Me}
+        ViewLogBackups.Show(Me)
     End Sub
 
 #Region "-- SysLog Server Code --"

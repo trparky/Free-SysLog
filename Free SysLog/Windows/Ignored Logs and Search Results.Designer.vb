@@ -14,9 +14,9 @@ Partial Class IgnoredLogsAndSearchResults
         End Try
     End Sub
 
-    Private Shadows parentForm As Form1
+    Private Shadows parentForm As Object
 
-    Public Sub New(parentForm As Form1)
+    Public Sub New(parentForm As Object)
         InitializeComponent()
         Me.parentForm = parentForm
     End Sub
