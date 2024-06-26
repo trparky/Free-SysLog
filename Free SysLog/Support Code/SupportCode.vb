@@ -22,6 +22,41 @@ Module SupportCode
     Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
     Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
 
+    Public Function FileSizeToHumanSize(size As Long, Optional roundToNearestWholeNumber As Boolean = False) As String
+        Dim result As String
+        Dim shortRoundNumber As Short = If(roundToNearestWholeNumber, 0, 2)
+
+        If size <= (2 ^ 10) Then
+            result = $"{size} Bytes"
+        ElseIf size > (2 ^ 10) And size <= (2 ^ 20) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 10), shortRoundNumber)} KBs"
+        ElseIf size > (2 ^ 20) And size <= (2 ^ 30) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 20), shortRoundNumber)} MBs"
+        ElseIf size > (2 ^ 30) And size <= (2 ^ 40) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 30), shortRoundNumber)} GBs"
+        ElseIf size > (2 ^ 40) And size <= (2 ^ 50) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 40), shortRoundNumber)} TBs"
+        ElseIf size > (2 ^ 50) And size <= (2 ^ 60) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 50), shortRoundNumber)} PBs"
+        ElseIf size > (2 ^ 60) And size <= (2 ^ 70) Then
+            result = $"{MyRoundingFunction(size / (2 ^ 50), shortRoundNumber)} EBs"
+        Else
+            result = "(None)"
+        End If
+
+        Return result
+    End Function
+
+    Public Function MyRoundingFunction(value As Double, digits As Integer) As String
+        If digits < 0 Then Throw New ArgumentException("The number of digits must be non-negative.", NameOf(digits))
+
+        If digits = 0 Then
+            Return Math.Round(value, digits).ToString
+        Else
+            Return Math.Round(value, digits).ToString("0." & New String("0", digits))
+        End If
+    End Function
+
     Public Sub CenterFormOverParent(parent As Form, child As Form)
         Dim parentCenterX As Integer = parent.Left + (parent.Width \ 2)
         Dim parentCenterY As Integer = parent.Top + (parent.Height \ 2)
