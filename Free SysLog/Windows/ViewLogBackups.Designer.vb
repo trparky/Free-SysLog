@@ -28,6 +28,7 @@ Partial Class ViewLogBackups
         Me.ColFileSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.BtnView = New System.Windows.Forms.Button()
         Me.BtnDelete = New System.Windows.Forms.Button()
+        Me.BtnRefresh = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'FileList
@@ -82,14 +83,25 @@ Partial Class ViewLogBackups
         Me.BtnDelete.Text = "Delete"
         Me.BtnDelete.UseVisualStyleBackColor = True
         '
+        'BtnRefresh
+        '
+        Me.BtnRefresh.Location = New System.Drawing.Point(174, 331)
+        Me.BtnRefresh.Name = "BtnRefresh"
+        Me.BtnRefresh.Size = New System.Drawing.Size(95, 23)
+        Me.BtnRefresh.TabIndex = 4
+        Me.BtnRefresh.Text = "Refresh (F5)"
+        Me.BtnRefresh.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 364)
+        Me.Controls.Add(Me.BtnRefresh)
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnView)
         Me.Controls.Add(Me.FileList)
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "ViewLogBackups"
@@ -104,4 +116,5 @@ Partial Class ViewLogBackups
     Friend WithEvents ColFileSize As ColumnHeader
     Friend WithEvents BtnView As Button
     Friend WithEvents BtnDelete As Button
+    Friend WithEvents BtnRefresh As Button
 End Class

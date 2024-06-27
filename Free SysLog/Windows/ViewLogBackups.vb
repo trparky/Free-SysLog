@@ -70,4 +70,12 @@ Public Class ViewLogBackups
             End If
         End If
     End Sub
+
+    Private Sub ViewLogBackups_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.F5 Then LoadFileList()
+    End Sub
+
+    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
+        LoadFileList()
+    End Sub
 End Class
