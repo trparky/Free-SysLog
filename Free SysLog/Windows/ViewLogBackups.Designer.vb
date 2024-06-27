@@ -32,6 +32,9 @@ Partial Class ViewLogBackups
         '
         'FileList
         '
+        Me.FileList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.FileList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize})
         Me.FileList.FullRowSelect = True
         Me.FileList.HideSelection = False
@@ -59,6 +62,7 @@ Partial Class ViewLogBackups
         '
         'BtnView
         '
+        Me.BtnView.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnView.Enabled = False
         Me.BtnView.Location = New System.Drawing.Point(12, 331)
         Me.BtnView.Name = "BtnView"
@@ -69,6 +73,7 @@ Partial Class ViewLogBackups
         '
         'BtnDelete
         '
+        Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
         Me.BtnDelete.Location = New System.Drawing.Point(93, 331)
         Me.BtnDelete.Name = "BtnDelete"
@@ -85,7 +90,6 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnView)
         Me.Controls.Add(Me.FileList)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "ViewLogBackups"
