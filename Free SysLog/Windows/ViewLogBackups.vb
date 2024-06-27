@@ -3,25 +3,36 @@
 Public Class ViewLogBackups
     Public MyParentForm As Form1
 
+    Private Function GetEntryCount(strFileName As String) As Integer
+        Using fileStream As New StreamReader(strFileName)
+            Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings).Count
+        End Using
+    End Function
+
     Private Sub LoadFileList()
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
+        Dim intEntryCount As Integer
 
         For Each file As FileInfo In filesInDirectory
+            intEntryCount = GetEntryCount(file.FullName)
+
             listViewItem = New ListViewItem With {.Text = file.Name}
             listViewItem.SubItems.Add(file.CreationTime.ToString)
-            listViewItem.SubItems.Add(FileSizeToHumanSize(file.Length))
-            listOfListViewItems.Add(listViewItem)
+            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intEntryCount:N0} entries)")
+            Invoke(Sub() listOfListViewItems.Add(listViewItem))
         Next
 
-        FileList.Items.Clear()
-        FileList.Items.AddRange(listOfListViewItems.ToArray)
+        Invoke(Sub()
+                   FileList.Items.Clear()
+                   FileList.Items.AddRange(listOfListViewItems.ToArray)
+               End Sub)
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CenterFormOverParent(MyParentForm, Me)
-        LoadFileList()
+        Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub FileList_DoubleClick(sender As Object, e As EventArgs) Handles FileList.DoubleClick
