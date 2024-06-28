@@ -105,6 +105,7 @@ Partial Class ViewLogBackups
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(816, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ResumeLayout(False)
