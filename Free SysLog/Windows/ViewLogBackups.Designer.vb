@@ -85,6 +85,7 @@ Partial Class ViewLogBackups
         '
         'BtnRefresh
         '
+        Me.BtnRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnRefresh.Location = New System.Drawing.Point(174, 331)
         Me.BtnRefresh.Name = "BtnRefresh"
         Me.BtnRefresh.Size = New System.Drawing.Size(95, 23)
