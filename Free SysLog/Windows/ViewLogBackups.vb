@@ -75,7 +75,13 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ViewLogBackups_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.F5 Then LoadFileList()
+        If e.KeyCode = Keys.F5 Then
+            LoadFileList()
+        ElseIf e.KeyCode = Keys.Delete Then
+            BtnDelete.PerformClick()
+        ElseIf e.KeyCode = Keys.space Then
+            BtnView.PerformClick()
+        End If
     End Sub
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
