@@ -170,5 +170,8 @@
     <Setting Name="CustomDateFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="ViewLogBackupsSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">816, 403</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

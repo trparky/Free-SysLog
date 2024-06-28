@@ -2,6 +2,7 @@
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
+    Private boolDoneLoading As Boolean = False
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Using fileStream As New StreamReader(strFileName)
@@ -31,8 +32,10 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
         Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        boolDoneLoading = True
     End Sub
 
     Private Sub FileList_DoubleClick(sender As Object, e As EventArgs) Handles FileList.DoubleClick
@@ -77,5 +80,9 @@ Public Class ViewLogBackups
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
         LoadFileList()
+    End Sub
+
+    Private Sub ViewLogBackups_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        If boolDoneLoading Then My.Settings.ViewLogBackupsSize = Size
     End Sub
 End Class
