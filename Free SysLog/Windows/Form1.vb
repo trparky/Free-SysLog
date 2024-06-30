@@ -1568,7 +1568,7 @@ Public Class Form1
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList.Count > 0 Then
+                        If serversList.Count > 0 AndAlso Not strReceivedData.StartsWith("(NoProxy)", StringComparison.OrdinalIgnoreCase) Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
 
@@ -1580,6 +1580,7 @@ Public Class Form1
                                                                    End Sub)
                         End If
 
+                        If strReceivedData.StartsWith("(NoProxy)") Then strReceivedData = strReceivedData.Replace("(NoProxy)", "", StringComparison.OrdinalIgnoreCase)
                         ProcessIncomingLog(strReceivedData, strSourceIP)
                     End If
 
