@@ -40,7 +40,6 @@ Partial Class ViewLogBackups
         Me.FileList.FullRowSelect = True
         Me.FileList.HideSelection = False
         Me.FileList.Location = New System.Drawing.Point(12, 12)
-        Me.FileList.MultiSelect = False
         Me.FileList.Name = "FileList"
         Me.FileList.Size = New System.Drawing.Size(776, 313)
         Me.FileList.TabIndex = 1

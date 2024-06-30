@@ -65,11 +65,30 @@ Public Class ViewLogBackups
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
         If FileList.SelectedItems.Count > 0 Then
-            Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            If FileList.SelectedItems.Count = 1 Then
+                Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
 
-            If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedItems(0).SubItems(0).Text}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
-                File.Delete(fileName)
-                LoadFileList()
+                If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedItems(0).SubItems(0).Text}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
+                    File.Delete(fileName)
+                    LoadFileList()
+                End If
+            Else
+                Dim stringBuilder As New Text.StringBuilder()
+
+                stringBuilder.AppendLine("Are you sure you want to delete the following files?")
+                stringBuilder.AppendLine()
+
+                For Each item As ListViewItem In FileList.SelectedItems
+                    stringBuilder.AppendLine(item.SubItems(0).Text)
+                Next
+
+                If MsgBox(stringBuilder.ToString.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
+                    For Each item As ListViewItem In FileList.SelectedItems
+                        File.Delete(Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text))
+                    Next
+
+                    LoadFileList()
+                End If
             End If
         End If
     End Sub
