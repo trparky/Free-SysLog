@@ -14,14 +14,11 @@ Public Class ViewLogBackups
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
-        Dim intEntryCount As Integer
 
         For Each file As FileInfo In filesInDirectory
-            intEntryCount = GetEntryCount(file.FullName)
-
             listViewItem = New ListViewItem With {.Text = file.Name}
             listViewItem.SubItems.Add(file.CreationTime.ToString)
-            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intEntryCount:N0} entries)")
+            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({GetEntryCount(file.FullName):N0} entries)")
             listOfListViewItems.Add(listViewItem)
         Next
 
