@@ -22,7 +22,7 @@ Public Class ViewLogBackups
             listViewItem = New ListViewItem With {.Text = file.Name}
             listViewItem.SubItems.Add(file.CreationTime.ToString)
             listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intEntryCount:N0} entries)")
-            Invoke(Sub() listOfListViewItems.Add(listViewItem))
+            listOfListViewItems.Add(listViewItem)
         Next
 
         Invoke(Sub()
