@@ -44,7 +44,7 @@
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                 ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
-                ignoredList.Add(ignoredClass)
+                If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
                 tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
             Next
 
