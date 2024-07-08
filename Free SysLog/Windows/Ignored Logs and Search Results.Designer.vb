@@ -46,6 +46,11 @@ Partial Class IgnoredLogsAndSearchResults
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
+        Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
+        Me.BtnSearch = New System.Windows.Forms.Button()
+        Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
+        Me.LblSearchLabel = New System.Windows.Forms.Label()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
         Me.SuspendLayout()
@@ -181,6 +186,58 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnOpenLogFile.UseVisualStyleBackColor = True
         Me.BtnOpenLogFile.Visible = False
         '
+        'ChkCaseInsensitiveSearch
+        '
+        Me.ChkCaseInsensitiveSearch.AutoSize = True
+        Me.ChkCaseInsensitiveSearch.Checked = True
+        Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(512, 382)
+        Me.ChkCaseInsensitiveSearch.Name = "ChkCaseInsensitiveSearch"
+        Me.ChkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
+        Me.ChkCaseInsensitiveSearch.TabIndex = 28
+        Me.ChkCaseInsensitiveSearch.Text = "Case Insensitive?"
+        Me.ChkCaseInsensitiveSearch.UseVisualStyleBackColor = True
+        Me.ChkCaseInsensitiveSearch.Visible = False
+        '
+        'ChkRegExSearch
+        '
+        Me.ChkRegExSearch.AutoSize = True
+        Me.ChkRegExSearch.Location = New System.Drawing.Point(443, 382)
+        Me.ChkRegExSearch.Name = "ChkRegExSearch"
+        Me.ChkRegExSearch.Size = New System.Drawing.Size(63, 17)
+        Me.ChkRegExSearch.TabIndex = 27
+        Me.ChkRegExSearch.Text = "Regex?"
+        Me.ChkRegExSearch.UseVisualStyleBackColor = True
+        Me.ChkRegExSearch.Visible = False
+        '
+        'BtnSearch
+        '
+        Me.BtnSearch.Location = New System.Drawing.Point(620, 378)
+        Me.BtnSearch.Name = "BtnSearch"
+        Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
+        Me.BtnSearch.TabIndex = 26
+        Me.BtnSearch.Text = "Search"
+        Me.BtnSearch.UseVisualStyleBackColor = True
+        Me.BtnSearch.Visible = False
+        '
+        'TxtSearchTerms
+        '
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(289, 379)
+        Me.TxtSearchTerms.Name = "TxtSearchTerms"
+        Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
+        Me.TxtSearchTerms.TabIndex = 25
+        Me.TxtSearchTerms.Visible = False
+        '
+        'LblSearchLabel
+        '
+        Me.LblSearchLabel.AutoSize = True
+        Me.LblSearchLabel.Location = New System.Drawing.Point(216, 382)
+        Me.LblSearchLabel.Name = "LblSearchLabel"
+        Me.LblSearchLabel.Size = New System.Drawing.Size(67, 13)
+        Me.LblSearchLabel.TabIndex = 24
+        Me.LblSearchLabel.Text = "Search Logs"
+        Me.LblSearchLabel.Visible = False
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -192,6 +249,11 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Controls.Add(Me.Logs)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.BtnClearIgnoredLogs)
+        Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
+        Me.Controls.Add(Me.ChkRegExSearch)
+        Me.Controls.Add(Me.BtnSearch)
+        Me.Controls.Add(Me.TxtSearchTerms)
+        Me.Controls.Add(Me.LblSearchLabel)
         Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(1168, 464)
         Me.Name = "IgnoredLogsAndSearchResults"
@@ -219,4 +281,9 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
     Friend WithEvents BtnOpenLogFile As Button
+    Friend WithEvents ChkCaseInsensitiveSearch As CheckBox
+    Friend WithEvents ChkRegExSearch As CheckBox
+    Friend WithEvents BtnSearch As Button
+    Friend WithEvents TxtSearchTerms As TextBox
+    Friend WithEvents LblSearchLabel As Label
 End Class
