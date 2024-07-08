@@ -188,6 +188,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'ChkCaseInsensitiveSearch
         '
+        Me.ChkCaseInsensitiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkCaseInsensitiveSearch.AutoSize = True
         Me.ChkCaseInsensitiveSearch.Checked = True
         Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
@@ -201,6 +202,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'ChkRegExSearch
         '
+        Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRegExSearch.AutoSize = True
         Me.ChkRegExSearch.Location = New System.Drawing.Point(443, 382)
         Me.ChkRegExSearch.Name = "ChkRegExSearch"
@@ -212,6 +214,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'BtnSearch
         '
+        Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnSearch.Location = New System.Drawing.Point(620, 378)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
@@ -222,6 +225,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'TxtSearchTerms
         '
+        Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.TxtSearchTerms.Location = New System.Drawing.Point(289, 379)
         Me.TxtSearchTerms.Name = "TxtSearchTerms"
         Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
@@ -230,6 +234,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LblSearchLabel
         '
+        Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LblSearchLabel.AutoSize = True
         Me.LblSearchLabel.Location = New System.Drawing.Point(216, 382)
         Me.LblSearchLabel.Name = "LblSearchLabel"
