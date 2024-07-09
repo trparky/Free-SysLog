@@ -15,6 +15,8 @@ Public Class ViewLogBackups
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
 
+        lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
+
         For Each file As FileInfo In filesInDirectory
             listViewItem = New ListViewItem With {.Text = file.Name}
             listViewItem.SubItems.Add(file.CreationTime.ToString)
