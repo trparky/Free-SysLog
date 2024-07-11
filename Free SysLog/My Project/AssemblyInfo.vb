@@ -11,8 +11,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("Free SysLog")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("Free SysLog")> 
-<Assembly: AssemblyCopyright("Copyright Thomas Parkison © 2023-2024")> 
+<Assembly: AssemblyProduct("Free SysLog")>
+<Assembly: AssemblyCopyright("Copyright Thomas Parkison © 2023-2025")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
