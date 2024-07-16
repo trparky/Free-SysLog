@@ -93,7 +93,6 @@ Public Class IgnoredLogsAndSearchResults
             BtnViewMainWindow.Visible = True
         ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
             BtnExport.Visible = False
-            BtnOpenLogFile.Visible = True
             BtnViewMainWindow.Visible = True
 
             LblSearchLabel.Visible = True
@@ -142,7 +141,6 @@ Public Class IgnoredLogsAndSearchResults
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
             LoadData(strFileToLoad)
             LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
-            BtnOpenLogFile.Visible = False
         End If
 
         boolDoneLoading = True
@@ -291,12 +289,6 @@ Public Class IgnoredLogsAndSearchResults
 
                 MsgBox("Done", MsgBoxStyle.Information, Text)
             End If
-        End Using
-    End Sub
-
-    Private Sub BtnOpenLogFile_Click(sender As Object, e As EventArgs) Handles BtnOpenLogFile.Click
-        Using OpenFileDialog As New OpenFileDialog With {.Title = "Open Log File", .Filter = "JSON File|*.json"}
-            If OpenFileDialog.ShowDialog() = DialogResult.OK Then LoadData(OpenFileDialog.FileName)
         End Using
     End Sub
 
