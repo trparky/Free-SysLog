@@ -121,8 +121,8 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColAlerts.Name = "ColAlerts"
         Me.ColAlerts.ReadOnly = True
         Me.ColAlerts.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColAlerts.Width = 50
         Me.ColAlerts.ToolTipText = "True or False. Indicates if the log entry triggered an alert from this program."
+        Me.ColAlerts.Width = 50
         '
         'BtnExport
         '
@@ -180,7 +180,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnOpenLogFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnOpenLogFile.Location = New System.Drawing.Point(135, 377)
         Me.BtnOpenLogFile.Name = "BtnOpenLogFile"
-        Me.BtnOpenLogFile.Size = New System.Drawing.Size(75, 23)
+        Me.BtnOpenLogFile.Size = New System.Drawing.Size(95, 23)
         Me.BtnOpenLogFile.TabIndex = 23
         Me.BtnOpenLogFile.Text = "Open Log File"
         Me.BtnOpenLogFile.UseVisualStyleBackColor = True
@@ -192,7 +192,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ChkCaseInsensitiveSearch.AutoSize = True
         Me.ChkCaseInsensitiveSearch.Checked = True
         Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(512, 382)
+        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(431, 382)
         Me.ChkCaseInsensitiveSearch.Name = "ChkCaseInsensitiveSearch"
         Me.ChkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
         Me.ChkCaseInsensitiveSearch.TabIndex = 28
@@ -204,7 +204,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRegExSearch.AutoSize = True
-        Me.ChkRegExSearch.Location = New System.Drawing.Point(443, 382)
+        Me.ChkRegExSearch.Location = New System.Drawing.Point(362, 382)
         Me.ChkRegExSearch.Name = "ChkRegExSearch"
         Me.ChkRegExSearch.Size = New System.Drawing.Size(63, 17)
         Me.ChkRegExSearch.TabIndex = 27
@@ -215,7 +215,7 @@ Partial Class IgnoredLogsAndSearchResults
         'BtnSearch
         '
         Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnSearch.Location = New System.Drawing.Point(620, 378)
+        Me.BtnSearch.Location = New System.Drawing.Point(539, 378)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
         Me.BtnSearch.TabIndex = 26
@@ -226,7 +226,7 @@ Partial Class IgnoredLogsAndSearchResults
         'TxtSearchTerms
         '
         Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.TxtSearchTerms.Location = New System.Drawing.Point(289, 379)
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(208, 379)
         Me.TxtSearchTerms.Name = "TxtSearchTerms"
         Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
         Me.TxtSearchTerms.TabIndex = 25
@@ -236,7 +236,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LblSearchLabel.AutoSize = True
-        Me.LblSearchLabel.Location = New System.Drawing.Point(216, 382)
+        Me.LblSearchLabel.Location = New System.Drawing.Point(135, 382)
         Me.LblSearchLabel.Name = "LblSearchLabel"
         Me.LblSearchLabel.Size = New System.Drawing.Size(67, 13)
         Me.LblSearchLabel.TabIndex = 24
