@@ -29,6 +29,14 @@ Partial Class ViewLogBackups
         Me.BtnView = New System.Windows.Forms.Button()
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.BtnRefresh = New System.Windows.Forms.Button()
+        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.lblNumberOfFiles = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
+        Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
+        Me.BtnSearch = New System.Windows.Forms.Button()
+        Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
+        Me.LblSearchLabel = New System.Windows.Forms.Label()
+        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'FileList
@@ -41,7 +49,7 @@ Partial Class ViewLogBackups
         Me.FileList.HideSelection = False
         Me.FileList.Location = New System.Drawing.Point(12, 12)
         Me.FileList.Name = "FileList"
-        Me.FileList.Size = New System.Drawing.Size(776, 313)
+        Me.FileList.Size = New System.Drawing.Size(776, 298)
         Me.FileList.TabIndex = 1
         Me.FileList.UseCompatibleStateImageBehavior = False
         Me.FileList.View = System.Windows.Forms.View.Details
@@ -65,7 +73,7 @@ Partial Class ViewLogBackups
         '
         Me.BtnView.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnView.Enabled = False
-        Me.BtnView.Location = New System.Drawing.Point(12, 331)
+        Me.BtnView.Location = New System.Drawing.Point(13, 316)
         Me.BtnView.Name = "BtnView"
         Me.BtnView.Size = New System.Drawing.Size(75, 23)
         Me.BtnView.TabIndex = 2
@@ -76,7 +84,7 @@ Partial Class ViewLogBackups
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
-        Me.BtnDelete.Location = New System.Drawing.Point(93, 331)
+        Me.BtnDelete.Location = New System.Drawing.Point(94, 316)
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(75, 23)
         Me.BtnDelete.TabIndex = 3
@@ -86,18 +94,91 @@ Partial Class ViewLogBackups
         'BtnRefresh
         '
         Me.BtnRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnRefresh.Location = New System.Drawing.Point(174, 331)
+        Me.BtnRefresh.Location = New System.Drawing.Point(175, 316)
         Me.BtnRefresh.Name = "BtnRefresh"
         Me.BtnRefresh.Size = New System.Drawing.Size(95, 23)
         Me.BtnRefresh.TabIndex = 4
         Me.BtnRefresh.Text = "Refresh (F5)"
         Me.BtnRefresh.UseVisualStyleBackColor = True
         '
+        'StatusStrip1
+        '
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles})
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
+        Me.StatusStrip1.Name = "StatusStrip1"
+        Me.StatusStrip1.Size = New System.Drawing.Size(800, 22)
+        Me.StatusStrip1.TabIndex = 5
+        Me.StatusStrip1.Text = "StatusStrip1"
+        '
+        'lblNumberOfFiles
+        '
+        Me.lblNumberOfFiles.Name = "lblNumberOfFiles"
+        Me.lblNumberOfFiles.Size = New System.Drawing.Size(94, 17)
+        Me.lblNumberOfFiles.Text = "Number of Files:"
+        '
+        'ChkCaseInsensitiveSearch
+        '
+        Me.ChkCaseInsensitiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkCaseInsensitiveSearch.AutoSize = True
+        Me.ChkCaseInsensitiveSearch.Checked = True
+        Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(586, 321)
+        Me.ChkCaseInsensitiveSearch.Name = "ChkCaseInsensitiveSearch"
+        Me.ChkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
+        Me.ChkCaseInsensitiveSearch.TabIndex = 33
+        Me.ChkCaseInsensitiveSearch.Text = "Case Insensitive?"
+        Me.ChkCaseInsensitiveSearch.UseVisualStyleBackColor = True
+        '
+        'ChkRegExSearch
+        '
+        Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkRegExSearch.AutoSize = True
+        Me.ChkRegExSearch.Location = New System.Drawing.Point(517, 321)
+        Me.ChkRegExSearch.Name = "ChkRegExSearch"
+        Me.ChkRegExSearch.Size = New System.Drawing.Size(63, 17)
+        Me.ChkRegExSearch.TabIndex = 32
+        Me.ChkRegExSearch.Text = "Regex?"
+        Me.ChkRegExSearch.UseVisualStyleBackColor = True
+        '
+        'BtnSearch
+        '
+        Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnSearch.Location = New System.Drawing.Point(694, 317)
+        Me.BtnSearch.Name = "BtnSearch"
+        Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
+        Me.BtnSearch.TabIndex = 31
+        Me.BtnSearch.Text = "Search"
+        Me.BtnSearch.UseVisualStyleBackColor = True
+        '
+        'TxtSearchTerms
+        '
+        Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(363, 318)
+        Me.TxtSearchTerms.Name = "TxtSearchTerms"
+        Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
+        Me.TxtSearchTerms.TabIndex = 30
+        '
+        'LblSearchLabel
+        '
+        Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.LblSearchLabel.AutoSize = True
+        Me.LblSearchLabel.Location = New System.Drawing.Point(276, 321)
+        Me.LblSearchLabel.Name = "LblSearchLabel"
+        Me.LblSearchLabel.Size = New System.Drawing.Size(81, 13)
+        Me.LblSearchLabel.TabIndex = 29
+        Me.LblSearchLabel.Text = "Search All Logs"
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 364)
+        Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
+        Me.Controls.Add(Me.ChkRegExSearch)
+        Me.Controls.Add(Me.BtnSearch)
+        Me.Controls.Add(Me.TxtSearchTerms)
+        Me.Controls.Add(Me.LblSearchLabel)
+        Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.BtnRefresh)
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnView)
@@ -108,7 +189,10 @@ Partial Class ViewLogBackups
         Me.MinimumSize = New System.Drawing.Size(816, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
+        Me.StatusStrip1.ResumeLayout(False)
+        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -119,4 +203,11 @@ Partial Class ViewLogBackups
     Friend WithEvents BtnView As Button
     Friend WithEvents BtnDelete As Button
     Friend WithEvents BtnRefresh As Button
+    Friend WithEvents StatusStrip1 As StatusStrip
+    Friend WithEvents lblNumberOfFiles As ToolStripStatusLabel
+    Friend WithEvents ChkCaseInsensitiveSearch As CheckBox
+    Friend WithEvents ChkRegExSearch As CheckBox
+    Friend WithEvents BtnSearch As Button
+    Friend WithEvents TxtSearchTerms As TextBox
+    Friend WithEvents LblSearchLabel As Label
 End Class

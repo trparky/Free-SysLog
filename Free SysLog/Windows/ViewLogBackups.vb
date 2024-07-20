@@ -1,4 +1,6 @@
 ﻿Imports System.IO
+Imports System.Text.RegularExpressions
+Imports System.ComponentModel
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -14,6 +16,8 @@ Public Class ViewLogBackups
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
+
+        lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
 
         For Each file As FileInfo In filesInDirectory
             listViewItem = New ListViewItem With {.Text = file.Name}
@@ -97,7 +101,7 @@ Public Class ViewLogBackups
             LoadFileList()
         ElseIf e.KeyCode = Keys.Delete Then
             BtnDelete.PerformClick()
-        ElseIf e.KeyCode = Keys.space Then
+        ElseIf e.KeyCode = Keys.Space Then
             BtnView.PerformClick()
         End If
     End Sub
@@ -108,5 +112,70 @@ Public Class ViewLogBackups
 
     Private Sub ViewLogBackups_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         If boolDoneLoading Then My.Settings.ViewLogBackupsSize = Size
+    End Sub
+
+    Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
+        If BtnSearch.Text = "Search" Then
+            If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
+                MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
+                Exit Sub
+            End If
+
+            Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+            Dim regexCompiledObject As Regex = Nothing
+
+            BtnSearch.Enabled = False
+
+            Dim worker As New BackgroundWorker()
+
+            AddHandler worker.DoWork, Sub()
+                                          Try
+                                              Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+
+                                              If ChkRegExSearch.Checked Then
+                                                  regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
+                                              Else
+                                                  regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
+                                              End If
+
+                                              Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+                                              Dim dataFromFile As List(Of SavedData)
+
+                                              For Each file As FileInfo In filesInDirectory
+                                                  Using fileStream As New StreamReader(file.FullName)
+                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+
+                                                      For Each item As SavedData In dataFromFile
+                                                          If regexCompiledObject.IsMatch(item.log) Then listOfSearchResults.Add(item.MakeDataGridRow(MyParentForm.Logs, GetMinimumHeight(item.log, MyParentForm.Logs.DefaultCellStyle.Font)))
+                                                      Next
+
+                                                      dataFromFile = Nothing
+                                                  End Using
+                                              Next
+                                          Catch ex As ArgumentException
+                                              MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
+                                          End Try
+                                      End Sub
+
+            AddHandler worker.RunWorkerCompleted, Sub()
+                                                      If listOfSearchResults.Count > 0 Then
+                                                          Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                          searchResultsWindow.ShowDialog(Me)
+                                                      Else
+                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                      End If
+
+                                                      Invoke(Sub() BtnSearch.Enabled = True)
+                                                  End Sub
+
+            worker.RunWorkerAsync()
+        End If
+    End Sub
+
+    Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearchTerms.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            BtnSearch.PerformClick()
+        End If
     End Sub
 End Class

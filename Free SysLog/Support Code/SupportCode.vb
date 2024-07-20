@@ -84,19 +84,25 @@ Module SupportCode
     End Function
 
     Public Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
-        Using udpClient As New UdpClient()
-            udpClient.Connect(Net.IPAddress.Loopback, intPort)
-            Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
-            udpClient.Send(data, data.Length)
-        End Using
+        Try
+            Using udpClient As New UdpClient()
+                udpClient.Connect(Net.IPAddress.Loopback, intPort)
+                Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
+                udpClient.Send(data, data.Length)
+            End Using
+        Catch ex As SocketException
+        End Try
     End Sub
 
     Public Sub SendMessageToSysLogServer(strMessage As String, strDestinationIP As String, intPort As Integer)
-        Using udpClient As New UdpClient()
-            udpClient.Connect(strDestinationIP, intPort)
-            Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
-            udpClient.Send(data, data.Length)
-        End Using
+        Try
+            Using udpClient As New UdpClient()
+                udpClient.Connect(strDestinationIP, intPort)
+                Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
+                udpClient.Send(data, data.Length)
+            End Using
+        Catch ex As SocketException
+        End Try
     End Sub
 
     Public Function SanitizeForCSV(input As String) As String
