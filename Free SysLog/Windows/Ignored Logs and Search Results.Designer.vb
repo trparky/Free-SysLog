@@ -37,7 +37,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LblCount = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.StatusStrip1.SuspendLayout()
+        Me.ColFileName = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.BtnClearIgnoredLogs = New System.Windows.Forms.Button()
@@ -50,8 +50,10 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
+        Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
+        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'StatusStrip1
@@ -76,7 +78,7 @@ Partial Class IgnoredLogsAndSearchResults
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog, Me.ColAlerts})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog, Me.ColAlerts, Me.ColFileName})
         Me.Logs.ContextMenuStrip = Me.LogsContextMenu
         Me.Logs.Location = New System.Drawing.Point(12, 12)
         Me.Logs.Name = "Logs"
@@ -104,6 +106,15 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColIPAddress.ReadOnly = True
         Me.ColIPAddress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColIPAddress.ToolTipText = "The IP address of the system from which the log came from."
+        '
+        'ColFileName
+        '
+        Me.ColFileName.HeaderText = "File Name"
+        Me.ColFileName.Name = "ColFileName"
+        Me.ColFileName.ReadOnly = True
+        Me.ColFileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColFileName.Visible = False
+        Me.ColFileName.Width = 150
         '
         'ColLog
         '
@@ -146,9 +157,9 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LogsContextMenu
         '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem})
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem})
         Me.LogsContextMenu.Name = "LogsContextMenu"
-        Me.LogsContextMenu.Size = New System.Drawing.Size(181, 70)
+        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 92)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -231,6 +242,13 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LblSearchLabel.Text = "Search Logs"
         Me.LblSearchLabel.Visible = False
         '
+        'OpenLogFileForViewingToolStripMenuItem
+        '
+        Me.OpenLogFileForViewingToolStripMenuItem.Name = "OpenLogFileForViewingToolStripMenuItem"
+        Me.OpenLogFileForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.OpenLogFileForViewingToolStripMenuItem.Text = "Open Log File for Viewing"
+        Me.OpenLogFileForViewingToolStripMenuItem.Visible = False
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -272,9 +290,11 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
+    Friend WithEvents ColFileName As DataGridViewTextBoxColumn
     Friend WithEvents ChkCaseInsensitiveSearch As CheckBox
     Friend WithEvents ChkRegExSearch As CheckBox
     Friend WithEvents BtnSearch As Button
     Friend WithEvents TxtSearchTerms As TextBox
     Friend WithEvents LblSearchLabel As Label
+    Friend WithEvents OpenLogFileForViewingToolStripMenuItem As ToolStripMenuItem
 End Class

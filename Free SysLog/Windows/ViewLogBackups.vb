@@ -123,6 +123,7 @@ Public Class ViewLogBackups
 
             Dim listOfSearchResults As New List(Of MyDataGridViewRow)
             Dim regexCompiledObject As Regex = Nothing
+            Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
 
             BtnSearch.Enabled = False
 
@@ -140,13 +141,19 @@ Public Class ViewLogBackups
 
                                               Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
                                               Dim dataFromFile As List(Of SavedData)
+                                              Dim myDataGridRow As MyDataGridViewRow
 
                                               For Each file As FileInfo In filesInDirectory
                                                   Using fileStream As New StreamReader(file.FullName)
                                                       dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
 
                                                       For Each item As SavedData In dataFromFile
-                                                          If regexCompiledObject.IsMatch(item.log) Then listOfSearchResults.Add(item.MakeDataGridRow(MyParentForm.Logs, GetMinimumHeight(item.log, MyParentForm.Logs.DefaultCellStyle.Font)))
+                                                          If regexCompiledObject.IsMatch(item.log) Then
+                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font))
+                                                              myDataGridRow.Cells(4).Value = file.Name
+                                                              listOfSearchResults.Add(myDataGridRow)
+                                                              myDataGridRow = Nothing
+                                                          End If
                                                       Next
 
                                                       dataFromFile = Nothing
@@ -159,7 +166,9 @@ Public Class ViewLogBackups
 
             AddHandler worker.RunWorkerCompleted, Sub()
                                                       If listOfSearchResults.Count > 0 Then
-                                                          Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                          searchResultsWindow.LogsToBeDisplayed = listOfSearchResults
+                                                          searchResultsWindow.ColFileName.Visible = True
+                                                          searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
                                                           searchResultsWindow.ShowDialog(Me)
                                                       Else
                                                           MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
