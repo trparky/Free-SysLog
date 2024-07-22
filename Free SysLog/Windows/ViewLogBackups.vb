@@ -187,4 +187,22 @@ Public Class ViewLogBackups
             BtnSearch.PerformClick()
         End If
     End Sub
+
+    Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
+        If FileList.SelectedItems.Count > 0 Then
+            DeleteToolStripMenuItem.Enabled = True
+            ViewToolStripMenuItem.Enabled = FileList.SelectedItems.Count <= 1
+        Else
+            DeleteToolStripMenuItem.Enabled = False
+            ViewToolStripMenuItem.Enabled = False
+        End If
+    End Sub
+
+    Private Sub DeleteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem.Click
+        BtnDelete.PerformClick()
+    End Sub
+
+    Private Sub ViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewToolStripMenuItem.Click
+        BtnView.PerformClick()
+    End Sub
 End Class

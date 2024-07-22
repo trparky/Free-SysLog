@@ -22,10 +22,14 @@ Partial Class ViewLogBackups
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.FileList = New System.Windows.Forms.ListView()
         Me.ColFileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColFileDate = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColFileSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnView = New System.Windows.Forms.Button()
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.BtnRefresh = New System.Windows.Forms.Button()
@@ -36,6 +40,7 @@ Partial Class ViewLogBackups
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
+        Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -45,6 +50,7 @@ Partial Class ViewLogBackups
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.FileList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize})
+        Me.FileList.ContextMenuStrip = Me.ContextMenuStrip1
         Me.FileList.FullRowSelect = True
         Me.FileList.HideSelection = False
         Me.FileList.Location = New System.Drawing.Point(12, 12)
@@ -68,6 +74,24 @@ Partial Class ViewLogBackups
         '
         Me.ColFileSize.Text = "Size"
         Me.ColFileSize.Width = 240
+        '
+        'ContextMenuStrip1
+        '
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem})
+        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(181, 70)
+        '
+        'DeleteToolStripMenuItem
+        '
+        Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
+        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DeleteToolStripMenuItem.Text = "&Delete"
+        '
+        'ViewToolStripMenuItem
+        '
+        Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
+        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ViewToolStripMenuItem.Text = "&View"
         '
         'BtnView
         '
@@ -189,6 +213,7 @@ Partial Class ViewLogBackups
         Me.MinimumSize = New System.Drawing.Size(816, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
+        Me.ContextMenuStrip1.ResumeLayout(False)
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
@@ -210,4 +235,7 @@ Partial Class ViewLogBackups
     Friend WithEvents BtnSearch As Button
     Friend WithEvents TxtSearchTerms As TextBox
     Friend WithEvents LblSearchLabel As Label
+    Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
+    Friend WithEvents DeleteToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ViewToolStripMenuItem As ToolStripMenuItem
 End Class
