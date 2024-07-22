@@ -1,5 +1,5 @@
 ﻿Public Class SavedData
-    Public time, ip, log As String
+    Public time, ip, log, fileName As String
     Public DateObject As Date
     Public BoolAlerted As Boolean = False
 

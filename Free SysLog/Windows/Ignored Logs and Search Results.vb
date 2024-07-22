@@ -184,9 +184,16 @@ Public Class IgnoredLogsAndSearchResults
             Dim collectionOfSavedData As New List(Of SavedData)
             Dim myItem As MyDataGridViewRow
             Dim csvStringBuilder As New Text.StringBuilder
-            Dim strTime, strSourceIP, strLogText, strAlerted As String
+            Dim savedData As SavedData
+            Dim strTime, strSourceIP, strLogText, strAlerted, strFileName As String
 
-            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
+            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                If ColFileName.Visible Then
+                    csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted,File Name")
+                Else
+                    csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
+                End If
+            End If
 
             For Each item As DataGridViewRow In Logs.Rows
                 If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
@@ -200,15 +207,22 @@ Public Class IgnoredLogsAndSearchResults
                             strAlerted = If(.BoolAlerted, "Yes", "No")
                         End With
 
-                        csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
+                        If ColFileName.Visible Then
+                            strFileName = SanitizeForCSV(myItem.Cells(4).Value)
+                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted},{strFileName}")
+                        Else
+                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
+                        End If
                     Else
-                        collectionOfSavedData.Add(New SavedData With {
+                        savedData = New SavedData With {
                                                 .time = myItem.Cells(0).Value,
                                                 .ip = myItem.Cells(1).Value,
                                                 .log = myItem.Cells(2).Value,
                                                 .DateObject = myItem.DateObject,
                                                 .BoolAlerted = myItem.BoolAlerted
-                                              })
+                                              }
+                        If ColFileName.Visible Then savedData.fileName = myItem.Cells(4).Value
+                        collectionOfSavedData.Add(savedData)
                     End If
                 End If
             Next
