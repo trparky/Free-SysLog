@@ -101,7 +101,7 @@ Partial Class ViewLogBackups
         Me.BtnView.Name = "BtnView"
         Me.BtnView.Size = New System.Drawing.Size(75, 23)
         Me.BtnView.TabIndex = 2
-        Me.BtnView.Text = "View"
+        Me.BtnView.Text = "&View"
         Me.BtnView.UseVisualStyleBackColor = True
         '
         'BtnDelete
@@ -112,7 +112,7 @@ Partial Class ViewLogBackups
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(75, 23)
         Me.BtnDelete.TabIndex = 3
-        Me.BtnDelete.Text = "Delete"
+        Me.BtnDelete.Text = "&Delete"
         Me.BtnDelete.UseVisualStyleBackColor = True
         '
         'BtnRefresh
@@ -122,7 +122,7 @@ Partial Class ViewLogBackups
         Me.BtnRefresh.Name = "BtnRefresh"
         Me.BtnRefresh.Size = New System.Drawing.Size(95, 23)
         Me.BtnRefresh.TabIndex = 4
-        Me.BtnRefresh.Text = "Refresh (F5)"
+        Me.BtnRefresh.Text = "Re&fresh (F5)"
         Me.BtnRefresh.UseVisualStyleBackColor = True
         '
         'StatusStrip1
@@ -171,7 +171,7 @@ Partial Class ViewLogBackups
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
         Me.BtnSearch.TabIndex = 31
-        Me.BtnSearch.Text = "Search"
+        Me.BtnSearch.Text = "&Search"
         Me.BtnSearch.UseVisualStyleBackColor = True
         '
         'TxtSearchTerms
