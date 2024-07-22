@@ -803,62 +803,60 @@ Public Class Form1
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
-        If BtnSearch.Text = "Search" Then
-            If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
-                MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
-                Exit Sub
-            End If
-
-            Dim strLogText As String
-            Dim listOfSearchResults As New List(Of MyDataGridViewRow)
-            Dim regexCompiledObject As Regex = Nothing
-            Dim MyDataGridRowItem As MyDataGridViewRow
-
-            BtnSearch.Enabled = False
-
-            Dim worker As New BackgroundWorker()
-
-            AddHandler worker.DoWork, Sub()
-                                          Try
-                                              Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
-
-                                              If ChkRegExSearch.Checked Then
-                                                  regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                              Else
-                                                  regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                              End If
-
-                                              SyncLock dataGridLockObject
-                                                  For Each item As DataGridViewRow In Logs.Rows
-                                                      MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
-
-                                                      If MyDataGridRowItem IsNot Nothing Then
-                                                          strLogText = MyDataGridRowItem.Cells(2).Value
-
-                                                          If regexCompiledObject.IsMatch(strLogText) Then
-                                                              listOfSearchResults.Add(MyDataGridRowItem.Clone())
-                                                          End If
-                                                      End If
-                                                  Next
-                                              End SyncLock
-                                          Catch ex As ArgumentException
-                                              MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
-                                          End Try
-                                      End Sub
-
-            AddHandler worker.RunWorkerCompleted, Sub()
-                                                      If listOfSearchResults.Count > 0 Then
-                                                          Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
-                                                          searchResultsWindow.ShowDialog(Me)
-                                                      Else
-                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
-                                                      End If
-
-                                                      Invoke(Sub() BtnSearch.Enabled = True)
-                                                  End Sub
-
-            worker.RunWorkerAsync()
+        If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
+            MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
+            Exit Sub
         End If
+
+        Dim strLogText As String
+        Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+        Dim regexCompiledObject As Regex = Nothing
+        Dim MyDataGridRowItem As MyDataGridViewRow
+
+        BtnSearch.Enabled = False
+
+        Dim worker As New BackgroundWorker()
+
+        AddHandler worker.DoWork, Sub()
+                                      Try
+                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+
+                                          If ChkRegExSearch.Checked Then
+                                              regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
+                                          Else
+                                              regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
+                                          End If
+
+                                          SyncLock dataGridLockObject
+                                              For Each item As DataGridViewRow In Logs.Rows
+                                                  MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+
+                                                  If MyDataGridRowItem IsNot Nothing Then
+                                                      strLogText = MyDataGridRowItem.Cells(2).Value
+
+                                                      If regexCompiledObject.IsMatch(strLogText) Then
+                                                          listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                      End If
+                                                  End If
+                                              Next
+                                          End SyncLock
+                                      Catch ex As ArgumentException
+                                          MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
+                                      End Try
+                                  End Sub
+
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  If listOfSearchResults.Count > 0 Then
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      searchResultsWindow.ShowDialog(Me)
+                                                  Else
+                                                      MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                  End If
+
+                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                              End Sub
+
+        worker.RunWorkerAsync()
     End Sub
 
     Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearchTerms.KeyDown
