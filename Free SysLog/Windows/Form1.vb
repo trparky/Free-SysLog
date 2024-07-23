@@ -537,7 +537,7 @@ Public Class Form1
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
                            MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs),
                            MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs),
-                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message{vbCrLf}{ex.Message}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", False, Logs)
+                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", False, Logs)
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)
