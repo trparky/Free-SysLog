@@ -264,20 +264,28 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub LoadData(strFileName As String)
         Dim collectionOfSavedData As New List(Of SavedData)
 
-        Using fileStream As New StreamReader(strFileName)
-            collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
-        End Using
+        Try
+            Using fileStream As New StreamReader(strFileName)
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+            End Using
 
-        If collectionOfSavedData.Count > 0 Then
-            Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+            If collectionOfSavedData.Count > 0 Then
+                Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
-            For Each item As SavedData In collectionOfSavedData
-                listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
-            Next
+                For Each item As SavedData In collectionOfSavedData
+                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
+                Next
 
-            Logs.Rows.Clear()
-            Logs.Rows.AddRange(listOfLogEntries.ToArray)
-        End If
+                Logs.Rows.Clear()
+                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+            End If
+        Catch ex As Newtonsoft.Json.JsonSerializationException
+            SendMessageToSysLogServer($"(NoProxy)Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
+        Catch ex As Newtonsoft.Json.JsonReaderException
+            SendMessageToSysLogServer($"(NoProxy)Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
+        End Try
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
