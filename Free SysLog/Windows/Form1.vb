@@ -513,30 +513,37 @@ Public Class Form1
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
-                If File.Exists($"{strPathToDataFile}.bad") Then
-                    File.Copy(strPathToDataFile, GetUniqueFileName($"{strPathToDataFile}.bad"))
-                Else
-                    File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
-                End If
-
-                File.WriteAllText(strPathToDataFile, "[]")
-                LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
-
-                SyncLock dataGridLockObject
-                    Invoke(Sub()
-                               Logs.Rows.Clear()
-
-                               Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
-                                   MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs),
-                                   MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs)
-                               }
-
-                               Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                               UpdateLogCount()
-                           End Sub)
-                End SyncLock
+                HandleLogFileLoadException(ex)
+            Catch ex As Newtonsoft.Json.JsonReaderException
+                HandleLogFileLoadException(ex)
             End Try
         End If
+    End Sub
+
+    Private Sub HandleLogFileLoadException(ex As Exception)
+        If File.Exists($"{strPathToDataFile}.bad") Then
+            File.Copy(strPathToDataFile, GetUniqueFileName($"{strPathToDataFile}.bad"))
+        Else
+            File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
+        End If
+
+        File.WriteAllText(strPathToDataFile, "[]")
+        LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
+
+        SyncLock dataGridLockObject
+            Invoke(Sub()
+                       Logs.Rows.Clear()
+
+                       Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
+                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs),
+                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs),
+                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message{vbCrLf}{ex.Message}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", False, Logs)
+                       }
+
+                       Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                       UpdateLogCount()
+                   End Sub)
+        End SyncLock
     End Sub
 
     Private Function GetUniqueFileName(fileName As String) As String
