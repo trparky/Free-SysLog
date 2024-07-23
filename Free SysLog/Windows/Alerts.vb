@@ -13,7 +13,7 @@
         Dim MyIgnoredListViewItem As New List(Of AlertsListViewItem)
 
         For Each strJSONString As String In My.Settings.alerts
-            MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString).ToListViewItem)
+            MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettings).ToListViewItem)
         Next
 
         AlertsListView.Items.AddRange(MyIgnoredListViewItem.ToArray)

@@ -59,7 +59,7 @@
 
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString).ToListViewItem())
+                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettings).ToListViewItem())
             Next
         End If
 

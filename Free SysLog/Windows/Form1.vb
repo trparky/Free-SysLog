@@ -399,7 +399,7 @@ Public Class Form1
 
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
             For Each strJSONString As String In My.Settings.replacements
-                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString)
+                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettings)
                 If tempReplacementsClass.BoolEnabled Then replacementsList.Add(tempReplacementsClass)
                 tempReplacementsClass = Nothing
             Next
@@ -407,7 +407,7 @@ Public Class Form1
 
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             For Each strJSONString As String In My.Settings.ServersToSendTo
-                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString)
+                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettings)
                 If tempSysLogProxyServer.boolEnabled Then serversList.Add(tempSysLogProxyServer)
                 tempSysLogProxyServer = Nothing
             Next
@@ -428,7 +428,7 @@ Public Class Form1
 
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString)
+                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettings)
                 If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
                 tempIgnoredClass = Nothing
             Next
@@ -436,7 +436,7 @@ Public Class Form1
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
-                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString)
+                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettings)
                 If tempAlertsClass.BoolEnabled Then alertsList.Add(tempAlertsClass)
                 tempAlertsClass = Nothing
             Next
