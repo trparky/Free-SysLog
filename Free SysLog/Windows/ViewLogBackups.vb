@@ -5,10 +5,13 @@ Imports System.ComponentModel
 Public Class ViewLogBackups
     Public MyParentForm As Form1
     Private boolDoneLoading As Boolean = False
+    Private longTotalLogs As Long = 0
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Using fileStream As New StreamReader(strFileName)
-            Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings).Count
+            Dim intCount As Integer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings).Count
+            longTotalLogs += intCount
+            Return intCount
         End Using
     End Function
 
@@ -27,6 +30,7 @@ Public Class ViewLogBackups
         Next
 
         Invoke(Sub()
+                   lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogs:N0}"
                    FileList.Items.Clear()
                    FileList.Items.AddRange(listOfListViewItems.ToArray)
                End Sub)

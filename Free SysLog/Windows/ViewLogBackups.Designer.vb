@@ -40,6 +40,7 @@ Partial Class ViewLogBackups
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
+        Me.lblTotalNumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -127,7 +128,7 @@ Partial Class ViewLogBackups
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblTotalNumberOfLogs})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(800, 22)
@@ -192,6 +193,13 @@ Partial Class ViewLogBackups
         Me.LblSearchLabel.TabIndex = 29
         Me.LblSearchLabel.Text = "Search All Logs"
         '
+        'lblTotalNumberOfLogs
+        '
+        Me.lblTotalNumberOfLogs.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.lblTotalNumberOfLogs.Name = "lblTotalNumberOfLogs"
+        Me.lblTotalNumberOfLogs.Size = New System.Drawing.Size(124, 17)
+        Me.lblTotalNumberOfLogs.Text = "Total Number of Logs:"
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -238,4 +246,5 @@ Partial Class ViewLogBackups
     Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
     Friend WithEvents DeleteToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ViewToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents lblTotalNumberOfLogs As ToolStripStatusLabel
 End Class
