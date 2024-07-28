@@ -130,9 +130,10 @@ Public Class Form1
         MyDataGridViewRow.Cells(2).Value = strLog
         MyDataGridViewRow.Cells(3).Value = If(boolAlerted, "Yes", "No")
         MyDataGridViewRow.Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        MyDataGridViewRow.Cells(3).Style.WrapMode = DataGridViewTriState.True
         MyDataGridViewRow.DateObject = dateObject
         MyDataGridViewRow.BoolAlerted = boolAlerted
-        MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font)
+        MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
 
         Return MyDataGridViewRow
     End Function
@@ -210,6 +211,13 @@ Public Class Form1
 
             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
+
+            For Each item As MyDataGridViewRow In Logs.Rows
+                item.Height = GetMinimumHeight(item.Cells(2).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+            Next
+
+            Logs.Invalidate()
+            Logs.Refresh()
         End If
     End Sub
 
@@ -491,7 +499,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = True)
 
                     For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
+                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
                         intProgress += 1
                         Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
                     Next

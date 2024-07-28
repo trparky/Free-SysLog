@@ -273,7 +273,7 @@ Public Class IgnoredLogsAndSearchResults
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
                 For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
+                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
                 Next
 
                 Logs.Rows.Clear()
@@ -384,6 +384,14 @@ Public Class IgnoredLogsAndSearchResults
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
             BtnSearch.PerformClick()
+        End If
+    End Sub
+
+    Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
+        If boolDoneLoading Then
+            For Each item As MyDataGridViewRow In Logs.Rows
+                item.Height = GetMinimumHeight(item.Cells(2).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+            Next
         End If
     End Sub
 End Class
