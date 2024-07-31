@@ -139,11 +139,14 @@ Public Class IgnoredLogsAndSearchResults
         End If
 
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
-            LoadData(strFileToLoad)
-            LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+            Dim worker As New BackgroundWorker()
+            AddHandler worker.DoWork, Sub() LoadData(strFileToLoad)
+            AddHandler worker.RunWorkerCompleted, Sub()
+                                                      LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+                                                      boolDoneLoading = True
+                                                  End Sub
+            worker.RunWorkerAsync()
         End If
-
-        boolDoneLoading = True
     End Sub
 
     Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
@@ -276,8 +279,10 @@ Public Class IgnoredLogsAndSearchResults
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
                 Next
 
-                Logs.Rows.Clear()
-                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                Invoke(Sub()
+                           Logs.Rows.Clear()
+                           Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                       End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
             SendMessageToSysLogServer($"(NoProxy)Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
