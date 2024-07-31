@@ -5,13 +5,10 @@ Imports System.ComponentModel
 Public Class ViewLogBackups
     Public MyParentForm As Form1
     Private boolDoneLoading As Boolean = False
-    Private longTotalLogs As Long = 0
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Using fileStream As New StreamReader(strFileName)
-            Dim intCount As Integer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings).Count
-            longTotalLogs += intCount
-            Return intCount
+            Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings).Count
         End Using
     End Function
 
@@ -19,18 +16,23 @@ Public Class ViewLogBackups
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
+        Dim intCount As Integer
+        Dim longTotalLogCount As Long
 
         lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
 
         For Each file As FileInfo In filesInDirectory
+            intCount = GetEntryCount(file.FullName)
+            longTotalLogCount += intCount
+
             listViewItem = New ListViewItem With {.Text = file.Name}
             listViewItem.SubItems.Add(file.CreationTime.ToString)
-            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({GetEntryCount(file.FullName):N0} entries)")
+            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
             listOfListViewItems.Add(listViewItem)
         Next
 
         Invoke(Sub()
-                   lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogs:N0}"
+                   lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
                    FileList.Items.Clear()
                    FileList.Items.AddRange(listOfListViewItems.ToArray)
                End Sub)
