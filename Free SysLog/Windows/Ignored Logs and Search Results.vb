@@ -264,7 +264,19 @@ Public Class IgnoredLogsAndSearchResults
         Clipboard.SetText(selectedRow.Cells(2).Value)
     End Sub
 
+    Private Function MakeDataGridRow(dateObject As Date, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+        Dim MyDataGridViewRow As New MyDataGridViewRow
+
+        MyDataGridViewRow.CreateCells(dataGrid)
+        MyDataGridViewRow.Cells(0).Value = Now.ToString
+        MyDataGridViewRow.Cells(2).Value = strLog
+
+        Return MyDataGridViewRow
+    End Function
+
     Private Sub LoadData(strFileName As String)
+        Invoke(Sub() Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs)))
+
         Dim collectionOfSavedData As New List(Of SavedData)
 
         Try
