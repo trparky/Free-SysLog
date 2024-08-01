@@ -1,5 +1,5 @@
 ﻿Public Class SavedData
-    Public time, ip, log As String
+    Public time, ip, log, fileName As String
     Public DateObject As Date
     Public BoolAlerted As Boolean = False
 
@@ -15,6 +15,7 @@
             .Cells(2).Value = log
             .Cells(3).Value = If(BoolAlerted, "Yes", "No")
             .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Cells(3).Style.WrapMode = DataGridViewTriState.True
             .DateObject = DateObject
             .BoolAlerted = BoolAlerted
             .MinimumHeight = height

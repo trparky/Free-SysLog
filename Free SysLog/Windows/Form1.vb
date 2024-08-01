@@ -130,9 +130,10 @@ Public Class Form1
         MyDataGridViewRow.Cells(2).Value = strLog
         MyDataGridViewRow.Cells(3).Value = If(boolAlerted, "Yes", "No")
         MyDataGridViewRow.Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        MyDataGridViewRow.Cells(3).Style.WrapMode = DataGridViewTriState.True
         MyDataGridViewRow.DateObject = dateObject
         MyDataGridViewRow.BoolAlerted = boolAlerted
-        MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font)
+        MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
 
         Return MyDataGridViewRow
     End Function
@@ -210,6 +211,13 @@ Public Class Form1
 
             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
+
+            For Each item As MyDataGridViewRow In Logs.Rows
+                item.Height = GetMinimumHeight(item.Cells(2).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+            Next
+
+            Logs.Invalidate()
+            Logs.Refresh()
         End If
     End Sub
 
@@ -244,7 +252,9 @@ Public Class Form1
             WindowState = FormWindowState.Normal
         End If
 
+        TopMost = True
         BringToFront()
+        TopMost = False
 
         If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
             Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -399,7 +409,7 @@ Public Class Form1
 
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
             For Each strJSONString As String In My.Settings.replacements
-                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString)
+                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettings)
                 If tempReplacementsClass.BoolEnabled Then replacementsList.Add(tempReplacementsClass)
                 tempReplacementsClass = Nothing
             Next
@@ -407,7 +417,7 @@ Public Class Form1
 
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             For Each strJSONString As String In My.Settings.ServersToSendTo
-                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString)
+                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettings)
                 If tempSysLogProxyServer.boolEnabled Then serversList.Add(tempSysLogProxyServer)
                 tempSysLogProxyServer = Nothing
             Next
@@ -428,7 +438,7 @@ Public Class Form1
 
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString)
+                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettings)
                 If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
                 tempIgnoredClass = Nothing
             Next
@@ -436,7 +446,7 @@ Public Class Form1
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
-                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString)
+                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettings)
                 If tempAlertsClass.BoolEnabled Then alertsList.Add(tempAlertsClass)
                 tempAlertsClass = Nothing
             Next
@@ -489,7 +499,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = True)
 
                     For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
+                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
                         intProgress += 1
                         Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
                     Next
@@ -513,30 +523,37 @@ Public Class Form1
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
-                If File.Exists($"{strPathToDataFile}.bad") Then
-                    File.Copy(strPathToDataFile, GetUniqueFileName($"{strPathToDataFile}.bad"))
-                Else
-                    File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
-                End If
-
-                File.WriteAllText(strPathToDataFile, "[]")
-                LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
-
-                SyncLock dataGridLockObject
-                    Invoke(Sub()
-                               Logs.Rows.Clear()
-
-                               Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
-                                   MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs),
-                                   MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs)
-                               }
-
-                               Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                               UpdateLogCount()
-                           End Sub)
-                End SyncLock
+                HandleLogFileLoadException(ex)
+            Catch ex As Newtonsoft.Json.JsonReaderException
+                HandleLogFileLoadException(ex)
             End Try
         End If
+    End Sub
+
+    Private Sub HandleLogFileLoadException(ex As Exception)
+        If File.Exists($"{strPathToDataFile}.bad") Then
+            File.Copy(strPathToDataFile, GetUniqueFileName($"{strPathToDataFile}.bad"))
+        Else
+            File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
+        End If
+
+        File.WriteAllText(strPathToDataFile, "[]")
+        LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
+
+        SyncLock dataGridLockObject
+            Invoke(Sub()
+                       Logs.Rows.Clear()
+
+                       Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
+                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "Free SysLog Server Started.", False, Logs),
+                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", False, Logs),
+                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", False, Logs)
+                       }
+
+                       Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                       UpdateLogCount()
+                   End Sub)
+        End SyncLock
     End Sub
 
     Private Function GetUniqueFileName(fileName As String) As String
@@ -803,62 +820,60 @@ Public Class Form1
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
-        If BtnSearch.Text = "Search" Then
-            If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
-                MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
-                Exit Sub
-            End If
-
-            Dim strLogText As String
-            Dim listOfSearchResults As New List(Of MyDataGridViewRow)
-            Dim regexCompiledObject As Regex = Nothing
-            Dim MyDataGridRowItem As MyDataGridViewRow
-
-            BtnSearch.Enabled = False
-
-            Dim worker As New BackgroundWorker()
-
-            AddHandler worker.DoWork, Sub()
-                                          Try
-                                              Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
-
-                                              If ChkRegExSearch.Checked Then
-                                                  regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                              Else
-                                                  regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                              End If
-
-                                              SyncLock dataGridLockObject
-                                                  For Each item As DataGridViewRow In Logs.Rows
-                                                      MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
-
-                                                      If MyDataGridRowItem IsNot Nothing Then
-                                                          strLogText = MyDataGridRowItem.Cells(2).Value
-
-                                                          If regexCompiledObject.IsMatch(strLogText) Then
-                                                              listOfSearchResults.Add(MyDataGridRowItem.Clone())
-                                                          End If
-                                                      End If
-                                                  Next
-                                              End SyncLock
-                                          Catch ex As ArgumentException
-                                              MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
-                                          End Try
-                                      End Sub
-
-            AddHandler worker.RunWorkerCompleted, Sub()
-                                                      If listOfSearchResults.Count > 0 Then
-                                                          Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
-                                                          searchResultsWindow.ShowDialog(Me)
-                                                      Else
-                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
-                                                      End If
-
-                                                      Invoke(Sub() BtnSearch.Enabled = True)
-                                                  End Sub
-
-            worker.RunWorkerAsync()
+        If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
+            MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
+            Exit Sub
         End If
+
+        Dim strLogText As String
+        Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+        Dim regexCompiledObject As Regex = Nothing
+        Dim MyDataGridRowItem As MyDataGridViewRow
+
+        BtnSearch.Enabled = False
+
+        Dim worker As New BackgroundWorker()
+
+        AddHandler worker.DoWork, Sub()
+                                      Try
+                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+
+                                          If ChkRegExSearch.Checked Then
+                                              regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
+                                          Else
+                                              regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
+                                          End If
+
+                                          SyncLock dataGridLockObject
+                                              For Each item As DataGridViewRow In Logs.Rows
+                                                  MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+
+                                                  If MyDataGridRowItem IsNot Nothing Then
+                                                      strLogText = MyDataGridRowItem.Cells(2).Value
+
+                                                      If regexCompiledObject.IsMatch(strLogText) Then
+                                                          listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                      End If
+                                                  End If
+                                              Next
+                                          End SyncLock
+                                      Catch ex As ArgumentException
+                                          MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
+                                      End Try
+                                  End Sub
+
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  If listOfSearchResults.Count > 0 Then
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      searchResultsWindow.ShowDialog(Me)
+                                                  Else
+                                                      MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                  End If
+
+                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                              End Sub
+
+        worker.RunWorkerAsync()
     End Sub
 
     Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearchTerms.KeyDown

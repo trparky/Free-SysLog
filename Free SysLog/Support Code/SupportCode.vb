@@ -67,11 +67,9 @@ Module SupportCode
         child.Location = New Point(childLeft, childTop)
     End Sub
 
-    Public Function GetMinimumHeight(strInput As String, font As Font) As Integer
-        Dim numberOfLines As Integer = strInput.Split(New String() {Environment.NewLine, vbCrLf, vbLf, vbCr}, StringSplitOptions.None).Count
-        Dim lineHeight As Integer = TextRenderer.MeasureText("A", font).Height
-
-        Return lineHeight * numberOfLines + 10
+    Public Function GetMinimumHeight(strInput As String, font As Font, maxWidth As Integer) As Integer
+        Dim textSize As Size = TextRenderer.MeasureText(strInput, font, New Size(maxWidth, Integer.MaxValue), TextFormatFlags.WordBreak)
+        Return textSize.Height + 10
     End Function
 
     Public Function IsRegexPatternValid(pattern As String) As Boolean

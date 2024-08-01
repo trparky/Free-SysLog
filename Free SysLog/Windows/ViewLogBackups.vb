@@ -16,17 +16,23 @@ Public Class ViewLogBackups
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
+        Dim intCount As Integer
+        Dim longTotalLogCount As Long
 
         lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
 
         For Each file As FileInfo In filesInDirectory
+            intCount = GetEntryCount(file.FullName)
+            longTotalLogCount += intCount
+
             listViewItem = New ListViewItem With {.Text = file.Name}
             listViewItem.SubItems.Add(file.CreationTime.ToString)
-            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({GetEntryCount(file.FullName):N0} entries)")
+            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
             listOfListViewItems.Add(listViewItem)
         Next
 
         Invoke(Sub()
+                   lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
                    FileList.Items.Clear()
                    FileList.Items.AddRange(listOfListViewItems.ToArray)
                End Sub)
@@ -57,7 +63,7 @@ Public Class ViewLogBackups
     Private Sub FileList_Click(sender As Object, e As EventArgs) Handles FileList.Click
         If FileList.SelectedItems.Count > 0 Then
             BtnDelete.Enabled = True
-            BtnView.Enabled = True
+            BtnView.Enabled = FileList.SelectedItems.Count <= 1
         Else
             BtnDelete.Enabled = False
             BtnView.Enabled = False
@@ -115,70 +121,68 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
-        If BtnSearch.Text = "Search" Then
-            If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
-                MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
-                Exit Sub
-            End If
-
-            Dim listOfSearchResults As New List(Of MyDataGridViewRow)
-            Dim regexCompiledObject As Regex = Nothing
-            Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
-
-            BtnSearch.Enabled = False
-
-            Dim worker As New BackgroundWorker()
-
-            AddHandler worker.DoWork, Sub()
-                                          Try
-                                              Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
-
-                                              If ChkRegExSearch.Checked Then
-                                                  regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                              Else
-                                                  regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                              End If
-
-                                              Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
-                                              Dim dataFromFile As List(Of SavedData)
-                                              Dim myDataGridRow As MyDataGridViewRow
-
-                                              For Each file As FileInfo In filesInDirectory
-                                                  Using fileStream As New StreamReader(file.FullName)
-                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
-
-                                                      For Each item As SavedData In dataFromFile
-                                                          If regexCompiledObject.IsMatch(item.log) Then
-                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font))
-                                                              myDataGridRow.Cells(4).Value = file.Name
-                                                              listOfSearchResults.Add(myDataGridRow)
-                                                              myDataGridRow = Nothing
-                                                          End If
-                                                      Next
-
-                                                      dataFromFile = Nothing
-                                                  End Using
-                                              Next
-                                          Catch ex As ArgumentException
-                                              MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
-                                          End Try
-                                      End Sub
-
-            AddHandler worker.RunWorkerCompleted, Sub()
-                                                      If listOfSearchResults.Count > 0 Then
-                                                          searchResultsWindow.LogsToBeDisplayed = listOfSearchResults
-                                                          searchResultsWindow.ColFileName.Visible = True
-                                                          searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
-                                                          searchResultsWindow.ShowDialog(Me)
-                                                      Else
-                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
-                                                      End If
-
-                                                      Invoke(Sub() BtnSearch.Enabled = True)
-                                                  End Sub
-
-            worker.RunWorkerAsync()
+        If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
+            MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
+            Exit Sub
         End If
+
+        Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+        Dim regexCompiledObject As Regex = Nothing
+        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+
+        BtnSearch.Enabled = False
+
+        Dim worker As New BackgroundWorker()
+
+        AddHandler worker.DoWork, Sub()
+                                      Try
+                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+
+                                          If ChkRegExSearch.Checked Then
+                                              regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
+                                          Else
+                                              regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
+                                          End If
+
+                                          Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+                                          Dim dataFromFile As List(Of SavedData)
+                                          Dim myDataGridRow As MyDataGridViewRow
+
+                                          For Each file As FileInfo In filesInDirectory
+                                              Using fileStream As New StreamReader(file.FullName)
+                                                  dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+
+                                                  For Each item As SavedData In dataFromFile
+                                                      If regexCompiledObject.IsMatch(item.log) Then
+                                                          myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, searchResultsWindow.ColLog.Width))
+                                                          myDataGridRow.Cells(4).Value = file.Name
+                                                          listOfSearchResults.Add(myDataGridRow)
+                                                          myDataGridRow = Nothing
+                                                      End If
+                                                  Next
+
+                                                  dataFromFile = Nothing
+                                              End Using
+                                          Next
+                                      Catch ex As ArgumentException
+                                          MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
+                                      End Try
+                                  End Sub
+
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  If listOfSearchResults.Count > 0 Then
+                                                      searchResultsWindow.LogsToBeDisplayed = listOfSearchResults
+                                                      searchResultsWindow.ColFileName.Visible = True
+                                                      searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
+                                                      searchResultsWindow.ShowDialog(Me)
+                                                  Else
+                                                      MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                  End If
+
+                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                              End Sub
+
+        worker.RunWorkerAsync()
     End Sub
 
     Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearchTerms.KeyDown
@@ -186,5 +190,23 @@ Public Class ViewLogBackups
             e.SuppressKeyPress = True
             BtnSearch.PerformClick()
         End If
+    End Sub
+
+    Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
+        If FileList.SelectedItems.Count > 0 Then
+            DeleteToolStripMenuItem.Enabled = True
+            ViewToolStripMenuItem.Enabled = FileList.SelectedItems.Count <= 1
+        Else
+            DeleteToolStripMenuItem.Enabled = False
+            ViewToolStripMenuItem.Enabled = False
+        End If
+    End Sub
+
+    Private Sub DeleteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem.Click
+        BtnDelete.PerformClick()
+    End Sub
+
+    Private Sub ViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewToolStripMenuItem.Click
+        BtnView.PerformClick()
     End Sub
 End Class

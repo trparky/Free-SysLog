@@ -8,7 +8,7 @@ Public Class ConfigureSysLogMirrorServers
             Dim SysLogProxyServer As SysLogProxyServer
 
             For Each strJSONString As String In My.Settings.ServersToSendTo
-                SysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString)
+                SysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettings)
                 servers.Items.Add(SysLogProxyServer.ToListViewItem())
                 SysLogProxyServer = Nothing
             Next

@@ -139,11 +139,14 @@ Public Class IgnoredLogsAndSearchResults
         End If
 
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
-            LoadData(strFileToLoad)
-            LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+            Dim worker As New BackgroundWorker()
+            AddHandler worker.DoWork, Sub() LoadData(strFileToLoad)
+            AddHandler worker.RunWorkerCompleted, Sub()
+                                                      LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+                                                      boolDoneLoading = True
+                                                  End Sub
+            worker.RunWorkerAsync()
         End If
-
-        boolDoneLoading = True
     End Sub
 
     Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
@@ -184,9 +187,16 @@ Public Class IgnoredLogsAndSearchResults
             Dim collectionOfSavedData As New List(Of SavedData)
             Dim myItem As MyDataGridViewRow
             Dim csvStringBuilder As New Text.StringBuilder
-            Dim strTime, strSourceIP, strLogText, strAlerted As String
+            Dim savedData As SavedData
+            Dim strTime, strSourceIP, strLogText, strAlerted, strFileName As String
 
-            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
+            If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                If ColFileName.Visible Then
+                    csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted,File Name")
+                Else
+                    csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
+                End If
+            End If
 
             For Each item As DataGridViewRow In Logs.Rows
                 If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
@@ -200,15 +210,22 @@ Public Class IgnoredLogsAndSearchResults
                             strAlerted = If(.BoolAlerted, "Yes", "No")
                         End With
 
-                        csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
+                        If ColFileName.Visible Then
+                            strFileName = SanitizeForCSV(myItem.Cells(4).Value)
+                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted},{strFileName}")
+                        Else
+                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
+                        End If
                     Else
-                        collectionOfSavedData.Add(New SavedData With {
+                        savedData = New SavedData With {
                                                 .time = myItem.Cells(0).Value,
                                                 .ip = myItem.Cells(1).Value,
                                                 .log = myItem.Cells(2).Value,
                                                 .DateObject = myItem.DateObject,
                                                 .BoolAlerted = myItem.BoolAlerted
-                                              })
+                                              }
+                        If ColFileName.Visible Then savedData.fileName = myItem.Cells(4).Value
+                        collectionOfSavedData.Add(savedData)
                     End If
                 End If
             Next
@@ -247,23 +264,45 @@ Public Class IgnoredLogsAndSearchResults
         Clipboard.SetText(selectedRow.Cells(2).Value)
     End Sub
 
+    Private Function MakeDataGridRow(dateObject As Date, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+        Dim MyDataGridViewRow As New MyDataGridViewRow
+
+        MyDataGridViewRow.CreateCells(dataGrid)
+        MyDataGridViewRow.Cells(0).Value = Now.ToString
+        MyDataGridViewRow.Cells(2).Value = strLog
+
+        Return MyDataGridViewRow
+    End Function
+
     Private Sub LoadData(strFileName As String)
+        Invoke(Sub() Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs)))
+
         Dim collectionOfSavedData As New List(Of SavedData)
 
-        Using fileStream As New StreamReader(strFileName)
-            collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
-        End Using
+        Try
+            Using fileStream As New StreamReader(strFileName)
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+            End Using
 
-        If collectionOfSavedData.Count > 0 Then
-            Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+            If collectionOfSavedData.Count > 0 Then
+                Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
-            For Each item As SavedData In collectionOfSavedData
-                listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font)))
-            Next
+                For Each item As SavedData In collectionOfSavedData
+                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
+                Next
 
-            Logs.Rows.Clear()
-            Logs.Rows.AddRange(listOfLogEntries.ToArray)
-        End If
+                Invoke(Sub()
+                           Logs.Rows.Clear()
+                           Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                       End Sub)
+            End If
+        Catch ex As Newtonsoft.Json.JsonSerializationException
+            SendMessageToSysLogServer($"(NoProxy)Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
+        Catch ex As Newtonsoft.Json.JsonReaderException
+            SendMessageToSysLogServer($"(NoProxy)Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
+        End Try
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
@@ -297,62 +336,60 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
-        If BtnSearch.Text = "Search" Then
-            If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
-                MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
-                Exit Sub
-            End If
-
-            Dim strLogText As String
-            Dim listOfSearchResults As New List(Of MyDataGridViewRow)
-            Dim regexCompiledObject As Regex = Nothing
-            Dim MyDataGridRowItem As MyDataGridViewRow
-
-            BtnSearch.Enabled = False
-
-            Dim worker As New BackgroundWorker()
-
-            AddHandler worker.DoWork, Sub()
-                                          Try
-                                              Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
-
-                                              If ChkRegExSearch.Checked Then
-                                                  regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                              Else
-                                                  regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                              End If
-
-                                              SyncLock dataGridLockObject
-                                                  For Each item As DataGridViewRow In Logs.Rows
-                                                      MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
-
-                                                      If MyDataGridRowItem IsNot Nothing Then
-                                                          strLogText = MyDataGridRowItem.Cells(2).Value
-
-                                                          If regexCompiledObject.IsMatch(strLogText) Then
-                                                              listOfSearchResults.Add(MyDataGridRowItem.Clone())
-                                                          End If
-                                                      End If
-                                                  Next
-                                              End SyncLock
-                                          Catch ex As ArgumentException
-                                              MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
-                                          End Try
-                                      End Sub
-
-            AddHandler worker.RunWorkerCompleted, Sub()
-                                                      If listOfSearchResults.Count > 0 Then
-                                                          Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
-                                                          searchResultsWindow.ShowDialog(Me)
-                                                      Else
-                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
-                                                      End If
-
-                                                      Invoke(Sub() BtnSearch.Enabled = True)
-                                                  End Sub
-
-            worker.RunWorkerAsync()
+        If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
+            MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
+            Exit Sub
         End If
+
+        Dim strLogText As String
+        Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+        Dim regexCompiledObject As Regex = Nothing
+        Dim MyDataGridRowItem As MyDataGridViewRow
+
+        BtnSearch.Enabled = False
+
+        Dim worker As New BackgroundWorker()
+
+        AddHandler worker.DoWork, Sub()
+                                      Try
+                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+
+                                          If ChkRegExSearch.Checked Then
+                                              regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
+                                          Else
+                                              regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
+                                          End If
+
+                                          SyncLock dataGridLockObject
+                                              For Each item As DataGridViewRow In Logs.Rows
+                                                  MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+
+                                                  If MyDataGridRowItem IsNot Nothing Then
+                                                      strLogText = MyDataGridRowItem.Cells(2).Value
+
+                                                      If regexCompiledObject.IsMatch(strLogText) Then
+                                                          listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                      End If
+                                                  End If
+                                              Next
+                                          End SyncLock
+                                      Catch ex As ArgumentException
+                                          MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
+                                      End Try
+                                  End Sub
+
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  If listOfSearchResults.Count > 0 Then
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      searchResultsWindow.ShowDialog(Me)
+                                                  Else
+                                                      MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                  End If
+
+                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                              End Sub
+
+        worker.RunWorkerAsync()
     End Sub
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
@@ -364,6 +401,14 @@ Public Class IgnoredLogsAndSearchResults
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
             BtnSearch.PerformClick()
+        End If
+    End Sub
+
+    Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
+        If boolDoneLoading Then
+            For Each item As MyDataGridViewRow In Logs.Rows
+                item.Height = GetMinimumHeight(item.Cells(2).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+            Next
         End If
     End Sub
 End Class
