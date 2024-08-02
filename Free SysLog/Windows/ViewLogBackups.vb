@@ -78,7 +78,7 @@ Public Class ViewLogBackups
                 If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedItems(0).SubItems(0).Text}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     File.Delete(fileName)
                     SendMessageToSysLogServer($"(NoProxy)The user deleted ""{FileList.SelectedItems(0).SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
-                    LoadFileList()
+                    Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             Else
                 Dim stringBuilder As New Text.StringBuilder()
@@ -96,7 +96,7 @@ Public Class ViewLogBackups
                         SendMessageToSysLogServer($"(NoProxy)The user deleted ""{item.SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
                     Next
 
-                    LoadFileList()
+                    Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             End If
         End If
@@ -104,7 +104,7 @@ Public Class ViewLogBackups
 
     Private Sub ViewLogBackups_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.F5 Then
-            LoadFileList()
+            Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
         ElseIf e.KeyCode = Keys.Delete Then
             BtnDelete.PerformClick()
         ElseIf e.KeyCode = Keys.Space Then
@@ -113,7 +113,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
-        LoadFileList()
+        Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub ViewLogBackups_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
