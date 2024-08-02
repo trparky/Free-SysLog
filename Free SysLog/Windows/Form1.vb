@@ -1039,7 +1039,7 @@ Public Class Form1
             If ColorDialog.ShowDialog() = DialogResult.OK Then
                 My.Settings.searchColor = ColorDialog.Color
 
-                Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color}
+                Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(ColorDialog.Color)}
                 Logs.AlternatingRowsDefaultCellStyle = rowStyle
             End If
         End Using

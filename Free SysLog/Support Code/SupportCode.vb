@@ -22,6 +22,11 @@ Module SupportCode
     Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
     Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
 
+    Public Function GetGoodTextColorBasedUponBackgroundColor(input As Color) As Color
+        Dim intCombinedTotal As Short = Integer.Parse(input.R.ToString) + Integer.Parse(input.G.ToString) + Integer.Parse(input.B.ToString)
+        Return If((intCombinedTotal / 3) < 128, Color.White, Color.Black)
+    End Function
+
     Public Function FileSizeToHumanSize(size As Long, Optional roundToNearestWholeNumber As Boolean = False) As String
         Dim result As String
         Dim shortRoundNumber As Short = If(roundToNearestWholeNumber, 0, 2)
