@@ -154,7 +154,7 @@ Public Class ViewLogBackups
 
                                                   For Each item As SavedData In dataFromFile
                                                       If regexCompiledObject.IsMatch(item.log) Then
-                                                          myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, searchResultsWindow.ColLog.Width))
+                                                          myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
                                                           myDataGridRow.Cells(4).Value = file.Name
                                                           listOfSearchResults.Add(myDataGridRow)
                                                           myDataGridRow = Nothing
