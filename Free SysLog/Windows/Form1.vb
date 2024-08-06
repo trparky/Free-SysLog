@@ -1610,7 +1610,19 @@ Public Class Form1
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
         Catch e As Exception
-            Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text))
+            Invoke(Sub()
+                       SyncLock dataGridLockObject
+                           Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", False, Logs))
+
+                           If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
+                               Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                           End If
+
+                           UpdateLogCount()
+                       End SyncLock
+
+                       MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                   End Sub)
         End Try
     End Sub
 
