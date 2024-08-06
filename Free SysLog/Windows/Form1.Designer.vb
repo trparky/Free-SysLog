@@ -118,7 +118,7 @@ Partial Class Form1
         '
         'BtnOpenLogForViewing
         '
-        Me.BtnOpenLogForViewing.Name = "BtnOpenLogLocation"
+        Me.BtnOpenLogForViewing.Name = "BtnOpenLogForViewing"
         Me.BtnOpenLogForViewing.Size = New System.Drawing.Size(239, 22)
         Me.BtnOpenLogForViewing.Text = "Open Log File for Viewing"
         '
@@ -197,7 +197,7 @@ Partial Class Form1
         'AutomaticallyCheckForUpdates
         '
         Me.AutomaticallyCheckForUpdates.CheckOnClick = True
-        Me.AutomaticallyCheckForUpdates.Name = "ChkEnableAutoScroll"
+        Me.AutomaticallyCheckForUpdates.Name = "AutomaticallyCheckForUpdates"
         Me.AutomaticallyCheckForUpdates.Size = New System.Drawing.Size(339, 22)
         Me.AutomaticallyCheckForUpdates.Text = "Automatically Check for Updates"
         '
