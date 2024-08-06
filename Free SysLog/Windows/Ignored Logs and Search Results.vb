@@ -297,10 +297,10 @@ Public Class IgnoredLogsAndSearchResults
                        End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
-            SendMessageToSysLogServer($"(NoProxy)Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            SendMessageToSysLogServer($"{strNoProxyString}Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         Catch ex As Newtonsoft.Json.JsonReaderException
-            SendMessageToSysLogServer($"(NoProxy)Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            SendMessageToSysLogServer($"{strNoProxyString}Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         End Try
     End Sub

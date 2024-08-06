@@ -1581,25 +1581,25 @@ Public Class Form1
                         boolDoServerLoop = False
                     ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
                         Try
-                            strReceivedData = strReceivedData.Replace("proxied|", "", StringComparison.OrdinalIgnoreCase)
+                            strReceivedData = strReceivedData.Replace(strProxiedString, "", StringComparison.OrdinalIgnoreCase)
                             ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData, JSONDecoderSettings)
                             ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip)
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList.Count > 0 AndAlso Not strReceivedData.StartsWith("(NoProxy)", StringComparison.OrdinalIgnoreCase) Then
+                        If serversList.Count > 0 AndAlso Not strReceivedData.StartsWith(strNoProxyString, StringComparison.OrdinalIgnoreCase) Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
 
                                                                        For Each item As SysLogProxyServer In serversList
-                                                                           SendMessageToSysLogServer("proxied|" & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
+                                                                           SendMessageToSysLogServer(strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
                                                                        Next
 
                                                                        ProxiedSysLogData = Nothing
                                                                    End Sub)
                         End If
 
-                        If strReceivedData.StartsWith("(NoProxy)") Then strReceivedData = strReceivedData.Replace("(NoProxy)", "", StringComparison.OrdinalIgnoreCase)
+                        If strReceivedData.StartsWith(strNoProxyString) Then strReceivedData = strReceivedData.Replace(strNoProxyString, "", StringComparison.OrdinalIgnoreCase)
                         ProcessIncomingLog(strReceivedData, strSourceIP)
                     End If
 
