@@ -74,6 +74,8 @@ Partial Class Form1
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CloseMe = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuSeparator = New System.Windows.Forms.ToolStripSeparator()
         Me.OpenLogViewerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -291,10 +293,21 @@ Partial Class Form1
         '
         'MainMenuToolStripMenuItem
         '
-        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem, Me.BtnCheckForUpdates, Me.StopServerStripMenuItem})
+        Me.MainMenuToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem, Me.BtnCheckForUpdates, Me.StopServerStripMenuItem, Me.ToolStripMenuSeparator, Me.CloseMe})
         Me.MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem"
         Me.MainMenuToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
         Me.MainMenuToolStripMenuItem.Text = "Main Menu"
+        '
+        'ToolStripMenuSeparator
+        '
+        Me.ToolStripMenuSeparator.Name = "ToolStripMenuSeparator"
+        Me.ToolStripMenuSeparator.Size = New System.Drawing.Size(177, 6)
+        '
+        'CloseMe
+        '
+        Me.CloseMe.Name = "CloseMe"
+        Me.CloseMe.Size = New System.Drawing.Size(171, 22)
+        Me.CloseMe.Text = "Close"
         '
         'LogFunctionsToolStripMenuItem
         '
@@ -705,6 +718,8 @@ Partial Class Form1
     Friend WithEvents ChangeAlternatingColorToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CloseMe As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuSeparator As ToolStripSeparator
     Friend WithEvents ImportExportSettingsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportToolStripMenuItem As ToolStripMenuItem

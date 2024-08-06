@@ -1559,6 +1559,10 @@ Public Class Form1
         ViewLogBackups.Show(Me)
     End Sub
 
+    Private Sub CloseMe_Click(sender As Object, e As EventArgs) Handles CloseMe.Click
+        Close()
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
