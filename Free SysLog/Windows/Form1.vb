@@ -1404,7 +1404,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent, .intMax = 65535, .intMin = 1}
+        Using IntegerInputForm As New IntegerInputForm(1, 65535) With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent}
             IntegerInputForm.lblSetting.Text = "Server Port"
             IntegerInputForm.TxtSetting.Text = My.Settings.sysLogPort
 
@@ -1443,7 +1443,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeLogAutosaveIntervalToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Log Autosave Interval", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
+        Using IntegerInputForm As New IntegerInputForm(1, 20) With {.Icon = Icon, .Text = "Change Log Autosave Interval", .StartPosition = FormStartPosition.CenterParent}
             IntegerInputForm.lblSetting.Text = "Auto Save (In Minutes)"
             IntegerInputForm.TxtSetting.Text = My.Settings.autoSaveMinutes
 
