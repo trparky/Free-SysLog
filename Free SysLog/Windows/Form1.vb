@@ -1555,7 +1555,27 @@ Public Class Form1
     End Sub
 
     Private Sub ViewLogBackups_Click(sender As Object, e As EventArgs) Handles ViewLogBackups.Click
-        Dim ViewLogBackups As New ViewLogBackups With {.Icon = Icon, .MyParentForm = Me}
+        Dim collectionOfSavedData As New List(Of SavedData)
+
+        SyncLock dataGridLockObject
+            Dim myItem As MyDataGridViewRow
+
+            For Each item As DataGridViewRow In Logs.Rows
+                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    myItem = DirectCast(item, MyDataGridViewRow)
+
+                    collectionOfSavedData.Add(New SavedData With {
+                                            .time = myItem.Cells(0).Value,
+                                            .ip = myItem.Cells(1).Value,
+                                            .log = myItem.Cells(2).Value,
+                                            .DateObject = myItem.DateObject,
+                                            .BoolAlerted = myItem.BoolAlerted
+                                          })
+                End If
+            Next
+        End SyncLock
+
+        Dim ViewLogBackups As New ViewLogBackups With {.Icon = Icon, .MyParentForm = Me, .currentLogs = collectionOfSavedData}
         ViewLogBackups.Show(Me)
     End Sub
 

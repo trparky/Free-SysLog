@@ -4,6 +4,7 @@ Imports System.ComponentModel
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
+    Public currentLogs As List(Of SavedData)
     Private boolDoneLoading As Boolean = False
 
     Private Function GetEntryCount(strFileName As String) As Integer
@@ -163,6 +164,15 @@ Public Class ViewLogBackups
 
                                                   dataFromFile = Nothing
                                               End Using
+                                          Next
+
+                                          For Each item As SavedData In currentLogs
+                                              If regexCompiledObject.IsMatch(item.log) Then
+                                                  myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
+                                                  myDataGridRow.Cells(4).Value = "Current Log Data"
+                                                  listOfSearchResults.Add(myDataGridRow)
+                                                  myDataGridRow = Nothing
+                                              End If
                                           Next
                                       Catch ex As ArgumentException
                                           MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
