@@ -360,7 +360,7 @@ Public Class Form1
                                                                                        End Sub)
         If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
 
-        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
+        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
 
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
