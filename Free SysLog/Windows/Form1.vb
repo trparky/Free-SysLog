@@ -326,7 +326,7 @@ Public Class Form1
             newTask.RegistrationInfo.Description = "Runs Free SysLog at User Logon"
 
             Dim logonTriggerObject As New LogonTrigger With {
-                .Delay = New TimeSpan(0, 0, 30),
+                .Delay = New TimeSpan(0, 1, 0),
                 .UserId = Environment.UserName
             }
             newTask.Triggers.Add(logonTriggerObject)
