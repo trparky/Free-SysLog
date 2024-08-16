@@ -280,15 +280,17 @@ Public Class Form1
 
             If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                 If Not Debugger.IsAttached Then
-                    Dim action As Action = task.Definition.Actions(0)
+                    If task.Definition.Actions.Count > 0 Then
+                        Dim action As Action = task.Definition.Actions(0)
 
-                    If action.ActionType = TaskActionType.Execute Then
-                        If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
-                            task.Definition.Actions.Remove(action)
+                        If action.ActionType = TaskActionType.Execute Then
+                            If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
+                                task.Definition.Actions.Remove(action)
 
-                            Dim exeFileInfo As New FileInfo(strEXEPath)
-                            task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
-                            task.RegisterChanges()
+                                Dim exeFileInfo As New FileInfo(strEXEPath)
+                                task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                                task.RegisterChanges()
+                            End If
                         End If
                     End If
                 End If
