@@ -1603,6 +1603,51 @@ Public Class Form1
         Close()
     End Sub
 
+    Private Sub StartUpDelay_Click(sender As Object, e As EventArgs) Handles StartUpDelay.Click
+        Dim dblSeconds As Double = 0
+
+        Using taskService As New TaskService
+            Dim task As Task = Nothing
+
+            If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                If task.Definition.Triggers.Count > 0 Then
+                    Dim trigger As Trigger = task.Definition.Triggers(0)
+                    If trigger.TriggerType = TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+                End If
+            End If
+        End Using
+
+        Using IntegerInputForm As New IntegerInputForm(1, 300) With {.Icon = Icon, .Text = "Change Startup Delay", .StartPosition = FormStartPosition.CenterParent}
+            IntegerInputForm.lblSetting.Text = "Time in Seconds"
+            IntegerInputForm.TxtSetting.Text = dblSeconds.ToString
+
+            IntegerInputForm.ShowDialog(Me)
+
+            If IntegerInputForm.boolSuccess Then
+                If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 300 Then
+                    MsgBox("The time in seconds must be in the range of 1 - 300.", MsgBoxStyle.Critical, Text)
+                Else
+                    Using taskService As New TaskService
+                        Dim task As Task = Nothing
+
+                        If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                            If task.Definition.Triggers.Count > 0 Then
+                                Dim trigger As Trigger = task.Definition.Triggers(0)
+
+                                If trigger.TriggerType = TaskTriggerType.Logon Then
+                                    DirectCast(trigger, LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
+                                    task.RegisterChanges()
+                                End If
+                            End If
+                        End If
+                    End Using
+
+                    MsgBox("Done.", MsgBoxStyle.Information, Text)
+                End If
+            End If
+        End Using
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
