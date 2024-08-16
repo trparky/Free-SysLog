@@ -292,6 +292,10 @@ Public Class Form1
                                 task.RegisterChanges()
                             End If
                         End If
+                    Else
+                        Dim exeFileInfo As New FileInfo(strEXEPath)
+                        task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                        task.RegisterChanges()
                     End If
                 End If
 
