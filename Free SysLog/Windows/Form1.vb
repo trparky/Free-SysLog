@@ -279,6 +279,19 @@ Public Class Form1
             Dim task As Task = Nothing
 
             If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                If task.Definition.Triggers.Count > 0 Then
+                    Dim trigger As Trigger = task.Definition.Triggers(0)
+
+                    If trigger.TriggerType = TaskTriggerType.Logon Then
+                        Dim dblSeconds As Double = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+
+                        If dblSeconds > 0 Then
+                            StartUpDelay.Checked = True
+                            StartUpDelay.Text = $"        Startup Delay ({dblSeconds} {If(dblSeconds = 1, "Second", "Seconds")})"
+                        End If
+                    End If
+                End If
+
                 If Not Debugger.IsAttached Then
                     If task.Definition.Actions.Count > 0 Then
                         Dim action As Action = task.Definition.Actions(0)
@@ -299,6 +312,7 @@ Public Class Form1
                     End If
                 End If
 
+                StartUpDelay.Enabled = True
                 Return True
             End If
         End Using
