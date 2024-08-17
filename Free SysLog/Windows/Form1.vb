@@ -279,6 +279,11 @@ Public Class Form1
             Dim task As Task = Nothing
 
             If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                If task.Definition.Settings.IdleSettings.StopOnIdleEnd Then
+                    task.Definition.Settings.IdleSettings.StopOnIdleEnd = False
+                    task.RegisterChanges()
+                End If
+
                 If task.Definition.Triggers.Count > 0 Then
                     Dim trigger As Trigger = task.Definition.Triggers(0)
 
@@ -345,6 +350,7 @@ Public Class Form1
                 .Settings.ExecutionTimeLimit = Nothing
                 .Settings.Priority = ProcessPriorityClass.Normal
                 .Settings.Compatibility = TaskCompatibility.V2_3
+                .Settings.IdleSettings.StopOnIdleEnd = False
                 .Principal.LogonType = TaskLogonType.InteractiveToken
             End With
 
