@@ -328,18 +328,16 @@ Public Class Form1
     Private Sub CreateTask()
         Using taskService As New TaskService
             Dim newTask As TaskDefinition = taskService.NewTask
-            newTask.RegistrationInfo.Description = "Runs Free SysLog at User Logon"
-
-            Dim logonTriggerObject As New LogonTrigger With {
-                .Delay = New TimeSpan(0, 1, 0),
-                .UserId = Environment.UserName
-            }
-            newTask.Triggers.Add(logonTriggerObject)
-
-            Dim exeFileInfo As New FileInfo(strEXEPath)
 
             With newTask
-                .Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                .RegistrationInfo.Description = "Runs Free SysLog at User Logon"
+
+                .Triggers.Add(New LogonTrigger With {
+                    .Delay = New TimeSpan(0, 1, 0),
+                    .UserId = Environment.UserName
+                })
+
+                .Actions.Add(New ExecAction($"{Chr(34)}{strEXEPath}{Chr(34)}", Nothing, New FileInfo(strEXEPath).DirectoryName))
                 .Settings.Compatibility = TaskCompatibility.V2
                 .Settings.AllowDemandStart = True
                 .Settings.DisallowStartIfOnBatteries = False
