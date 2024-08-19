@@ -108,8 +108,6 @@ Public Class ViewLogBackups
             Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
         ElseIf e.KeyCode = Keys.Delete Then
             BtnDelete.PerformClick()
-        ElseIf e.KeyCode = Keys.Space Then
-            BtnView.PerformClick()
         End If
     End Sub
 
