@@ -125,22 +125,24 @@ Public Class Form1
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
-        Dim MyDataGridViewRow As New MyDataGridViewRow
+        Using MyDataGridViewRow As New MyDataGridViewRow
+            With MyDataGridViewRow
+                .CreateCells(dataGrid)
+                .Cells(0).Value = strTime
+                .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(1).Value = strSourceAddress
+                .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(2).Value = strLog
+                .Cells(3).Value = If(boolAlerted, "Yes", "No")
+                .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(3).Style.WrapMode = DataGridViewTriState.True
+                .DateObject = dateObject
+                .BoolAlerted = boolAlerted
+                .MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
+            End With
 
-        MyDataGridViewRow.CreateCells(dataGrid)
-        MyDataGridViewRow.Cells(0).Value = strTime
-        MyDataGridViewRow.Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        MyDataGridViewRow.Cells(1).Value = strSourceAddress
-        MyDataGridViewRow.Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        MyDataGridViewRow.Cells(2).Value = strLog
-        MyDataGridViewRow.Cells(3).Value = If(boolAlerted, "Yes", "No")
-        MyDataGridViewRow.Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        MyDataGridViewRow.Cells(3).Style.WrapMode = DataGridViewTriState.True
-        MyDataGridViewRow.DateObject = dateObject
-        MyDataGridViewRow.BoolAlerted = boolAlerted
-        MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
-
-        Return MyDataGridViewRow
+            Return MyDataGridViewRow
+        End Using
     End Function
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click

@@ -265,13 +265,15 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
-        Dim MyDataGridViewRow As New MyDataGridViewRow
+        Using MyDataGridViewRow As New MyDataGridViewRow
+            With MyDataGridViewRow
+                .CreateCells(dataGrid)
+                .Cells(0).Value = Now.ToString
+                .Cells(2).Value = strLog
+            End With
 
-        MyDataGridViewRow.CreateCells(dataGrid)
-        MyDataGridViewRow.Cells(0).Value = Now.ToString
-        MyDataGridViewRow.Cells(2).Value = strLog
-
-        Return MyDataGridViewRow
+            Return MyDataGridViewRow
+        End Using
     End Function
 
     Private Sub LoadData(strFileName As String)
