@@ -51,6 +51,11 @@ Public Class Form1
     End Sub
 
     Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
+        If Logs.InvokeRequired Then
+            Logs.Invoke(New Action(Of Object, Timers.ElapsedEventArgs)(AddressOf MidnightEvent), sender, e)
+            Return
+        End If
+
         SyncLock dataGridLockObject
             If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
 
@@ -59,7 +64,7 @@ Public Class Form1
 
             Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", False, Logs))
 
-            If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
+            If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
             End If
         End SyncLock
