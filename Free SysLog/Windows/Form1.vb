@@ -344,7 +344,7 @@ Public Class Form1
                     .UserId = Environment.UserName
                 })
 
-                .Actions.Add(New ExecAction($"{Chr(34)}{strEXEPath}{Chr(34)}", Nothing, New FileInfo(strEXEPath).DirectoryName))
+                .Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, New FileInfo(strEXEPath).DirectoryName))
                 .Settings.Compatibility = TaskCompatibility.V2
                 .Settings.AllowDemandStart = True
                 .Settings.DisallowStartIfOnBatteries = False

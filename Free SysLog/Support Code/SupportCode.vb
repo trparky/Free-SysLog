@@ -23,6 +23,7 @@ Module SupportCode
     Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
     Public Const strNoProxyString As String = "noproxy|"
     Public Const strProxiedString As String = "proxied|"
+    Public Const strQuote As String = Chr(34)
 
     Public Function GetGoodTextColorBasedUponBackgroundColor(input As Color) As Color
         Dim intCombinedTotal As Short = Integer.Parse(input.R.ToString) + Integer.Parse(input.G.ToString) + Integer.Parse(input.B.ToString)
@@ -111,8 +112,8 @@ Module SupportCode
     End Sub
 
     Public Function SanitizeForCSV(input As String) As String
-        If input.Contains(Chr(34)) Then input = input.Replace(Chr(34), Chr(34) & Chr(34))
-        If input.Contains(",") Then input = $"{Chr(34)}{input}{Chr(34)}"
+        If input.Contains(strQuote) Then input = input.Replace(strQuote, strQuote & strQuote)
+        If input.Contains(",") Then input = $"{strQuote}{input}{strQuote}"
         input = input.Replace(vbCrLf, "\n")
         Return input
     End Function
