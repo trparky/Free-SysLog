@@ -1,7 +1,16 @@
 ﻿Public Class IntegerInputForm
     Public boolSuccess As Boolean = False
     Public intResult As Integer
-    Public intMin, intMax As Integer
+    Private intMin, intMax As Integer
+
+    Public Sub New(intInputMin As Integer, intInputMax As Integer)
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        intMin = intInputMin
+        intMax = intInputMax
+    End Sub
 
     Private Sub BtnSave_Click(sender As Object, e As EventArgs) Handles BtnSave.Click
         If Integer.TryParse(TxtSetting.Text, intResult) Then

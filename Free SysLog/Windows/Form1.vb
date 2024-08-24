@@ -51,6 +51,11 @@ Public Class Form1
     End Sub
 
     Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
+        If Logs.InvokeRequired Then
+            Logs.Invoke(New Action(Of Object, Timers.ElapsedEventArgs)(AddressOf MidnightEvent), sender, e)
+            Return
+        End If
+
         SyncLock dataGridLockObject
             If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
 
@@ -59,7 +64,7 @@ Public Class Form1
 
             Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", False, Logs))
 
-            If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
+            If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
             End If
         End SyncLock
@@ -120,22 +125,24 @@ Public Class Form1
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strLog As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
-        Dim MyDataGridViewRow As New MyDataGridViewRow
+        Using MyDataGridViewRow As New MyDataGridViewRow
+            With MyDataGridViewRow
+                .CreateCells(dataGrid)
+                .Cells(0).Value = strTime
+                .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(1).Value = strSourceAddress
+                .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(2).Value = strLog
+                .Cells(3).Value = If(boolAlerted, "Yes", "No")
+                .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(3).Style.WrapMode = DataGridViewTriState.True
+                .DateObject = dateObject
+                .BoolAlerted = boolAlerted
+                .MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
+            End With
 
-        MyDataGridViewRow.CreateCells(dataGrid)
-        MyDataGridViewRow.Cells(0).Value = strTime
-        MyDataGridViewRow.Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        MyDataGridViewRow.Cells(1).Value = strSourceAddress
-        MyDataGridViewRow.Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        MyDataGridViewRow.Cells(2).Value = strLog
-        MyDataGridViewRow.Cells(3).Value = If(boolAlerted, "Yes", "No")
-        MyDataGridViewRow.Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        MyDataGridViewRow.Cells(3).Style.WrapMode = DataGridViewTriState.True
-        MyDataGridViewRow.DateObject = dateObject
-        MyDataGridViewRow.BoolAlerted = boolAlerted
-        MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
-
-        Return MyDataGridViewRow
+            Return MyDataGridViewRow
+        End Using
     End Function
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
@@ -279,20 +286,45 @@ Public Class Form1
             Dim task As Task = Nothing
 
             If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
-                If Not Debugger.IsAttached Then
-                    Dim action As Action = task.Definition.Actions(0)
+                If task.Definition.Settings.IdleSettings.StopOnIdleEnd Then
+                    task.Definition.Settings.IdleSettings.StopOnIdleEnd = False
+                    task.RegisterChanges()
+                End If
 
-                    If action.ActionType = TaskActionType.Execute Then
-                        If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
-                            task.Definition.Actions.Remove(action)
+                If task.Definition.Triggers.Count > 0 Then
+                    Dim trigger As Trigger = task.Definition.Triggers(0)
 
-                            Dim exeFileInfo As New FileInfo(strEXEPath)
-                            task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
-                            task.RegisterChanges()
+                    If trigger.TriggerType = TaskTriggerType.Logon Then
+                        Dim dblSeconds As Double = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+
+                        If dblSeconds > 0 Then
+                            StartUpDelay.Checked = True
+                            StartUpDelay.Text = $"        Startup Delay ({dblSeconds} {If(dblSeconds = 1, "Second", "Seconds")})"
                         End If
                     End If
                 End If
 
+                If Not Debugger.IsAttached Then
+                    If task.Definition.Actions.Count > 0 Then
+                        Dim action As Action = task.Definition.Actions(0)
+
+                        If action.ActionType = TaskActionType.Execute Then
+                            If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
+                                task.Definition.Actions.Remove(action)
+
+                                Dim exeFileInfo As New FileInfo(strEXEPath)
+                                task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                                task.RegisterChanges()
+                            End If
+                        End If
+                    Else
+                        Dim exeFileInfo As New FileInfo(strEXEPath)
+                        task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                        task.RegisterChanges()
+                    End If
+                End If
+
+                StartUpDelay.Enabled = True
                 Return True
             End If
         End Using
@@ -303,18 +335,16 @@ Public Class Form1
     Private Sub CreateTask()
         Using taskService As New TaskService
             Dim newTask As TaskDefinition = taskService.NewTask
-            newTask.RegistrationInfo.Description = "Runs Free SysLog at User Logon"
-
-            Dim logonTriggerObject As New LogonTrigger With {
-                .Delay = New TimeSpan(0, 0, 30),
-                .UserId = Environment.UserName
-            }
-            newTask.Triggers.Add(logonTriggerObject)
-
-            Dim exeFileInfo As New FileInfo(strEXEPath)
 
             With newTask
-                .Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                .RegistrationInfo.Description = "Runs Free SysLog at User Logon"
+
+                .Triggers.Add(New LogonTrigger With {
+                    .Delay = New TimeSpan(0, 1, 0),
+                    .UserId = Environment.UserName
+                })
+
+                .Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, New FileInfo(strEXEPath).DirectoryName))
                 .Settings.Compatibility = TaskCompatibility.V2
                 .Settings.AllowDemandStart = True
                 .Settings.DisallowStartIfOnBatteries = False
@@ -325,6 +355,7 @@ Public Class Form1
                 .Settings.ExecutionTimeLimit = Nothing
                 .Settings.Priority = ProcessPriorityClass.Normal
                 .Settings.Compatibility = TaskCompatibility.V2_3
+                .Settings.IdleSettings.StopOnIdleEnd = False
                 .Principal.LogonType = TaskLogonType.InteractiveToken
             End With
 
@@ -360,7 +391,7 @@ Public Class Form1
                                                                                        End Sub)
         If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
 
-        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
+        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
 
         ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -1039,7 +1070,7 @@ Public Class Form1
             If ColorDialog.ShowDialog() = DialogResult.OK Then
                 My.Settings.searchColor = ColorDialog.Color
 
-                Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color}
+                Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(ColorDialog.Color)}
                 Logs.AlternatingRowsDefaultCellStyle = rowStyle
             End If
         End Using
@@ -1404,7 +1435,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent, .intMax = 65535, .intMin = 1}
+        Using IntegerInputForm As New IntegerInputForm(1, 65535) With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent}
             IntegerInputForm.lblSetting.Text = "Server Port"
             IntegerInputForm.TxtSetting.Text = My.Settings.sysLogPort
 
@@ -1443,7 +1474,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeLogAutosaveIntervalToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm With {.Icon = Icon, .Text = "Change Log Autosave Interval", .StartPosition = FormStartPosition.CenterParent, .intMax = 20, .intMin = 1}
+        Using IntegerInputForm As New IntegerInputForm(1, 20) With {.Icon = Icon, .Text = "Change Log Autosave Interval", .StartPosition = FormStartPosition.CenterParent}
             IntegerInputForm.lblSetting.Text = "Auto Save (In Minutes)"
             IntegerInputForm.TxtSetting.Text = My.Settings.autoSaveMinutes
 
@@ -1555,8 +1586,77 @@ Public Class Form1
     End Sub
 
     Private Sub ViewLogBackups_Click(sender As Object, e As EventArgs) Handles ViewLogBackups.Click
-        Dim ViewLogBackups As New ViewLogBackups With {.Icon = Icon, .MyParentForm = Me}
+        Dim collectionOfSavedData As New List(Of SavedData)
+
+        SyncLock dataGridLockObject
+            Dim myItem As MyDataGridViewRow
+
+            For Each item As DataGridViewRow In Logs.Rows
+                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    myItem = DirectCast(item, MyDataGridViewRow)
+
+                    collectionOfSavedData.Add(New SavedData With {
+                                            .time = myItem.Cells(0).Value,
+                                            .ip = myItem.Cells(1).Value,
+                                            .log = myItem.Cells(2).Value,
+                                            .DateObject = myItem.DateObject,
+                                            .BoolAlerted = myItem.BoolAlerted
+                                          })
+                End If
+            Next
+        End SyncLock
+
+        Dim ViewLogBackups As New ViewLogBackups With {.Icon = Icon, .MyParentForm = Me, .currentLogs = collectionOfSavedData}
         ViewLogBackups.Show(Me)
+    End Sub
+
+    Private Sub CloseMe_Click(sender As Object, e As EventArgs) Handles CloseMe.Click
+        Close()
+    End Sub
+
+    Private Sub StartUpDelay_Click(sender As Object, e As EventArgs) Handles StartUpDelay.Click
+        Dim dblSeconds As Double = 0
+
+        Using taskService As New TaskService
+            Dim task As Task = Nothing
+
+            If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                If task.Definition.Triggers.Count > 0 Then
+                    Dim trigger As Trigger = task.Definition.Triggers(0)
+                    If trigger.TriggerType = TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+                End If
+            End If
+        End Using
+
+        Using IntegerInputForm As New IntegerInputForm(1, 300) With {.Icon = Icon, .Text = "Change Startup Delay", .StartPosition = FormStartPosition.CenterParent}
+            IntegerInputForm.lblSetting.Text = "Time in Seconds"
+            IntegerInputForm.TxtSetting.Text = dblSeconds.ToString
+
+            IntegerInputForm.ShowDialog(Me)
+
+            If IntegerInputForm.boolSuccess Then
+                If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 300 Then
+                    MsgBox("The time in seconds must be in the range of 1 - 300.", MsgBoxStyle.Critical, Text)
+                Else
+                    Using taskService As New TaskService
+                        Dim task As Task = Nothing
+
+                        If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                            If task.Definition.Triggers.Count > 0 Then
+                                Dim trigger As Trigger = task.Definition.Triggers(0)
+
+                                If trigger.TriggerType = TaskTriggerType.Logon Then
+                                    DirectCast(trigger, LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
+                                    task.RegisterChanges()
+                                End If
+                            End If
+                        End If
+                    End Using
+
+                    MsgBox("Done.", MsgBoxStyle.Information, Text)
+                End If
+            End If
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"
@@ -1581,25 +1681,25 @@ Public Class Form1
                         boolDoServerLoop = False
                     ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
                         Try
-                            strReceivedData = strReceivedData.Replace("proxied|", "", StringComparison.OrdinalIgnoreCase)
+                            strReceivedData = strReceivedData.Replace(strProxiedString, "", StringComparison.OrdinalIgnoreCase)
                             ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData, JSONDecoderSettings)
                             ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip)
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList.Count > 0 AndAlso Not strReceivedData.StartsWith("(NoProxy)", StringComparison.OrdinalIgnoreCase) Then
+                        If serversList.Count > 0 AndAlso Not strReceivedData.StartsWith(strNoProxyString, StringComparison.OrdinalIgnoreCase) Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
 
                                                                        For Each item As SysLogProxyServer In serversList
-                                                                           SendMessageToSysLogServer("proxied|" & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
+                                                                           SendMessageToSysLogServer(strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
                                                                        Next
 
                                                                        ProxiedSysLogData = Nothing
                                                                    End Sub)
                         End If
 
-                        If strReceivedData.StartsWith("(NoProxy)") Then strReceivedData = strReceivedData.Replace("(NoProxy)", "", StringComparison.OrdinalIgnoreCase)
+                        If strReceivedData.StartsWith(strNoProxyString) Then strReceivedData = strReceivedData.Replace(strNoProxyString, "", StringComparison.OrdinalIgnoreCase)
                         ProcessIncomingLog(strReceivedData, strSourceIP)
                     End If
 
@@ -1610,7 +1710,19 @@ Public Class Form1
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
         Catch e As Exception
-            Invoke(Sub() MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text))
+            Invoke(Sub()
+                       SyncLock dataGridLockObject
+                           Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, $"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", False, Logs))
+
+                           If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
+                               Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                           End If
+
+                           UpdateLogCount()
+                       End SyncLock
+
+                       MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                   End Sub)
         End Try
     End Sub
 

@@ -1,9 +1,11 @@
 ﻿Imports System.IO
 Imports System.Text.RegularExpressions
 Imports System.ComponentModel
+Imports System.Threading.Tasks
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
+    Public currentLogs As List(Of SavedData)
     Private boolDoneLoading As Boolean = False
 
     Private Function GetEntryCount(strFileName As String) As Integer
@@ -77,7 +79,7 @@ Public Class ViewLogBackups
 
                 If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedItems(0).SubItems(0).Text}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     File.Delete(fileName)
-                    SendMessageToSysLogServer($"(NoProxy)The user deleted ""{FileList.SelectedItems(0).SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
+                    SendMessageToSysLogServer($"{strNoProxyString}The user deleted ""{FileList.SelectedItems(0).SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             Else
@@ -93,7 +95,7 @@ Public Class ViewLogBackups
                 If MsgBox(stringBuilder.ToString.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     For Each item As ListViewItem In FileList.SelectedItems
                         File.Delete(Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text))
-                        SendMessageToSysLogServer($"(NoProxy)The user deleted ""{item.SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
+                        SendMessageToSysLogServer($"{strNoProxyString}The user deleted ""{item.SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
                     Next
 
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
@@ -107,8 +109,6 @@ Public Class ViewLogBackups
             Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
         ElseIf e.KeyCode = Keys.Delete Then
             BtnDelete.PerformClick()
-        ElseIf e.KeyCode = Keys.Space Then
-            BtnView.PerformClick()
         End If
     End Sub
 
@@ -126,7 +126,8 @@ Public Class ViewLogBackups
             Exit Sub
         End If
 
-        Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+        Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
+        Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
         Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
 
@@ -148,30 +149,40 @@ Public Class ViewLogBackups
                                           Dim dataFromFile As List(Of SavedData)
                                           Dim myDataGridRow As MyDataGridViewRow
 
-                                          For Each file As FileInfo In filesInDirectory
-                                              Using fileStream As New StreamReader(file.FullName)
-                                                  dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+                                          Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                                 Using fileStream As New StreamReader(file.FullName)
+                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
 
-                                                  For Each item As SavedData In dataFromFile
-                                                      If regexCompiledObject.IsMatch(item.log) Then
-                                                          myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
-                                                          myDataGridRow.Cells(4).Value = file.Name
-                                                          listOfSearchResults.Add(myDataGridRow)
-                                                          myDataGridRow = Nothing
-                                                      End If
-                                                  Next
+                                                                                     For Each item As SavedData In dataFromFile
+                                                                                         If regexCompiledObject.IsMatch(item.log) Then
+                                                                                             myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
+                                                                                             myDataGridRow.Cells(4).Value = file.Name
+                                                                                             SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                                 listOfSearchResults.Add(myDataGridRow)
+                                                                                             End SyncLock
+                                                                                         End If
+                                                                                     Next
+                                                                                 End Using
+                                                                             End Sub)
 
-                                                  dataFromFile = Nothing
-                                              End Using
+                                          For Each item As SavedData In currentLogs
+                                              If regexCompiledObject.IsMatch(item.log) Then
+                                                  myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
+                                                  myDataGridRow.Cells(4).Value = "Current Log Data"
+                                                  listOfSearchResults.Add(myDataGridRow)
+                                                  myDataGridRow = Nothing
+                                              End If
                                           Next
+
+                                          listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(4).Value.ToString()).ThenBy(Function(row) row.Cells(0).Value.ToString()).ToList()
                                       Catch ex As ArgumentException
                                           MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
                                       End Try
                                   End Sub
 
         AddHandler worker.RunWorkerCompleted, Sub()
-                                                  If listOfSearchResults.Count > 0 Then
-                                                      searchResultsWindow.LogsToBeDisplayed = listOfSearchResults
+                                                  If listOfSearchResults2.Count > 0 Then
+                                                      searchResultsWindow.LogsToBeDisplayed = listOfSearchResults2
                                                       searchResultsWindow.ColFileName.Visible = True
                                                       searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
                                                       searchResultsWindow.ShowDialog(Me)

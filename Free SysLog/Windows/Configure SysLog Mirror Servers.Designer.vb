@@ -41,6 +41,9 @@ Partial Class ConfigureSysLogMirrorServers
         '
         'servers
         '
+        Me.servers.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.servers.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colServer, Me.colPort, Me.colEnabled, Me.colName})
         Me.servers.ContextMenuStrip = Me.ContextMenuStrip1
         Me.servers.FullRowSelect = True
@@ -158,7 +161,6 @@ Partial Class ConfigureSysLogMirrorServers
         Me.Controls.Add(Me.BtnEditServer)
         Me.Controls.Add(Me.BtnAddServer)
         Me.Controls.Add(Me.servers)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
