@@ -9,12 +9,6 @@ Namespace My
     ' NetworkAvailabilityChanged: Raised when the network connection is connected or disconnected.
     Partial Friend Class MyApplication
         Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
-            Dim strEXEPath As String = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, New IO.FileInfo(Process.GetCurrentProcess.MainModule.FileName).Name)
-
-            If Not FirewallHelper.Instance.HasAuthorization(strEXEPath) AndAlso MsgBox("Do you want to allow Free Syslog access through the Windows Firewall?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, "Free SysLog") = MsgBoxResult.Yes Then
-                FirewallHelper.Instance.GrantAuthorization(strEXEPath, "Free Syslog")
-            End If
-
             If Not IO.Directory.Exists(strPathToDataFolder) Then IO.Directory.CreateDirectory(strPathToDataFolder)
             If Not IO.Directory.Exists(strPathToDataBackupFolder) Then IO.Directory.CreateDirectory(strPathToDataBackupFolder)
 

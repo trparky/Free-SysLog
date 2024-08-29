@@ -117,7 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Support Code\DataGridViewComparer.vb" />
-    <Compile Include="Support Code\FirewallHelper.vb" />
     <Compile Include="Support Code\MyIgnoredListViewItem.vb" />
     <Compile Include="Windows\Add SysLog Mirror Server.Designer.vb">
       <DependentUpon>Add SysLog Mirror Server.vb</DependentUpon>
@@ -317,17 +316,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="log.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="NetFwTypeLib">
-      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
