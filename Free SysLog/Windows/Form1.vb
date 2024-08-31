@@ -994,7 +994,10 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.windowLocation = Location
+        If boolDoneLoading Then
+            Location = VerifyWindowLocation(Location, Me)
+            My.Settings.windowLocation = Location
+        End If
     End Sub
 
     Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles ChkEnableRecordingOfIgnoredLogs.Click
