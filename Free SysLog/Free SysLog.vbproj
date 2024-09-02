@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="Support Code\DataGridViewComparer.vb" />
     <Compile Include="Support Code\MyIgnoredListViewItem.vb" />
+    <Compile Include="Support Code\TCP Syslog.vb" />
     <Compile Include="Windows\Add SysLog Mirror Server.Designer.vb">
       <DependentUpon>Add SysLog Mirror Server.vb</DependentUpon>
     </Compile>

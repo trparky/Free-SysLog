@@ -22,6 +22,7 @@ Public Class Form1
     Private ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
+    Private SyslogTcpServer As SyslogTcpServer
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -504,9 +505,16 @@ Public Class Form1
         worker.RunWorkerAsync()
     End Sub
 
+    Private Async Sub StartTCPServer()
+        SyslogTcpServer = New SyslogTcpServer(Sub(strReceivedData As String, strSourceIP As String) ProcessIncomingLog(strReceivedData, strSourceIP), My.Settings.sysLogPort)
+        Await SyslogTcpServer.StartAsync()
+    End Sub
+
     Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
         serverThread.Start()
+
+        StartTCPServer()
     End Sub
 
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
@@ -845,6 +853,7 @@ Public Class Form1
         WriteLogsToDisk()
 
         If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+        SyslogTcpServer.Dispose()
 
         Try
             mutex.ReleaseMutex()
