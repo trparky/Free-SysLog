@@ -28,7 +28,7 @@ Public Class ViewLogBackups
             longTotalLogCount += intCount
 
             listViewItem = New ListViewItem With {.Text = file.Name}
-            listViewItem.SubItems.Add(file.CreationTime.ToString)
+            listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
             listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
             listOfListViewItems.Add(listViewItem)
         Next
