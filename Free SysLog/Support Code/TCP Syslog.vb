@@ -23,13 +23,18 @@ Public Class SyslogTcpServer
     End Sub
 
     Public Async Function StartAsync() As Task
-        TCPListener = New TcpListener(IPAddress.Any, _port)
-        TCPListener.Start()
+        Try
+            TCPListener = New TcpListener(IPAddress.Any, _port)
+            TCPListener.Start()
+            Console.WriteLine($"Syslog TCP server listening on port {_port}.")
 
-        While boolLoopControl
-            Dim tcpClient As TcpClient = Await TCPListener.AcceptTcpClientAsync()
-            Await Task.Run(Function() HandleClientAsync(tcpClient))
-        End While
+            While boolLoopControl
+                Dim tcpClient As TcpClient = Await TCPListener.AcceptTcpClientAsync()
+                Await HandleClientAsync(tcpClient)
+            End While
+        Catch ex As Exception
+            _syslogMessageHandler.DynamicInvoke($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
+        End Try
     End Function
 
     Private Async Function HandleClientAsync(tcpClient As TcpClient) As Task
@@ -41,13 +46,17 @@ Public Class SyslogTcpServer
                 Dim intBytesRead As Integer
                 Dim strMessage As String
 
-                While intBytesRead = Await stream.ReadAsync(dataBuffer, 0, dataBuffer.Length) <> 0
-                    strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
+                Do
+                    intBytesRead = Await stream.ReadAsync(dataBuffer, 0, dataBuffer.Length)
 
-                    If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then boolLoopControl = False
+                    If intBytesRead <> 0 Then
+                        strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
 
-                    _syslogMessageHandler.DynamicInvoke(strMessage, remoteIPEndPoint.Address.ToString)
-                End While
+                        If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then boolLoopControl = False
+
+                        _syslogMessageHandler.DynamicInvoke(strMessage, remoteIPEndPoint.Address.ToString)
+                    End If
+                Loop While intBytesRead <> 0
             End Using
         End Using
     End Function
