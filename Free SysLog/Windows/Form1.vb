@@ -139,7 +139,17 @@ Public Class Form1
                 .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(2).Value = strSourceAddress
                 .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(3).Value = If(String.IsNullOrWhiteSpace(strHeader), "(None)", strHeader)
+
+                If String.IsNullOrWhiteSpace(strHeader) Then
+                    .Cells(3).Value = "(None)"
+                Else
+                    If My.Settings.boolProcessReplacementsOnHeaderData Then
+                        .Cells(3).Value = ProcessReplacements(strHeader)
+                    Else
+                        .Cells(3).Value = strHeader
+                    End If
+                End If
+
                 .Cells(4).Value = strLog
                 .Cells(5).Value = If(boolAlerted, "Yes", "No")
                 .Cells(5).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -429,6 +439,7 @@ Public Class Form1
         DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
+        ProcessReplacementsOnHeaderData.Checked = My.Settings.boolProcessReplacementsOnHeaderData
         ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
         ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
@@ -1813,6 +1824,10 @@ Public Class Form1
         Else
             SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
         End If
+    End Sub
+
+    Private Sub ProcessReplacementsOnHeaderData_Click(sender As Object, e As EventArgs) Handles ProcessReplacementsOnHeaderData.Click
+        My.Settings.boolProcessReplacementsOnHeaderData = ProcessReplacementsOnHeaderData.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
