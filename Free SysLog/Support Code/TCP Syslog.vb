@@ -4,7 +4,6 @@ Imports System.Text
 Imports System.Threading.Tasks
 
 Public Class SyslogTcpServer
-    Implements IDisposable
     Private ReadOnly _port As Integer
     Private ReadOnly _syslogMessageHandler As [Delegate]
     Private TCPListener As TcpListener
@@ -13,13 +12,6 @@ Public Class SyslogTcpServer
     Public Sub New(syslogMessageHandler As [Delegate], Optional port As Integer = 514)
         _port = port
         _syslogMessageHandler = syslogMessageHandler
-    End Sub
-
-    Public Sub Dispose() Implements IDisposable.Dispose
-        If TCPListener IsNot Nothing Then
-            TCPListener.Stop()
-            TCPListener = Nothing
-        End If
     End Sub
 
     Public Async Function StartAsync() As Task
@@ -52,9 +44,12 @@ Public Class SyslogTcpServer
                     If intBytesRead <> 0 Then
                         strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
 
-                        If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then boolLoopControl = False
-
-                        _syslogMessageHandler.DynamicInvoke(strMessage, remoteIPEndPoint.Address.ToString)
+                        If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
+                            boolLoopControl = False
+                            TCPListener.Stop()
+                        Else
+                            _syslogMessageHandler.DynamicInvoke(strMessage, remoteIPEndPoint.Address.ToString)
+                        End If
                     End If
                 Loop While intBytesRead <> 0
             End Using

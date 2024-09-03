@@ -173,5 +173,8 @@
     <Setting Name="ViewLogBackupsSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">816, 403</Value>
     </Setting>
+    <Setting Name="EnableTCPServer" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

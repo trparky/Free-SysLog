@@ -514,7 +514,7 @@ Public Class Form1
         serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
         serverThread.Start()
 
-        StartTCPServer()
+        If My.Settings.EnableTCPServer Then StartTCPServer()
     End Sub
 
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
@@ -852,8 +852,10 @@ Public Class Form1
         My.Settings.Save()
         WriteLogsToDisk()
 
-        If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-        SyslogTcpServer.Dispose()
+        If boolDoWeOwnTheMutex Then
+            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+        End If
 
         Try
             mutex.ReleaseMutex()
@@ -1391,6 +1393,7 @@ Public Class Form1
     Private Sub StopServerStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopServerStripMenuItem.Click
         If StopServerStripMenuItem.Text = "Stop Server" Then
             SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
             StopServerStripMenuItem.Text = "Start Server"
         ElseIf StopServerStripMenuItem.Text = "Start Server" Then
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
@@ -1459,7 +1462,10 @@ Public Class Form1
                 If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 65535 Then
                     MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
                 Else
-                    If boolDoWeOwnTheMutex Then SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+                    If boolDoWeOwnTheMutex Then
+                        SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+                        If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                    End If
 
                     ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
 
@@ -1671,6 +1677,16 @@ Public Class Form1
                 End If
             End If
         End Using
+    End Sub
+
+    Private Sub ChkEnableTCPSyslogServer_Click(sender As Object, e As EventArgs) Handles ChkEnableTCPSyslogServer.Click
+        My.Settings.EnableTCPServer = ChkEnableTCPSyslogServer.Checked
+
+        If ChkEnableTCPSyslogServer.Checked Then
+            StartTCPServer()
+        Else
+            SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

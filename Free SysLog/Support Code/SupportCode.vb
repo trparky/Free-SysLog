@@ -100,6 +100,20 @@ Module SupportCode
         End Try
     End Sub
 
+    Public Sub SendMessageToTCPSysLogServer(strMessage As String, intPort As Integer)
+        Try
+            Using tcpClient As New TcpClient()
+                tcpClient.Connect(Net.IPAddress.Loopback, intPort)
+
+                Using networkStream As NetworkStream = tcpClient.GetStream()
+                    Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
+                    networkStream.Write(data, 0, data.Length)
+                End Using
+            End Using
+        Catch ex As SocketException
+        End Try
+    End Sub
+
     Public Sub SendMessageToSysLogServer(strMessage As String, strDestinationIP As String, intPort As Integer)
         Try
             Using udpClient As New UdpClient()
