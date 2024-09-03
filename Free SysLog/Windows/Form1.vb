@@ -1005,8 +1005,12 @@ Public Class Form1
         End SyncLock
     End Sub
 
-    Private Sub Form1_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then
             Location = VerifyWindowLocation(Location, Me)
             My.Settings.windowLocation = Location
         End If
