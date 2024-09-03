@@ -422,6 +422,7 @@ Public Class Form1
         BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
         ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
+        ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
