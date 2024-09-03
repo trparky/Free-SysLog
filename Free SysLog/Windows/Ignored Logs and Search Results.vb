@@ -117,6 +117,8 @@ Public Class IgnoredLogsAndSearchResults
         ColIPAddress.Width = My.Settings.columnIPSize
         ColLog.Width = My.Settings.columnLogSize
         ColAlerts.Visible = My.Settings.boolShowAlertedColumn
+        ColSyslogHeader.Width = My.Settings.RFC5424HeaderSize
+        colLogType.Width = My.Settings.LogTypeWidth
 
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
@@ -147,6 +149,8 @@ Public Class IgnoredLogsAndSearchResults
                                                   End Sub
             worker.RunWorkerAsync()
         End If
+
+        boolDoneLoading = True
     End Sub
 
     Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
@@ -188,13 +192,13 @@ Public Class IgnoredLogsAndSearchResults
             Dim myItem As MyDataGridViewRow
             Dim csvStringBuilder As New Text.StringBuilder
             Dim savedData As SavedData
-            Dim strTime, strSourceIP, strLogText, strAlerted, strFileName As String
+            Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strFileName As String
 
             If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                 If ColFileName.Visible Then
-                    csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted,File Name")
+                    csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted,File Name")
                 Else
-                    csvStringBuilder.AppendLine("Time,Source IP,Log Text,Alerted")
+                    csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted")
                 End If
             End If
 
@@ -204,10 +208,12 @@ Public Class IgnoredLogsAndSearchResults
 
                     If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                         With myItem
-                            strTime = SanitizeForCSV(.Cells(0).Value)
-                            strSourceIP = SanitizeForCSV(.Cells(1).Value)
-                            strLogText = SanitizeForCSV(.Cells(2).Value)
-                            strAlerted = If(.BoolAlerted, "Yes", "No")
+                            strTime = SanitizeForCSV(myItem.Cells(0).Value)
+                            strLogType = SanitizeForCSV(myItem.Cells(1).Value)
+                            strSourceIP = SanitizeForCSV(myItem.Cells(2).Value)
+                            strHeader = SanitizeForCSV(myItem.Cells(3).Value)
+                            strLogText = SanitizeForCSV(myItem.Cells(4).Value)
+                            strAlerted = If(myItem.BoolAlerted, "Yes", "No")
                         End With
 
                         If ColFileName.Visible Then
@@ -218,13 +224,15 @@ Public Class IgnoredLogsAndSearchResults
                         End If
                     Else
                         savedData = New SavedData With {
-                                                .time = myItem.Cells(0).Value,
-                                                .ip = myItem.Cells(1).Value,
-                                                .log = myItem.Cells(2).Value,
-                                                .DateObject = myItem.DateObject,
-                                                .BoolAlerted = myItem.BoolAlerted
+                                                    .time = myItem.Cells(0).Value,
+                                                    .logType = myItem.Cells(1).Value,
+                                                    .ip = myItem.Cells(2).Value,
+                                                    .header = myItem.Cells(3).Value,
+                                                    .log = myItem.Cells(4).Value,
+                                                    .DateObject = myItem.DateObject,
+                                                    .BoolAlerted = myItem.BoolAlerted
                                               }
-                        If ColFileName.Visible Then savedData.fileName = myItem.Cells(4).Value
+                        If ColFileName.Visible Then savedData.fileName = myItem.Cells(6).Value
                         collectionOfSavedData.Add(savedData)
                     End If
                 End If
@@ -367,9 +375,9 @@ Public Class IgnoredLogsAndSearchResults
                                                   MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                   If MyDataGridRowItem IsNot Nothing Then
-                                                      strLogText = MyDataGridRowItem.Cells(2).Value
+                                                      strLogText = MyDataGridRowItem.Cells(3).Value
 
-                                                      If regexCompiledObject.IsMatch(strLogText) Then
+                                                      If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
                                                       End If
                                                   End If

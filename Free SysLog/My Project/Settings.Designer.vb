@@ -744,6 +744,30 @@ Namespace My
                 Me("EnableTCPServer") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
+        Public Property RFC5424HeaderSize() As Integer
+            Get
+                Return CType(Me("RFC5424HeaderSize"),Integer)
+            End Get
+            Set
+                Me("RFC5424HeaderSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("200")>  _
+        Public Property LogTypeWidth() As Integer
+            Get
+                Return CType(Me("LogTypeWidth"),Integer)
+            End Get
+            Set
+                Me("LogTypeWidth") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

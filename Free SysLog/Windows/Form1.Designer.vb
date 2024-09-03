@@ -67,8 +67,10 @@ Partial Class Form1
         Me.Logs = New System.Windows.Forms.DataGridView()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColSyslogHeader = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ChkEnableConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -451,7 +453,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog, Me.ColAlerts})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.colLogType, Me.ColIPAddress, Me.ColSyslogHeader, Me.ColLog, Me.ColAlerts})
         Me.Logs.ContextMenuStrip = Me.LogsMenu
         Me.Logs.Location = New System.Drawing.Point(12, 52)
         Me.Logs.Name = "Logs"
@@ -476,6 +478,13 @@ Partial Class Form1
         Me.ColIPAddress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColIPAddress.ToolTipText = "The IP address of the system from which the log came from."
         '
+        'colLogType
+        '
+        Me.colLogType.HeaderText = "Log Type"
+        Me.colLogType.Name = "colLogType"
+        Me.colLogType.ReadOnly = True
+        Me.colLogType.Width = 200
+        '
         'ColAlerts
         '
         Me.ColAlerts.HeaderText = "Alerted"
@@ -484,6 +493,14 @@ Partial Class Form1
         Me.ColAlerts.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColAlerts.Width = 50
         Me.ColAlerts.ToolTipText = "Yes or No. Indicates if the log entry triggered an alert from this program."
+        '
+        'ColSyslogHeader
+        '
+        Me.ColSyslogHeader.HeaderText = "Syslog RFC 5424 Header"
+        Me.ColSyslogHeader.Name = "ColSyslogHeader"
+        Me.ColSyslogHeader.ReadOnly = True
+        Me.ColSyslogHeader.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColSyslogHeader.Width = 150
         '
         'ColLog
         '
@@ -733,8 +750,10 @@ Partial Class Form1
     Friend WithEvents Logs As DataGridView
     Friend WithEvents ColTime As DataGridViewTextBoxColumn
     Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
+    Friend WithEvents colLogType As DataGridViewTextBoxColumn
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
+    Friend WithEvents ColSyslogHeader As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents ChangeAlternatingColorToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem

@@ -1,5 +1,5 @@
 ﻿Public Class SavedData
-    Public time, ip, log, fileName As String
+    Public time, ip, log, fileName, header, logType As String
     Public DateObject As Date
     Public BoolAlerted As Boolean = False
 
@@ -9,12 +9,15 @@
                 .CreateCells(dataGrid)
                 .Cells(0).Value = time
                 .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(1).Value = ip
+                .Cells(1).Value = If(String.IsNullOrWhiteSpace(logType), "(None)", logType)
                 .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(2).Value = log
-                .Cells(3).Value = If(BoolAlerted, "Yes", "No")
-                .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(3).Style.WrapMode = DataGridViewTriState.True
+                .Cells(2).Value = ip
+                .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(3).Value = If(String.IsNullOrWhiteSpace(header), "(None)", header)
+                .Cells(4).Value = log
+                .Cells(5).Value = If(BoolAlerted, "Yes", "No")
+                .Cells(5).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(5).Style.WrapMode = DataGridViewTriState.True
                 .DateObject = DateObject
                 .BoolAlerted = BoolAlerted
                 .MinimumHeight = height

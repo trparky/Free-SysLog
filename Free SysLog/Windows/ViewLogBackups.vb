@@ -156,7 +156,7 @@ Public Class ViewLogBackups
                                                                                      For Each item As SavedData In dataFromFile
                                                                                          If regexCompiledObject.IsMatch(item.log) Then
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
-                                                                                             myDataGridRow.Cells(4).Value = file.Name
+                                                                                             myDataGridRow.Cells(6).Value = file.Name
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                  listOfSearchResults.Add(myDataGridRow)
                                                                                              End SyncLock
@@ -168,7 +168,7 @@ Public Class ViewLogBackups
                                           For Each item As SavedData In currentLogs
                                               If regexCompiledObject.IsMatch(item.log) Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
-                                                  myDataGridRow.Cells(4).Value = "Current Log Data"
+                                                  myDataGridRow.Cells(6).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
                                                   myDataGridRow = Nothing
                                               End If
