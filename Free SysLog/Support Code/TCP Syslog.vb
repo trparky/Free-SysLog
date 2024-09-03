@@ -38,20 +38,23 @@ Public Class SyslogTcpServer
                 Dim intBytesRead As Integer
                 Dim strMessage As String
 
-                Do
-                    intBytesRead = Await stream.ReadAsync(dataBuffer, 0, dataBuffer.Length)
+                Try
+                    Do
+                        intBytesRead = Await stream.ReadAsync(dataBuffer, 0, dataBuffer.Length)
 
-                    If intBytesRead <> 0 Then
-                        strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
+                        If intBytesRead <> 0 Then
+                            strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
 
-                        If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
-                            boolLoopControl = False
-                            TCPListener.Stop()
-                        Else
-                            _syslogMessageHandler.DynamicInvoke(strMessage, remoteIPEndPoint.Address.ToString)
+                            If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
+                                boolLoopControl = False
+                                TCPListener.Stop()
+                            Else
+                                _syslogMessageHandler.DynamicInvoke(strMessage, GetIPv4Address(remoteIPEndPoint.Address).ToString)
+                            End If
                         End If
-                    End If
-                Loop While intBytesRead <> 0
+                    Loop While intBytesRead <> 0
+                Catch ex As Exception
+                End Try
             End Using
         End Using
     End Function
