@@ -16,7 +16,8 @@ Public Class SyslogTcpServer
 
     Public Async Function StartAsync() As Task
         Try
-            TCPListener = New TcpListener(IPAddress.Any, _port)
+            TCPListener = New TcpListener(IPAddress.IPv6Any, _port)
+            TCPListener.Server.DualMode = True
             TCPListener.Start()
             Console.WriteLine($"Syslog TCP server listening on port {_port}.")
 

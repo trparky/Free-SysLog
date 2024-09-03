@@ -1693,18 +1693,18 @@ Public Class Form1
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
-            Dim ipEndPoint As New IPEndPoint(IPAddress.Any, 0)
+            Using socket As New Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp) With {.DualMode = True}
+                socket.Bind(New IPEndPoint(IPAddress.IPv6Any, My.Settings.sysLogPort))
 
-            Using udpServer As New UdpClient(My.Settings.sysLogPort)
-                Dim strReceivedData, strSourceIP As String
-                Dim byteReceivedData() As Byte
                 Dim boolDoServerLoop As Boolean = True
+                Dim buffer(4095) As Byte
+                Dim remoteEndPoint As EndPoint = New IPEndPoint(IPAddress.IPv6Any, 0)
                 Dim ProxiedSysLogData As ProxiedSysLogData
 
                 While boolDoServerLoop
-                    byteReceivedData = udpServer.Receive(ipEndPoint)
-                    strReceivedData = Encoding.UTF8.GetString(byteReceivedData)
-                    strSourceIP = ipEndPoint.Address.ToString
+                    Dim bytesReceived As Integer = socket.ReceiveFrom(buffer, remoteEndPoint)
+                    Dim strReceivedData As String = Encoding.UTF8.GetString(buffer, 0, bytesReceived)
+                    Dim strSourceIP As String = GetIPv4Address(CType(remoteEndPoint, IPEndPoint).Address).ToString()
 
                     If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
                         Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())

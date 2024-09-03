@@ -1,4 +1,5 @@
-﻿Imports System.Net.Sockets
+﻿Imports System.Net
+Imports System.Net.Sockets
 Imports System.Text
 
 Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -24,6 +25,11 @@ Module SupportCode
     Public Const strNoProxyString As String = "noproxy|"
     Public Const strProxiedString As String = "proxied|"
     Public Const strQuote As String = Chr(34)
+
+    Public Function GetIPv4Address(ipv6Address As IPAddress) As IPAddress
+        If ipv6Address.AddressFamily = AddressFamily.InterNetworkV6 AndAlso ipv6Address.IsIPv4MappedToIPv6 Then Return ipv6Address.MapToIPv4()
+        Return ipv6Address
+    End Function
 
     Public Function GetGoodTextColorBasedUponBackgroundColor(input As Color) As Color
         Dim intCombinedTotal As Short = Integer.Parse(input.R.ToString) + Integer.Parse(input.G.ToString) + Integer.Parse(input.B.ToString)
