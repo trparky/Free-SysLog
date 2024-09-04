@@ -10,9 +10,7 @@
                 .Cells(0).Value = time
                 .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(1).Value = If(String.IsNullOrWhiteSpace(logType), "(None)", logType)
-                .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(2).Value = ip
-                .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(3).Value = If(String.IsNullOrWhiteSpace(header), "(None)", header)
                 .Cells(4).Value = log
                 .Cells(5).Value = If(BoolAlerted, "Yes", "No")

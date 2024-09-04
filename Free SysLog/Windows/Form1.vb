@@ -136,9 +136,7 @@ Public Class Form1
                 .Cells(0).Value = strTime
                 .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(1).Value = If(String.IsNullOrWhiteSpace(strLogType), "(None)", strLogType)
-                .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(2).Value = strSourceAddress
-                .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
                 If String.IsNullOrWhiteSpace(strHeader) Then
                     .Cells(3).Value = "(None)"
@@ -414,10 +412,7 @@ Public Class Form1
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
 
-        colLogType.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
-        ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
