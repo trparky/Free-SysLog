@@ -7,15 +7,15 @@
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
-                .Cells(0).Value = time
-                .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(1).Value = If(String.IsNullOrWhiteSpace(logType), "(None)", logType)
-                .Cells(2).Value = ip
-                .Cells(3).Value = If(String.IsNullOrWhiteSpace(header), "(None)", header)
-                .Cells(4).Value = log
-                .Cells(5).Value = If(BoolAlerted, "Yes", "No")
-                .Cells(5).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(5).Style.WrapMode = DataGridViewTriState.True
+                .Cells(ColumnIndex_ComputedTime).Value = time
+                .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(logType), "(None)", logType)
+                .Cells(ColumnIndex_IPAddress).Value = ip
+                .Cells(ColumnIndex_RFC5424).Value = If(String.IsNullOrWhiteSpace(header), "(None)", header)
+                .Cells(ColumnIndex_LogText).Value = log
+                .Cells(ColumnIndex_Alerted).Value = If(BoolAlerted, "Yes", "No")
+                .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
                 .DateObject = DateObject
                 .BoolAlerted = BoolAlerted
                 .MinimumHeight = height

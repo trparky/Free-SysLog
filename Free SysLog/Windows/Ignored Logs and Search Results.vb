@@ -21,9 +21,9 @@ Public Class IgnoredLogsAndSearchResults
         If Logs.Rows.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
-            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(1).Value}"
+            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(ColumnIndex_IPAddress).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_LogType).Value}"
                 LogViewerInstance.ShowDialog(Me)
             End Using
         End If
@@ -203,36 +203,36 @@ Public Class IgnoredLogsAndSearchResults
             End If
 
             For Each item As DataGridViewRow In Logs.Rows
-                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 
                     If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                         With myItem
-                            strTime = SanitizeForCSV(myItem.Cells(0).Value)
-                            strLogType = SanitizeForCSV(myItem.Cells(1).Value)
-                            strSourceIP = SanitizeForCSV(myItem.Cells(2).Value)
-                            strHeader = SanitizeForCSV(myItem.Cells(3).Value)
-                            strLogText = SanitizeForCSV(myItem.Cells(4).Value)
+                            strTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ComputedTime).Value)
+                            strLogType = SanitizeForCSV(myItem.Cells(ColumnIndex_LogType).Value)
+                            strSourceIP = SanitizeForCSV(myItem.Cells(ColumnIndex_IPAddress).Value)
+                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RFC5424).Value)
+                            strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
                             strAlerted = If(myItem.BoolAlerted, "Yes", "No")
                         End With
 
                         If ColFileName.Visible Then
-                            strFileName = SanitizeForCSV(myItem.Cells(4).Value)
+                            strFileName = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
                             csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted},{strFileName}")
                         Else
                             csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
                         End If
                     Else
                         savedData = New SavedData With {
-                                                    .time = myItem.Cells(0).Value,
-                                                    .logType = myItem.Cells(1).Value,
-                                                    .ip = myItem.Cells(2).Value,
-                                                    .header = myItem.Cells(3).Value,
-                                                    .log = myItem.Cells(4).Value,
+                                                    .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                    .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                                    .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                                    .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                                    .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                     .DateObject = myItem.DateObject,
                                                     .BoolAlerted = myItem.BoolAlerted
                                               }
-                        If ColFileName.Visible Then savedData.fileName = myItem.Cells(6).Value
+                        If ColFileName.Visible Then savedData.fileName = myItem.Cells(ColumnIndex_FileName).Value
                         collectionOfSavedData.Add(savedData)
                     End If
                 End If
@@ -269,15 +269,15 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
         Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-        Clipboard.SetText(selectedRow.Cells(2).Value)
+        Clipboard.SetText(selectedRow.Cells(ColumnIndex_IPAddress).Value)
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
-                .Cells(0).Value = Now.ToString
-                .Cells(2).Value = strLog
+                .Cells(ColumnIndex_ComputedTime).Value = Now.ToString
+                .Cells(ColumnIndex_IPAddress).Value = strLog
             End With
 
             Return MyDataGridViewRow
@@ -317,7 +317,7 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
         Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(2).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_IPAddress).Value
             AddAlert.TxtLogText.Text = strLogText
 
             AddAlert.ShowDialog(Me)
@@ -375,7 +375,7 @@ Public Class IgnoredLogsAndSearchResults
                                                   MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                   If MyDataGridRowItem IsNot Nothing Then
-                                                      strLogText = MyDataGridRowItem.Cells(3).Value
+                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_RFC5424).Value
 
                                                       If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
@@ -403,7 +403,7 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
-        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(4).Value), .boolLoadExternalData = True}
+        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value), .boolLoadExternalData = True}
         logFileViewer.Show(Me)
     End Sub
 
@@ -417,7 +417,7 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
             For Each item As MyDataGridViewRow In Logs.Rows
-                item.Height = GetMinimumHeight(item.Cells(2).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_IPAddress).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
             Next
         End If
     End Sub

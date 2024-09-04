@@ -156,7 +156,7 @@ Public Class ViewLogBackups
                                                                                      For Each item As SavedData In dataFromFile
                                                                                          If regexCompiledObject.IsMatch(item.log) Then
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
-                                                                                             myDataGridRow.Cells(6).Value = file.Name
+                                                                                             myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                  listOfSearchResults.Add(myDataGridRow)
                                                                                              End SyncLock
@@ -168,13 +168,13 @@ Public Class ViewLogBackups
                                           For Each item As SavedData In currentLogs
                                               If regexCompiledObject.IsMatch(item.log) Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
-                                                  myDataGridRow.Cells(6).Value = "Current Log Data"
+                                                  myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
                                                   myDataGridRow = Nothing
                                               End If
                                           Next
 
-                                          listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(4).Value.ToString()).ThenBy(Function(row) row.Cells(0).Value.ToString()).ToList()
+                                          listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(ColumnIndex_LogText).Value.ToString()).ThenBy(Function(row) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
                                       Catch ex As ArgumentException
                                           MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
                                       End Try

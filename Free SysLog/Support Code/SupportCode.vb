@@ -26,6 +26,14 @@ Module SupportCode
     Public Const strProxiedString As String = "proxied|"
     Public Const strQuote As String = Chr(34)
 
+    Public Const ColumnIndex_ComputedTime As Integer = 0
+    Public Const ColumnIndex_LogType As Integer = 1
+    Public Const ColumnIndex_IPAddress As Integer = 2
+    Public Const ColumnIndex_RFC5424 As Integer = 3
+    Public Const ColumnIndex_LogText As Integer = 4
+    Public Const ColumnIndex_Alerted As Integer = 5
+    Public Const ColumnIndex_FileName As Integer = 6
+
     Public Function GetIPv4Address(ipv6Address As IPAddress) As IPAddress
         If ipv6Address.AddressFamily = AddressFamily.InterNetworkV6 AndAlso ipv6Address.IsIPv4MappedToIPv6 Then Return ipv6Address.MapToIPv4()
         Return ipv6Address

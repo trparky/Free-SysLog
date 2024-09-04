@@ -133,25 +133,25 @@ Public Class Form1
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
-                .Cells(0).Value = strTime
-                .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(1).Value = If(String.IsNullOrWhiteSpace(strLogType), "(None)", strLogType)
-                .Cells(2).Value = strSourceAddress
+                .Cells(ColumnIndex_ComputedTime).Value = strTime
+                .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "(None)", strLogType)
+                .Cells(ColumnIndex_IPAddress).Value = strSourceAddress
 
                 If String.IsNullOrWhiteSpace(strHeader) Then
-                    .Cells(3).Value = "(None)"
+                    .Cells(ColumnIndex_RFC5424).Value = "(None)"
                 Else
                     If My.Settings.boolProcessReplacementsOnHeaderData Then
-                        .Cells(3).Value = ProcessReplacements(strHeader)
+                        .Cells(ColumnIndex_RFC5424).Value = ProcessReplacements(strHeader)
                     Else
-                        .Cells(3).Value = strHeader
+                        .Cells(ColumnIndex_RFC5424).Value = strHeader
                     End If
                 End If
 
-                .Cells(4).Value = strLog
-                .Cells(5).Value = If(boolAlerted, "Yes", "No")
-                .Cells(5).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(5).Style.WrapMode = DataGridViewTriState.True
+                .Cells(ColumnIndex_LogText).Value = strLog
+                .Cells(ColumnIndex_Alerted).Value = If(boolAlerted, "Yes", "No")
+                .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
                 .DateObject = dateObject
                 .BoolAlerted = boolAlerted
                 .MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
@@ -178,15 +178,15 @@ Public Class Form1
 
             SyncLock dataGridLockObject
                 For Each item As DataGridViewRow In Logs.Rows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         collectionOfSavedData.Add(New SavedData With {
-                                            .time = myItem.Cells(0).Value,
-                                            .logType = myItem.Cells(1).Value,
-                                            .ip = myItem.Cells(2).Value,
-                                            .header = myItem.Cells(3).Value,
-                                            .log = myItem.Cells(4).Value,
+                                            .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                            .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                            .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                            .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                            .log = myItem.Cells(ColumnIndex_LogText).Value,
                                             .DateObject = myItem.DateObject,
                                             .BoolAlerted = myItem.BoolAlerted
                                           })
@@ -238,7 +238,7 @@ Public Class Form1
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
 
             For Each item As MyDataGridViewRow In Logs.Rows
-                item.Height = GetMinimumHeight(item.Cells(2).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_IPAddress).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
             Next
 
             Logs.Invalidate()
@@ -860,9 +860,9 @@ Public Class Form1
         If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
 
-            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(2).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(0).Value}"
-                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(1).Value}"
+            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(ColumnIndex_IPAddress).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_LogType).Value}"
                 LogViewerInstance.ShowDialog(Me)
             End Using
         End If
@@ -1013,7 +1013,7 @@ Public Class Form1
                                                   MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                   If MyDataGridRowItem IsNot Nothing Then
-                                                      strLogText = MyDataGridRowItem.Cells(4).Value
+                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
                                                       If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
@@ -1342,7 +1342,7 @@ Public Class Form1
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
-        CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(3).Value)
+        CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value)
     End Sub
 
     Private Function CopyTextToWindowsClipboard(strTextToBeCopiedToClipboard As String) As Boolean
@@ -1415,25 +1415,25 @@ Public Class Form1
                 If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted")
 
                 For Each item As DataGridViewRow In Logs.Rows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
-                            strTime = SanitizeForCSV(myItem.Cells(0).Value)
-                            strLogType = SanitizeForCSV(myItem.Cells(1).Value)
-                            strSourceIP = SanitizeForCSV(myItem.Cells(2).Value)
-                            strHeader = SanitizeForCSV(myItem.Cells(3).Value)
-                            strLogText = SanitizeForCSV(myItem.Cells(4).Value)
+                            strTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ComputedTime).Value)
+                            strLogType = SanitizeForCSV(myItem.Cells(ColumnIndex_LogType).Value)
+                            strSourceIP = SanitizeForCSV(myItem.Cells(ColumnIndex_IPAddress).Value)
+                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RFC5424).Value)
+                            strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
                             strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
                             csvStringBuilder.AppendLine($"{strTime},{strLogType},{strSourceIP},{strHeader},{strLogText},{strAlerted}")
                         Else
                             collectionOfSavedData.Add(New SavedData With {
-                                                    .time = myItem.Cells(0).Value,
-                                                    .logType = myItem.Cells(1).Value,
-                                                    .ip = myItem.Cells(2).Value,
-                                                    .header = myItem.Cells(3).Value,
-                                                    .log = myItem.Cells(4).Value,
+                                                    .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                    .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                                    .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                                    .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                                    .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                     .DateObject = myItem.DateObject,
                                                     .BoolAlerted = myItem.BoolAlerted
                                                   })
@@ -1474,25 +1474,25 @@ Public Class Form1
                 If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted")
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                         myItem = DirectCast(item, MyDataGridViewRow)
 
                         If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
-                            strTime = SanitizeForCSV(myItem.Cells(0).Value)
-                            strLogType = SanitizeForCSV(myItem.Cells(1).Value)
-                            strSourceIP = SanitizeForCSV(myItem.Cells(2).Value)
-                            strHeader = SanitizeForCSV(myItem.Cells(3).Value)
-                            strLogText = SanitizeForCSV(myItem.Cells(4).Value)
+                            strTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ComputedTime).Value)
+                            strLogType = SanitizeForCSV(myItem.Cells(ColumnIndex_LogType).Value)
+                            strSourceIP = SanitizeForCSV(myItem.Cells(ColumnIndex_IPAddress).Value)
+                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RFC5424).Value)
+                            strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
                             strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
                             csvStringBuilder.AppendLine($"{strTime},{strLogType},{strSourceIP},{strHeader},{strLogText},{strAlerted}")
                         Else
                             collectionOfSavedData.Add(New SavedData With {
-                                                    .time = myItem.Cells(0).Value,
-                                                    .logType = myItem.Cells(1).Value,
-                                                    .ip = myItem.Cells(2).Value,
-                                                    .header = myItem.Cells(3).Value,
-                                                    .log = myItem.Cells(4).Value,
+                                                    .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                    .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                                    .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                                    .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                                    .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                     .DateObject = myItem.DateObject,
                                                     .BoolAlerted = myItem.BoolAlerted
                                                   })
@@ -1559,7 +1559,7 @@ Public Class Form1
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
         Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(3).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value
             AddAlert.TxtLogText.Text = strLogText
 
             AddAlert.ShowDialog(Me)
@@ -1644,7 +1644,7 @@ Public Class Form1
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
         Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(3).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value
             AddIgnored.TxtIgnored.Text = strLogText
 
             AddIgnored.ShowDialog(Me)
@@ -1670,7 +1670,7 @@ Public Class Form1
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
         Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(3).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value
             AddReplacement.TxtReplace.Text = strLogText
 
             AddReplacement.ShowDialog(Me)
@@ -1744,13 +1744,13 @@ Public Class Form1
             Dim myItem As MyDataGridViewRow
 
             For Each item As DataGridViewRow In Logs.Rows
-                If Not String.IsNullOrWhiteSpace(item.Cells(0).Value) Then
+                If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 
                     collectionOfSavedData.Add(New SavedData With {
-                                            .time = myItem.Cells(0).Value,
-                                            .ip = myItem.Cells(1).Value,
-                                            .log = myItem.Cells(2).Value,
+                                            .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                            .ip = myItem.Cells(ColumnIndex_LogType).Value,
+                                            .log = myItem.Cells(ColumnIndex_IPAddress).Value,
                                             .DateObject = myItem.DateObject,
                                             .BoolAlerted = myItem.BoolAlerted
                                           })
