@@ -1342,7 +1342,7 @@ Public Class Form1
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
-        CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value)
+        CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value)
     End Sub
 
     Private Function CopyTextToWindowsClipboard(strTextToBeCopiedToClipboard As String) As Boolean
@@ -1559,7 +1559,7 @@ Public Class Form1
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
         Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
             AddAlert.TxtLogText.Text = strLogText
 
             AddAlert.ShowDialog(Me)
@@ -1644,7 +1644,7 @@ Public Class Form1
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
         Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
             AddIgnored.TxtIgnored.Text = strLogText
 
             AddIgnored.ShowDialog(Me)
@@ -1670,7 +1670,7 @@ Public Class Form1
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
         Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_RFC5424).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
             AddReplacement.TxtReplace.Text = strLogText
 
             AddReplacement.ShowDialog(Me)
