@@ -225,7 +225,7 @@
     </Compile>
     <Compile Include="Support Code\MyDataGridViewRow.vb" />
     <Compile Include="Support Code\MyReplacementsListViewItem.vb" />
-    <Compile Include="Support Code\NativeMethod.vb" />
+    <Compile Include="Support Code\Namespace Code\NativeMethod.vb" />
     <Compile Include="Windows\Replacements.Designer.vb">
       <DependentUpon>Replacements.vb</DependentUpon>
     </Compile>
