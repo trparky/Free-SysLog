@@ -234,7 +234,7 @@
     </Compile>
     <Compile Include="Support Code\SaveAppSettings.vb" />
     <Compile Include="Support Code\SavedData.vb" />
-    <Compile Include="Support Code\Search for Process and Kill It.vb" />
+    <Compile Include="Support Code\Namespace Code\ProcessHandling.vb" />
     <Compile Include="Support Code\StringExtensions.vb" />
     <Compile Include="Support Code\SupportCode.vb" />
     <Compile Include="Windows\ViewLogBackups.Designer.vb">
