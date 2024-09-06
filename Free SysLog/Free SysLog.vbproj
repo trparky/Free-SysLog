@@ -124,7 +124,7 @@
     <Compile Include="Support Code\MyIgnoredListViewItem.vb" />
     <Compile Include="Support Code\Namespace Code\Syslog Parser.vb" />
     <Compile Include="Support Code\Namespace Code\Task Handling.vb" />
-    <Compile Include="Support Code\TCP Syslog.vb" />
+    <Compile Include="Support Code\Namespace Code\Syslog TCP Server.vb" />
     <Compile Include="Windows\Add SysLog Mirror Server.Designer.vb">
       <DependentUpon>Add SysLog Mirror Server.vb</DependentUpon>
     </Compile>

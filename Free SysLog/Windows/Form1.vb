@@ -22,7 +22,7 @@ Public Class Form1
     Public ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
-    Private SyslogTcpServer As SyslogTcpServer
+    Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
     Public rfc5424Regex As New Regex("^(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*)$", RegexOptions.Compiled)
     Public rfc5424TransformRegex As New Regex("^(<\d+>)(\w{3}\s+\d+ \d+:\d+:\d+)\s+(\S+)\s+(\S+):\s+(.*)$", RegexOptions.Compiled)
 
@@ -340,7 +340,7 @@ Public Class Form1
     End Sub
 
     Private Async Sub StartTCPServer()
-        SyslogTcpServer = New SyslogTcpServer(Sub(strReceivedData As String, strSourceIP As String) SyslogParser.ProcessIncomingLog(strReceivedData, strSourceIP), My.Settings.sysLogPort)
+        SyslogTcpServer = New SyslogTcpServer.SyslogTcpServer(Sub(strReceivedData As String, strSourceIP As String) SyslogParser.ProcessIncomingLog(strReceivedData, strSourceIP), My.Settings.sysLogPort)
         Await SyslogTcpServer.StartAsync()
     End Sub
 
