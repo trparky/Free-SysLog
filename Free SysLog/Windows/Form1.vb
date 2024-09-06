@@ -438,6 +438,12 @@ Public Class Form1
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
         NotifyIcon.Icon = Icon
         NotifyIcon.Text = "Free SysLog"
+        ColHostname.Visible = My.Settings.boolShowHostnameColumn
+        ChkShowHostnameColumn.Checked = My.Settings.boolShowHostnameColumn
+        colServerTime.Visible = My.Settings.boolShowServerTimeColumn
+        ChkShowServerTimeColumn.Checked = My.Settings.boolShowServerTimeColumn
+        colLogType.Visible = My.Settings.boolShowLogTypeColumn
+        ChkShowLogTypeColumn.Checked = My.Settings.boolShowLogTypeColumn
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
@@ -1868,6 +1874,21 @@ Public Class Form1
         Else
             SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
         End If
+    End Sub
+
+    Private Sub ChkShowHostnameColumn_Click(sender As Object, e As EventArgs) Handles ChkShowHostnameColumn.Click
+        My.Settings.boolShowHostnameColumn = ChkShowHostnameColumn.Checked
+        ColHostname.Visible = My.Settings.boolShowHostnameColumn
+    End Sub
+
+    Private Sub ChkShowLogTypeColumn_Click(sender As Object, e As EventArgs) Handles ChkShowLogTypeColumn.Click
+        My.Settings.boolShowLogTypeColumn = ChkShowLogTypeColumn.Checked
+        colLogType.Visible = My.Settings.boolShowLogTypeColumn
+    End Sub
+
+    Private Sub ChkShowServerTimeColumn_Click(sender As Object, e As EventArgs) Handles ChkShowServerTimeColumn.Click
+        My.Settings.boolShowServerTimeColumn = ChkShowServerTimeColumn.Checked
+        colServerTime.Visible = My.Settings.boolShowServerTimeColumn
     End Sub
 
 #Region "-- SysLog Server Code --"

@@ -94,6 +94,9 @@ Partial Class Form1
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowAlertedColumn = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkShowLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkShowServerTimeColumn = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkShowHostnameColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -374,7 +377,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn, Me.ChkShowHostnameColumn, Me.ChkShowLogTypeColumn, Me.ChkShowServerTimeColumn})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -668,6 +671,27 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(339, 22)
         Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
         '
+        'ChkShowLogTypeColumn
+        '
+        Me.ChkShowLogTypeColumn.CheckOnClick = True
+        Me.ChkShowLogTypeColumn.Name = "ChkShowLogTypeColumn"
+        Me.ChkShowLogTypeColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowLogTypeColumn.Text = "Show Log Type Column"
+        '
+        'ChkShowServerTimeColumn
+        '
+        Me.ChkShowServerTimeColumn.CheckOnClick = True
+        Me.ChkShowServerTimeColumn.Name = "ChkShowServerTimeColumn"
+        Me.ChkShowServerTimeColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowServerTimeColumn.Text = "Show Server Time Column"
+        '
+        'ChkShowHostnameColumn
+        '
+        Me.ChkShowHostnameColumn.CheckOnClick = True
+        Me.ChkShowHostnameColumn.Name = "ChkShowHostnameColumn"
+        Me.ChkShowHostnameColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowHostnameColumn.Text = "Show Hostname Column"
+        '
         'ChkShowAlertedColumn
         '
         Me.ChkShowAlertedColumn.CheckOnClick = True
@@ -807,6 +831,9 @@ Partial Class Form1
     Friend WithEvents LblItemsSelected As ToolStripStatusLabel
     Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
     Friend WithEvents ChkShowAlertedColumn As ToolStripMenuItem
+    Friend WithEvents ChkShowLogTypeColumn As ToolStripMenuItem
+    Friend WithEvents ChkShowServerTimeColumn As ToolStripMenuItem
+    Friend WithEvents ChkShowHostnameColumn As ToolStripMenuItem
     Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
     Friend WithEvents LoadingProgressBar As ProgressBar
     Friend WithEvents MinimizeToClockTray As ToolStripMenuItem

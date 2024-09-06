@@ -792,6 +792,42 @@ Namespace My
                 Me("ServerTimeWidth") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property boolShowHostnameColumn() As Boolean
+            Get
+                Return CType(Me("boolShowHostnameColumn"),Boolean)
+            End Get
+            Set
+                Me("boolShowHostnameColumn") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property boolShowServerTimeColumn() As Boolean
+            Get
+                Return CType(Me("boolShowServerTimeColumn"),Boolean)
+            End Get
+            Set
+                Me("boolShowServerTimeColumn") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property boolShowLogTypeColumn() As Boolean
+            Get
+                Return CType(Me("boolShowLogTypeColumn"),Boolean)
+            End Get
+            Set
+                Me("boolShowLogTypeColumn") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
