@@ -65,7 +65,7 @@ Public Class Form1
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
 
-            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", "Informational", False, Logs))
+            Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", "Informational", False, Nothing, Logs))
 
             If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -129,31 +129,25 @@ Public Class Form1
         File.Copy(strPathToDataFile, GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json")))
     End Sub
 
-    Private Function MakeDataGridRow(dateObject As Date, strTime As String, strSourceAddress As String, strHeader As String, strLog As String, strLogType As String, boolAlerted As Boolean, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+    Private Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogData As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
                 .Cells(ColumnIndex_ComputedTime).Value = strTime
                 .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "(None)", strLogType)
+                .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "", strLogType)
                 .Cells(ColumnIndex_IPAddress).Value = strSourceAddress
-
-                If String.IsNullOrWhiteSpace(strHeader) Then
-                    .Cells(ColumnIndex_RFC5424).Value = "(None)"
-                Else
-                    If My.Settings.boolProcessReplacementsOnHeaderData Then
-                        .Cells(ColumnIndex_RFC5424).Value = ProcessReplacements(strHeader)
-                    Else
-                        .Cells(ColumnIndex_RFC5424).Value = strHeader
-                    End If
-                End If
-
+                .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(strRemoteProcess), "", strRemoteProcess)
+                .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(strHostname), "", strHostname)
+                .Cells(ColumnIndex_ServerTime).Value = ToIso8601Format(serverTimeStamp)
                 .Cells(ColumnIndex_LogText).Value = strLog
                 .Cells(ColumnIndex_Alerted).Value = If(boolAlerted, "Yes", "No")
                 .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
                 .DateObject = dateObject
                 .BoolAlerted = boolAlerted
+                .ServerDate = serverTimeStamp
+                .RawLogData = strRawLogData
                 .MinimumHeight = GetMinimumHeight(strLog, Logs.DefaultCellStyle.Font, ColLog.Width)
             End With
 
@@ -185,10 +179,13 @@ Public Class Form1
                                             .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
                                             .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                             .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                            .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                            .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
                                             .log = myItem.Cells(ColumnIndex_LogText).Value,
+                                            .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
                                             .DateObject = myItem.DateObject,
-                                            .BoolAlerted = myItem.BoolAlerted
+                                            .BoolAlerted = myItem.BoolAlerted,
+                                            .ServerDate = myItem.ServerDate,
+                                            .rawLogData = myItem.RawLogData
                                           })
                     End If
                 Next
@@ -434,7 +431,6 @@ Public Class Form1
         DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
         BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
-        ProcessReplacementsOnHeaderData.Checked = My.Settings.boolProcessReplacementsOnHeaderData
         ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
         ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
@@ -509,10 +505,12 @@ Public Class Form1
         Size = My.Settings.mainWindowSize
 
         ColTime.Width = My.Settings.columnTimeSize
-        ColIPAddress.Width = My.Settings.columnIPSize
-        ColLog.Width = My.Settings.columnLogSize
-        ColSyslogHeader.Width = My.Settings.RFC5424HeaderSize
+        colServerTime.Width = My.Settings.ServerTimeWidth
         colLogType.Width = My.Settings.LogTypeWidth
+        ColIPAddress.Width = My.Settings.columnIPSize
+        ColHostname.Width = My.Settings.HostnameWidth
+        ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
+        ColLog.Width = My.Settings.columnLogSize
 
         boolDoneLoading = True
 
@@ -538,7 +536,7 @@ Public Class Form1
         If File.Exists(strPathToDataFile) Then
             Try
                 Invoke(Sub()
-                           Logs.Rows.Add(MakeDataGridRow(Now, Nothing, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", "Informational, Local", False, Logs))
+                           Logs.Rows.Add(MakeDataGridRow(Now, Now, Nothing, Nothing, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", "Informational, Local", False, Nothing, Logs))
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
                        End Sub)
 
@@ -565,7 +563,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = False)
                 End If
 
-                listOfLogEntries.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", "Informational, Local", False, Logs))
+                listOfLogEntries.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", "Informational, Local", False, Nothing, Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -603,9 +601,9 @@ Public Class Form1
                        Logs.Rows.Clear()
 
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
-                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Logs),
-                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", "Informational, Local", False, Logs),
-                           MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", "Informational, Local", False, Logs)
+                           MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs),
+                           MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", "Informational, Local", False, Nothing, Logs),
+                           MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", "Informational, Local", False, Nothing, Logs)
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)
@@ -675,41 +673,28 @@ Public Class Form1
         End If
     End Function
 
-    Private Function TransformToRFC5424(traditionalLog As String) As String
-        ' Regular expression to parse the traditional syslog format
-        Dim match As Match = rfc5424TransformRegex.Match(traditionalLog)
+    Private Function ParseTimestamp(timestamp As String) As Date
+        Dim parsedDate As Date
 
-        If match.Success Then
-            Dim priority As String = match.Groups(1).Value ' e.g., <8>
-            Dim timestamp As String = match.Groups(2).Value ' e.g., Sep 3 13:36:08
-            Dim hostname As String = match.Groups(3).Value ' e.g., RT-AX5400-4F38-00502EA-C
-            Dim appName As String = match.Groups(4).Value ' e.g., bsd
-            Dim message As String = match.Groups(5).Value ' e.g., bsd: BSS Transit Response: STA reject
+        If timestamp.EndsWith("Z") Then
+            ' RFC 3339/ISO 8601 format with UTC timezone ("yyyy-MM-ddTHH:mm:ssZ")
+            parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+        ElseIf timestamp.Contains("+") OrElse timestamp.Contains("-") Then
+            ' RFC 3339/ISO 8601 format with timezone offset ("yyyy-MM-ddTHH:mm:sszzz")
+            Dim parsedDateOffset As DateTimeOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:sszzz", Globalization.CultureInfo.InvariantCulture)
+            parsedDate = parsedDateOffset.DateTime
+        ElseIf timestamp.Length >= 15 AndAlso Char.IsLetter(timestamp(0)) Then
+            ' "MMM dd HH:mm:ss" format (like "Sep  4 22:39:12")
+            timestamp = timestamp.Replace("  ", " 0") ' Handle single-digit day (e.g., "Sep  4" becomes "Sep 04")
+            parsedDate = Date.ParseExact(timestamp, "MMM dd HH:mm:ss", Globalization.CultureInfo.InvariantCulture)
 
-            ' Convert traditional timestamp to RFC 5424-compliant timestamp (ISO 8601 format)
-            Dim rfcTimestamp As String = ConvertToRFC5424Timestamp(timestamp)
-
-            ' Construct RFC 5424-compliant log message
-            ' Note: The message ID and structured data are optional and can be omitted if not used.
-            Return $"{priority}1 {rfcTimestamp} {hostname} {appName} {message}"
+            ' If you need to add the current year to the date:
+            parsedDate = parsedDate.AddYears(Date.Now.Year - parsedDate.Year)
         Else
-            ' If the traditional log doesn't match the expected format, return as-is or handle the error.
-            Return traditionalLog
+            Throw New FormatException("Unknown timestamp format.")
         End If
-    End Function
 
-    Private Function ConvertToRFC5424Timestamp(traditionalTimestamp As String) As String
-        ' Example conversion function to convert traditional timestamp to RFC 5424 format (ISO 8601)
-        Dim dateTime As Date
-
-        ' Parse traditional timestamp
-        If Date.TryParseExact(traditionalTimestamp, "MMM d HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, dateTime) Then
-            ' Convert to RFC 5424 format with time zone info (assuming UTC for this example)
-            Return dateTime.ToString("yyyy-MM-ddTHH:mm:ssZ")
-        Else
-            ' Handle parsing error if needed
-            Return traditionalTimestamp
-        End If
+        Return parsedDate
     End Function
 
     Private Sub ProcessIncomingLog(strLogText As String, strSourceIP As String)
@@ -717,36 +702,53 @@ Public Class Form1
             If Not String.IsNullOrWhiteSpace(strLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                 Dim boolIgnored As Boolean = False
                 Dim header As String = String.Empty
-                Dim message As String = String.Empty
                 Dim priorityObject As (Facility As String, Severity As String) = Nothing
+                Dim version, procId, structuredData, msgId, priority As String
+                Dim message As String = Nothing
+                Dim timestamp As String = Nothing
+                Dim hostname As String = Nothing
+                Dim appName As String = Nothing
 
                 ' Step 1: Use Regex to extract the RFC 5424 header and the message
 
-                strLogText = TransformToRFC5424(strLogText)
+                Dim rfc5424TransformRegexMatch As Match = rfc5424TransformRegex.Match(strLogText)
 
-                Dim match As Match = rfc5424Regex.Match(strLogText)
-                Debug.WriteLine(strLogText)
-
-                If match.Success Then
-                    Debug.WriteLine("match.Success")
-                    ' Extract components from the RFC 5424 header
-                    Dim priority As String = match.Groups(1).Value
-                    Dim version As String = match.Groups(2).Value
-                    Dim timestamp As String = match.Groups(3).Value
-                    Dim hostname As String = match.Groups(4).Value
-                    Dim appName As String = match.Groups(5).Value
-                    Dim procId As String = match.Groups(6).Value
-                    Dim msgId As String = match.Groups(7).Value
-                    Dim structuredData As String = match.Groups(8).Value
+                If rfc5424TransformRegexMatch.Success Then
+                    ' Handling the transformation to RFC 5424 format
+                    priority = rfc5424TransformRegexMatch.Groups(1).Value
+                    timestamp = rfc5424TransformRegexMatch.Groups(2).Value
+                    hostname = rfc5424TransformRegexMatch.Groups(3).Value
+                    appName = rfc5424TransformRegexMatch.Groups(4).Value
+                    message = rfc5424TransformRegexMatch.Groups(5).Value
 
                     priorityObject = GetSeverityAndFacility(priority)
 
-                    ' Reconstruct the header
-                    header = $"{priority}{version} {timestamp} {hostname} {appName} {procId} {msgId} {structuredData}".Trim()
-                    message = match.Groups(9).Value.Trim() ' Remaining part is the message
+                    ' Transform to RFC 5424 format (Version 1 assumed)
+                    'finalMessage = $"{priority}1 {timestamp} {hostname} {appName} - - {message}"
                 Else
-                    ' If it doesn't match, treat the whole thing as the message
-                    message = strLogText.Trim()
+                    ' Match against RFC 5424 formatted logs
+                    Dim rfc5424RegexMatch As Match = rfc5424Regex.Match(strLogText)
+
+                    If rfc5424RegexMatch.Success Then
+                        ' Use the correct match object
+                        priority = rfc5424RegexMatch.Groups(1).Value
+                        version = rfc5424RegexMatch.Groups(2).Value
+                        timestamp = rfc5424RegexMatch.Groups(3).Value
+                        hostname = rfc5424RegexMatch.Groups(4).Value
+                        appName = rfc5424RegexMatch.Groups(5).Value
+                        procId = rfc5424RegexMatch.Groups(6).Value
+                        msgId = rfc5424RegexMatch.Groups(7).Value
+                        structuredData = rfc5424RegexMatch.Groups(8).Value
+
+                        priorityObject = GetSeverityAndFacility(priority)
+
+                        ' Reconstruct the header using the correct match data
+                        header = $"{priority}{version} {timestamp} {hostname} {appName} {procId} {msgId} {structuredData}".Trim()
+                        'finalMessage = rfc5424RegexMatch.Groups(9).Value.Trim() ' Remaining part is the message
+                    Else
+                        ' If it doesn't match, treat the whole log as the message
+                        'finalMessage = strLogText.Trim()
+                    End If
                 End If
 
                 ' Step 2: Process the log message (previous processing logic)
@@ -777,10 +779,10 @@ Public Class Form1
                 If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message)
 
                 ' Step 4: Add to log list, separating header and message
-                AddToLogList(strSourceIP, header, message, boolIgnored, boolAlerted, priorityObject)
+                AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strLogText)
             End If
         Catch ex As Exception
-            AddToLogList("local", "Error", $"{ex.Message} -- {ex.StackTrace}", False, False, Nothing)
+            AddToLogList(Nothing, "local", "", $"{ex.Message} -- {ex.StackTrace}")
         End Try
     End Sub
 
@@ -826,14 +828,48 @@ Public Class Form1
         Return False
     End Function
 
-    Private Sub AddToLogList(strSourceIP As String, strHeader As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String))
+    Public Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHeader As String, strLogText As String)
         Dim currentDate As Date = Now.ToLocalTime
+        Dim serverDate As Date
+
+        If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
+            serverDate = currentDate
+        Else
+            serverDate = ParseTimestamp(strTimeStampFromServer)
+        End If
+
+        Invoke(Sub()
+                   SyncLock dataGridLockObject
+                       Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, Nothing, strHeader, strLogText, "Informational, Local", False, Nothing, Logs))
+                       If intSortColumnIndex = 0 And sortOrder = SortOrder.Descending Then SortLogsByDateObjectNoLocking(intSortColumnIndex, SortOrder.Descending)
+                   End SyncLock
+
+                   NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
+                   UpdateLogCount()
+                   BtnSaveLogsToDisk.Enabled = True
+
+                   If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
+                       Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                   End If
+               End Sub)
+    End Sub
+
+    Public Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), rawLogData As String)
+        Dim currentDate As Date = Now.ToLocalTime
+        Dim serverDate As Date
+
+        If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
+            serverDate = currentDate
+        Else
+            serverDate = ParseTimestamp(strTimeStampFromServer)
+        End If
+
         Debug.WriteLine(priority.ToString)
 
         If Not boolIgnored Then
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strHeader, strLogText, $"{priority.Severity}, {priority.Facility}", boolAlerted, Logs))
+                           Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, strHostname, strRemoteProcess, strLogText, $"{priority.Severity}, {priority.Facility}", boolAlerted, rawLogData, Logs))
                            If intSortColumnIndex = 0 And sortOrder = SortOrder.Descending Then SortLogsByDateObjectNoLocking(intSortColumnIndex, SortOrder.Descending)
                        End SyncLock
 
@@ -847,14 +883,13 @@ Public Class Form1
                    End Sub)
         ElseIf boolIgnored And ChkEnableRecordingOfIgnoredLogs.Checked Then
             SyncLock IgnoredLogsLockObject
-                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(currentDate, currentDate.ToString, strSourceIP, strHeader, strLogText, $"{priority.Severity}, {priority.Facility}", False, Logs)
+                Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, strHostname, strRemoteProcess, strLogText, $"{priority.Severity}, {priority.Facility}", boolAlerted, rawLogData, Logs)
                 IgnoredLogs.Add(NewIgnoredItem)
                 If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ChkEnableAutoScroll.Checked)
                 Invoke(Sub() ClearIgnoredLogsToolStripMenuItem.Enabled = True)
             End SyncLock
         End If
     End Sub
-
 
     Private Sub OpenLogViewerWindow()
         If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
@@ -885,7 +920,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -917,10 +952,12 @@ Public Class Form1
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
         If boolDoneLoading Then
             My.Settings.columnTimeSize = ColTime.Width
-            My.Settings.columnIPSize = ColIPAddress.Width
-            My.Settings.columnLogSize = ColLog.Width
-            My.Settings.RFC5424HeaderSize = ColSyslogHeader.Width
+            My.Settings.ServerTimeWidth = colServerTime.Width
             My.Settings.LogTypeWidth = colLogType.Width
+            My.Settings.columnIPSize = ColIPAddress.Width
+            My.Settings.HostnameWidth = ColHostname.Width
+            My.Settings.RemoteProcessHeaderSize = ColRemoteProcess.Width
+            My.Settings.columnLogSize = ColLog.Width
         End If
     End Sub
 
@@ -931,7 +968,7 @@ Public Class Form1
 
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", "Informational, Local", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1028,7 +1065,7 @@ Public Class Form1
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
-                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -1103,7 +1140,7 @@ Public Class Form1
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         If IgnoredLogsAndSearchResultsInstance Is Nothing Then
-            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
+            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
             IgnoredLogsAndSearchResultsInstance.Show()
         Else
             IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
@@ -1177,7 +1214,7 @@ Public Class Form1
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
                         If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                             Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1288,7 +1325,7 @@ Public Class Form1
                 Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1389,7 +1426,7 @@ Public Class Form1
                 Logs.Rows.Remove(item)
             Next
 
-            Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Logs))
+            Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
             If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1410,9 +1447,9 @@ Public Class Form1
                 Dim collectionOfSavedData As New List(Of SavedData)
                 Dim myItem As MyDataGridViewRow
                 Dim csvStringBuilder As New StringBuilder
-                Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted As String
+                Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strHostname, strRemoteProcess, strServerTime As String
 
-                If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted")
+                If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted")
 
                 For Each item As DataGridViewRow In Logs.Rows
                     If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
@@ -1422,20 +1459,26 @@ Public Class Form1
                             strTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ComputedTime).Value)
                             strLogType = SanitizeForCSV(myItem.Cells(ColumnIndex_LogType).Value)
                             strSourceIP = SanitizeForCSV(myItem.Cells(ColumnIndex_IPAddress).Value)
-                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RFC5424).Value)
+                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RemoteProcess).Value)
                             strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
+                            strHostname = SanitizeForCSV(myItem.Cells(ColumnIndex_Hostname).Value)
+                            strRemoteProcess = SanitizeForCSV(myItem.Cells(ColumnIndex_RemoteProcess).Value)
+                            strServerTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ServerTime).Value)
                             strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
-                            csvStringBuilder.AppendLine($"{strTime},{strLogType},{strSourceIP},{strHeader},{strLogText},{strAlerted}")
+                            csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted}")
                         Else
                             collectionOfSavedData.Add(New SavedData With {
                                                     .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                    .ServerDate = myItem.Cells(ColumnIndex_ServerTime).Value,
                                                     .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                                     .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                    .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                                    .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                                    .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
                                                     .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                     .DateObject = myItem.DateObject,
-                                                    .BoolAlerted = myItem.BoolAlerted
+                                                    .BoolAlerted = myItem.BoolAlerted,
+                                                    .rawLogData = myItem.RawLogData
                                                   })
                         End If
                     End If
@@ -1469,9 +1512,9 @@ Public Class Form1
                 Dim collectionOfSavedData As New List(Of SavedData)
                 Dim myItem As MyDataGridViewRow
                 Dim csvStringBuilder As New StringBuilder
-                Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted As String
+                Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strHostname, strRemoteProcess, strServerTime As String
 
-                If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted")
+                If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted")
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
                     If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
@@ -1481,20 +1524,26 @@ Public Class Form1
                             strTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ComputedTime).Value)
                             strLogType = SanitizeForCSV(myItem.Cells(ColumnIndex_LogType).Value)
                             strSourceIP = SanitizeForCSV(myItem.Cells(ColumnIndex_IPAddress).Value)
-                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RFC5424).Value)
+                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RemoteProcess).Value)
                             strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
+                            strHostname = SanitizeForCSV(myItem.Cells(ColumnIndex_Hostname).Value)
+                            strRemoteProcess = SanitizeForCSV(myItem.Cells(ColumnIndex_RemoteProcess).Value)
+                            strServerTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ServerTime).Value)
                             strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
-                            csvStringBuilder.AppendLine($"{strTime},{strLogType},{strSourceIP},{strHeader},{strLogText},{strAlerted}")
+                            csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted}")
                         Else
                             collectionOfSavedData.Add(New SavedData With {
                                                     .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                    .ServerDate = myItem.Cells(ColumnIndex_ServerTime).Value,
                                                     .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                                     .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                    .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                                    .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                                    .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
                                                     .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                     .DateObject = myItem.DateObject,
-                                                    .BoolAlerted = myItem.BoolAlerted
+                                                    .BoolAlerted = myItem.BoolAlerted,
+                                                    .rawLogData = myItem.RawLogData
                                                   })
                         End If
                     End If
@@ -1532,7 +1581,7 @@ Public Class Form1
             serverThread.Start()
 
             SyncLock dataGridLockObject
-                Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Logs))
+                Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
 
                 If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                     Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1610,7 +1659,7 @@ Public Class Form1
                     serverThread.Start()
 
                     SyncLock dataGridLockObject
-                        Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Logs))
+                        Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
 
                         If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                             Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
@@ -1722,7 +1771,7 @@ Public Class Form1
     Private Sub BtnOpenLogForViewing_Click(sender As Object, e As EventArgs) Handles BtnOpenLogForViewing.Click
         Using OpenFileDialog As New OpenFileDialog With {.Title = "Open Log File", .Filter = "JSON File|*.json"}
             If OpenFileDialog.ShowDialog() = DialogResult.OK Then
-                Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = OpenFileDialog.FileName, .boolLoadExternalData = True}
+                Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = OpenFileDialog.FileName, .boolLoadExternalData = True}
                 logFileViewer.Show(Me)
             End If
         End Using
@@ -1821,10 +1870,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ProcessReplacementsOnHeaderData_Click(sender As Object, e As EventArgs) Handles ProcessReplacementsOnHeaderData.Click
-        My.Settings.boolProcessReplacementsOnHeaderData = ProcessReplacementsOnHeaderData.Checked
-    End Sub
-
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1878,7 +1923,7 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(MakeDataGridRow(Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, $"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", "Error", False, Logs))
+                           Logs.Rows.Add(MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", "Error", False, Nothing, Logs))
 
                            If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
                                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)

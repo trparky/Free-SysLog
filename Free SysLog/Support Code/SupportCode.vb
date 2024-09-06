@@ -27,12 +27,22 @@ Module SupportCode
     Public Const strQuote As String = Chr(34)
 
     Public Const ColumnIndex_ComputedTime As Integer = 0
-    Public Const ColumnIndex_LogType As Integer = 1
-    Public Const ColumnIndex_IPAddress As Integer = 2
-    Public Const ColumnIndex_RFC5424 As Integer = 3
-    Public Const ColumnIndex_LogText As Integer = 4
-    Public Const ColumnIndex_Alerted As Integer = 5
-    Public Const ColumnIndex_FileName As Integer = 6
+    Public Const ColumnIndex_ServerTime As Integer = 1
+    Public Const ColumnIndex_LogType As Integer = 2
+    Public Const ColumnIndex_IPAddress As Integer = 3
+    Public Const ColumnIndex_Hostname As Integer = 4
+    Public Const ColumnIndex_RemoteProcess As Integer = 5
+    Public Const ColumnIndex_LogText As Integer = 6
+    Public Const ColumnIndex_Alerted As Integer = 7
+    Public Const ColumnIndex_FileName As Integer = 8
+
+    Public Function ToIso8601Format(dateTime As Date) As String
+        ' Ensure the DateTime is in UTC
+        Dim utcDateTime As Date = dateTime.ToUniversalTime()
+
+        ' Convert to ISO 8601 format with UTC time zone designator (Z)
+        Return utcDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture)
+    End Function
 
     Public Function GetIPv4Address(ipv6Address As IPAddress) As IPAddress
         If ipv6Address.AddressFamily = AddressFamily.InterNetworkV6 AndAlso ipv6Address.IsIPv4MappedToIPv6 Then Return ipv6Address.MapToIPv4()

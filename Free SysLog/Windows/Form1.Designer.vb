@@ -66,11 +66,13 @@ Partial Class Form1
         Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
         Me.Logs = New System.Windows.Forms.DataGridView()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colServerTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColSyslogHeader = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColRemoteProcess = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ChkEnableConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -91,7 +93,6 @@ Partial Class Form1
         Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ProcessReplacementsOnHeaderData = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowAlertedColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -373,7 +374,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ProcessReplacementsOnHeaderData, Me.ChkShowAlertedColumn})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.ChkShowAlertedColumn})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -454,7 +455,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.colLogType, Me.ColIPAddress, Me.ColSyslogHeader, Me.ColLog, Me.ColAlerts})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.colServerTime, Me.colLogType, Me.ColIPAddress, Me.ColHostname, Me.ColRemoteProcess, Me.ColLog, Me.ColAlerts})
         Me.Logs.ContextMenuStrip = Me.LogsMenu
         Me.Logs.Location = New System.Drawing.Point(12, 52)
         Me.Logs.Name = "Logs"
@@ -462,6 +463,14 @@ Partial Class Form1
         Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.Logs.Size = New System.Drawing.Size(1151, 369)
         Me.Logs.TabIndex = 18
+        '
+        'colServerTime
+        '
+        Me.colServerTime.HeaderText = "Server Time"
+        Me.colServerTime.Name = "colServerTime"
+        Me.colServerTime.ReadOnly = True
+        Me.colServerTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.colServerTime.ToolTipText = "The time on the server at which the log entry came in."
         '
         'ColTime
         '
@@ -495,13 +504,21 @@ Partial Class Form1
         Me.ColAlerts.Width = 50
         Me.ColAlerts.ToolTipText = "Yes or No. Indicates if the log entry triggered an alert from this program."
         '
-        'ColSyslogHeader
+        'ColHostname
         '
-        Me.ColSyslogHeader.HeaderText = "Syslog RFC 5424 Header"
-        Me.ColSyslogHeader.Name = "ColSyslogHeader"
-        Me.ColSyslogHeader.ReadOnly = True
-        Me.ColSyslogHeader.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColSyslogHeader.Width = 150
+        Me.ColHostname.HeaderText = "Hostname"
+        Me.ColHostname.Name = "ColHostname"
+        Me.ColHostname.ReadOnly = True
+        Me.ColHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColHostname.Width = 150
+        '
+        'ColRemoteProcess
+        '
+        Me.ColRemoteProcess.HeaderText = "Remote Process"
+        Me.ColRemoteProcess.Name = "ColRemoteProcess"
+        Me.ColRemoteProcess.ReadOnly = True
+        Me.ColRemoteProcess.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColRemoteProcess.Width = 150
         '
         'ColLog
         '
@@ -651,13 +668,6 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(339, 22)
         Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
         '
-        'ProcessReplacementsOnHeaderData
-        '
-        Me.ProcessReplacementsOnHeaderData.CheckOnClick = True
-        Me.ProcessReplacementsOnHeaderData.Name = "ProcessReplacementsOnHeaderData"
-        Me.ProcessReplacementsOnHeaderData.Size = New System.Drawing.Size(339, 22)
-        Me.ProcessReplacementsOnHeaderData.Text = "Process Replacements on RFC 5424 Header Data"
-        '
         'ChkShowAlertedColumn
         '
         Me.ChkShowAlertedColumn.CheckOnClick = True
@@ -757,11 +767,13 @@ Partial Class Form1
     Friend WithEvents ChkCaseInsensitiveSearch As CheckBox
     Friend WithEvents Logs As DataGridView
     Friend WithEvents ColTime As DataGridViewTextBoxColumn
+    Friend WithEvents colServerTime As DataGridViewTextBoxColumn
     Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents colLogType As DataGridViewTextBoxColumn
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
-    Friend WithEvents ColSyslogHeader As DataGridViewTextBoxColumn
+    Friend WithEvents ColRemoteProcess As DataGridViewTextBoxColumn
+    Friend WithEvents ColHostname As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents ChangeAlternatingColorToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem
@@ -787,7 +799,6 @@ Partial Class Form1
     Friend WithEvents DonationStripMenuItem As ToolStripMenuItem
     Friend WithEvents StopServerStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenWindowsExplorerToAppConfigFile As ToolStripMenuItem
-    Friend WithEvents ProcessReplacementsOnHeaderData As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeSyslogServerPortToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeLogAutosaveIntervalToolStripMenuItem As ToolStripMenuItem

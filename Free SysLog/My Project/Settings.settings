@@ -176,14 +176,17 @@
     <Setting Name="EnableTCPServer" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="RFC5424HeaderSize" Type="System.Int32" Scope="User">
+    <Setting Name="RemoteProcessHeaderSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">150</Value>
     </Setting>
     <Setting Name="LogTypeWidth" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
-    <Setting Name="boolProcessReplacementsOnHeaderData" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="HostnameWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="ServerTimeWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
     </Setting>
   </Settings>
 </SettingsFile>

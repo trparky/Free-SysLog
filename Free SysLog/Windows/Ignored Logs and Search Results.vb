@@ -9,6 +9,7 @@ Public Class IgnoredLogsAndSearchResults
     Public WindowDisplayMode As IgnoreOrSearchWindowDisplayMode
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
+    Public MainProgramForm As Form1
 
     Public boolLoadExternalData As Boolean = False
     Public strFileToLoad As String
@@ -114,11 +115,12 @@ Public Class IgnoredLogsAndSearchResults
         End If
 
         ColTime.Width = My.Settings.columnTimeSize
-        ColIPAddress.Width = My.Settings.columnIPSize
-        ColLog.Width = My.Settings.columnLogSize
-        ColAlerts.Visible = My.Settings.boolShowAlertedColumn
-        ColSyslogHeader.Width = My.Settings.RFC5424HeaderSize
+        colServerTime.Width = My.Settings.ServerTimeWidth
         colLogType.Width = My.Settings.LogTypeWidth
+        ColIPAddress.Width = My.Settings.columnIPSize
+        ColHostname.Width = My.Settings.HostnameWidth
+        ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
+        ColLog.Width = My.Settings.columnLogSize
 
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
@@ -192,13 +194,13 @@ Public Class IgnoredLogsAndSearchResults
             Dim myItem As MyDataGridViewRow
             Dim csvStringBuilder As New Text.StringBuilder
             Dim savedData As SavedData
-            Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strFileName As String
+            Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strHostname, strRemoteProcess, strServerTime, strFileName As String
 
             If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                 If ColFileName.Visible Then
-                    csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted,File Name")
+                    csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted,File Name")
                 Else
-                    csvStringBuilder.AppendLine("Time,Log Type,Source IP,Header,Log Text,Alerted")
+                    csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted")
                 End If
             End If
 
@@ -208,29 +210,35 @@ Public Class IgnoredLogsAndSearchResults
 
                     If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                         With myItem
-                            strTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ComputedTime).Value)
-                            strLogType = SanitizeForCSV(myItem.Cells(ColumnIndex_LogType).Value)
-                            strSourceIP = SanitizeForCSV(myItem.Cells(ColumnIndex_IPAddress).Value)
-                            strHeader = SanitizeForCSV(myItem.Cells(ColumnIndex_RFC5424).Value)
-                            strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
-                            strAlerted = If(myItem.BoolAlerted, "Yes", "No")
+                            strTime = SanitizeForCSV(.Cells(ColumnIndex_ComputedTime).Value)
+                            strLogType = SanitizeForCSV(.Cells(ColumnIndex_LogType).Value)
+                            strSourceIP = SanitizeForCSV(.Cells(ColumnIndex_IPAddress).Value)
+                            strHeader = SanitizeForCSV(.Cells(ColumnIndex_RemoteProcess).Value)
+                            strLogText = SanitizeForCSV(.Cells(ColumnIndex_LogText).Value)
+                            strHostname = SanitizeForCSV(.Cells(ColumnIndex_Hostname).Value)
+                            strRemoteProcess = SanitizeForCSV(.Cells(ColumnIndex_RemoteProcess).Value)
+                            strServerTime = SanitizeForCSV(.Cells(ColumnIndex_ServerTime).Value)
+                            strAlerted = If(.BoolAlerted, "Yes", "No")
                         End With
 
                         If ColFileName.Visible Then
-                            strFileName = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
-                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted},{strFileName}")
+                            strFileName = SanitizeForCSV(myItem.Cells(ColumnIndex_FileName).Value)
+                            csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted},{strFileName}")
                         Else
-                            csvStringBuilder.AppendLine($"{strTime},{strSourceIP},{strLogText},{strAlerted}")
+                            csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted}")
                         End If
                     Else
                         savedData = New SavedData With {
                                                     .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                    .ServerDate = myItem.Cells(ColumnIndex_ServerTime).Value,
                                                     .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                                     .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                    .header = myItem.Cells(ColumnIndex_RFC5424).Value,
+                                                    .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                                    .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
                                                     .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                     .DateObject = myItem.DateObject,
-                                                    .BoolAlerted = myItem.BoolAlerted
+                                                    .BoolAlerted = myItem.BoolAlerted,
+                                                    .rawLogData = myItem.RawLogData
                                               }
                         If ColFileName.Visible Then savedData.fileName = myItem.Cells(ColumnIndex_FileName).Value
                         collectionOfSavedData.Add(savedData)
@@ -307,10 +315,10 @@ Public Class IgnoredLogsAndSearchResults
                        End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
-            SendMessageToSysLogServer($"{strNoProxyString}Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            MainProgramForm.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, "", $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         Catch ex As Newtonsoft.Json.JsonReaderException
-            SendMessageToSysLogServer($"{strNoProxyString}Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", My.Settings.sysLogPort)
+            MainProgramForm.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, "", $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         End Try
     End Sub
@@ -375,7 +383,7 @@ Public Class IgnoredLogsAndSearchResults
                                                   MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                   If MyDataGridRowItem IsNot Nothing Then
-                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_RFC5424).Value
+                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value
 
                                                       If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
@@ -390,7 +398,7 @@ Public Class IgnoredLogsAndSearchResults
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
-                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -403,7 +411,7 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
-        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value), .boolLoadExternalData = True}
+        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value), .boolLoadExternalData = True}
         logFileViewer.Show(Me)
     End Sub
 

@@ -56,7 +56,7 @@ Public Class ViewLogBackups
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
 
             If File.Exists(fileName) Then
-                Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .boolLoadExternalData = True}
+                Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .boolLoadExternalData = True}
                 searchResultsWindow.ShowDialog(Me)
             End If
         End If
@@ -79,7 +79,7 @@ Public Class ViewLogBackups
 
                 If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedItems(0).SubItems(0).Text}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     File.Delete(fileName)
-                    SendMessageToSysLogServer($"{strNoProxyString}The user deleted ""{FileList.SelectedItems(0).SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
+                    MyParentForm.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, "", $"The user deleted ""{FileList.SelectedItems(0).SubItems(0).Text}"" from the log backups folder.")
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             Else
@@ -95,7 +95,7 @@ Public Class ViewLogBackups
                 If MsgBox(stringBuilder.ToString.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     For Each item As ListViewItem In FileList.SelectedItems
                         File.Delete(Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text))
-                        SendMessageToSysLogServer($"{strNoProxyString}The user deleted ""{item.SubItems(0).Text}"" from the log backups folder.", My.Settings.sysLogPort)
+                        MyParentForm.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, "", $"The user deleted ""{item.SubItems(0).Text}"" from the log backups folder.")
                     Next
 
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
@@ -129,7 +129,7 @@ Public Class ViewLogBackups
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
-        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
 
         BtnSearch.Enabled = False
 

@@ -748,12 +748,12 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
-        Public Property RFC5424HeaderSize() As Integer
+        Public Property RemoteProcessHeaderSize() As Integer
             Get
-                Return CType(Me("RFC5424HeaderSize"),Integer)
+                Return CType(Me("RemoteProcessHeaderSize"),Integer)
             End Get
             Set
-                Me("RFC5424HeaderSize") = value
+                Me("RemoteProcessHeaderSize") = value
             End Set
         End Property
         
@@ -771,13 +771,25 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-        Public Property boolProcessReplacementsOnHeaderData() As Boolean
+         Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
+        Public Property HostnameWidth() As Integer
             Get
-                Return CType(Me("boolProcessReplacementsOnHeaderData"),Boolean)
+                Return CType(Me("HostnameWidth"),Integer)
             End Get
             Set
-                Me("boolProcessReplacementsOnHeaderData") = value
+                Me("HostnameWidth") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
+        Public Property ServerTimeWidth() As Integer
+            Get
+                Return CType(Me("ServerTimeWidth"),Integer)
+            End Get
+            Set
+                Me("ServerTimeWidth") = value
             End Set
         End Property
     End Class
