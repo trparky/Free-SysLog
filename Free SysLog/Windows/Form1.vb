@@ -832,7 +832,7 @@ Public Class Form1
 
             If SaveFileDialog.ShowDialog() = DialogResult.OK Then
                 Try
-                    SaveApplicationSettingsToFile(SaveFileDialog.FileName)
+                    SaveAppSettings.SaveApplicationSettingsToFile(SaveFileDialog.FileName)
                     If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
                 Catch ex As Exception
                     MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
@@ -846,7 +846,7 @@ Public Class Form1
             OpenFileDialog.Title = "Import Program Settings..."
             OpenFileDialog.Filter = "JSON File|*.json"
 
-            If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
+            If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso SaveAppSettings.LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
                 My.Settings.Save()
 
                 Threading.Thread.Sleep(500)

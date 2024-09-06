@@ -232,7 +232,7 @@
     <Compile Include="Windows\Replacements.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Support Code\SaveAppSettings.vb" />
+    <Compile Include="Support Code\Namespace Code\SaveAppSettings.vb" />
     <Compile Include="Support Code\SavedData.vb" />
     <Compile Include="Support Code\Namespace Code\ProcessHandling.vb" />
     <Compile Include="Support Code\StringExtensions.vb" />
