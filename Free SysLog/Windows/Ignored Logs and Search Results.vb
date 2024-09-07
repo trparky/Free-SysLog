@@ -315,10 +315,10 @@ Public Class IgnoredLogsAndSearchResults
                        End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
-            SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, "", $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
+            SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         Catch ex As Newtonsoft.Json.JsonReaderException
-            SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, "", $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
+            SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         End Try
     End Sub

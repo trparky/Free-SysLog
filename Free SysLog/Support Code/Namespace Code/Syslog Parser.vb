@@ -36,7 +36,7 @@ Namespace SyslogParser
             End Using
         End Function
 
-        Public Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHeader As String, strLogText As String)
+        Public Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strLogText As String)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
@@ -48,7 +48,7 @@ Namespace SyslogParser
 
             ParentForm.Invoke(Sub()
                                   SyncLock ParentForm.dataGridLockObject
-                                      ParentForm.Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, Nothing, strHeader, strLogText, "Informational, Local", False, Nothing, ParentForm.Logs))
+                                      ParentForm.Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, Nothing, Nothing, strLogText, "Informational, Local", False, Nothing, ParentForm.Logs))
                                       If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                   End SyncLock
 
@@ -203,7 +203,7 @@ Namespace SyslogParser
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strLogText)
                 End If
             Catch ex As Exception
-                AddToLogList(Nothing, "local", "", $"{ex.Message} -- {ex.StackTrace}")
+                AddToLogList(Nothing, "local", $"{ex.Message} -- {ex.StackTrace}")
             End Try
         End Sub
 
