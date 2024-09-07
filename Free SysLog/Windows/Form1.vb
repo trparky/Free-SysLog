@@ -458,8 +458,9 @@ Public Class Form1
     Private Sub OpenLogViewerWindow()
         If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData)
 
-            Using LogViewerInstance As New LogViewer With {.strLogText = selectedRow.Cells(ColumnIndex_LogText).Value, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Using LogViewerInstance As New LogViewer With {.strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
                 LogViewerInstance.ShowDialog(Me)
