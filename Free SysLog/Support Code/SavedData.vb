@@ -21,6 +21,7 @@
                 .DateObject = DateObject
                 .BoolAlerted = BoolAlerted
                 .MinimumHeight = height
+                .RawLogData = rawLogData
             End With
 
             Return MyDataGridViewRow
