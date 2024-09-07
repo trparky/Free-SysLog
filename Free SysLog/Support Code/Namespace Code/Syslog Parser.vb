@@ -186,7 +186,7 @@ Namespace SyslogParser
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then
                         For Each ignoredClassInstance As IgnoredClass In ignoredList
-                            If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, Regex.Escape(ignoredClassInstance.StrIgnore)), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
+                            If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
                                 ParentForm.Invoke(Sub()
                                                       ParentForm.longNumberOfIgnoredLogs += 1
                                                       If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
