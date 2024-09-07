@@ -181,6 +181,7 @@ Namespace SyslogParser
 
                     ' Step 2: Process the log message (previous processing logic)
                     message = ConvertLineFeeds(message)
+                    strRawLogText = ConvertLineFeeds(strRawLogText)
 
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then
