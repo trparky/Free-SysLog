@@ -118,7 +118,13 @@ Namespace SyslogParser
             Return parsedDate
         End Function
 
-        Public Sub ProcessIncomingLog(strLogText As String, strSourceIP As String)
+        Private Function ConvertLineFeeds(strInput As String) As String
+            strInput = strInput.Replace(vbCrLf, vbLf) ' Temporarily replace all CRLF with LF
+            strInput = strInput.Replace(vbCr, vbLf)   ' Convert standalone CR to LF
+            strInput = strInput.Replace(vbLf, vbCrLf) ' Finally, replace all LF with CRLF
+            Return strInput.Trim()
+        End Function
+
             Try
                 If Not String.IsNullOrWhiteSpace(strLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
@@ -173,10 +179,7 @@ Namespace SyslogParser
                     End If
 
                     ' Step 2: Process the log message (previous processing logic)
-                    message = message.Replace(vbCrLf, vbLf) ' Temporarily replace all CRLF with LF
-                    message = message.Replace(vbCr, vbLf)   ' Convert standalone CR to LF
-                    message = message.Replace(vbLf, vbCrLf) ' Finally, replace all LF with CRLF
-                    message = message.Trim()
+                    message = ConvertLineFeeds(message)
 
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then
