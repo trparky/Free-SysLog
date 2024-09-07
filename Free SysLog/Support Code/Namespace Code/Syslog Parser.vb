@@ -222,8 +222,6 @@ Namespace SyslogParser
                 serverDate = ParseTimestamp(strTimeStampFromServer)
             End If
 
-            Debug.WriteLine(priority.ToString)
-
             If Not boolIgnored Then
                 ParentForm.Invoke(Sub()
                                       SyncLock ParentForm.dataGridLockObject
