@@ -143,11 +143,11 @@ Namespace SyslogParser
 
                     If rfc5424TransformRegexMatch.Success Then
                         ' Handling the transformation to RFC 5424 format
-                        priority = rfc5424TransformRegexMatch.Groups(1).Value
-                        timestamp = rfc5424TransformRegexMatch.Groups(2).Value
-                        hostname = rfc5424TransformRegexMatch.Groups(3).Value
-                        appName = rfc5424TransformRegexMatch.Groups(4).Value
-                        message = rfc5424TransformRegexMatch.Groups(5).Value
+                        priority = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(1).Value), "", rfc5424TransformRegexMatch.Groups(1).Value)
+                        timestamp = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(2).Value), "", rfc5424TransformRegexMatch.Groups(2).Value)
+                        hostname = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(3).Value), "", rfc5424TransformRegexMatch.Groups(3).Value)
+                        appName = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(4).Value), "", rfc5424TransformRegexMatch.Groups(4).Value)
+                        message = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(5).Value), "", rfc5424TransformRegexMatch.Groups(5).Value)
 
                         priorityObject = GetSeverityAndFacility(priority)
 
@@ -159,20 +159,20 @@ Namespace SyslogParser
 
                         If rfc5424RegexMatch.Success Then
                             ' Use the correct match object
-                            priority = rfc5424RegexMatch.Groups(1).Value
-                            version = rfc5424RegexMatch.Groups(2).Value
-                            timestamp = rfc5424RegexMatch.Groups(3).Value
-                            hostname = rfc5424RegexMatch.Groups(4).Value
-                            appName = rfc5424RegexMatch.Groups(5).Value
-                            procId = rfc5424RegexMatch.Groups(6).Value
-                            msgId = rfc5424RegexMatch.Groups(7).Value
-                            structuredData = rfc5424RegexMatch.Groups(8).Value
+                            priority = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(1).Value), "", rfc5424RegexMatch.Groups(1).Value)
+                            version = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(2).Value), "", rfc5424RegexMatch.Groups(2).Value)
+                            timestamp = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(3).Value), "", rfc5424RegexMatch.Groups(3).Value)
+                            hostname = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(4).Value), "", rfc5424RegexMatch.Groups(4).Value)
+                            appName = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(5).Value), "", rfc5424RegexMatch.Groups(5).Value)
+                            procId = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(6).Value), "", rfc5424RegexMatch.Groups(6).Value)
+                            msgId = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(7).Value), "", rfc5424RegexMatch.Groups(7).Value)
+                            structuredData = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(8).Value), "", rfc5424RegexMatch.Groups(8).Value)
 
                             priorityObject = GetSeverityAndFacility(priority)
 
                             ' Reconstruct the header using the correct match data
                             header = $"{priority}{version} {timestamp} {hostname} {appName} {procId} {msgId} {structuredData}".Trim()
-                            'finalMessage = rfc5424RegexMatch.Groups(9).Value.Trim() ' Remaining part is the message
+                            'finalMessage = If(String.IsNullOrWhitespace(rfc5424RegexMatch.Groups(9).Value), "", rfc5424RegexMatch.Groups(9).Value).Trim() ' Remaining part is the message
                         Else
                             ' If it doesn't match, treat the whole log as the message
                             'finalMessage = strLogText.Trim()
