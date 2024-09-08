@@ -123,6 +123,10 @@ Public Class IgnoredLogsAndSearchResults
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
 
+        ColHostname.Visible = My.Settings.boolShowHostnameColumn
+        colServerTime.Visible = My.Settings.boolShowServerTimeColumn
+        colLogType.Visible = My.Settings.boolShowLogTypeColumn
+
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
