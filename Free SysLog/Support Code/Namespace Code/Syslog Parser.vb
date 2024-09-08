@@ -208,7 +208,7 @@ Namespace SyslogParser
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText)
                 End If
             Catch ex As Exception
-                AddToLogList(Nothing, "local", $"{ex.Message} -- {ex.StackTrace}")
+                AddToLogList(Nothing, "local", $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
         End Sub
 
