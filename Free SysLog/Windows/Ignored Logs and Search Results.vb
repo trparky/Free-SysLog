@@ -139,6 +139,7 @@ Public Class IgnoredLogsAndSearchResults
 
         If WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
             Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
+            SortLogsByDateObject(0, SortOrder.Ascending)
 
             If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
@@ -153,6 +154,7 @@ Public Class IgnoredLogsAndSearchResults
             AddHandler worker.RunWorkerCompleted, Sub()
                                                       LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
                                                       boolDoneLoading = True
+                                                      SortLogsByDateObject(0, SortOrder.Ascending)
                                                   End Sub
             worker.RunWorkerAsync()
         End If
