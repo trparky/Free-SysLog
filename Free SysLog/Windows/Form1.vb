@@ -68,9 +68,7 @@ Public Class Form1
 
             Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", "Informational", False, Nothing, Logs))
 
-            If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-            End If
+            SelectLatestLogEntry()
 
             NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
         End SyncLock
@@ -140,13 +138,16 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub SelectLatestLogEntry()
+        If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
+            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+        End If
+    End Sub
+
     Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.mainWindowSize = Size
         Threading.Thread.Sleep(100)
-
-        If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-        End If
+        SelectLatestLogEntry()
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -198,9 +199,7 @@ Public Class Form1
         BringToFront()
         TopMost = False
 
-        If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-        End If
+        SelectLatestLogEntry()
     End Sub
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
@@ -390,9 +389,7 @@ Public Class Form1
                                Logs.Rows.Clear()
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
 
-                               If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                                   Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                               End If
+                               SelectLatestLogEntry()
 
                                Logs.SelectedRows(0).Selected = False
                                UpdateLogCount()
@@ -488,9 +485,7 @@ Public Class Form1
 
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
-                If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                    Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                End If
+                SelectLatestLogEntry()
             End SyncLock
 
             UpdateLogCount()
@@ -536,9 +531,7 @@ Public Class Form1
                 Logs.Rows.Clear()
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
-                If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                    Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                End If
+                SelectLatestLogEntry()
             End SyncLock
 
             UpdateLogCount()
@@ -782,9 +775,7 @@ Public Class Form1
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                         Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
-                        If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                        End If
+                        SelectLatestLogEntry()
                     End SyncLock
 
                     UpdateLogCount()
@@ -893,9 +884,7 @@ Public Class Form1
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
-                If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                    Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                End If
+                SelectLatestLogEntry()
             End SyncLock
 
             UpdateLogCount()
@@ -994,9 +983,7 @@ Public Class Form1
 
             Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
 
-            If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-            End If
+            SelectLatestLogEntry()
         End SyncLock
 
         UpdateLogCount()
@@ -1026,11 +1013,7 @@ Public Class Form1
 
             SyncLock dataGridLockObject
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
-
-                If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                    Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                End If
-
+                SelectLatestLogEntry()
                 UpdateLogCount()
             End SyncLock
 
@@ -1104,11 +1087,7 @@ Public Class Form1
 
                     SyncLock dataGridLockObject
                         Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
-
-                        If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                        End If
-
+                        SelectLatestLogEntry()
                         UpdateLogCount()
                     End SyncLock
 
@@ -1383,11 +1362,7 @@ Public Class Form1
             Invoke(Sub()
                        SyncLock dataGridLockObject
                            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", "Error", False, Nothing, Logs))
-
-                           If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-                               Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                           End If
-
+                           SelectLatestLogEntry()
                            UpdateLogCount()
                        End SyncLock
 
@@ -1407,9 +1382,7 @@ Public Class Form1
 
         Await Threading.Tasks.Task.Delay(100)
 
-        If ChkEnableAutoScroll.Checked And Logs.Rows.Count > 0 And intSortColumnIndex = 0 Then
-            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-        End If
+        SelectLatestLogEntry()
     End Sub
 #End Region
 End Class
