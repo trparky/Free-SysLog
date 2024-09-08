@@ -1,4 +1,6 @@
-﻿Public Class DateFormatChooser
+﻿Imports Free_SysLog.SupportCode
+
+Public Class DateFormatChooser
     Private boolDoneLoading As Boolean = False
     Private boolChanged As Boolean = False
 

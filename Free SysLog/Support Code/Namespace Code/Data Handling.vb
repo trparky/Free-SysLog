@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports System.Text
+Imports Free_SysLog.SupportCode
 
 Namespace DataHandling
     Public Module DataHandling

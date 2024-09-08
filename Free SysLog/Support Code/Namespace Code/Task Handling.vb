@@ -1,6 +1,7 @@
 ﻿Imports Microsoft.Win32
 Imports Microsoft.Win32.TaskScheduler
 Imports System.IO
+Imports Free_SysLog.SupportCode
 
 Namespace TaskHandling
     Module TaskHandling

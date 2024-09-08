@@ -1,4 +1,5 @@
 ﻿Imports System.Text.RegularExpressions
+Imports Free_SysLog.SupportCode
 
 Namespace SyslogParser
     Public Module SyslogParser

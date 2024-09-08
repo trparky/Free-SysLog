@@ -1,4 +1,6 @@
-﻿Public Class IgnoredWordsAndPhrases
+﻿Imports Free_SysLog.SupportCode
+
+Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
 

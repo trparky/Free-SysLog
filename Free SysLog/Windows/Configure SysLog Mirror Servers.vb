@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports Free_SysLog.SupportCode
 
 Public Class ConfigureSysLogMirrorServers
     Public boolSuccess As Boolean = False

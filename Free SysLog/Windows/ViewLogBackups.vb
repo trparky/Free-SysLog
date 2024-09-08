@@ -2,6 +2,7 @@
 Imports System.Text.RegularExpressions
 Imports System.ComponentModel
 Imports System.Threading.Tasks
+Imports Free_SysLog.SupportCode
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1

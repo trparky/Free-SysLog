@@ -1,4 +1,6 @@
-﻿Public Class AddIgnored
+﻿Imports Free_SysLog.SupportCode
+
+Public Class AddIgnored
     Public boolRegex, boolCaseSensitive As Boolean
     Public strIgnored As String
     Public boolSuccess As Boolean = False

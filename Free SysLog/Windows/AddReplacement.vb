@@ -1,4 +1,6 @@
-﻿Public Class AddReplacement
+﻿Imports Free_SysLog.SupportCode
+
+Public Class AddReplacement
     Public boolRegex, boolCaseSensitive As Boolean
     Public strReplace, strReplaceWith As String
     Public boolSuccess As Boolean = False

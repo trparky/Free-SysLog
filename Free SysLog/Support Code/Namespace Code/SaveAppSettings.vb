@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports Free_SysLog.SupportCode
 
 Namespace SaveAppSettings
     Public Module SaveAppSettings

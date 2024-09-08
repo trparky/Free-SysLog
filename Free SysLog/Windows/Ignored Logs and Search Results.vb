@@ -3,6 +3,7 @@ Imports System.IO
 Imports System.Reflection
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
+Imports Free_SysLog.SupportCode
 
 Public Class IgnoredLogsAndSearchResults
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)

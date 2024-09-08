@@ -1,4 +1,6 @@
-﻿Public Class AddAlert
+﻿Imports Free_SysLog.SupportCode
+
+Public Class AddAlert
     Public boolRegex, boolCaseSensitive As Boolean
     Public strLogText, strAlertText As String
     Public boolSuccess As Boolean = False

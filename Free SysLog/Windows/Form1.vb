@@ -8,6 +8,7 @@ Imports System.Text.RegularExpressions
 Imports System.Reflection
 Imports System.Configuration
 Imports Microsoft.Win32.TaskScheduler
+Imports Free_SysLog.SupportCode
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean

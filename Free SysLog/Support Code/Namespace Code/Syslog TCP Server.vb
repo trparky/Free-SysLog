@@ -2,6 +2,7 @@
 Imports System.Net.Sockets
 Imports System.Text
 Imports System.Threading.Tasks
+Imports Free_SysLog.SupportCode
 
 Namespace SyslogTcpServer
     Public Class SyslogTcpServer

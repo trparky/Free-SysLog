@@ -1,4 +1,6 @@
-﻿Public Class Replacements
+﻿Imports Free_SysLog.SupportCode
+
+Public Class Replacements
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
 

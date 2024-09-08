@@ -119,9 +119,10 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Support Code\My Custom ListViews.vb" />
+    <Compile Include="Support Code\My Data Classes.vb" />
     <Compile Include="Support Code\DataGridViewComparer.vb" />
     <Compile Include="Support Code\Namespace Code\Data Handling.vb" />
-    <Compile Include="Support Code\MyIgnoredListViewItem.vb" />
     <Compile Include="Support Code\Namespace Code\Syslog Parser.vb" />
     <Compile Include="Support Code\Namespace Code\Task Handling.vb" />
     <Compile Include="Support Code\Namespace Code\Syslog TCP Server.vb" />
@@ -224,7 +225,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Support Code\MyDataGridViewRow.vb" />
-    <Compile Include="Support Code\MyReplacementsListViewItem.vb" />
     <Compile Include="Support Code\Namespace Code\NativeMethod.vb" />
     <Compile Include="Windows\Replacements.Designer.vb">
       <DependentUpon>Replacements.vb</DependentUpon>
@@ -233,10 +233,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Support Code\Namespace Code\SaveAppSettings.vb" />
-    <Compile Include="Support Code\SavedData.vb" />
     <Compile Include="Support Code\Namespace Code\ProcessHandling.vb" />
     <Compile Include="Support Code\StringExtensions.vb" />
-    <Compile Include="Support Code\SupportCode.vb" />
+    <Compile Include="Support Code\Namespace Code\Support Code.vb" />
     <Compile Include="Windows\ViewLogBackups.Designer.vb">
       <DependentUpon>ViewLogBackups.vb</DependentUpon>
     </Compile>

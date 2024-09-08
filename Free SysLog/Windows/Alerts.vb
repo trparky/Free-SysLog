@@ -1,4 +1,6 @@
-﻿Public Class Alerts
+﻿Imports Free_SysLog.SupportCode
+
+Public Class Alerts
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
 

@@ -1,5 +1,6 @@
 ﻿Imports CrashReporterDotNET
 Imports Microsoft.VisualBasic.ApplicationServices
+Imports Free_SysLog.SupportCode
 
 Namespace My
     ' The following events are available for MyApplication:
