@@ -138,7 +138,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub SelectLatestLogEntry()
+    Public Sub SelectLatestLogEntry()
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
             Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
         End If

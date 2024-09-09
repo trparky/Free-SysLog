@@ -234,9 +234,7 @@ Namespace SyslogParser
                                       ParentForm.UpdateLogCount()
                                       ParentForm.BtnSaveLogsToDisk.Enabled = True
 
-                                      If ParentForm.ChkEnableAutoScroll.Checked And ParentForm.Logs.Rows.Count > 0 And ParentForm.intSortColumnIndex = 0 Then
-                                          ParentForm.Logs.FirstDisplayedScrollingRowIndex = If(ParentForm.sortOrder = SortOrder.Ascending, ParentForm.Logs.Rows.Count - 1, 0)
-                                      End If
+                                      ParentForm.SelectLatestLogEntry()
                                   End Sub)
             ElseIf boolIgnored And ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
                 SyncLock ParentForm.IgnoredLogsLockObject
