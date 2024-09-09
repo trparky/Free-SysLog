@@ -175,21 +175,7 @@ Namespace SyslogParser
                     strRawLogText = ConvertLineFeeds(strRawLogText)
 
                     ' Step 3: Handle the ignored logs and alerts
-                    If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then
-                        For Each ignoredClassInstance As IgnoredClass In ignoredList
-                            If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
-                                ParentForm.Invoke(Sub()
-                                                      ParentForm.longNumberOfIgnoredLogs += 1
-                                                      If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
-                                                          ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                                                      End If
-                                                      ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
-                                                  End Sub)
-                                boolIgnored = True
-                                Exit For
-                            End If
-                        Next
-                    End If
+                    If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then boolIgnored = ProcessIgnoredLogPreferences(message)
 
                     Dim boolAlerted As Boolean = False
                     If replacementsList IsNot Nothing AndAlso replacementsList.Count > 0 Then message = ProcessReplacements(message)
@@ -202,6 +188,23 @@ Namespace SyslogParser
                 AddToLogList(Nothing, "local", $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
         End Sub
+
+        Private Function ProcessIgnoredLogPreferences(message As String) As Boolean
+            For Each ignoredClassInstance As IgnoredClass In ignoredList
+                If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
+                    ParentForm.Invoke(Sub()
+                                          ParentForm.longNumberOfIgnoredLogs += 1
+                                          If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
+                                              ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                                          End If
+                                          ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+                                      End Sub)
+                    Return True
+                End If
+            Next
+
+            Return False
+        End Function
 
         Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String)
             Dim currentDate As Date = Now.ToLocalTime
