@@ -1,9 +1,12 @@
 ﻿Imports System.Text.RegularExpressions
+Imports System.Web.UI.WebControls.Expressions
 Imports Free_SysLog.SupportCode
 
 Namespace SyslogParser
     Public Module SyslogParser
         Private ParentForm As Form1
+        Private ReadOnly rfc5424Regex As New Regex("^(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*)$", RegexOptions.Compiled)
+        Private ReadOnly rfc5424TransformRegex As New Regex("^(<\d+>)(\w{3}\s+\d+ \d+:\d+:\d+)\s+(\S+)\s+(\S+):\s+(.*)$", RegexOptions.Compiled)
 
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
@@ -126,58 +129,46 @@ Namespace SyslogParser
             Return strInput.Trim()
         End Function
 
+        Private Function IsRegexMatch(regex As Regex, strRawLogText As String, ByRef match As Match) As Boolean
+            match = regex.Match(strRawLogText)
+            Return match.Success
+        End Function
+
         Public Sub ProcessIncomingLog(strRawLogText As String, strSourceIP As String)
             Try
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
-                    Dim header As String = String.Empty
                     Dim priorityObject As (Facility As String, Severity As String) = Nothing
-                    Dim version, procId, structuredData, msgId, priority As String
+                    Dim version, procId, msgId, priority As String
                     Dim message As String = Nothing
                     Dim timestamp As String = Nothing
                     Dim hostname As String = Nothing
                     Dim appName As String = Nothing
 
                     ' Step 1: Use Regex to extract the RFC 5424 header and the message
+                    Dim match As Match = Nothing
 
-                    Dim rfc5424TransformRegexMatch As Match = ParentForm.rfc5424TransformRegex.Match(strRawLogText)
-
-                    If rfc5424TransformRegexMatch.Success Then
+                    If IsRegexMatch(rfc5424TransformRegex, strRawLogText, match) Then
                         ' Handling the transformation to RFC 5424 format
-                        priority = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(1).Value), "", rfc5424TransformRegexMatch.Groups(1).Value)
-                        timestamp = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(2).Value), "", rfc5424TransformRegexMatch.Groups(2).Value)
-                        hostname = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(3).Value), "", rfc5424TransformRegexMatch.Groups(3).Value)
-                        appName = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(4).Value), "", rfc5424TransformRegexMatch.Groups(4).Value)
-                        message = If(String.IsNullOrWhiteSpace(rfc5424TransformRegexMatch.Groups(5).Value), "", rfc5424TransformRegexMatch.Groups(5).Value)
+                        priority = If(String.IsNullOrWhiteSpace(match.Groups(1).Value), "", match.Groups(1).Value)
+                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
+                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
+                        appName = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
+                        message = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
 
                         priorityObject = GetSeverityAndFacility(priority)
-
-                        ' Transform to RFC 5424 format (Version 1 assumed)
-                        'finalMessage = $"{priority}1 {timestamp} {hostname} {appName} - - {message}"
-                    Else
+                    ElseIf IsRegexMatch(rfc5424Regex, strRawLogText, match) Then
                         ' Match against RFC 5424 formatted logs
-                        Dim rfc5424RegexMatch As Match = ParentForm.rfc5424Regex.Match(strRawLogText)
+                        priority = If(String.IsNullOrWhiteSpace(match.Groups(1).Value), "", match.Groups(1).Value)
+                        version = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
+                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
+                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
+                        appName = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
+                        procId = If(String.IsNullOrWhiteSpace(match.Groups(6).Value), "", match.Groups(6).Value)
+                        msgId = If(String.IsNullOrWhiteSpace(match.Groups(7).Value), "", match.Groups(7).Value)
+                        message = If(String.IsNullOrWhiteSpace(match.Groups(8).Value), "", match.Groups(8).Value)
 
-                        If rfc5424RegexMatch.Success Then
-                            ' Use the correct match object
-                            priority = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(1).Value), "", rfc5424RegexMatch.Groups(1).Value)
-                            version = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(2).Value), "", rfc5424RegexMatch.Groups(2).Value)
-                            timestamp = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(3).Value), "", rfc5424RegexMatch.Groups(3).Value)
-                            hostname = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(4).Value), "", rfc5424RegexMatch.Groups(4).Value)
-                            appName = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(5).Value), "", rfc5424RegexMatch.Groups(5).Value)
-                            procId = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(6).Value), "", rfc5424RegexMatch.Groups(6).Value)
-                            msgId = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(7).Value), "", rfc5424RegexMatch.Groups(7).Value)
-                            structuredData = If(String.IsNullOrWhiteSpace(rfc5424RegexMatch.Groups(8).Value), "", rfc5424RegexMatch.Groups(8).Value)
-
-                            priorityObject = GetSeverityAndFacility(priority)
-
-                            ' Reconstruct the header using the correct match data
-                            header = $"{priority}{version} {timestamp} {hostname} {appName} {procId} {msgId} {structuredData}".Trim()
-                            'finalMessage = If(String.IsNullOrWhitespace(rfc5424RegexMatch.Groups(9).Value), "", rfc5424RegexMatch.Groups(9).Value).Trim() ' Remaining part is the message
-                        Else
-                            ' If it doesn't match, treat the whole log as the message
-                            'finalMessage = strLogText.Trim()
-                        End If
+                        priorityObject = GetSeverityAndFacility(priority)
                     End If
 
                     ' Step 2: Process the log message (previous processing logic)
