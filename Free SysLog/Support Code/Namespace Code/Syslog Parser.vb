@@ -137,6 +137,7 @@ Namespace SyslogParser
             Try
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
+                    Dim boolAlerted As Boolean = False
                     Dim priorityObject As (Facility As String, Severity As String) = Nothing
                     Dim version, procId, msgId, priority As String
                     Dim message As String = Nothing
@@ -176,8 +177,6 @@ Namespace SyslogParser
 
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then boolIgnored = ProcessIgnoredLogPreferences(message)
-
-                    Dim boolAlerted As Boolean = False
                     If replacementsList IsNot Nothing AndAlso replacementsList.Count > 0 Then message = ProcessReplacements(message)
                     If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message)
 
