@@ -271,7 +271,7 @@ Public Class Form1
 
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
             For Each strJSONString As String In My.Settings.replacements
-                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettings)
+                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
                 If tempReplacementsClass.BoolEnabled Then replacementsList.Add(tempReplacementsClass)
                 tempReplacementsClass = Nothing
             Next
@@ -279,7 +279,7 @@ Public Class Form1
 
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             For Each strJSONString As String In My.Settings.ServersToSendTo
-                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettings)
+                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettingsForSettingsFiles)
                 If tempSysLogProxyServer.boolEnabled Then serversList.Add(tempSysLogProxyServer)
                 tempSysLogProxyServer = Nothing
             Next
@@ -300,7 +300,7 @@ Public Class Form1
 
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettings)
+                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
                 If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
                 tempIgnoredClass = Nothing
             Next
@@ -308,7 +308,7 @@ Public Class Form1
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
-                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettings)
+                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
                 If tempAlertsClass.BoolEnabled Then alertsList.Add(tempAlertsClass)
                 tempAlertsClass = Nothing
             Next
@@ -360,7 +360,7 @@ Public Class Form1
                 Dim collectionOfSavedData As New List(Of SavedData)
 
                 Using fileStream As New StreamReader(strPathToDataFile)
-                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
                 End Using
 
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
@@ -1329,7 +1329,7 @@ Public Class Form1
                     ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
                         Try
                             strReceivedData = strReceivedData.Replace(strProxiedString, "", StringComparison.OrdinalIgnoreCase)
-                            ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData, JSONDecoderSettings)
+                            ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData, JSONDecoderSettingsForLogFiles)
                             SyslogParser.ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip)
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try

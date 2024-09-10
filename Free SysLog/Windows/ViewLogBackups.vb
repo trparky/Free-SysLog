@@ -11,7 +11,7 @@ Public Class ViewLogBackups
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Using fileStream As New StreamReader(strFileName)
-            Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings).Count
+            Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
         End Using
     End Function
 
@@ -152,7 +152,7 @@ Public Class ViewLogBackups
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                                                  Using fileStream As New StreamReader(file.FullName)
-                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
                                                                                      For Each item As SavedData In dataFromFile
                                                                                          If regexCompiledObject.IsMatch(item.log) Then

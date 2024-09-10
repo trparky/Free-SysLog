@@ -9,7 +9,7 @@ Public Class ConfigureSysLogMirrorServers
             Dim SysLogProxyServer As SysLogProxyServer
 
             For Each strJSONString As String In My.Settings.ServersToSendTo
-                SysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettings)
+                SysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettingsForSettingsFiles)
                 servers.Items.Add(SysLogProxyServer.ToListViewItem())
                 SysLogProxyServer = Nothing
             Next
@@ -151,7 +151,7 @@ Public Class ConfigureSysLogMirrorServers
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                listOfSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SysLogProxyServer))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
+                listOfSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SysLogProxyServer))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettingsForLogFiles)
 
                 servers.Items.Clear()
                 serversList.Clear()

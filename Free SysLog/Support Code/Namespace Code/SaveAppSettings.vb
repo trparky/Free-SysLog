@@ -43,7 +43,7 @@ Namespace SaveAppSettings
                 Dim rawValue As Object = Nothing
 
                 Using streamReader As New IO.StreamReader(strFileName)
-                    exportedSettingsArray = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(streamReader.ReadToEnd.Trim, JSONDecoderSettings)
+                    exportedSettingsArray = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(streamReader.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
                 End Using
 
                 For Each settingProperty As Configuration.SettingsPropertyValue In My.Settings.PropertyValues

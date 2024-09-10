@@ -19,7 +19,8 @@ Namespace SupportCode
         Public mutex As Threading.Mutex
         Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName
         Public boolDoWeOwnTheMutex As Boolean = False
-        Public JSONDecoderSettings As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error}
+        Public JSONDecoderSettingsForLogFiles As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore}
+        Public JSONDecoderSettingsForSettingsFiles As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error}
         Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
         Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
         Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")

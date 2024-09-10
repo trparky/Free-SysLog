@@ -306,7 +306,7 @@ Public Class IgnoredLogsAndSearchResults
 
         Try
             Using fileStream As New StreamReader(strFileName)
-                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettings)
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
             End Using
 
             If collectionOfSavedData.Count > 0 Then

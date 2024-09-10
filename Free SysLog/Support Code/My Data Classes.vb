@@ -1,7 +1,7 @@
 ﻿Imports Free_SysLog.SupportCode
 
 Public Class SavedData
-    Public time, ip, log, fileName, header, logType, hostname, appName, rawLogData As String
+    Public time, ip, log, fileName, logType, hostname, appName, rawLogData As String
     Public DateObject, ServerDate As Date
     Public BoolAlerted As Boolean = False
 

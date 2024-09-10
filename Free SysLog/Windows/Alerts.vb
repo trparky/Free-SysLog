@@ -15,7 +15,7 @@ Public Class Alerts
         Dim MyIgnoredListViewItem As New List(Of AlertsListViewItem)
 
         For Each strJSONString As String In My.Settings.alerts
-            MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettings).ToListViewItem)
+            MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem)
         Next
 
         AlertsListView.Items.AddRange(MyIgnoredListViewItem.ToArray)
@@ -257,7 +257,7 @@ Public Class Alerts
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                listOfAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of AlertsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
+                listOfAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of AlertsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettingsForLogFiles)
 
                 AlertsListView.Items.Clear()
                 alertsList.Clear()
