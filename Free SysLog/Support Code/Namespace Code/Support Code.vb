@@ -159,12 +159,18 @@ Namespace SupportCode
         End Function
 
         Public Function VerifyWindowLocation(point As Point, ByRef window As Form) As Point
-            Dim screen As Screen = Screen.FromControl(window)
+            Dim screen As Screen = Screen.FromPoint(point) ' Get the screen based on the new window location
 
-            Dim windowBounds As New Rectangle(window.Left, window.Top, window.Width, window.Height)
+            Dim windowBounds As New Rectangle(point.X, point.Y, window.Width, window.Height)
             Dim screenBounds As Rectangle = screen.WorkingArea
 
-            Return If(screenBounds.Contains(windowBounds), point, New Point(0, 0))
+            ' Ensure the window is at least partially on the screen
+            If windowBounds.IntersectsWith(screenBounds) Then
+                Return point
+            Else
+                ' Adjust the window to a default location if it is completely off-screen
+                Return New Point(screenBounds.Left, screenBounds.Top)
+            End If
         End Function
 
         Public Sub SelectFileInWindowsExplorer(strFullPath As String)
