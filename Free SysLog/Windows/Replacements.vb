@@ -38,8 +38,12 @@ Public Class Replacements
         End Using
     End Sub
 
-    Private Sub Ignored_Words_and_Phrases_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.replacementsLocation = Location
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.replacementsLocation = Location
     End Sub
 
     Private Sub Replacements_Load(sender As Object, e As EventArgs) Handles MyBase.Load

@@ -64,8 +64,12 @@ Public Class Alerts
         End If
     End Sub
 
-    Private Sub Alerts_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.alertsLocation = Location
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.alertsLocation = Location
     End Sub
 
     Private Sub EditItem()

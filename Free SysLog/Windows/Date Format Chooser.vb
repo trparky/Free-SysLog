@@ -28,8 +28,12 @@ Public Class DateFormatChooser
         boolDoneLoading = True
     End Sub
 
-    Private Sub DateFormatChooser_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.DateChooserWindowLocation = Location
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.DateChooserWindowLocation = Location
     End Sub
 
     Private Sub DateFormat3_CheckedChanged(sender As Object, e As EventArgs) Handles DateFormat3.CheckedChanged

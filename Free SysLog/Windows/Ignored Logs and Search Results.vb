@@ -170,8 +170,12 @@ Public Class IgnoredLogsAndSearchResults
                End Sub)
     End Sub
 
-    Private Sub Ignored_Logs_and_Search_Results_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then
             If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 My.Settings.ignoredWindowLocation = Location
             ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
