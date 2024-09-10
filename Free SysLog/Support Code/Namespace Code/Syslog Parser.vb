@@ -5,7 +5,7 @@ Namespace SyslogParser
     Public Module SyslogParser
         Private ParentForm As Form1
         Private ReadOnly rfc5424Regex As New Regex("^(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*)$", RegexOptions.Compiled)
-        Private ReadOnly rfc5424TransformRegex As New Regex("^(<\d+>)(\w{3}\s+\d+ \d+:\d+:\d+)\s+(\S+)\s+(\S+):\s+(.*)$", RegexOptions.Compiled)
+        Private ReadOnly rfc5424TransformRegex As New Regex("^(<\d+>)(\w{3}\s+\d+ \d+:\d+:\d+)\s+(\S+)\s+(.+?):\s+(.*)$", RegexOptions.Compiled)
 
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
