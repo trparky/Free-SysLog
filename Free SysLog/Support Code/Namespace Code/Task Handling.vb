@@ -50,17 +50,17 @@ Namespace TaskHandling
                             Dim action As Action = task.Definition.Actions(0)
 
                             If action.ActionType = TaskActionType.Execute Then
-                                If Not DirectCast(action, ExecAction).Path.Replace("""", "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
+                                If Not DirectCast(action, ExecAction).Path.Replace(strQuote, "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
                                     task.Definition.Actions.Remove(action)
 
                                     Dim exeFileInfo As New FileInfo(strEXEPath)
-                                    task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                                    task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
                                     task.RegisterChanges()
                                 End If
                             End If
                         Else
                             Dim exeFileInfo As New FileInfo(strEXEPath)
-                            task.Definition.Actions.Add(New ExecAction($"""{strEXEPath}""", Nothing, exeFileInfo.DirectoryName))
+                            task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
                             task.RegisterChanges()
                         End If
                     End If
