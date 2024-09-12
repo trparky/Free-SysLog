@@ -1272,6 +1272,7 @@ Public Class Form1
                         End If
                     End Using
 
+                    StartUpDelay.Text = $"        Startup Delay ({IntegerInputForm.intResult} {If(IntegerInputForm.intResult = 1, "Second", "Seconds")})"
                     MsgBox("Done.", MsgBoxStyle.Information, Text)
                 End If
             End If
