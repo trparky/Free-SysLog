@@ -169,6 +169,12 @@ Namespace SyslogParser
                         message = If(String.IsNullOrWhiteSpace(match.Groups(8).Value), "", match.Groups(8).Value)
 
                         priorityObject = GetSeverityAndFacility(priority)
+                    Else
+                        timestamp = Now.ToString
+                        hostname = ""
+                        appName = ""
+                        priorityObject = ("Local", "Error")
+                        message = $"An error occured while attempting to parse the log entry. Below is the log entry that failed...{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
                     End If
 
                     ' Step 2: Process the log message (previous processing logic)
