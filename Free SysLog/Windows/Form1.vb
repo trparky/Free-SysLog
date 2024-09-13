@@ -255,6 +255,7 @@ Public Class Form1
         ChkShowServerTimeColumn.Checked = My.Settings.boolShowServerTimeColumn
         colLogType.Visible = My.Settings.boolShowLogTypeColumn
         ChkShowLogTypeColumn.Checked = My.Settings.boolShowLogTypeColumn
+        RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
@@ -1302,6 +1303,10 @@ Public Class Form1
     Private Sub ChkShowServerTimeColumn_Click(sender As Object, e As EventArgs) Handles ChkShowServerTimeColumn.Click
         My.Settings.boolShowServerTimeColumn = ChkShowServerTimeColumn.Checked
         colServerTime.Visible = My.Settings.boolShowServerTimeColumn
+    End Sub
+
+    Private Sub RemoveNumbersFromRemoteApp_Click(sender As Object, e As EventArgs) Handles RemoveNumbersFromRemoteApp.Click
+        My.Settings.RemoveNumbersFromRemoteApp = RemoveNumbersFromRemoteApp.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

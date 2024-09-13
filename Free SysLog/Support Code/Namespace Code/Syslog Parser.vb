@@ -6,6 +6,7 @@ Namespace SyslogParser
         Private ParentForm As Form1
         Private ReadOnly rfc5424Regex As New Regex("\A(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*)\Z", RegexOptions.Compiled Or RegexOptions.Singleline)
         Private ReadOnly rfc5424TransformRegex As New Regex("\A(<\d+>)(\w{3}\s+\d+ \d+:\d+:\d+)\s+(\S+)\s+(.+?):\s+(.*)\Z", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
 
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
@@ -180,6 +181,8 @@ Namespace SyslogParser
                     ' Step 2: Process the log message (previous processing logic)
                     message = ConvertLineFeeds(message)
                     strRawLogText = ConvertLineFeeds(strRawLogText)
+
+                    If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then boolIgnored = ProcessIgnoredLogPreferences(message)
