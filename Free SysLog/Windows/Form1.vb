@@ -474,9 +474,21 @@ Public Class Form1
             OpenLogViewerWindow()
         ElseIf e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
-                If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
-
                 Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
+                Dim choice As Confirm_Delete.UserChoice
+
+                Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                    Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
+                    Confirm_Delete.ShowDialog(Me)
+                    choice = Confirm_Delete.choice
+                End Using
+
+                If choice = Confirm_Delete.UserChoice.NoDelete Then
+                    MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
+                    Exit Sub
+                ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
+                    MakeLogBackup()
+                End If
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
                     Logs.Rows.Remove(item)
@@ -969,9 +981,21 @@ Public Class Form1
 
     Private Sub DeleteLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteLogsToolStripMenuItem.Click
         SyncLock dataGridLockObject
-            If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
-
             Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
+            Dim choice As Confirm_Delete.UserChoice
+
+            Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
+                Confirm_Delete.ShowDialog(Me)
+                choice = Confirm_Delete.choice
+            End Using
+
+            If choice = Confirm_Delete.UserChoice.NoDelete Then
+                MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
+                Exit Sub
+            ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
+                MakeLogBackup()
+            End If
 
             For Each item As DataGridViewRow In Logs.SelectedRows
                 Logs.Rows.Remove(item)
