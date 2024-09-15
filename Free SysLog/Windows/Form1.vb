@@ -736,7 +736,10 @@ Public Class Form1
 
         MyBase.WndProc(m)
 
-        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.windowLocation = Location
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then
+            Location = VerifyWindowLocation(Location, Me)
+            My.Settings.windowLocation = Location
+        End If
     End Sub
 
     Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles ChkEnableRecordingOfIgnoredLogs.Click
