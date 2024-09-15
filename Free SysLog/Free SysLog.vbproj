@@ -119,8 +119,13 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Support Code\My Custom ListViews.vb" />
+    <Compile Include="Support Code\My Data Classes.vb" />
     <Compile Include="Support Code\DataGridViewComparer.vb" />
-    <Compile Include="Support Code\MyIgnoredListViewItem.vb" />
+    <Compile Include="Support Code\Namespace Code\Data Handling.vb" />
+    <Compile Include="Support Code\Namespace Code\Syslog Parser.vb" />
+    <Compile Include="Support Code\Namespace Code\Task Handling.vb" />
+    <Compile Include="Support Code\Namespace Code\Syslog TCP Server.vb" />
     <Compile Include="Windows\Add SysLog Mirror Server.Designer.vb">
       <DependentUpon>Add SysLog Mirror Server.vb</DependentUpon>
     </Compile>
@@ -146,7 +151,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="Support Code\Check for Update.vb" />
+    <Compile Include="Support Code\Namespace Code\Check for Update.vb" />
     <Compile Include="Windows\Alerts.Designer.vb">
       <DependentUpon>Alerts.vb</DependentUpon>
     </Compile>
@@ -169,6 +174,12 @@
       <DependentUpon>Date Format Chooser.vb</DependentUpon>
     </Compile>
     <Compile Include="Windows\Date Format Chooser.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Confirm Delete.Designer.vb">
+      <DependentUpon>Confirm Delete.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Confirm Delete.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Windows\Form1.vb">
@@ -220,19 +231,17 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Support Code\MyDataGridViewRow.vb" />
-    <Compile Include="Support Code\MyReplacementsListViewItem.vb" />
-    <Compile Include="Support Code\NativeMethod.vb" />
+    <Compile Include="Support Code\Namespace Code\NativeMethod.vb" />
     <Compile Include="Windows\Replacements.Designer.vb">
       <DependentUpon>Replacements.vb</DependentUpon>
     </Compile>
     <Compile Include="Windows\Replacements.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Support Code\SaveAppSettings.vb" />
-    <Compile Include="Support Code\SavedData.vb" />
-    <Compile Include="Support Code\Search for Process and Kill It.vb" />
+    <Compile Include="Support Code\Namespace Code\SaveAppSettings.vb" />
+    <Compile Include="Support Code\Namespace Code\ProcessHandling.vb" />
     <Compile Include="Support Code\StringExtensions.vb" />
-    <Compile Include="Support Code\SupportCode.vb" />
+    <Compile Include="Support Code\Namespace Code\Support Code.vb" />
     <Compile Include="Windows\ViewLogBackups.Designer.vb">
       <DependentUpon>ViewLogBackups.vb</DependentUpon>
     </Compile>
@@ -268,6 +277,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Date Format Chooser.resx">
       <DependentUpon>Date Format Chooser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Confirm Delete.resx">
+      <DependentUpon>Confirm Delete.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>

@@ -1,4 +1,6 @@
-﻿Public Class IgnoredWordsAndPhrases
+﻿Imports Free_SysLog.SupportCode
+
+Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
 
@@ -59,7 +61,7 @@
 
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettings).ToListViewItem())
+                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem())
             Next
         End If
 
@@ -107,8 +109,12 @@
         End If
     End Sub
 
-    Private Sub Ignored_Words_and_Phrases_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.ignoredWordsLocation = Location
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.ignoredWordsLocation = Location
     End Sub
 
     Private Sub EditItem()
@@ -221,7 +227,7 @@
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                listOfIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of IgnoredClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
+                listOfIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of IgnoredClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettingsForLogFiles)
 
                 IgnoredListView.Items.Clear()
                 ignoredList.Clear()

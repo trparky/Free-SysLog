@@ -2,7 +2,9 @@
     Inherits DataGridViewRow
     Implements ICloneable
     Public Property DateObject As Date
+    Public Property ServerDate As Date
     Public Property BoolAlerted As Boolean = False
+    Public Property RawLogData As String
 
     Public Overrides Function Clone()
         Dim newDataGridRow As New MyDataGridViewRow()

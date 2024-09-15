@@ -1,5 +1,6 @@
 ﻿Imports CrashReporterDotNET
 Imports Microsoft.VisualBasic.ApplicationServices
+Imports Free_SysLog.SupportCode
 
 Namespace My
     ' The following events are available for MyApplication:
@@ -39,7 +40,7 @@ Namespace My
             End If
 
             If IO.File.Exists("updater.exe") Then
-                SearchForProcessAndKillIt("updater.exe", False)
+                ProcessHandling.SearchForProcessAndKillIt("updater.exe", False)
                 IO.File.Delete("updater.exe")
                 If IO.File.Exists("updater.pdb") Then IO.File.Delete("updater.pdb")
             End If

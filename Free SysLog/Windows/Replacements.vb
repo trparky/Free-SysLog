@@ -1,4 +1,6 @@
-﻿Public Class Replacements
+﻿Imports Free_SysLog.SupportCode
+
+Public Class Replacements
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
 
@@ -36,8 +38,12 @@
         End Using
     End Sub
 
-    Private Sub Ignored_Words_and_Phrases_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.replacementsLocation = Location
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.replacementsLocation = Location
     End Sub
 
     Private Sub Replacements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -46,7 +52,7 @@
 
         If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
             For Each strJSONString As String In My.Settings.replacements
-                listOfReplacementsToAdd.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettings).ToListViewItem())
+                listOfReplacementsToAdd.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem())
             Next
         End If
 
@@ -225,7 +231,7 @@
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                listOfReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ReplacementsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
+                listOfReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of ReplacementsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettingsForLogFiles)
 
                 ReplacementsListView.Items.Clear()
                 replacementsList.Clear()

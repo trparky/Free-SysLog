@@ -31,10 +31,12 @@ Partial Class IgnoredLogsAndSearchResults
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.Logs = New System.Windows.Forms.DataGridView()
+        Me.colServerTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColRemoteProcess = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LblCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ColFileName = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -50,11 +52,28 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
+        Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
+        '
+        'ColHostname
+        '
+        Me.ColHostname.HeaderText = "Hostname"
+        Me.ColHostname.Name = "ColHostname"
+        Me.ColHostname.ReadOnly = True
+        Me.ColHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColHostname.Width = 150
+        '
+        'colLogType
+        '
+        Me.colLogType.HeaderText = "Log Type"
+        Me.colLogType.Name = "colLogType"
+        Me.colLogType.ReadOnly = True
+        Me.colLogType.Width = 200
         '
         'StatusStrip1
         '
@@ -78,7 +97,7 @@ Partial Class IgnoredLogsAndSearchResults
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.ColIPAddress, Me.ColLog, Me.ColAlerts, Me.ColFileName})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.colServerTime, Me.colLogType, Me.ColIPAddress, Me.ColHostname, Me.ColRemoteProcess, Me.ColLog, Me.ColAlerts, Me.ColFileName})
         Me.Logs.ContextMenuStrip = Me.LogsContextMenu
         Me.Logs.Location = New System.Drawing.Point(12, 12)
         Me.Logs.Name = "Logs"
@@ -86,6 +105,14 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.Logs.Size = New System.Drawing.Size(1128, 359)
         Me.Logs.TabIndex = 19
+        '
+        'colServerTime
+        '
+        Me.colServerTime.HeaderText = "Server Time"
+        Me.colServerTime.Name = "colServerTime"
+        Me.colServerTime.ReadOnly = True
+        Me.colServerTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.colServerTime.ToolTipText = "The time on the server at which the log entry came in."
         '
         'ColTime
         '
@@ -133,6 +160,14 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColAlerts.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColAlerts.ToolTipText = "True or False. Indicates if the log entry triggered an alert from this program."
         Me.ColAlerts.Width = 50
+        '
+        'ColSyslogHeader
+        '
+        Me.ColRemoteProcess.HeaderText = "Remote Process"
+        Me.ColRemoteProcess.Name = "ColRemoteProcess"
+        Me.ColRemoteProcess.ReadOnly = True
+        Me.ColRemoteProcess.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColRemoteProcess.Width = 150
         '
         'BtnExport
         '
@@ -280,6 +315,7 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents LblCount As ToolStripStatusLabel
     Friend WithEvents Logs As DataGridView
     Friend WithEvents ColTime As DataGridViewTextBoxColumn
+    Friend WithEvents colServerTime As DataGridViewTextBoxColumn
     Friend WithEvents ColIPAddress As DataGridViewTextBoxColumn
     Friend WithEvents ColLog As DataGridViewTextBoxColumn
     Friend WithEvents BtnExport As Button
@@ -290,6 +326,7 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
+    Friend WithEvents ColRemoteProcess As DataGridViewTextBoxColumn
     Friend WithEvents ColFileName As DataGridViewTextBoxColumn
     Friend WithEvents ChkCaseInsensitiveSearch As CheckBox
     Friend WithEvents ChkRegExSearch As CheckBox
@@ -297,4 +334,6 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents TxtSearchTerms As TextBox
     Friend WithEvents LblSearchLabel As Label
     Friend WithEvents OpenLogFileForViewingToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents colLogType As DataGridViewTextBoxColumn
+    Friend WithEvents ColHostname As DataGridViewTextBoxColumn
 End Class

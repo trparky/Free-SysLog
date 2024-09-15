@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -730,6 +730,114 @@ Namespace My
             End Get
             Set
                 Me("ViewLogBackupsSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property EnableTCPServer() As Boolean
+            Get
+                Return CType(Me("EnableTCPServer"),Boolean)
+            End Get
+            Set
+                Me("EnableTCPServer") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
+        Public Property RemoteProcessHeaderSize() As Integer
+            Get
+                Return CType(Me("RemoteProcessHeaderSize"),Integer)
+            End Get
+            Set
+                Me("RemoteProcessHeaderSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("200")>  _
+        Public Property LogTypeWidth() As Integer
+            Get
+                Return CType(Me("LogTypeWidth"),Integer)
+            End Get
+            Set
+                Me("LogTypeWidth") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
+        Public Property HostnameWidth() As Integer
+            Get
+                Return CType(Me("HostnameWidth"),Integer)
+            End Get
+            Set
+                Me("HostnameWidth") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
+        Public Property ServerTimeWidth() As Integer
+            Get
+                Return CType(Me("ServerTimeWidth"),Integer)
+            End Get
+            Set
+                Me("ServerTimeWidth") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property boolShowHostnameColumn() As Boolean
+            Get
+                Return CType(Me("boolShowHostnameColumn"),Boolean)
+            End Get
+            Set
+                Me("boolShowHostnameColumn") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property boolShowServerTimeColumn() As Boolean
+            Get
+                Return CType(Me("boolShowServerTimeColumn"),Boolean)
+            End Get
+            Set
+                Me("boolShowServerTimeColumn") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property boolShowLogTypeColumn() As Boolean
+            Get
+                Return CType(Me("boolShowLogTypeColumn"),Boolean)
+            End Get
+            Set
+                Me("boolShowLogTypeColumn") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property RemoveNumbersFromRemoteApp() As Boolean
+            Get
+                Return CType(Me("RemoveNumbersFromRemoteApp"),Boolean)
+            End Get
+            Set
+                Me("RemoveNumbersFromRemoteApp") = value
             End Set
         End Property
     End Class

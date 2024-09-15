@@ -1,4 +1,6 @@
-﻿Public Class Alerts
+﻿Imports Free_SysLog.SupportCode
+
+Public Class Alerts
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
 
@@ -13,7 +15,7 @@
         Dim MyIgnoredListViewItem As New List(Of AlertsListViewItem)
 
         For Each strJSONString As String In My.Settings.alerts
-            MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettings).ToListViewItem)
+            MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem)
         Next
 
         AlertsListView.Items.AddRange(MyIgnoredListViewItem.ToArray)
@@ -62,8 +64,12 @@
         End If
     End Sub
 
-    Private Sub Alerts_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        If boolDoneLoading Then My.Settings.alertsLocation = Location
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.alertsLocation = Location
     End Sub
 
     Private Sub EditItem()
@@ -255,7 +261,7 @@
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                listOfAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of AlertsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettings)
+                listOfAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of AlertsClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettingsForLogFiles)
 
                 AlertsListView.Items.Clear()
                 alertsList.Clear()
