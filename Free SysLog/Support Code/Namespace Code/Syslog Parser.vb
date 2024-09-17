@@ -102,12 +102,27 @@ Namespace SyslogParser
             Dim parsedDate As Date
 
             If timestamp.EndsWith("Z") Then
-                ' RFC 3339/ISO 8601 format with UTC timezone ("yyyy-MM-ddTHH:mm:ssZ")
-                parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+                ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds ("yyyy-MM-ddTHH:mm:ssZ" or "yyyy-MM-ddTHH:mm:ss.fffZ")
+                If timestamp.Contains(".") Then
+                    ' Handle timestamp with milliseconds
+                    parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+                Else
+                    ' Handle timestamp without milliseconds
+                    parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+                End If
             ElseIf timestamp.Contains("+") OrElse timestamp.Contains("-") Then
-                ' RFC 3339/ISO 8601 format with timezone offset ("yyyy-MM-ddTHH:mm:sszzz")
-                Dim parsedDateOffset As DateTimeOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:sszzz", Globalization.CultureInfo.InvariantCulture)
-                parsedDate = parsedDateOffset.DateTime
+                Dim parsedDateOffset As DateTimeOffset
+
+                ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds ("yyyy-MM-ddTHH:mm:sszzz" or "yyyy-MM-ddTHH:mm:ss.fffzzz")
+                If timestamp.Contains(".") Then
+                    ' Handle timestamp with milliseconds
+                    parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffzzz", Globalization.CultureInfo.InvariantCulture)
+                    parsedDate = parsedDateOffset.DateTime
+                Else
+                    ' Handle timestamp without milliseconds
+                    parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:sszzz", Globalization.CultureInfo.InvariantCulture)
+                    parsedDate = parsedDateOffset.DateTime
+                End If
             ElseIf timestamp.Length >= 15 AndAlso Char.IsLetter(timestamp(0)) Then
                 ' "MMM dd HH:mm:ss" format (like "Sep  4 22:39:12")
                 timestamp = timestamp.Replace("  ", " 0") ' Handle single-digit day (e.g., "Sep  4" becomes "Sep 04")
