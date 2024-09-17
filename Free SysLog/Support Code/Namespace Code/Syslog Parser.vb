@@ -47,7 +47,12 @@ Namespace SyslogParser
             If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
                 serverDate = currentDate
             Else
-                serverDate = ParseTimestamp(strTimeStampFromServer)
+                Try
+                    serverDate = ParseTimestamp(strTimeStampFromServer)
+                Catch ex As FormatException
+                    serverDate = currentDate
+                    AddToLogList(Nothing, "local", $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
+                End Try
             End If
 
             ParentForm.Invoke(Sub()
@@ -98,6 +103,10 @@ Namespace SyslogParser
             End If
         End Function
 
+        ''' <summary>Parses a date timestamp in String format to a Date Object.</summary>
+        ''' <param name="timestamp">A date timestamp in String format.</param>
+        ''' <returns>A Date Object.</returns>
+        ''' <exception cref="FormatException">Throws a FormatException if the function can't parse the input.</exception>
         Private Function ParseTimestamp(timestamp As String) As Date
             Dim parsedDate As Date
 
@@ -236,7 +245,12 @@ Namespace SyslogParser
             If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
                 serverDate = currentDate
             Else
-                serverDate = ParseTimestamp(strTimeStampFromServer)
+                Try
+                    serverDate = ParseTimestamp(strTimeStampFromServer)
+                Catch ex As FormatException
+                    serverDate = currentDate
+                    AddToLogList(Nothing, "local", $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
+                End Try
             End If
 
             If Not boolIgnored Then
