@@ -43,7 +43,7 @@ Namespace SupportCode
             Dim utcDateTime As Date = dateTime.ToUniversalTime()
 
             ' Convert to ISO 8601 format with UTC time zone designator (Z)
-            Return utcDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture)
+            Return utcDateTime.ToString("yyyy-MM-ddTHH:mm:ss:fffZ", Globalization.CultureInfo.InvariantCulture)
         End Function
 
         Public Function GetIPv4Address(ipv6Address As IPAddress) As IPAddress
