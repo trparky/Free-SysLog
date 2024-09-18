@@ -109,6 +109,8 @@ Namespace SyslogParser
         ''' <exception cref="FormatException">Throws a FormatException if the function can't parse the input.</exception>
         Private Function ParseTimestamp(timestamp As String) As Date
             Dim parsedDate As Date
+			Dim userCulture As Globalization.CultureInfo = Globalization.CultureInfo.CurrentCulture
+			Dim isEuropeanDateFormat As Boolean = userCulture.DateTimeFormat.ShortDatePattern.StartsWith("d")
 
             If timestamp.EndsWith("Z") Then
                 ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds ("yyyy-MM-ddTHH:mm:ssZ" or "yyyy-MM-ddTHH:mm:ss.fffZ")
@@ -139,6 +141,15 @@ Namespace SyslogParser
 
                 ' If you need to add the current year to the date:
                 parsedDate = parsedDate.AddYears(Date.Now.Year - parsedDate.Year)
+            ElseIf timestamp.Contains("/") Then
+                ' Handle both American and European formats based on localization
+                If isEuropeanDateFormat Then
+                    ' European format "dd/MM/yyyy HH:mm:ss"
+                    parsedDate = Date.ParseExact(timestamp, "dd/MM/yyyy HH:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                Else
+                    ' American format "MM/dd/yyyy HH:mm:ss"
+                    parsedDate = Date.ParseExact(timestamp, "MM/dd/yyyy HH:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                End If
             Else
                 Throw New FormatException("Unknown timestamp format.")
             End If
