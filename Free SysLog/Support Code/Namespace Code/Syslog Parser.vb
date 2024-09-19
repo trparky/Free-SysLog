@@ -4,8 +4,12 @@ Imports Free_SysLog.SupportCode
 Namespace SyslogParser
     Public Module SyslogParser
         Private ParentForm As Form1
-        Private ReadOnly rfc5424Regex As New Regex("\A(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*)\Z", RegexOptions.Compiled Or RegexOptions.Singleline)
-        Private ReadOnly rfc5424TransformRegex As New Regex("\A(<\d+>)(\w{3}\s+\d+ \d+:\d+:\d+)\s+(\S+)\s+(.+?):\s+(.*)\Z", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424Regex As New Regex("(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*?)(?=\d+<\d+>|\Z)", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424TransformRegex As New Regex("(<\d+>)(\w{3} \d{1,2} \d{2}:\d{2}:\d{2}) (\S+) (\S+): (.+?)(?=\d+<\d+>|\Z)", RegexOptions.Compiled Or RegexOptions.Singleline)
+
+        Private ReadOnly rfc5424RegexWithoutGroups As New Regex("(<\d+>\d+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s*\[.*?\]?\s*.*?(?=\d+<\d+>|\Z))", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424TransformRegexWithoutGroups As New Regex("(<\d+>\w{3} \d{1,2} \d{2}:\d{2}:\d{2} \S+ \S+: .+?(?=\d+<\d+>|\Z))", RegexOptions.Compiled Or RegexOptions.Singleline)
+
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
 
         Public WriteOnly Property SetParentForm As Form1
@@ -169,7 +173,34 @@ Namespace SyslogParser
             Return match.Success
         End Function
 
+        Private Function TrySplitLogEntries(regex As Regex, input As String, ByRef matches As String()) As Boolean
+            If IsRegexMatch(regex, input, Nothing) Then
+                matches = regex.Split(input)
+                Return True
+            End If
+
+            Return False
+        End Function
+
         Public Sub ProcessIncomingLog(strRawLogText As String, strSourceIP As String)
+            If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
+                Dim matches As String() = Nothing
+
+                If TrySplitLogEntries(rfc5424TransformRegexWithoutGroups, strRawLogText, matches) OrElse TrySplitLogEntries(rfc5424RegexWithoutGroups, strRawLogText, matches) Then
+                    matches = rfc5424TransformRegexWithoutGroups.Split(strRawLogText)
+
+                    For Each strMatch As String In matches
+                        If Not String.IsNullOrWhiteSpace(strMatch) Then
+                            ProcessIncomingLog_SubRoutine(strMatch, strSourceIP)
+                        End If
+                    Next
+                Else
+                    AddToLogList(Nothing, "local", $"Unable to parse log {strQuote}{strRawLogText}{strQuote}.")
+                End If
+            End If
+        End Sub
+
+        Public Sub ProcessIncomingLog_SubRoutine(strRawLogText As String, strSourceIP As String)
             Try
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
