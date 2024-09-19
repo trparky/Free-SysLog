@@ -206,7 +206,7 @@ Namespace SyslogParser
                     Dim boolIgnored As Boolean = False
                     Dim boolAlerted As Boolean = False
                     Dim priorityObject As (Facility As String, Severity As String) = Nothing
-                    Dim version, procId, msgId, priority As String
+                    Dim priority As String = Nothing
                     Dim message As String = Nothing
                     Dim timestamp As String = Nothing
                     Dim hostname As String = Nothing
@@ -227,13 +227,10 @@ Namespace SyslogParser
                     ElseIf IsRegexMatch(rfc5424Regex, strRawLogText, match) Then
                         ' Match against RFC 5424 formatted logs
                         priority = If(String.IsNullOrWhiteSpace(match.Groups(1).Value), "", match.Groups(1).Value)
-                        version = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
-                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
-                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
-                        appName = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
-                        procId = If(String.IsNullOrWhiteSpace(match.Groups(6).Value), "", match.Groups(6).Value)
-                        msgId = If(String.IsNullOrWhiteSpace(match.Groups(7).Value), "", match.Groups(7).Value)
-                        message = If(String.IsNullOrWhiteSpace(match.Groups(8).Value), "", match.Groups(8).Value)
+                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
+                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
+                        appName = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
+                        message = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
 
                         priorityObject = GetSeverityAndFacility(priority)
                     Else
