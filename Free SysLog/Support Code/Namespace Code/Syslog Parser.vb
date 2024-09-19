@@ -4,11 +4,11 @@ Imports Free_SysLog.SupportCode
 Namespace SyslogParser
     Public Module SyslogParser
         Private ParentForm As Form1
-        Private ReadOnly rfc5424Regex As New Regex("(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*?)(?=\d+<\d+>|\Z)", RegexOptions.Compiled Or RegexOptions.Singleline)
-        Private ReadOnly rfc5424TransformRegex As New Regex("(<\d+>)(\w{3} \d{1,2} \d{2}:\d{2}:\d{2}) (\S+) (\S+): (.+?)(?=\d+<\d+>|\Z)", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424Regex As New Regex("\d{0,}(<\d+>)([0-9]{4}[/.-](?:1[0-2]|0[1-9])[/.-](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9])[:.][0-5][0-9][:.][0-5][0-9]\.[0-9]+Z)\s+(\S+)\s+(\S+)\s+(\S+\s+\S+\s+\S+.*)", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424TransformRegex As New Regex("(<\d+>)(\w{3} \d{1,2} \d{2}:\d{2}:\d{2}) (\S+) (\S+): (.*)(?:\n|\r\n)", RegexOptions.Compiled Or RegexOptions.Singleline)
 
-        Private ReadOnly rfc5424RegexWithoutGroups As New Regex("(<\d+>\d+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s*\[.*?\]?\s*.*?(?=\d+<\d+>|\Z))", RegexOptions.Compiled Or RegexOptions.Singleline)
-        Private ReadOnly rfc5424TransformRegexWithoutGroups As New Regex("(<\d+>\w{3} \d{1,2} \d{2}:\d{2}:\d{2} \S+ \S+: .+?(?=\d+<\d+>|\Z))", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424RegexWithoutGroups As New Regex("(\d{0,}<\d+>[0-9]{4}[/.-](?:1[0-2]|0[1-9])[/.-](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9])[:.][0-5][0-9][:.][0-5][0-9]\.[0-9]+Z\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+.*)", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424TransformRegexWithoutGroups As New Regex("(<\d+>\w{3} \d{1,2} \d{2}:\d{2}:\d{2} \S+ \S+: .*(?:\n|\r\n))", RegexOptions.Compiled Or RegexOptions.Singleline)
 
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
 
