@@ -14,6 +14,8 @@ Namespace SyslogParser
         Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor2 As New Regex("(<\d+>)", RegexOptions.Compiled)
 
+        Private Const strNewLine As String = "{newline}"
+
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
                 ParentForm = value
@@ -188,13 +190,16 @@ Namespace SyslogParser
             If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                 Dim matches As String() = Nothing
 
+                strRawLogText = strRawLogText.Replace(vbCrLf, strNewLine).Replace(vbLf, strNewLine)
                 strRawLogText = SyslogPreProcessor1.Replace(strRawLogText, "$1")
                 strRawLogText = SyslogPreProcessor2.Replace(strRawLogText, vbCrLf & "$1")
 
                 If TrySplitLogEntries(rfc5424TransformRegexWithoutGroups, strRawLogText, matches) OrElse TrySplitLogEntries(rfc5424RegexWithoutGroups, strRawLogText, matches) Then
                     For Each strMatch As String In matches
-                        If Not String.IsNullOrWhiteSpace(strMatch.Trim) Then
-                            ProcessIncomingLog_SubRoutine(strMatch.Trim, strSourceIP)
+                        strMatch = strMatch.Replace(strNewLine, vbCrLf).Trim
+
+                        If Not String.IsNullOrWhiteSpace(strMatch) Then
+                            ProcessIncomingLog_SubRoutine(strMatch, strSourceIP)
                         End If
                     Next
                 Else
