@@ -11,6 +11,8 @@ Namespace SyslogParser
         Private ReadOnly rfc5424TransformRegexWithoutGroups As New Regex("(<[0-9]+>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9] [^\n\r ]+ [^\n\r:]+: .*?)(?=(?:\r|\r\n|$))", RegexOptions.Compiled) ' PERFECT!
 
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
+        Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
+        Private ReadOnly SyslogPreProcessor2 As New Regex("(<\d+>)", RegexOptions.Compiled)
 
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
@@ -186,8 +188,8 @@ Namespace SyslogParser
             If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                 Dim matches As String() = Nothing
 
-                strRawLogText = Regex.Replace(strRawLogText, "\d+ (<\d+>)", "$1")
-                strRawLogText = Regex.Replace(strRawLogText, "(<\d+>)", vbCrLf & "$1")
+                strRawLogText = SyslogPreProcessor1.Replace(strRawLogText, "$1")
+                strRawLogText = SyslogPreProcessor2.Replace(strRawLogText, vbCrLf & "$1")
 
                 If TrySplitLogEntries(rfc5424TransformRegexWithoutGroups, strRawLogText, matches) OrElse TrySplitLogEntries(rfc5424RegexWithoutGroups, strRawLogText, matches) Then
                     For Each strMatch As String In matches
