@@ -218,20 +218,20 @@ Namespace SyslogParser
 
                     If IsRegexMatch(rfc5424TransformRegex, strRawLogText, match) Then
                         ' Handling the transformation to RFC 5424 format
-                        priority = If(String.IsNullOrWhiteSpace(match.Groups(1).Value), "", match.Groups(1).Value)
-                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
-                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
-                        appName = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
-                        message = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
+                        priority = If(String.IsNullOrWhiteSpace(match.Groups("priority").Value), "", match.Groups("priority").Value)
+                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups("timestamp").Value), "", match.Groups("timestamp").Value)
+                        hostname = If(String.IsNullOrWhiteSpace(match.Groups("hostname").Value), "", match.Groups("hostname").Value)
+                        appName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
+                        message = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
 
                         priorityObject = GetSeverityAndFacility(priority)
                     ElseIf IsRegexMatch(rfc5424Regex, strRawLogText, match) Then
                         ' Match against RFC 5424 formatted logs
-                        priority = If(String.IsNullOrWhiteSpace(match.Groups(1).Value), "", match.Groups(1).Value)
-                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
-                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
-                        appName = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
-                        message = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
+                        priority = If(String.IsNullOrWhiteSpace(match.Groups("priority").Value), "", match.Groups("priority").Value)
+                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups("timestamp").Value), "", match.Groups("timestamp").Value)
+                        hostname = If(String.IsNullOrWhiteSpace(match.Groups("hostname").Value), "", match.Groups("hostname").Value)
+                        appName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
+                        message = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
 
                         priorityObject = GetSeverityAndFacility(priority)
                     Else
