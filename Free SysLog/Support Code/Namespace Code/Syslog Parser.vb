@@ -49,6 +49,8 @@ Namespace SyslogParser
         End Function
 
         Public Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strLogText As String)
+            If strLogText.CaseInsensitiveContains(strNewLine) Then strLogText = strLogText.Replace(strNewLine, vbCrLf).Trim
+
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
@@ -117,8 +119,8 @@ Namespace SyslogParser
         ''' <exception cref="FormatException">Throws a FormatException if the function can't parse the input.</exception>
         Private Function ParseTimestamp(timestamp As String) As Date
             Dim parsedDate As Date
-			Dim userCulture As Globalization.CultureInfo = Globalization.CultureInfo.CurrentCulture
-			Dim isEuropeanDateFormat As Boolean = userCulture.DateTimeFormat.ShortDatePattern.StartsWith("d")
+            Dim userCulture As Globalization.CultureInfo = Globalization.CultureInfo.CurrentCulture
+            Dim isEuropeanDateFormat As Boolean = userCulture.DateTimeFormat.ShortDatePattern.StartsWith("d")
 
             If timestamp.EndsWith("Z") Then
                 ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds ("yyyy-MM-ddTHH:mm:ssZ" or "yyyy-MM-ddTHH:mm:ss.fffZ")
@@ -209,6 +211,8 @@ Namespace SyslogParser
         End Sub
 
         Public Sub ProcessIncomingLog_SubRoutine(strRawLogText As String, strSourceIP As String)
+            If strRawLogText.CaseInsensitiveContains(strNewLine) Then strRawLogText = strRawLogText.Replace(strNewLine, vbCrLf).Trim
+
             Try
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
