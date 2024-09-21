@@ -289,7 +289,7 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
         Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-        Clipboard.SetText(selectedRow.Cells(ColumnIndex_IPAddress).Value)
+        CopyTextToWindowsClipboard(selectedRow.Cells(ColumnIndex_IPAddress).Value, Text)
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
