@@ -1024,6 +1024,8 @@ Public Class Form1
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
             serverThread.Start()
 
+            If My.Settings.EnableTCPServer Then StartTCPServer()
+
             SyncLock dataGridLockObject
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
                 SelectLatestLogEntry()

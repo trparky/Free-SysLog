@@ -49,8 +49,9 @@ Namespace SyslogTcpServer
                                 strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
 
                                 If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
-                                    boolLoopControl = False
                                     TCPListener.Stop()
+                                    boolLoopControl = False
+                                    Exit Do
                                 Else
                                     _syslogMessageHandler.DynamicInvoke(strMessage, GetIPv4Address(remoteIPEndPoint.Address).ToString)
                                 End If
