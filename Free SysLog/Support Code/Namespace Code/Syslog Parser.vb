@@ -7,9 +7,6 @@ Namespace SyslogParser
         Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z) (?<hostname>(?:\\.|[^\n\r ])+) (?<appname>(?:\\.|[^\n\r:]+)): (?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
         Private ReadOnly rfc5424TransformRegex As New Regex("<(?<priority>[0-9]+)>(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+) (?<appname>(?:\\.|[^\n\r:]+)): (?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
 
-        Private ReadOnly rfc5424RegexWithoutGroups As New Regex("(<[0-9]+>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z [^\n\r ]+ [^\n\r:]+: .*?)(?=(?:\r|\r\n))", RegexOptions.Compiled) ' PERFECT!
-        Private ReadOnly rfc5424TransformRegexWithoutGroups As New Regex("(<[0-9]+>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9] [^\n\r ]+ [^\n\r:]+: .*?)(?=(?:\r|\r\n|$))", RegexOptions.Compiled) ' PERFECT!
-
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor2 As New Regex("(<\d+>)", RegexOptions.Compiled)
@@ -190,13 +187,20 @@ Namespace SyslogParser
 
         Public Sub ProcessIncomingLog(strRawLogText As String, strSourceIP As String)
             If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
-                Dim matches As String() = Nothing
+                ' Convert all linefeeds.
+                strRawLogText = ConvertLineFeeds(strRawLogText)
 
+                ' Do some pre-processing so that we can separate out the data more easily.
                 strRawLogText = strRawLogText.Replace(vbCrLf, strNewLine).Replace(vbLf, strNewLine)
                 strRawLogText = SyslogPreProcessor1.Replace(strRawLogText, "$1")
                 strRawLogText = SyslogPreProcessor2.Replace(strRawLogText, vbCrLf & "$1")
 
-                If TrySplitLogEntries(rfc5424TransformRegexWithoutGroups, strRawLogText, matches) OrElse TrySplitLogEntries(rfc5424RegexWithoutGroups, strRawLogText, matches) Then
+                ' Split off each syslog entry by using vbCrLf as a delimiter.
+                Dim matches As String() = strRawLogText.Split(vbCrLf)
+
+                ' Check to see if we have anything to work with before we go into the loop.
+                If matches.Count > 0 Then
+                    ' Now work with each syslog entry.
                     For Each strMatch As String In matches
                         strMatch = strMatch.Replace(strNewLine, vbCrLf).Trim
 
@@ -205,6 +209,7 @@ Namespace SyslogParser
                         End If
                     Next
                 Else
+                    ' Nope, log it as unable to be parsed.
                     AddToLogList(Nothing, "local", $"Unable to parse log {strQuote}{strRawLogText}{strQuote}.")
                 End If
             End If
@@ -252,10 +257,6 @@ Namespace SyslogParser
                         priorityObject = ("Local", "Error")
                         message = $"An error occured while attempting to parse the log entry. Below is the log entry that failed...{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
                     End If
-
-                    ' Step 2: Process the log message (previous processing logic)
-                    message = ConvertLineFeeds(message)
-                    strRawLogText = ConvertLineFeeds(strRawLogText)
 
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
