@@ -149,13 +149,24 @@ Namespace SyslogParser
                 ' If you need to add the current year to the date:
                 parsedDate = parsedDate.AddYears(Date.Now.Year - parsedDate.Year)
             ElseIf timestamp.Contains("/") Then
-                ' Handle both American and European formats based on localization
-                If isEuropeanDateFormat Then
-                    ' European format "dd/MM/yyyy HH:mm:ss"
-                    parsedDate = Date.ParseExact(timestamp, "dd/MM/yyyy HH:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                If timestamp.EndsWith("PM", StringComparison.OrdinalIgnoreCase) Or timestamp.EndsWith("AM", StringComparison.OrdinalIgnoreCase) Then
+                    ' Handle both American and European formats based on localization
+                    If isEuropeanDateFormat Then
+                        ' European format "d/M/yyyy HH:mm:ss"
+                        parsedDate = Date.ParseExact(timestamp, "d/M/yyyy H:mm:ss tt", Globalization.CultureInfo.InvariantCulture)
+                    Else
+                        ' American format "M/d/yyyy h:mm:ss tt"
+                        parsedDate = Date.ParseExact(timestamp, "M/d/yyyy h:mm:ss tt", Globalization.CultureInfo.InvariantCulture)
+                    End If
                 Else
-                    ' American format "MM/dd/yyyy HH:mm:ss"
-                    parsedDate = Date.ParseExact(timestamp, "MM/dd/yyyy HH:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                    ' Handle both American and European formats based on localization
+                    If isEuropeanDateFormat Then
+                        ' European format "d/M/yyyy HH:mm:ss"
+                        parsedDate = Date.ParseExact(timestamp, "d/M/yyyy H:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                    Else
+                        ' American format "M/d/yyyy h:mm:ss"
+                        parsedDate = Date.ParseExact(timestamp, "M/d/yyyy h:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                    End If
                 End If
             Else
                 Throw New FormatException("Unknown timestamp format.")
