@@ -85,6 +85,7 @@ Public Class ViewLogBackups
                 End If
             Else
                 Dim stringBuilder As New Text.StringBuilder()
+                Dim deletedFilesLog As New Text.StringBuilder()
 
                 stringBuilder.AppendLine("Are you sure you want to delete the following files?")
                 stringBuilder.AppendLine()
@@ -94,10 +95,14 @@ Public Class ViewLogBackups
                 Next
 
                 If MsgBox(stringBuilder.ToString.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
+                    deletedFilesLog.AppendLine($"The user deleted the following {FileList.SelectedItems.Count} files from the log backups folder...")
+
                     For Each item As ListViewItem In FileList.SelectedItems
                         File.Delete(Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text))
-                        SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{item.SubItems(0).Text}"" from the log backups folder.")
+                        deletedFilesLog.AppendLine(item.SubItems(0).Text)
                     Next
+
+                    SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, deletedFilesLog.ToString.Trim)
 
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
