@@ -105,34 +105,36 @@ Public Class Replacements
     End Sub
 
     Private Sub EditItem()
-        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = "Edit Replacement"}
-            Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
+        If ReplacementsListView.SelectedItems.Count > 0 Then
+            Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = "Edit Replacement"}
+                Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
 
-            With AddReplacement
-                .strReplace = selectedItemObject.SubItems(0).Text
-                .strReplaceWith = selectedItemObject.SubItems(1).Text
-                .boolRegex = selectedItemObject.BoolRegex
-                .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
-                .boolEnabled = selectedItemObject.BoolEnabled
-            End With
-
-            AddReplacement.ShowDialog(Me)
-
-            If AddReplacement.boolSuccess Then
-                With selectedItemObject
-                    .SubItems(0).Text = AddReplacement.strReplace
-                    .SubItems(1).Text = AddReplacement.strReplaceWith
-                    .SubItems(2).Text = If(AddReplacement.boolRegex, "Yes", "No")
-                    .SubItems(3).Text = If(AddReplacement.boolCaseSensitive, "Yes", "No")
-                    .SubItems(4).Text = If(AddReplacement.boolEnabled, "Yes", "No")
-                    .BoolRegex = AddReplacement.boolRegex
-                    .BoolCaseSensitive = AddReplacement.boolCaseSensitive
-                    .BoolEnabled = AddReplacement.boolEnabled
+                With AddReplacement
+                    .strReplace = selectedItemObject.SubItems(0).Text
+                    .strReplaceWith = selectedItemObject.SubItems(1).Text
+                    .boolRegex = selectedItemObject.BoolRegex
+                    .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+                    .boolEnabled = selectedItemObject.BoolEnabled
                 End With
 
-                boolChanged = True
-            End If
-        End Using
+                AddReplacement.ShowDialog(Me)
+
+                If AddReplacement.boolSuccess Then
+                    With selectedItemObject
+                        .SubItems(0).Text = AddReplacement.strReplace
+                        .SubItems(1).Text = AddReplacement.strReplaceWith
+                        .SubItems(2).Text = If(AddReplacement.boolRegex, "Yes", "No")
+                        .SubItems(3).Text = If(AddReplacement.boolCaseSensitive, "Yes", "No")
+                        .SubItems(4).Text = If(AddReplacement.boolEnabled, "Yes", "No")
+                        .BoolRegex = AddReplacement.boolRegex
+                        .BoolCaseSensitive = AddReplacement.boolCaseSensitive
+                        .BoolEnabled = AddReplacement.boolEnabled
+                    End With
+
+                    boolChanged = True
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles BtnEdit.Click

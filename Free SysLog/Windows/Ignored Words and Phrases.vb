@@ -118,32 +118,34 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub EditItem()
-        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-            Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
+        If IgnoredListView.SelectedItems.Count > 0 Then
+            Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
+                Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
-            With AddIgnored
-                .strIgnored = selectedItemObject.SubItems(0).Text
-                .boolRegex = selectedItemObject.BoolRegex
-                .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
-                .boolEnabled = selectedItemObject.BoolEnabled
-            End With
-
-            AddIgnored.ShowDialog(Me)
-
-            If AddIgnored.boolSuccess Then
-                With selectedItemObject
-                    .SubItems(0).Text = AddIgnored.strIgnored
-                    .SubItems(1).Text = If(AddIgnored.boolRegex, "Yes", "No")
-                    .SubItems(2).Text = If(AddIgnored.boolCaseSensitive, "Yes", "No")
-                    .SubItems(3).Text = If(AddIgnored.boolEnabled, "Yes", "No")
-                    .BoolRegex = AddIgnored.boolRegex
-                    .BoolCaseSensitive = AddIgnored.boolCaseSensitive
-                    .BoolEnabled = AddIgnored.boolEnabled
+                With AddIgnored
+                    .strIgnored = selectedItemObject.SubItems(0).Text
+                    .boolRegex = selectedItemObject.BoolRegex
+                    .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+                    .boolEnabled = selectedItemObject.BoolEnabled
                 End With
 
-                boolChanged = True
-            End If
-        End Using
+                AddIgnored.ShowDialog(Me)
+
+                If AddIgnored.boolSuccess Then
+                    With selectedItemObject
+                        .SubItems(0).Text = AddIgnored.strIgnored
+                        .SubItems(1).Text = If(AddIgnored.boolRegex, "Yes", "No")
+                        .SubItems(2).Text = If(AddIgnored.boolCaseSensitive, "Yes", "No")
+                        .SubItems(3).Text = If(AddIgnored.boolEnabled, "Yes", "No")
+                        .BoolRegex = AddIgnored.boolRegex
+                        .BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                        .BoolEnabled = AddIgnored.boolEnabled
+                    End With
+
+                    boolChanged = True
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub IgnoredListView_DoubleClick(sender As Object, e As EventArgs) Handles IgnoredListView.DoubleClick

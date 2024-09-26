@@ -32,28 +32,30 @@ Public Class ConfigureSysLogMirrorServers
     End Sub
 
     Private Sub EditItem()
-        Using AddSysLogMirrorServer As New AddSysLogMirrorServer With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-            Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
+        If servers.SelectedItems.Count > 0 Then
+            Using AddSysLogMirrorServer As New AddSysLogMirrorServer With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
+                Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
 
-            With AddSysLogMirrorServer
-                .strIP = selectedItemObject.SubItems(0).Text
-                .intPort = selectedItemObject.SubItems(1).Text
-                .strName = selectedItemObject.SubItems(3).Text
-                .boolEnabled = selectedItemObject.BoolEnabled
-            End With
-
-            AddSysLogMirrorServer.ShowDialog(Me)
-
-            If AddSysLogMirrorServer.boolSuccess Then
-                With selectedItemObject
-                    .SubItems(0).Text = AddSysLogMirrorServer.strIP
-                    .SubItems(1).Text = AddSysLogMirrorServer.intPort
-                    .SubItems(2).Text = If(AddSysLogMirrorServer.boolEnabled, "Yes", "No")
-                    .SubItems(3).Text = AddSysLogMirrorServer.strName
-                    .BoolEnabled = AddSysLogMirrorServer.boolEnabled
+                With AddSysLogMirrorServer
+                    .strIP = selectedItemObject.SubItems(0).Text
+                    .intPort = selectedItemObject.SubItems(1).Text
+                    .strName = selectedItemObject.SubItems(3).Text
+                    .boolEnabled = selectedItemObject.BoolEnabled
                 End With
-            End If
-        End Using
+
+                AddSysLogMirrorServer.ShowDialog(Me)
+
+                If AddSysLogMirrorServer.boolSuccess Then
+                    With selectedItemObject
+                        .SubItems(0).Text = AddSysLogMirrorServer.strIP
+                        .SubItems(1).Text = AddSysLogMirrorServer.intPort
+                        .SubItems(2).Text = If(AddSysLogMirrorServer.boolEnabled, "Yes", "No")
+                        .SubItems(3).Text = AddSysLogMirrorServer.strName
+                        .BoolEnabled = AddSysLogMirrorServer.boolEnabled
+                    End With
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub BtnAddServer_Click(sender As Object, e As EventArgs) Handles BtnAddServer.Click

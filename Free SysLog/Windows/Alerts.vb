@@ -75,50 +75,52 @@ Public Class Alerts
     End Sub
 
     Private Sub EditItem()
-        Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-            Dim selectedItemObject As AlertsListViewItem = DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem)
+        If AlertsListView.SelectedItems.Count > 0 Then
+            Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
+                Dim selectedItemObject As AlertsListViewItem = DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem)
 
-            With AddAlert
-                .strLogText = selectedItemObject.StrLogText
-                .strAlertText = selectedItemObject.StrAlertText
-                .boolRegex = selectedItemObject.BoolRegex
-                .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
-                .AlertType = selectedItemObject.AlertType
-                .boolEnabled = selectedItemObject.BoolEnabled
-            End With
-
-            AddAlert.ShowDialog(Me)
-
-            If AddAlert.boolSuccess Then
-                With selectedItemObject
-                    .StrLogText = AddAlert.strLogText
-                    .StrAlertText = AddAlert.strAlertText
-                    .SubItems(0).Text = AddAlert.strLogText
-                    .SubItems(1).Text = If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText)
-                    .SubItems(2).Text = If(AddAlert.boolRegex, "Yes", "No")
-                    .SubItems(3).Text = If(AddAlert.boolCaseSensitive, "Yes", "No")
-                    .BoolRegex = AddAlert.boolRegex
-                    .BoolCaseSensitive = AddAlert.boolCaseSensitive
-                    .AlertType = AddAlert.AlertType
-                    .BoolEnabled = AddAlert.boolEnabled
-
-                    Select Case .AlertType
-                        Case AlertType.Warning
-                            .SubItems(4).Text = "Warning"
-                        Case AlertType.ErrorMsg
-                            .SubItems(4).Text = "Error"
-                        Case AlertType.Info
-                            .SubItems(4).Text = "Information"
-                        Case AlertType.None
-                            .SubItems(4).Text = "None"
-                    End Select
-
-                    .SubItems(5).Text = If(AddAlert.boolEnabled, "Yes", "No")
+                With AddAlert
+                    .strLogText = selectedItemObject.StrLogText
+                    .strAlertText = selectedItemObject.StrAlertText
+                    .boolRegex = selectedItemObject.BoolRegex
+                    .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+                    .AlertType = selectedItemObject.AlertType
+                    .boolEnabled = selectedItemObject.BoolEnabled
                 End With
 
-                boolChanged = True
-            End If
-        End Using
+                AddAlert.ShowDialog(Me)
+
+                If AddAlert.boolSuccess Then
+                    With selectedItemObject
+                        .StrLogText = AddAlert.strLogText
+                        .StrAlertText = AddAlert.strAlertText
+                        .SubItems(0).Text = AddAlert.strLogText
+                        .SubItems(1).Text = If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText)
+                        .SubItems(2).Text = If(AddAlert.boolRegex, "Yes", "No")
+                        .SubItems(3).Text = If(AddAlert.boolCaseSensitive, "Yes", "No")
+                        .BoolRegex = AddAlert.boolRegex
+                        .BoolCaseSensitive = AddAlert.boolCaseSensitive
+                        .AlertType = AddAlert.AlertType
+                        .BoolEnabled = AddAlert.boolEnabled
+
+                        Select Case .AlertType
+                            Case AlertType.Warning
+                                .SubItems(4).Text = "Warning"
+                            Case AlertType.ErrorMsg
+                                .SubItems(4).Text = "Error"
+                            Case AlertType.Info
+                                .SubItems(4).Text = "Information"
+                            Case AlertType.None
+                                .SubItems(4).Text = "None"
+                        End Select
+
+                        .SubItems(5).Text = If(AddAlert.boolEnabled, "Yes", "No")
+                    End With
+
+                    boolChanged = True
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub AlertsListView_DoubleClick(sender As Object, e As EventArgs) Handles AlertsListView.DoubleClick
