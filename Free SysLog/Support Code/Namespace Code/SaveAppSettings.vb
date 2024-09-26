@@ -46,6 +46,11 @@ Namespace SaveAppSettings
                     exportedSettingsArray = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(streamReader.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
                 End Using
 
+                My.Settings.replacements = New Specialized.StringCollection()
+                My.Settings.ServersToSendTo = New Specialized.StringCollection()
+                My.Settings.alerts = New Specialized.StringCollection()
+                My.Settings.ignored2 = New Specialized.StringCollection()
+
                 For Each settingProperty As Configuration.SettingsPropertyValue In My.Settings.PropertyValues
                     If exportedSettingsArray.FindKeyInDictionaryAndReturnIt(settingProperty.Name, rawValue) And settingProperty.PropertyValue IsNot Nothing Then
                         If settingProperty.Name.Equals("listFilesColumnOrder", StringComparison.OrdinalIgnoreCase) Or settingProperty.Name.Equals("verifyListFilesColumnOrder", StringComparison.OrdinalIgnoreCase) Then
