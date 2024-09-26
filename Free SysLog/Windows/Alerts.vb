@@ -292,4 +292,11 @@ Public Class Alerts
     Private Sub Alerts_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Escape Then Close()
     End Sub
+
+    Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
+        If MsgBox("Are you sure you want to delete all of the configured alerts?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+            AlertsListView.Items.Clear()
+            boolChanged = True
+        End If
+    End Sub
 End Class

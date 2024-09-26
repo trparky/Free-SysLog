@@ -179,4 +179,10 @@ Public Class ConfigureSysLogMirrorServers
     Private Sub ConfigureSysLogMirrorServers_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Escape Then Close()
     End Sub
+
+    Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
+        If MsgBox("Are you sure you want to delete all of the mirror servers?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+            servers.Items.Clear()
+        End If
+    End Sub
 End Class

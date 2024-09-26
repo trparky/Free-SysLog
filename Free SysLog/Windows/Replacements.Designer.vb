@@ -37,6 +37,7 @@ Partial Class Replacements
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
+        Me.btnDeleteAll = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -154,11 +155,22 @@ Partial Class Replacements
         Me.BtnImport.Text = "Import"
         Me.BtnImport.UseVisualStyleBackColor = True
         '
+        'btnDeleteAll
+        '
+        Me.btnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnDeleteAll.Location = New System.Drawing.Point(336, 415)
+        Me.btnDeleteAll.Name = "btnDeleteAll"
+        Me.btnDeleteAll.Size = New System.Drawing.Size(75, 23)
+        Me.btnDeleteAll.TabIndex = 17
+        Me.btnDeleteAll.Text = "Delete All"
+        Me.btnDeleteAll.UseVisualStyleBackColor = True
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1035, 450)
+        Me.Controls.Add(Me.btnDeleteAll)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.BtnEnableDisable)
@@ -189,4 +201,5 @@ Partial Class Replacements
     Friend WithEvents BtnEnableDisable As Button
     Friend WithEvents BtnExport As Button
     Friend WithEvents BtnImport As Button
+    Friend WithEvents btnDeleteAll As Button
 End Class

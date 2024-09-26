@@ -36,6 +36,7 @@ Partial Class ConfigureSysLogMirrorServers
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
         Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.btnDeleteAll = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -149,11 +150,22 @@ Partial Class ConfigureSysLogMirrorServers
         Me.BtnImport.Text = "Import"
         Me.BtnImport.UseVisualStyleBackColor = True
         '
+        'btnDeleteAll
+        '
+        Me.btnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnDeleteAll.Location = New System.Drawing.Point(343, 115)
+        Me.btnDeleteAll.Name = "btnDeleteAll"
+        Me.btnDeleteAll.Size = New System.Drawing.Size(75, 23)
+        Me.btnDeleteAll.TabIndex = 17
+        Me.btnDeleteAll.Text = "Delete All"
+        Me.btnDeleteAll.UseVisualStyleBackColor = True
+        '
         'ConfigureSysLogMirrorServers
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(637, 147)
+        Me.Controls.Add(Me.btnDeleteAll)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.btnEnableDisable)
@@ -184,4 +196,5 @@ Partial Class ConfigureSysLogMirrorServers
     Friend WithEvents colName As ColumnHeader
     Friend WithEvents BtnExport As Button
     Friend WithEvents BtnImport As Button
+    Friend WithEvents btnDeleteAll As Button
 End Class

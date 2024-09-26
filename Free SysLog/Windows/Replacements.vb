@@ -102,6 +102,7 @@ Public Class Replacements
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
         ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
+        boolChanged = True
     End Sub
 
     Private Sub EditItem()
@@ -259,5 +260,12 @@ Public Class Replacements
 
     Private Sub Replacements_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Escape Then Close()
+    End Sub
+
+    Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
+        If MsgBox("Are you sure you want to delete all of the replacements?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+            ReplacementsListView.Items.Clear()
+            boolChanged = True
+        End If
     End Sub
 End Class
