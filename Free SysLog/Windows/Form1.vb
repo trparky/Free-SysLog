@@ -129,10 +129,14 @@ Public Class Form1
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
         If ChkEnableStartAtUserStartup.Checked Then
             TaskHandling.CreateTask()
+            StartUpDelay.Enabled = True
+            StartUpDelay.Text = "        Startup Delay (60 Seconds)"
         Else
             Using taskService As New TaskService
                 taskService.RootFolder.DeleteTask($"Free SysLog for {Environment.UserName}")
             End Using
+
+            StartUpDelay.Enabled = False
         End If
     End Sub
 

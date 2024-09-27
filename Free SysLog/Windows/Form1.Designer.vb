@@ -289,7 +289,6 @@ Partial Class Form1
         '
         'StartUpDelay
         '
-        Me.StartUpDelay.CheckOnClick = True
         Me.StartUpDelay.Name = "StartUpDelay"
         Me.StartUpDelay.Enabled = False
         Me.StartUpDelay.Size = New System.Drawing.Size(339, 22)
