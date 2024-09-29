@@ -213,8 +213,6 @@ Namespace SyslogParser
                 If matches.Count > 0 Then
                     ' Now work with each syslog entry.
                     For Each strMatch As String In matches
-                        strMatch = strMatch.Replace(strNewLine, vbCrLf).Trim
-
                         If Not String.IsNullOrWhiteSpace(strMatch) Then
                             ProcessIncomingLog_SubRoutine(strMatch, strSourceIP)
                         End If
@@ -227,8 +225,6 @@ Namespace SyslogParser
         End Sub
 
         Public Sub ProcessIncomingLog_SubRoutine(strRawLogText As String, strSourceIP As String)
-            If strRawLogText.CaseInsensitiveContains(strNewLine) Then strRawLogText = strRawLogText.Replace(strNewLine, vbCrLf).Trim
-
             Try
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
@@ -268,6 +264,8 @@ Namespace SyslogParser
                         priorityObject = ("Local", "Error")
                         message = $"An error occured while attempting to parse the log entry. Below is the log entry that failed...{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
                     End If
+
+                    If Not String.IsNullOrWhiteSpace(message) AndAlso message.CaseInsensitiveContains(strNewLine) Then message = message.Replace(strNewLine, vbCrLf).Trim
 
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
