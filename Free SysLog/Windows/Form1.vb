@@ -260,6 +260,7 @@ Public Class Form1
         colLogType.Visible = My.Settings.boolShowLogTypeColumn
         ChkShowLogTypeColumn.Checked = My.Settings.boolShowLogTypeColumn
         RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
+        IPv6Support.Checked = My.Settings.IPv6Support
 
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
@@ -1332,10 +1333,28 @@ Public Class Form1
         My.Settings.RemoveNumbersFromRemoteApp = RemoveNumbersFromRemoteApp.Checked
     End Sub
 
+    Private Sub IPv6Support_Click(sender As Object, e As EventArgs) Handles IPv6Support.Click
+        My.Settings.IPv6Support = IPv6Support.Checked
+
+        If MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
+            Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                       SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+                                                       If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+
+                                                       Threading.Thread.Sleep(5000)
+
+                                                       serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+                                                       serverThread.Start()
+
+                                                       If My.Settings.EnableTCPServer Then StartTCPServer()
+                                                   End Sub)
+        End If
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
-            Using socket As New Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp) With {.DualMode = True}
+            Using socket As New Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp) With {.DualMode = My.Settings.IPv6Support}
                 socket.Bind(New IPEndPoint(IPAddress.IPv6Any, My.Settings.sysLogPort))
 
                 Dim boolDoServerLoop As Boolean = True

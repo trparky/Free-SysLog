@@ -19,7 +19,7 @@ Namespace SyslogTcpServer
         Public Async Function StartAsync() As Task
             Try
                 TCPListener = New TcpListener(IPAddress.IPv6Any, _port)
-                TCPListener.Server.DualMode = True
+                TCPListener.Server.DualMode = My.Settings.IPv6Support
                 TCPListener.Start()
 
                 While boolLoopControl

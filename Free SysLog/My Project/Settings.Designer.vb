@@ -840,6 +840,18 @@ Namespace My
                 Me("RemoveNumbersFromRemoteApp") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property IPv6Support() As Boolean
+            Get
+                Return CType(Me("IPv6Support"),Boolean)
+            End Get
+            Set
+                Me("IPv6Support") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
