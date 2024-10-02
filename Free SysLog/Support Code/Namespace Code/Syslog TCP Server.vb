@@ -21,7 +21,6 @@ Namespace SyslogTcpServer
                 TCPListener = New TcpListener(IPAddress.IPv6Any, _port)
                 TCPListener.Server.DualMode = True
                 TCPListener.Start()
-                Console.WriteLine($"Syslog TCP server listening on port {_port}.")
 
                 While boolLoopControl
                     Dim tcpClient As TcpClient = Await TCPListener.AcceptTcpClientAsync()
