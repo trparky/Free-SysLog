@@ -24,6 +24,7 @@ Public Class Form1
     Private Const strPayPal As String = "https://paypal.me/trparky"
     Private serverThread As Threading.Thread
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
+    Private boolServerRunning As Boolean = False
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -353,6 +354,8 @@ Public Class Form1
         serverThread.Start()
 
         If My.Settings.EnableTCPServer Then StartTCPServer()
+
+        boolServerRunning = True
     End Sub
 
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
@@ -1025,7 +1028,9 @@ Public Class Form1
             SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
             If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
             StopServerStripMenuItem.Text = "Start Server"
+            boolServerRunning = False
         ElseIf StopServerStripMenuItem.Text = "Start Server" Then
+            boolServerRunning = True
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
             serverThread.Start()
 
@@ -1336,7 +1341,7 @@ Public Class Form1
     Private Sub IPv6Support_Click(sender As Object, e As EventArgs) Handles IPv6Support.Click
         My.Settings.IPv6Support = IPv6Support.Checked
 
-        If MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
+        If boolServerRunning AndAlso MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
                                                        If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
