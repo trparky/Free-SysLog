@@ -1340,6 +1340,7 @@ Public Class Form1
 
     Private Sub IPv6Support_Click(sender As Object, e As EventArgs) Handles IPv6Support.Click
         My.Settings.IPv6Support = IPv6Support.Checked
+        My.Settings.Save()
 
         If boolServerRunning AndAlso MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
             Threading.ThreadPool.QueueUserWorkItem(Sub()
