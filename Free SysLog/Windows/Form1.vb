@@ -1360,12 +1360,22 @@ Public Class Form1
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
-            Using socket As New Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp) With {.DualMode = My.Settings.IPv6Support}
-                socket.Bind(New IPEndPoint(IPAddress.IPv6Any, My.Settings.sysLogPort))
+            ' These are initialized as IPv4 mode.
+            Dim addressFamilySetting As AddressFamily = AddressFamily.InterNetwork
+            Dim ipAddressSetting As IPAddress = IPAddress.Any
+
+            If My.Settings.IPv6Support Then
+                addressFamilySetting = AddressFamily.InterNetworkV6
+                ipAddressSetting = IPAddress.IPv6Any
+            End If
+
+            Using socket As New Socket(addressFamilySetting, SocketType.Dgram, ProtocolType.Udp)
+                If My.Settings.IPv6Support Then socket.DualMode = True
+                socket.Bind(New IPEndPoint(ipAddressSetting, My.Settings.sysLogPort))
 
                 Dim boolDoServerLoop As Boolean = True
                 Dim buffer(4095) As Byte
-                Dim remoteEndPoint As EndPoint = New IPEndPoint(IPAddress.IPv6Any, 0)
+                Dim remoteEndPoint As EndPoint = New IPEndPoint(ipAddressSetting, 0)
                 Dim ProxiedSysLogData As ProxiedSysLogData
 
                 While boolDoServerLoop

@@ -18,8 +18,13 @@ Namespace SyslogTcpServer
 
         Public Async Function StartAsync() As Task
             Try
-                TCPListener = New TcpListener(IPAddress.IPv6Any, _port)
-                TCPListener.Server.DualMode = My.Settings.IPv6Support
+                ' These are initialized as IPv4 mode.
+                Dim ipAddressSetting As IPAddress = IPAddress.Any
+
+                If My.Settings.IPv6Support Then ipAddressSetting = IPAddress.IPv6Any
+
+                TCPListener = New TcpListener(ipAddressSetting, _port)
+                If My.Settings.IPv6Support Then TCPListener.Server.DualMode = True
                 TCPListener.Start()
 
                 While boolLoopControl
