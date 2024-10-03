@@ -25,6 +25,7 @@ Public Class Form1
     Private serverThread As Threading.Thread
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
     Private boolServerRunning As Boolean = False
+    Private boolTCPServerRunning As Boolean = False
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -353,7 +354,10 @@ Public Class Form1
         serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
         serverThread.Start()
 
-        If My.Settings.EnableTCPServer Then StartTCPServer()
+        If My.Settings.EnableTCPServer Then
+            StartTCPServer()
+            boolTCPServerRunning = True
+        End If
 
         boolServerRunning = True
     End Sub
@@ -1034,7 +1038,10 @@ Public Class Form1
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
             serverThread.Start()
 
-            If My.Settings.EnableTCPServer Then StartTCPServer()
+            If My.Settings.EnableTCPServer Then
+                StartTCPServer()
+                boolTCPServerRunning = True
+            End If
 
             SyncLock dataGridLockObject
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
@@ -1345,7 +1352,7 @@ Public Class Form1
         If boolServerRunning AndAlso MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-                                                       If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                                                       If boolTCPServerRunning Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
 
                                                        Threading.Thread.Sleep(5000)
 
