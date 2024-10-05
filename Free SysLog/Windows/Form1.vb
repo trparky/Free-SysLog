@@ -351,15 +351,19 @@ Public Class Form1
     End Sub
 
     Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
-        serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
-        serverThread.Start()
+        If boolDoWeOwnTheMutex Then
+            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+            serverThread.Start()
 
-        If My.Settings.EnableTCPServer Then
-            StartTCPServer()
-            boolTCPServerRunning = True
+            If My.Settings.EnableTCPServer Then
+                StartTCPServer()
+                boolTCPServerRunning = True
+            End If
+
+            boolServerRunning = True
+        Else
+            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
         End If
-
-        boolServerRunning = True
     End Sub
 
     Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
