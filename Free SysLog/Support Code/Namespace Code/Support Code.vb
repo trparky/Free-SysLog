@@ -39,20 +39,23 @@ Namespace SupportCode
         Public Const ColumnIndex_FileName As Integer = 8
 
         Public Function ConvertListOfStringsToString(input As List(Of String), Optional boolUseOnlyOneLine As Boolean = False) As String
-            If boolUseOnlyOneLine Then
-                Return $"{String.Join(", ", input.Take(input.Count - 1))}, and {input.Last()}"
-            Else
-                If input.Count > 6 Then
-                    Return $"{String.Join(", ", input.Take(input.Count - 1))}, and {input.Last()}"
+            If input.Count = 1 Then Return input(0)
+
+            If boolUseOnlyOneLine OrElse input.Count >= 6 Then
+                If input.Count = 2 Then
+                    Return $"{input(0)} and {input(1)}"
                 Else
-                    Dim stringBuilder As New StringBuilder
-
-                    For Each item As String In input
-                        stringBuilder.AppendLine(item)
-                    Next
-
-                    Return stringBuilder.ToString.Trim
+                    Return $"{String.Join(", ", input.Take(input.Count - 1))}, and {input.Last()}"
                 End If
+            Else
+                ' For lists with more than 6 items, and if not using only one line
+                Dim stringBuilder As New StringBuilder()
+
+                For Each item As String In input
+                    stringBuilder.AppendLine(item)
+                Next
+
+                Return stringBuilder.ToString().Trim()
             End If
         End Function
 
