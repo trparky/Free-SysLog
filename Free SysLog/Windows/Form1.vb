@@ -1037,7 +1037,7 @@ Public Class Form1
             If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
             StopServerStripMenuItem.Text = "Start Server"
             boolServerRunning = False
-        ElseIf StopServerStripMenuItem.Text = "Start Server" Then
+        ElseIf StopServerStripMenuItem.Text = "Start Server" And boolDoWeOwnTheMutex Then
             boolServerRunning = True
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
             serverThread.Start()
@@ -1096,41 +1096,43 @@ Public Class Form1
     End Sub
 
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
-        Using IntegerInputForm As New IntegerInputForm(1, 65535) With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent}
-            IntegerInputForm.lblSetting.Text = "Server Port"
-            IntegerInputForm.TxtSetting.Text = My.Settings.sysLogPort
+        If boolDoWeOwnTheMutex Then
+            Using IntegerInputForm As New IntegerInputForm(1, 65535) With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent}
+                IntegerInputForm.lblSetting.Text = "Server Port"
+                IntegerInputForm.TxtSetting.Text = My.Settings.sysLogPort
 
-            IntegerInputForm.ShowDialog(Me)
+                IntegerInputForm.ShowDialog(Me)
 
-            If IntegerInputForm.boolSuccess Then
-                If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 65535 Then
-                    MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
-                Else
-                    If boolDoWeOwnTheMutex Then
-                        SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-                        If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                If IntegerInputForm.boolSuccess Then
+                    If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 65535 Then
+                        MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
+                    Else
+                        If boolDoWeOwnTheMutex Then
+                            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
+                            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                        End If
+
+                        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
+
+                        My.Settings.sysLogPort = IntegerInputForm.intResult
+                        My.Settings.Save()
+
+                        If serverThread.IsAlive Then serverThread.Abort()
+
+                        serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+                        serverThread.Start()
+
+                        SyncLock dataGridLockObject
+                            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
+                            SelectLatestLogEntry()
+                            UpdateLogCount()
+                        End SyncLock
+
+                        MsgBox("Done.", MsgBoxStyle.Information, Text)
                     End If
-
-                    ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
-
-                    My.Settings.sysLogPort = IntegerInputForm.intResult
-                    My.Settings.Save()
-
-                    If serverThread.IsAlive Then serverThread.Abort()
-
-                    serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
-                    serverThread.Start()
-
-                    SyncLock dataGridLockObject
-                        Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
-                        SelectLatestLogEntry()
-                        UpdateLogCount()
-                    End SyncLock
-
-                    MsgBox("Done.", MsgBoxStyle.Information, Text)
                 End If
-            End If
-        End Using
+            End Using
+        End If
     End Sub
 
     Private Sub ChangeAutosaveIntervalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeLogAutosaveIntervalToolStripMenuItem.Click
@@ -1353,7 +1355,7 @@ Public Class Form1
         My.Settings.IPv6Support = IPv6Support.Checked
         My.Settings.Save()
 
-        If boolServerRunning AndAlso MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
+        If boolDoWeOwnTheMutex AndAlso boolServerRunning AndAlso MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
                                                        If boolTCPServerRunning Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
