@@ -339,8 +339,8 @@ Namespace SyslogParser
             Return input
         End Function
 
-        Private Function GetCachedRegex(pattern As String, Optional boolCaseInsensitive As Boolean = True) As Regex
-            If Not ParentForm.regexCache.ContainsKey(pattern) Then ParentForm.regexCache(pattern) = New Regex(pattern, If(boolCaseInsensitive, RegexOptions.Compiled Or RegexOptions.IgnoreCase, RegexOptions.Compiled))
+        Private Function GetCachedRegex(pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
+            If Not ParentForm.regexCache.ContainsKey(pattern) Then ParentForm.regexCache(pattern) = New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
             Return ParentForm.regexCache(pattern)
         End Function
 
