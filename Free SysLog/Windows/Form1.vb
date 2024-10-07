@@ -66,7 +66,7 @@ Public Class Form1
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
 
-            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", "Informational", False, Nothing, Logs))
+            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", "Informational", False, Nothing, Nothing, Logs))
 
             SelectLatestLogEntry()
 
@@ -370,7 +370,7 @@ Public Class Form1
         If File.Exists(strPathToDataFile) Then
             Try
                 Invoke(Sub()
-                           Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Nothing, Nothing, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", "Informational, Local", False, Nothing, Logs))
+                           Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Nothing, Nothing, Nothing, Nothing, "Loading data and populating data grid... Please Wait.", "Informational, Local", False, Nothing, Nothing, Logs))
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
                        End Sub)
 
@@ -397,7 +397,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = False)
                 End If
 
-                listOfLogEntries.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", "Informational, Local", False, Nothing, Logs))
+                listOfLogEntries.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", "Informational, Local", False, Nothing, Nothing, Logs))
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -433,9 +433,9 @@ Public Class Form1
                        Logs.Rows.Clear()
 
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
-                           SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs),
-                           SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", "Informational, Local", False, Nothing, Logs),
-                           SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", "Informational, Local", False, Nothing, Logs)
+                           SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Nothing, Logs),
+                           SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", "Informational, Local", False, Nothing, Nothing, Logs),
+                           SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", "Informational, Local", False, Nothing, Nothing, Logs)
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)
@@ -510,7 +510,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
+                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Nothing, Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -556,7 +556,7 @@ Public Class Form1
 
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
+                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Nothing, Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -800,7 +800,7 @@ Public Class Form1
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
+                        Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Nothing, Logs))
 
                         SelectLatestLogEntry()
                     End SyncLock
@@ -909,7 +909,7 @@ Public Class Form1
                 Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
+                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Nothing, Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -1010,7 +1010,7 @@ Public Class Form1
                 Logs.Rows.Remove(item)
             Next
 
-            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Logs))
+            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", "Informational, Local", False, Nothing, Nothing, Logs))
 
             SelectLatestLogEntry()
         End SyncLock
@@ -1048,7 +1048,7 @@ Public Class Form1
             End If
 
             SyncLock dataGridLockObject
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
+                Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Nothing, Logs))
                 SelectLatestLogEntry()
                 UpdateLogCount()
             End SyncLock
@@ -1123,7 +1123,7 @@ Public Class Form1
                         serverThread.Start()
 
                         SyncLock dataGridLockObject
-                            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Logs))
+                            Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, "Free SysLog Server Started.", "Informational, Local", False, Nothing, Nothing, Logs))
                             SelectLatestLogEntry()
                             UpdateLogCount()
                         End SyncLock
@@ -1433,7 +1433,7 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", "Error", False, Nothing, Logs))
+                           Logs.Rows.Add(SyslogParser.MakeDataGridRow(Now, Now, Now.ToString, IPAddress.Loopback.ToString, Nothing, Nothing, $"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", "Error", False, Nothing, Nothing, Logs))
                            SelectLatestLogEntry()
                            UpdateLogCount()
                        End SyncLock

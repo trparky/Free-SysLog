@@ -162,7 +162,8 @@ Namespace DataHandling
                                                 .DateObject = myItem.DateObject,
                                                 .BoolAlerted = myItem.BoolAlerted,
                                                 .ServerDate = myItem.ServerDate,
-                                                .rawLogData = myItem.RawLogData
+                                                .rawLogData = myItem.RawLogData,
+                                                .alertText = myItem.AlertText
                                               })
                         End If
                     Next

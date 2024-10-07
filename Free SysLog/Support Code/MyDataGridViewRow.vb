@@ -5,12 +5,14 @@
     Public Property ServerDate As Date
     Public Property BoolAlerted As Boolean = False
     Public Property RawLogData As String
+    Public Property AlertText As String
 
     Public Overrides Function Clone()
         Dim newDataGridRow As New MyDataGridViewRow()
         newDataGridRow.CreateCells(Me.DataGridView)
         newDataGridRow.DateObject = Me.DateObject
         newDataGridRow.BoolAlerted = Me.BoolAlerted
+        newDataGridRow.AlertText = Me.AlertText
 
         For index As Short = 0 To Me.Cells.Count - 1
             With newDataGridRow
