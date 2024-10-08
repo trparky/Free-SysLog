@@ -37,6 +37,8 @@ Partial Class ConfigureSysLogMirrorServers
         Me.BtnImport = New System.Windows.Forms.Button()
         Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.btnDeleteAll = New System.Windows.Forms.Button()
+        Me.BtnDown = New System.Windows.Forms.Button()
+        Me.BtnUp = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -51,7 +53,7 @@ Partial Class ConfigureSysLogMirrorServers
         Me.servers.HideSelection = False
         Me.servers.Location = New System.Drawing.Point(12, 12)
         Me.servers.Name = "servers"
-        Me.servers.Size = New System.Drawing.Size(613, 97)
+        Me.servers.Size = New System.Drawing.Size(587, 97)
         Me.servers.TabIndex = 0
         Me.servers.UseCompatibleStateImageBehavior = False
         Me.servers.View = System.Windows.Forms.View.Details
@@ -160,11 +162,33 @@ Partial Class ConfigureSysLogMirrorServers
         Me.btnDeleteAll.Text = "Delete All"
         Me.btnDeleteAll.UseVisualStyleBackColor = True
         '
+        'BtnDown
+        '
+        Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnDown.Location = New System.Drawing.Point(605, 86)
+        Me.BtnDown.Name = "BtnDown"
+        Me.BtnDown.Size = New System.Drawing.Size(24, 23)
+        Me.BtnDown.TabIndex = 19
+        Me.BtnDown.Text = "▼"
+        Me.BtnDown.UseVisualStyleBackColor = True
+        '
+        'BtnUp
+        '
+        Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnUp.Location = New System.Drawing.Point(605, 12)
+        Me.BtnUp.Name = "BtnUp"
+        Me.BtnUp.Size = New System.Drawing.Size(24, 23)
+        Me.BtnUp.TabIndex = 18
+        Me.BtnUp.Text = "▲"
+        Me.BtnUp.UseVisualStyleBackColor = True
+        '
         'ConfigureSysLogMirrorServers
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(637, 147)
+        Me.Controls.Add(Me.BtnDown)
+        Me.Controls.Add(Me.BtnUp)
         Me.Controls.Add(Me.btnDeleteAll)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
@@ -197,4 +221,6 @@ Partial Class ConfigureSysLogMirrorServers
     Friend WithEvents BtnExport As Button
     Friend WithEvents BtnImport As Button
     Friend WithEvents btnDeleteAll As Button
+    Friend WithEvents BtnDown As Button
+    Friend WithEvents BtnUp As Button
 End Class

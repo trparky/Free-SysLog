@@ -37,6 +37,8 @@ Partial Class IgnoredWordsAndPhrases
         Me.BtnImport = New System.Windows.Forms.Button()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.btnDeleteAll = New System.Windows.Forms.Button()
+        Me.BtnDown = New System.Windows.Forms.Button()
+        Me.BtnUp = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -72,7 +74,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.HideSelection = False
         Me.IgnoredListView.Location = New System.Drawing.Point(12, 12)
         Me.IgnoredListView.Name = "IgnoredListView"
-        Me.IgnoredListView.Size = New System.Drawing.Size(630, 218)
+        Me.IgnoredListView.Size = New System.Drawing.Size(600, 218)
         Me.IgnoredListView.TabIndex = 5
         Me.IgnoredListView.UseCompatibleStateImageBehavior = False
         Me.IgnoredListView.View = System.Windows.Forms.View.Details
@@ -159,11 +161,33 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnDeleteAll.Text = "Delete All"
         Me.btnDeleteAll.UseVisualStyleBackColor = True
         '
+        'BtnDown
+        '
+        Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnDown.Location = New System.Drawing.Point(618, 207)
+        Me.BtnDown.Name = "BtnDown"
+        Me.BtnDown.Size = New System.Drawing.Size(24, 23)
+        Me.BtnDown.TabIndex = 19
+        Me.BtnDown.Text = "▼"
+        Me.BtnDown.UseVisualStyleBackColor = True
+        '
+        'BtnUp
+        '
+        Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnUp.Location = New System.Drawing.Point(618, 12)
+        Me.BtnUp.Name = "BtnUp"
+        Me.BtnUp.Size = New System.Drawing.Size(24, 23)
+        Me.BtnUp.TabIndex = 18
+        Me.BtnUp.Text = "▲"
+        Me.BtnUp.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(654, 265)
+        Me.Controls.Add(Me.BtnDown)
+        Me.Controls.Add(Me.BtnUp)
         Me.Controls.Add(Me.btnDeleteAll)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
@@ -194,4 +218,6 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents BtnImport As Button
     Friend WithEvents BtnExport As Button
     Friend WithEvents btnDeleteAll As Button
+    Friend WithEvents BtnDown As Button
+    Friend WithEvents BtnUp As Button
 End Class

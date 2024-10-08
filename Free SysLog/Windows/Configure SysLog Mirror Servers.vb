@@ -185,4 +185,30 @@ Public Class ConfigureSysLogMirrorServers
             servers.Items.Clear()
         End If
     End Sub
+
+    Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
+        If servers.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = servers.SelectedIndices(0)
+
+        ' Ensure the item is not already at the top
+        If selectedIndex > 0 Then
+            Dim item As ServerListViewItem = servers.SelectedItems(0)
+            servers.Items.RemoveAt(selectedIndex)
+            servers.Items.Insert(selectedIndex - 1, item)
+            servers.Items(selectedIndex - 1).Selected = True
+        End If
+    End Sub
+
+    Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
+        If servers.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = servers.SelectedIndices(0)
+
+        ' Ensure the item is not already at the bottom
+        If selectedIndex < servers.Items.Count - 1 Then
+            Dim item As ServerListViewItem = servers.SelectedItems(0)
+            servers.Items.RemoveAt(selectedIndex)
+            servers.Items.Insert(selectedIndex + 1, item)
+            servers.Items(selectedIndex + 1).Selected = True
+        End If
+    End Sub
 End Class

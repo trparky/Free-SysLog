@@ -299,4 +299,32 @@ Public Class Alerts
             boolChanged = True
         End If
     End Sub
+
+    Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
+        If AlertsListView.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = AlertsListView.SelectedIndices(0)
+
+        ' Ensure the item is not already at the top
+        If selectedIndex > 0 Then
+            Dim item As AlertsListViewItem = AlertsListView.SelectedItems(0)
+            AlertsListView.Items.RemoveAt(selectedIndex)
+            AlertsListView.Items.Insert(selectedIndex - 1, item)
+            AlertsListView.Items(selectedIndex - 1).Selected = True
+            boolChanged = True
+        End If
+    End Sub
+
+    Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
+        If AlertsListView.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = AlertsListView.SelectedIndices(0)
+
+        ' Ensure the item is not already at the bottom
+        If selectedIndex < AlertsListView.Items.Count - 1 Then
+            Dim item As AlertsListViewItem = AlertsListView.SelectedItems(0)
+            AlertsListView.Items.RemoveAt(selectedIndex)
+            AlertsListView.Items.Insert(selectedIndex + 1, item)
+            AlertsListView.Items(selectedIndex + 1).Selected = True
+            boolChanged = True
+        End If
+    End Sub
 End Class

@@ -263,4 +263,32 @@ Public Class IgnoredWordsAndPhrases
             boolChanged = True
         End If
     End Sub
+
+    Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
+        If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
+
+        ' Ensure the item is not already at the top
+        If selectedIndex > 0 Then
+            Dim item As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+            IgnoredListView.Items.RemoveAt(selectedIndex)
+            IgnoredListView.Items.Insert(selectedIndex - 1, item)
+            IgnoredListView.Items(selectedIndex - 1).Selected = True
+            boolChanged = True
+        End If
+    End Sub
+
+    Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
+        If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
+
+        ' Ensure the item is not already at the bottom
+        If selectedIndex < IgnoredListView.Items.Count - 1 Then
+            Dim item As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+            IgnoredListView.Items.RemoveAt(selectedIndex)
+            IgnoredListView.Items.Insert(selectedIndex + 1, item)
+            IgnoredListView.Items(selectedIndex + 1).Selected = True
+            boolChanged = True
+        End If
+    End Sub
 End Class
