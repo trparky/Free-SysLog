@@ -65,7 +65,19 @@ Namespace SyslogParser
 
             ParentForm.Invoke(Sub()
                                   SyncLock ParentForm.dataGridLockObject
-                                      ParentForm.Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, Nothing, Nothing, strLogText, "Informational, Local", False, Nothing, Nothing, ParentForm.Logs))
+                                      ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                               dateObject:=currentDate,
+                                                                               strTime:=currentDate.ToString,
+                                                                               strSourceAddress:=strSourceIP,
+                                                                               strHostname:=Nothing,
+                                                                               strRemoteProcess:=Nothing,
+                                                                               strLog:=strLogText,
+                                                                               strLogType:="Informational, Local",
+                                                                               boolAlerted:=False,
+                                                                               strRawLogText:=Nothing,
+                                                                               strAlertText:=Nothing,
+                                                                               dataGrid:=ParentForm.Logs)
+                                                                              )
                                       If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                   End SyncLock
 
@@ -310,7 +322,19 @@ Namespace SyslogParser
             If Not boolIgnored Then
                 ParentForm.Invoke(Sub()
                                       SyncLock ParentForm.dataGridLockObject
-                                          ParentForm.Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, strHostname, strRemoteProcess, strLogText, $"{priority.Severity}, {priority.Facility}", boolAlerted, strRawLogText, strAlertText, ParentForm.Logs))
+                                          ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                                   dateObject:=currentDate,
+                                                                                   strTime:=currentDate.ToString,
+                                                                                   strSourceAddress:=strSourceIP,
+                                                                                   strHostname:=strHostname,
+                                                                                   strRemoteProcess:=strRemoteProcess,
+                                                                                   strLog:=strLogText,
+                                                                                   strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                                   boolAlerted:=boolAlerted,
+                                                                                   strRawLogText:=strRawLogText,
+                                                                                   strAlertText:=strAlertText,
+                                                                                   dataGrid:=ParentForm.Logs)
+                                                                                  )
                                           If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                       End SyncLock
 
@@ -322,7 +346,19 @@ Namespace SyslogParser
                                   End Sub)
             ElseIf boolIgnored And ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
                 SyncLock ParentForm.IgnoredLogsLockObject
-                    Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, strHostname, strRemoteProcess, strLogText, $"{priority.Severity}, {priority.Facility}", boolAlerted, strRawLogText, strAlertText, ParentForm.Logs)
+                    Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                              dateObject:=currentDate,
+                                                                              strTime:=currentDate.ToString,
+                                                                              strSourceAddress:=strSourceIP,
+                                                                              strHostname:=strHostname,
+                                                                              strRemoteProcess:=strRemoteProcess,
+                                                                              strLog:=strLogText,
+                                                                              strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                              boolAlerted:=boolAlerted,
+                                                                              strRawLogText:=strRawLogText,
+                                                                              strAlertText:=strAlertText,
+                                                                              dataGrid:=ParentForm.Logs
+                                                                             )
                     ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                     If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)
                     ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
