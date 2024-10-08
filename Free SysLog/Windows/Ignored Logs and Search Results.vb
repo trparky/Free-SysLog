@@ -29,9 +29,8 @@ Public Class IgnoredLogsAndSearchResults
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
 
                 If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
-                    LogViewerInstance.lblAlertText.Text = selectedRow.AlertText
+                    LogViewerInstance.lblAlertText.Text = $"Alert Text: {selectedRow.AlertText}"
                 Else
-                    LogViewerInstance.lblAlertTextLabel.Visible = False
                     LogViewerInstance.lblAlertText.Visible = False
                 End If
 

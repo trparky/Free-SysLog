@@ -27,7 +27,6 @@ Partial Class LogViewer
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LblLogDate = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblSource = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.lblAlertTextLabel = New System.Windows.Forms.Label()
         Me.lblAlertText = New System.Windows.Forms.Label()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -77,21 +76,12 @@ Partial Class LogViewer
         Me.LblSource.Size = New System.Drawing.Size(104, 17)
         Me.LblSource.Text = "Source IP Address:"
         '
-        'lblAlertTextLabel
-        '
-        Me.lblAlertTextLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblAlertTextLabel.AutoSize = True
-        Me.lblAlertTextLabel.Location = New System.Drawing.Point(12, 144)
-        Me.lblAlertTextLabel.Name = "lblAlertTextLabel"
-        Me.lblAlertTextLabel.Size = New System.Drawing.Size(52, 13)
-        Me.lblAlertTextLabel.TabIndex = 5
-        Me.lblAlertTextLabel.Text = "Alert Text"
-        '
         'lblAlertText
         '
-        Me.lblAlertText.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblAlertText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblAlertText.AutoSize = True
-        Me.lblAlertText.Location = New System.Drawing.Point(70, 144)
+        Me.lblAlertText.Location = New System.Drawing.Point(12, 144)
         Me.lblAlertText.Name = "lblAlertText"
         Me.lblAlertText.Size = New System.Drawing.Size(112, 13)
         Me.lblAlertText.TabIndex = 6
@@ -103,7 +93,6 @@ Partial Class LogViewer
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 195)
         Me.Controls.Add(Me.lblAlertText)
-        Me.Controls.Add(Me.lblAlertTextLabel)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.BtnClose)
         Me.Controls.Add(Me.LogText)
@@ -125,6 +114,5 @@ Partial Class LogViewer
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents LblLogDate As ToolStripStatusLabel
     Friend WithEvents LblSource As ToolStripStatusLabel
-    Friend WithEvents lblAlertTextLabel As Label
     Friend WithEvents lblAlertText As Label
 End Class
