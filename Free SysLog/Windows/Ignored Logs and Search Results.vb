@@ -27,6 +27,14 @@ Public Class IgnoredLogsAndSearchResults
             Using LogViewerInstance As New LogViewer With {.strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
+
+                If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
+                    LogViewerInstance.lblAlertText.Text = selectedRow.AlertText
+                Else
+                    LogViewerInstance.lblAlertTextLabel.Visible = False
+                    LogViewerInstance.lblAlertText.Visible = False
+                End If
+
                 LogViewerInstance.ShowDialog(Me)
             End Using
         End If
