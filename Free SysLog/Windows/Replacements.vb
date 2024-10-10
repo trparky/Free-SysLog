@@ -149,6 +149,9 @@ Public Class Replacements
             BtnEnableDisable.Enabled = True
 
             BtnEnableDisable.Text = If(DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem).BoolEnabled, "Disable", "Enable")
+
+            BtnUp.Enabled = ReplacementsListView.SelectedIndices(0) <> 0
+            BtnDown.Enabled = ReplacementsListView.SelectedIndices(0) <> ReplacementsListView.Items.Count - 1
         Else
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
@@ -281,6 +284,9 @@ Public Class Replacements
             ReplacementsListView.Items(selectedIndex - 1).Selected = True
             boolChanged = True
         End If
+
+        BtnUp.Enabled = ReplacementsListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = ReplacementsListView.SelectedIndices(0) <> ReplacementsListView.Items.Count - 1
     End Sub
 
     Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
@@ -295,5 +301,8 @@ Public Class Replacements
             ReplacementsListView.Items(selectedIndex + 1).Selected = True
             boolChanged = True
         End If
+
+        BtnUp.Enabled = ReplacementsListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = ReplacementsListView.SelectedIndices(0) <> ReplacementsListView.Items.Count - 1
     End Sub
 End Class

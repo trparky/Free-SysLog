@@ -102,6 +102,9 @@ Public Class IgnoredWordsAndPhrases
             BtnEnableDisable.Enabled = True
 
             BtnEnableDisable.Text = If(DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem).BoolEnabled, "Disable", "Enable")
+
+            BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
+            BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
         Else
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
@@ -276,6 +279,9 @@ Public Class IgnoredWordsAndPhrases
             IgnoredListView.Items(selectedIndex - 1).Selected = True
             boolChanged = True
         End If
+
+        BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
     End Sub
 
     Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
@@ -290,5 +296,8 @@ Public Class IgnoredWordsAndPhrases
             IgnoredListView.Items(selectedIndex + 1).Selected = True
             boolChanged = True
         End If
+
+        BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
     End Sub
 End Class

@@ -50,6 +50,9 @@ Public Class Alerts
             BtnEnableDisable.Enabled = True
 
             BtnEnableDisable.Text = If(DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem).BoolEnabled, "Disable", "Enable")
+
+            BtnUp.Enabled = AlertsListView.SelectedIndices(0) <> 0
+            BtnDown.Enabled = AlertsListView.SelectedIndices(0) <> AlertsListView.Items.Count - 1
         Else
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
@@ -312,6 +315,9 @@ Public Class Alerts
             AlertsListView.Items(selectedIndex - 1).Selected = True
             boolChanged = True
         End If
+
+        BtnUp.Enabled = AlertsListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = AlertsListView.SelectedIndices(0) <> AlertsListView.Items.Count - 1
     End Sub
 
     Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
@@ -326,5 +332,8 @@ Public Class Alerts
             AlertsListView.Items(selectedIndex + 1).Selected = True
             boolChanged = True
         End If
+
+        BtnUp.Enabled = AlertsListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = AlertsListView.SelectedIndices(0) <> AlertsListView.Items.Count - 1
     End Sub
 End Class
