@@ -28,6 +28,7 @@ Partial Class LogViewer
         Me.LblLogDate = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblSource = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblAlertText = New System.Windows.Forms.Label()
+        Me.ChkShowRawLog = New System.Windows.Forms.CheckBox()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -37,11 +38,11 @@ Partial Class LogViewer
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LogText.BackColor = System.Drawing.SystemColors.Window
-        Me.LogText.Location = New System.Drawing.Point(12, 12)
+        Me.LogText.Location = New System.Drawing.Point(12, 30)
         Me.LogText.Multiline = True
         Me.LogText.Name = "LogText"
         Me.LogText.ReadOnly = True
-        Me.LogText.Size = New System.Drawing.Size(776, 126)
+        Me.LogText.Size = New System.Drawing.Size(776, 108)
         Me.LogText.TabIndex = 1
         '
         'BtnClose
@@ -87,11 +88,22 @@ Partial Class LogViewer
         Me.lblAlertText.TabIndex = 6
         Me.lblAlertText.Text = "(Alert Text Goes Here)"
         '
+        'ChkShowRawLog
+        '
+        Me.ChkShowRawLog.AutoSize = True
+        Me.ChkShowRawLog.Location = New System.Drawing.Point(12, 7)
+        Me.ChkShowRawLog.Name = "ChkShowRawLog"
+        Me.ChkShowRawLog.Size = New System.Drawing.Size(123, 17)
+        Me.ChkShowRawLog.TabIndex = 7
+        Me.ChkShowRawLog.Text = "Show Raw Log Text"
+        Me.ChkShowRawLog.UseVisualStyleBackColor = True
+        '
         'LogViewer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 195)
+        Me.Controls.Add(Me.ChkShowRawLog)
         Me.Controls.Add(Me.lblAlertText)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.BtnClose)
@@ -115,4 +127,5 @@ Partial Class LogViewer
     Friend WithEvents LblLogDate As ToolStripStatusLabel
     Friend WithEvents LblSource As ToolStripStatusLabel
     Friend WithEvents lblAlertText As Label
+    Friend WithEvents ChkShowRawLog As CheckBox
 End Class

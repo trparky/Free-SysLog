@@ -97,6 +97,7 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowAlertedColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowServerTimeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowHostnameColumn = New System.Windows.Forms.ToolStripMenuItem()
@@ -379,7 +380,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -722,6 +723,13 @@ Partial Class Form1
         Me.RemoveNumbersFromRemoteApp.Size = New System.Drawing.Size(188, 22)
         Me.RemoveNumbersFromRemoteApp.Text = "Remove Numbers From Remote App"
         '
+        'ShowRawLogOnLogViewer
+        '
+        Me.ShowRawLogOnLogViewer.CheckOnClick = True
+        Me.ShowRawLogOnLogViewer.Name = "ShowRawLogOnLogViewer"
+        Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(188, 22)
+        Me.ShowRawLogOnLogViewer.Text = "Show Raw Log on Log Viewer Window"
+        '
         'CreateIgnoredLogToolStripMenuItem
         '
         Me.CreateIgnoredLogToolStripMenuItem.Name = "CreateIgnoredLogToolStripMenuItem"
@@ -857,6 +865,7 @@ Partial Class Form1
     Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
     Friend WithEvents ChkShowAlertedColumn As ToolStripMenuItem
     Friend WithEvents RemoveNumbersFromRemoteApp As ToolStripMenuItem
+    Friend WithEvents ShowRawLogOnLogViewer As ToolStripMenuItem
     Friend WithEvents ChkShowLogTypeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowServerTimeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowHostnameColumn As ToolStripMenuItem

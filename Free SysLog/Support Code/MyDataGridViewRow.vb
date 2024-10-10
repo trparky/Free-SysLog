@@ -13,6 +13,7 @@
         newDataGridRow.DateObject = Me.DateObject
         newDataGridRow.BoolAlerted = Me.BoolAlerted
         newDataGridRow.AlertText = Me.AlertText
+        newDataGridRow.RawLogData = Me.RawLogData
 
         For index As Short = 0 To Me.Cells.Count - 1
             With newDataGridRow
