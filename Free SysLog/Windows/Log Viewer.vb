@@ -1,6 +1,6 @@
 ﻿Public Class LogViewer
     Public strLogText, strRawLogText As String
-    Public parentForm As Form1
+    Public MyParentForm As Form1
 
     Private Sub Log_Viewer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ChkShowRawLog.Checked = My.Settings.boolShowRawLogOnLogViewer
@@ -24,6 +24,6 @@
     Private Sub ChkShowRawLog_Click(sender As Object, e As EventArgs) Handles ChkShowRawLog.Click
         My.Settings.boolShowRawLogOnLogViewer = ChkShowRawLog.Checked
         LogText.Text = If(ChkShowRawLog.Checked, strRawLogText, strLogText)
-        If parentForm IsNot Nothing Then parentForm.ShowRawLogOnLogViewer.Checked = ChkShowRawLog.Checked
+        If MyParentForm IsNot Nothing Then MyParentForm.ShowRawLogOnLogViewer.Checked = ChkShowRawLog.Checked
     End Sub
 End Class
