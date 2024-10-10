@@ -126,6 +126,7 @@
     <Compile Include="Support Code\Namespace Code\Syslog Parser.vb" />
     <Compile Include="Support Code\Namespace Code\Task Handling.vb" />
     <Compile Include="Support Code\Namespace Code\Syslog TCP Server.vb" />
+    <Compile Include="Support Code\Namespace Code\Toast Notification Limiter.vb" />
     <Compile Include="Windows\Add SysLog Mirror Server.Designer.vb">
       <DependentUpon>Add SysLog Mirror Server.vb</DependentUpon>
     </Compile>

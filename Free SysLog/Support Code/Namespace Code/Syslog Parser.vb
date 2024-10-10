@@ -13,9 +13,12 @@ Namespace SyslogParser
 
         Private Const strNewLine As String = "{newline}"
 
+        Private NotificationLimiter As NotificationLimiter.NotificationLimiter
+
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
                 ParentForm = value
+                NotificationLimiter = New NotificationLimiter.NotificationLimiter(value.NotifyIcon)
             End Set
         End Property
 
@@ -416,7 +419,7 @@ Namespace SyslogParser
                         End If
                     End If
 
-                    ParentForm.NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
+                    NotificationLimiter.ShowNotification(1, "Log Alert", strAlertText, ToolTipIcon)
                     strOutgoingAlertText = strAlertText
                     Return True
                 End If
