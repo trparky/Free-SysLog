@@ -40,17 +40,8 @@
 
         ' Function to clean up old notification entries
         Private Shared Sub CleanUpOldEntries(currentTime As Date)
-            Dim keysToRemove As New List(Of String)
+            Dim keysToRemove As List(Of String) = lastNotificationTime.Where(Function(kvp) (currentTime - kvp.Value).TotalMinutes > CleanupThresholdInMinutes).Select(Function(kvp) kvp.Key).ToList()
 
-            ' Check each entry in the dictionary
-            For Each kvp As KeyValuePair(Of String, Date) In lastNotificationTime
-                Dim timeSinceLastUse As TimeSpan = currentTime - kvp.Value
-
-                ' If the entry is older than the cleanup threshold, mark it for removal
-                If timeSinceLastUse.TotalMinutes > CleanupThresholdInMinutes Then keysToRemove.Add(kvp.Key)
-            Next
-
-            ' Remove the old entries
             For Each key As String In keysToRemove
                 lastNotificationTime.Remove(key)
             Next
