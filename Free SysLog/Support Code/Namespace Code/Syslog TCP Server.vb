@@ -18,10 +18,14 @@ Namespace SyslogTcpServer
 
         Public Async Function StartAsync() As Task
             Try
-                TCPListener = New TcpListener(IPAddress.IPv6Any, _port)
-                TCPListener.Server.DualMode = True
+                ' These are initialized as IPv4 mode.
+                Dim ipAddressSetting As IPAddress = IPAddress.Any
+
+                If My.Settings.IPv6Support Then ipAddressSetting = IPAddress.IPv6Any
+
+                TCPListener = New TcpListener(ipAddressSetting, _port)
+                If My.Settings.IPv6Support Then TCPListener.Server.DualMode = True
                 TCPListener.Start()
-                Console.WriteLine($"Syslog TCP server listening on port {_port}.")
 
                 While boolLoopControl
                     Dim tcpClient As TcpClient = Await TCPListener.AcceptTcpClientAsync()
@@ -49,8 +53,9 @@ Namespace SyslogTcpServer
                                 strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
 
                                 If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
-                                    boolLoopControl = False
                                     TCPListener.Stop()
+                                    boolLoopControl = False
+                                    Exit Do
                                 Else
                                     _syslogMessageHandler.DynamicInvoke(strMessage, GetIPv4Address(remoteIPEndPoint.Address).ToString)
                                 End If

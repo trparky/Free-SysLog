@@ -38,12 +38,43 @@ Namespace SupportCode
         Public Const ColumnIndex_Alerted As Integer = 7
         Public Const ColumnIndex_FileName As Integer = 8
 
+        Public Function ConvertListOfStringsToString(input As List(Of String), Optional boolUseOnlyOneLine As Boolean = False) As String
+            If input.Count = 1 Then Return input(0)
+
+            If boolUseOnlyOneLine OrElse input.Count >= 6 Then
+                If input.Count = 2 Then
+                    Return $"{input(0)} and {input(1)}"
+                Else
+                    Return $"{String.Join(", ", input.Take(input.Count - 1))}, and {input.Last()}"
+                End If
+            Else
+                ' For lists with more than 6 items, and if not using only one line
+                Dim stringBuilder As New StringBuilder()
+
+                For Each item As String In input
+                    stringBuilder.AppendLine(item)
+                Next
+
+                Return stringBuilder.ToString().Trim()
+            End If
+        End Function
+
+        Public Function CopyTextToWindowsClipboard(strTextToBeCopiedToClipboard As String, strErrorMessageTitle As String) As Boolean
+            Try
+                Clipboard.SetDataObject(strTextToBeCopiedToClipboard, True, 5, 200)
+                Return True
+            Catch ex As Exception
+                MsgBox("Unable to open Windows Clipboard to copy text to it.", MsgBoxStyle.Critical, strErrorMessageTitle)
+                Return False
+            End Try
+        End Function
+
         Public Function ToIso8601Format(dateTime As Date) As String
             ' Ensure the DateTime is in UTC
             Dim utcDateTime As Date = dateTime.ToUniversalTime()
 
             ' Convert to ISO 8601 format with UTC time zone designator (Z)
-            Return utcDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture)
+            Return utcDateTime.ToString("yyyy-MM-ddTHH:mm:ss:fffZ", Globalization.CultureInfo.InvariantCulture)
         End Function
 
         Public Function GetIPv4Address(ipv6Address As IPAddress) As IPAddress

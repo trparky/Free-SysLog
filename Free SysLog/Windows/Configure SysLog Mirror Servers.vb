@@ -32,28 +32,30 @@ Public Class ConfigureSysLogMirrorServers
     End Sub
 
     Private Sub EditItem()
-        Using AddSysLogMirrorServer As New AddSysLogMirrorServer With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-            Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
+        If servers.SelectedItems.Count > 0 Then
+            Using AddSysLogMirrorServer As New AddSysLogMirrorServer With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
+                Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
 
-            With AddSysLogMirrorServer
-                .strIP = selectedItemObject.SubItems(0).Text
-                .intPort = selectedItemObject.SubItems(1).Text
-                .strName = selectedItemObject.SubItems(3).Text
-                .boolEnabled = selectedItemObject.BoolEnabled
-            End With
-
-            AddSysLogMirrorServer.ShowDialog(Me)
-
-            If AddSysLogMirrorServer.boolSuccess Then
-                With selectedItemObject
-                    .SubItems(0).Text = AddSysLogMirrorServer.strIP
-                    .SubItems(1).Text = AddSysLogMirrorServer.intPort
-                    .SubItems(2).Text = If(AddSysLogMirrorServer.boolEnabled, "Yes", "No")
-                    .SubItems(3).Text = AddSysLogMirrorServer.strName
-                    .BoolEnabled = AddSysLogMirrorServer.boolEnabled
+                With AddSysLogMirrorServer
+                    .strIP = selectedItemObject.SubItems(0).Text
+                    .intPort = selectedItemObject.SubItems(1).Text
+                    .strName = selectedItemObject.SubItems(3).Text
+                    .boolEnabled = selectedItemObject.BoolEnabled
                 End With
-            End If
-        End Using
+
+                AddSysLogMirrorServer.ShowDialog(Me)
+
+                If AddSysLogMirrorServer.boolSuccess Then
+                    With selectedItemObject
+                        .SubItems(0).Text = AddSysLogMirrorServer.strIP
+                        .SubItems(1).Text = AddSysLogMirrorServer.intPort
+                        .SubItems(2).Text = If(AddSysLogMirrorServer.boolEnabled, "Yes", "No")
+                        .SubItems(3).Text = AddSysLogMirrorServer.strName
+                        .BoolEnabled = AddSysLogMirrorServer.boolEnabled
+                    End With
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub BtnAddServer_Click(sender As Object, e As EventArgs) Handles BtnAddServer.Click
@@ -176,5 +178,37 @@ Public Class ConfigureSysLogMirrorServers
 
     Private Sub ConfigureSysLogMirrorServers_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Escape Then Close()
+    End Sub
+
+    Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
+        If MsgBox("Are you sure you want to delete all of the mirror servers?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+            servers.Items.Clear()
+        End If
+    End Sub
+
+    Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
+        If servers.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = servers.SelectedIndices(0)
+
+        ' Ensure the item is not already at the top
+        If selectedIndex > 0 Then
+            Dim item As ServerListViewItem = servers.SelectedItems(0)
+            servers.Items.RemoveAt(selectedIndex)
+            servers.Items.Insert(selectedIndex - 1, item)
+            servers.Items(selectedIndex - 1).Selected = True
+        End If
+    End Sub
+
+    Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
+        If servers.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = servers.SelectedIndices(0)
+
+        ' Ensure the item is not already at the bottom
+        If selectedIndex < servers.Items.Count - 1 Then
+            Dim item As ServerListViewItem = servers.SelectedItems(0)
+            servers.Items.RemoveAt(selectedIndex)
+            servers.Items.Insert(selectedIndex + 1, item)
+            servers.Items(selectedIndex + 1).Selected = True
+        End If
     End Sub
 End Class

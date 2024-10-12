@@ -87,6 +87,7 @@ Partial Class Form1
         Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.IPv6Support = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OlderThan1DayToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -96,6 +97,7 @@ Partial Class Form1
         Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowAlertedColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowServerTimeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowHostnameColumn = New System.Windows.Forms.ToolStripMenuItem()
@@ -289,7 +291,6 @@ Partial Class Form1
         '
         'StartUpDelay
         '
-        Me.StartUpDelay.CheckOnClick = True
         Me.StartUpDelay.Name = "StartUpDelay"
         Me.StartUpDelay.Enabled = False
         Me.StartUpDelay.Size = New System.Drawing.Size(339, 22)
@@ -379,7 +380,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -566,6 +567,13 @@ Partial Class Form1
         Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ImportExportSettingsToolStripMenuItem.Text = "Import/Export Program Settings"
         '
+        'IPv6Support
+        '
+        Me.IPv6Support.CheckOnClick = True
+        Me.IPv6Support.Name = "IPv6Support"
+        Me.IPv6Support.Size = New System.Drawing.Size(339, 22)
+        Me.IPv6Support.Text = "Enable IPv6 Support"
+        '
         'ExportToolStripMenuItem
         '
         Me.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem"
@@ -715,6 +723,13 @@ Partial Class Form1
         Me.RemoveNumbersFromRemoteApp.Size = New System.Drawing.Size(188, 22)
         Me.RemoveNumbersFromRemoteApp.Text = "Remove Numbers From Remote App"
         '
+        'ShowRawLogOnLogViewer
+        '
+        Me.ShowRawLogOnLogViewer.CheckOnClick = True
+        Me.ShowRawLogOnLogViewer.Name = "ShowRawLogOnLogViewer"
+        Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(188, 22)
+        Me.ShowRawLogOnLogViewer.Text = "Show Raw Log on Log Viewer Window"
+        '
         'CreateIgnoredLogToolStripMenuItem
         '
         Me.CreateIgnoredLogToolStripMenuItem.Name = "CreateIgnoredLogToolStripMenuItem"
@@ -822,6 +837,7 @@ Partial Class Form1
     Friend WithEvents CloseMe As ToolStripMenuItem
     Friend WithEvents ToolStripMenuSeparator As ToolStripSeparator
     Friend WithEvents ImportExportSettingsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents IPv6Support As ToolStripMenuItem
     Friend WithEvents ExportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenFileDialog As OpenFileDialog
@@ -849,6 +865,7 @@ Partial Class Form1
     Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
     Friend WithEvents ChkShowAlertedColumn As ToolStripMenuItem
     Friend WithEvents RemoveNumbersFromRemoteApp As ToolStripMenuItem
+    Friend WithEvents ShowRawLogOnLogViewer As ToolStripMenuItem
     Friend WithEvents ChkShowLogTypeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowServerTimeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowHostnameColumn As ToolStripMenuItem

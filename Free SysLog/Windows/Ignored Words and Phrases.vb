@@ -102,6 +102,9 @@ Public Class IgnoredWordsAndPhrases
             BtnEnableDisable.Enabled = True
 
             BtnEnableDisable.Text = If(DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem).BoolEnabled, "Disable", "Enable")
+
+            BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
+            BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
         Else
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
@@ -118,32 +121,34 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub EditItem()
-        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-            Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
+        If IgnoredListView.SelectedItems.Count > 0 Then
+            Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
+                Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
-            With AddIgnored
-                .strIgnored = selectedItemObject.SubItems(0).Text
-                .boolRegex = selectedItemObject.BoolRegex
-                .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
-                .boolEnabled = selectedItemObject.BoolEnabled
-            End With
-
-            AddIgnored.ShowDialog(Me)
-
-            If AddIgnored.boolSuccess Then
-                With selectedItemObject
-                    .SubItems(0).Text = AddIgnored.strIgnored
-                    .SubItems(1).Text = If(AddIgnored.boolRegex, "Yes", "No")
-                    .SubItems(2).Text = If(AddIgnored.boolCaseSensitive, "Yes", "No")
-                    .SubItems(3).Text = If(AddIgnored.boolEnabled, "Yes", "No")
-                    .BoolRegex = AddIgnored.boolRegex
-                    .BoolCaseSensitive = AddIgnored.boolCaseSensitive
-                    .BoolEnabled = AddIgnored.boolEnabled
+                With AddIgnored
+                    .strIgnored = selectedItemObject.SubItems(0).Text
+                    .boolRegex = selectedItemObject.BoolRegex
+                    .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
+                    .boolEnabled = selectedItemObject.BoolEnabled
                 End With
 
-                boolChanged = True
-            End If
-        End Using
+                AddIgnored.ShowDialog(Me)
+
+                If AddIgnored.boolSuccess Then
+                    With selectedItemObject
+                        .SubItems(0).Text = AddIgnored.strIgnored
+                        .SubItems(1).Text = If(AddIgnored.boolRegex, "Yes", "No")
+                        .SubItems(2).Text = If(AddIgnored.boolCaseSensitive, "Yes", "No")
+                        .SubItems(3).Text = If(AddIgnored.boolEnabled, "Yes", "No")
+                        .BoolRegex = AddIgnored.boolRegex
+                        .BoolCaseSensitive = AddIgnored.boolCaseSensitive
+                        .BoolEnabled = AddIgnored.boolEnabled
+                    End With
+
+                    boolChanged = True
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub IgnoredListView_DoubleClick(sender As Object, e As EventArgs) Handles IgnoredListView.DoubleClick
@@ -253,5 +258,46 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Escape Then Close()
+    End Sub
+
+    Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
+        If MsgBox("Are you sure you want to delete all of the ignored words and phrases?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+            IgnoredListView.Items.Clear()
+            boolChanged = True
+        End If
+    End Sub
+
+    Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
+        If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
+
+        ' Ensure the item is not already at the top
+        If selectedIndex > 0 Then
+            Dim item As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+            IgnoredListView.Items.RemoveAt(selectedIndex)
+            IgnoredListView.Items.Insert(selectedIndex - 1, item)
+            IgnoredListView.Items(selectedIndex - 1).Selected = True
+            boolChanged = True
+        End If
+
+        BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+    End Sub
+
+    Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
+        If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
+
+        ' Ensure the item is not already at the bottom
+        If selectedIndex < IgnoredListView.Items.Count - 1 Then
+            Dim item As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+            IgnoredListView.Items.RemoveAt(selectedIndex)
+            IgnoredListView.Items.Insert(selectedIndex + 1, item)
+            IgnoredListView.Items(selectedIndex + 1).Selected = True
+            boolChanged = True
+        End If
+
+        BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
+        BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
     End Sub
 End Class

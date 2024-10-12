@@ -37,6 +37,9 @@ Partial Class Replacements
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
+        Me.btnDeleteAll = New System.Windows.Forms.Button()
+        Me.BtnDown = New System.Windows.Forms.Button()
+        Me.BtnUp = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -51,7 +54,7 @@ Partial Class Replacements
         Me.ReplacementsListView.HideSelection = False
         Me.ReplacementsListView.Location = New System.Drawing.Point(12, 12)
         Me.ReplacementsListView.Name = "ReplacementsListView"
-        Me.ReplacementsListView.Size = New System.Drawing.Size(1011, 397)
+        Me.ReplacementsListView.Size = New System.Drawing.Size(981, 397)
         Me.ReplacementsListView.TabIndex = 4
         Me.ReplacementsListView.UseCompatibleStateImageBehavior = False
         Me.ReplacementsListView.View = System.Windows.Forms.View.Details
@@ -115,12 +118,12 @@ Partial Class Replacements
         '
         Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem})
         Me.ListViewMenu.Name = "ContextMenuStrip1"
-        Me.ListViewMenu.Size = New System.Drawing.Size(181, 48)
+        Me.ListViewMenu.Size = New System.Drawing.Size(153, 26)
         '
         'EnableDisableToolStripMenuItem
         '
         Me.EnableDisableToolStripMenuItem.Name = "EnableDisableToolStripMenuItem"
-        Me.EnableDisableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.EnableDisableToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.EnableDisableToolStripMenuItem.Text = "Enable/Disable"
         '
         'BtnEnableDisable
@@ -154,11 +157,44 @@ Partial Class Replacements
         Me.BtnImport.Text = "Import"
         Me.BtnImport.UseVisualStyleBackColor = True
         '
+        'btnDeleteAll
+        '
+        Me.btnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnDeleteAll.Location = New System.Drawing.Point(336, 415)
+        Me.btnDeleteAll.Name = "btnDeleteAll"
+        Me.btnDeleteAll.Size = New System.Drawing.Size(75, 23)
+        Me.btnDeleteAll.TabIndex = 17
+        Me.btnDeleteAll.Text = "Delete All"
+        Me.btnDeleteAll.UseVisualStyleBackColor = True
+        '
+        'BtnDown
+        '
+        Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnDown.Location = New System.Drawing.Point(999, 386)
+        Me.BtnDown.Name = "BtnDown"
+        Me.BtnDown.Size = New System.Drawing.Size(24, 23)
+        Me.BtnDown.TabIndex = 19
+        Me.BtnDown.Text = "▼"
+        Me.BtnDown.UseVisualStyleBackColor = True
+        '
+        'BtnUp
+        '
+        Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnUp.Location = New System.Drawing.Point(999, 12)
+        Me.BtnUp.Name = "BtnUp"
+        Me.BtnUp.Size = New System.Drawing.Size(24, 23)
+        Me.BtnUp.TabIndex = 18
+        Me.BtnUp.Text = "▲"
+        Me.BtnUp.UseVisualStyleBackColor = True
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1035, 450)
+        Me.Controls.Add(Me.BtnDown)
+        Me.Controls.Add(Me.BtnUp)
+        Me.Controls.Add(Me.btnDeleteAll)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.BtnEnableDisable)
@@ -189,4 +225,7 @@ Partial Class Replacements
     Friend WithEvents BtnEnableDisable As Button
     Friend WithEvents BtnExport As Button
     Friend WithEvents BtnImport As Button
+    Friend WithEvents btnDeleteAll As Button
+    Friend WithEvents BtnDown As Button
+    Friend WithEvents BtnUp As Button
 End Class

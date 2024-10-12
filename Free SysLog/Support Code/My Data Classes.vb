@@ -1,7 +1,7 @@
 ﻿Imports Free_SysLog.SupportCode
 
 Public Class SavedData
-    Public time, ip, log, fileName, logType, hostname, appName, rawLogData As String
+    Public time, ip, log, fileName, logType, hostname, appName, rawLogData, alertText As String
     Public DateObject, ServerDate As Date
     Public BoolAlerted As Boolean = False
 
@@ -24,6 +24,7 @@ Public Class SavedData
                 .BoolAlerted = BoolAlerted
                 .MinimumHeight = height
                 .RawLogData = rawLogData
+                .AlertText = alertText
             End With
 
             Return MyDataGridViewRow

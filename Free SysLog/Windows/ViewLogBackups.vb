@@ -84,20 +84,27 @@ Public Class ViewLogBackups
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             Else
-                Dim stringBuilder As New Text.StringBuilder()
-
-                stringBuilder.AppendLine("Are you sure you want to delete the following files?")
-                stringBuilder.AppendLine()
+                Dim msgBoxText As String = "Are you sure you want to delete the following files?" & vbCrLf & vbCrLf
+                Dim listOfFilesThatAreToBeDeleted As New List(Of String)
 
                 For Each item As ListViewItem In FileList.SelectedItems
-                    stringBuilder.AppendLine(item.SubItems(0).Text)
+                    listOfFilesThatAreToBeDeleted.Add(item.SubItems(0).Text)
                 Next
 
-                If MsgBox(stringBuilder.ToString.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
+                Dim listOfFilesThatAreToBeDeletedInHumanReadableFormat As String = ConvertListOfStringsToString(listOfFilesThatAreToBeDeleted, True)
+
+                msgBoxText &= listOfFilesThatAreToBeDeletedInHumanReadableFormat
+
+                If MsgBox(msgBoxText.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
+                    Dim strDeletedFilesLog As String = $"The user deleted the following {FileList.SelectedItems.Count} files from the log backups folder..."
+
                     For Each item As ListViewItem In FileList.SelectedItems
                         File.Delete(Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text))
-                        SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{item.SubItems(0).Text}"" from the log backups folder.")
                     Next
+
+                    strDeletedFilesLog &= vbCrLf & listOfFilesThatAreToBeDeletedInHumanReadableFormat
+
+                    SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, strDeletedFilesLog.ToString)
 
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If

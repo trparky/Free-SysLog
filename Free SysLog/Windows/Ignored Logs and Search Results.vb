@@ -20,13 +20,21 @@ Public Class IgnoredLogsAndSearchResults
     Private ReadOnly dataGridLockObject As New Object
 
     Private Sub OpenLogViewerWindow()
-        If Logs.Rows.Count > 0 Then
+        If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-            Dim strLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData)
+            Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
+            Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData)
 
-            Using LogViewerInstance As New LogViewer With {.strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
+
+                If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
+                    LogViewerInstance.lblAlertText.Text = $"Alert Text: {selectedRow.AlertText}"
+                Else
+                    LogViewerInstance.lblAlertText.Visible = False
+                End If
+
                 LogViewerInstance.ShowDialog(Me)
             End Using
         End If
@@ -289,7 +297,7 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
         Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-        Clipboard.SetText(selectedRow.Cells(ColumnIndex_IPAddress).Value)
+        CopyTextToWindowsClipboard(selectedRow.Cells(ColumnIndex_LogText).Value, Text)
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
@@ -297,7 +305,7 @@ Public Class IgnoredLogsAndSearchResults
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
                 .Cells(ColumnIndex_ComputedTime).Value = Now.ToString
-                .Cells(ColumnIndex_IPAddress).Value = strLog
+                .Cells(ColumnIndex_LogText).Value = strLog
             End With
 
             Return MyDataGridViewRow
@@ -337,7 +345,7 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
         Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_IPAddress).Value
+            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
             AddAlert.TxtLogText.Text = strLogText
 
             AddAlert.ShowDialog(Me)
@@ -423,7 +431,7 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
-        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value), .boolLoadExternalData = True}
+        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_FileName).Value), .boolLoadExternalData = True}
         logFileViewer.Show(Me)
     End Sub
 
@@ -437,7 +445,7 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
             For Each item As MyDataGridViewRow In Logs.Rows
-                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_IPAddress).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
             Next
         End If
     End Sub

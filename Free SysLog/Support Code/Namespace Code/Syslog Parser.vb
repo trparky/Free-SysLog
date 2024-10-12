@@ -4,17 +4,25 @@ Imports Free_SysLog.SupportCode
 Namespace SyslogParser
     Public Module SyslogParser
         Private ParentForm As Form1
-        Private ReadOnly rfc5424Regex As New Regex("\A(<\d+>)(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(\[.*?\])?\s*(.*)\Z", RegexOptions.Compiled Or RegexOptions.Singleline)
-        Private ReadOnly rfc5424TransformRegex As New Regex("\A(<\d+>)(\w{3}\s+\d+ \d+:\d+:\d+)\s+(\S+)\s+(.+?):\s+(.*)\Z", RegexOptions.Compiled Or RegexOptions.Singleline)
+        Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?:\d ){0,1}(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z)(?: -){0,1} (?<hostname>(?:\\.|[^\n\r ])+) (?:\d+ ){0,1}(?<appname>(?:\\.|[^\n\r:]+?)(?: \d*){0,1}):{0,1} (?:- - %% ){0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
+        Private ReadOnly rfc5424TransformRegex As New Regex("<(?<priority>[0-9]+)>(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) {1,2}[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+)(?: \:){0,1} (?<appname>(?:\\.|[^\n\r:]+)): (?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
+
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
+        Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
+        Private ReadOnly SyslogPreProcessor2 As New Regex("(<\d+>)", RegexOptions.Compiled)
+
+        Private Const strNewLine As String = "{newline}"
+
+        Private NotificationLimiter As NotificationLimiter.NotificationLimiter
 
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
                 ParentForm = value
+                NotificationLimiter = New NotificationLimiter.NotificationLimiter(value.NotifyIcon)
             End Set
         End Property
 
-        Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+        Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
             Using MyDataGridViewRow As New MyDataGridViewRow
                 With MyDataGridViewRow
                     .CreateCells(dataGrid)
@@ -33,6 +41,7 @@ Namespace SyslogParser
                     .BoolAlerted = boolAlerted
                     .ServerDate = serverTimeStamp
                     .RawLogData = strRawLogText
+                    .AlertText = strAlertText
                     .MinimumHeight = GetMinimumHeight(strLog, ParentForm.Logs.DefaultCellStyle.Font, ParentForm.ColLog.Width)
                 End With
 
@@ -41,18 +50,37 @@ Namespace SyslogParser
         End Function
 
         Public Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strLogText As String)
+            If strLogText.CaseInsensitiveContains(strNewLine) Then strLogText = strLogText.Replace(strNewLine, vbCrLf).Trim
+
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
             If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
                 serverDate = currentDate
             Else
-                serverDate = ParseTimestamp(strTimeStampFromServer)
+                Try
+                    serverDate = ParseTimestamp(strTimeStampFromServer)
+                Catch ex As FormatException
+                    serverDate = currentDate
+                    AddToLogList(Nothing, "local", $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
+                End Try
             End If
 
             ParentForm.Invoke(Sub()
                                   SyncLock ParentForm.dataGridLockObject
-                                      ParentForm.Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, Nothing, Nothing, strLogText, "Informational, Local", False, Nothing, ParentForm.Logs))
+                                      ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                               dateObject:=currentDate,
+                                                                               strTime:=currentDate.ToString,
+                                                                               strSourceAddress:=strSourceIP,
+                                                                               strHostname:=Nothing,
+                                                                               strRemoteProcess:=Nothing,
+                                                                               strLog:=strLogText,
+                                                                               strLogType:="Informational, Local",
+                                                                               boolAlerted:=False,
+                                                                               strRawLogText:=Nothing,
+                                                                               strAlertText:=Nothing,
+                                                                               dataGrid:=ParentForm.Logs)
+                                                                              )
                                       If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                   End SyncLock
 
@@ -98,16 +126,37 @@ Namespace SyslogParser
             End If
         End Function
 
+        ''' <summary>Parses a date timestamp in String format to a Date Object.</summary>
+        ''' <param name="timestamp">A date timestamp in String format.</param>
+        ''' <returns>A Date Object.</returns>
+        ''' <exception cref="FormatException">Throws a FormatException if the function can't parse the input.</exception>
         Private Function ParseTimestamp(timestamp As String) As Date
             Dim parsedDate As Date
+            Dim userCulture As Globalization.CultureInfo = Globalization.CultureInfo.CurrentCulture
+            Dim isEuropeanDateFormat As Boolean = userCulture.DateTimeFormat.ShortDatePattern.StartsWith("d")
 
             If timestamp.EndsWith("Z") Then
-                ' RFC 3339/ISO 8601 format with UTC timezone ("yyyy-MM-ddTHH:mm:ssZ")
-                parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+                ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds ("yyyy-MM-ddTHH:mm:ssZ" or "yyyy-MM-ddTHH:mm:ss.fffZ")
+                If timestamp.Contains(".") Then
+                    ' Handle timestamp with milliseconds
+                    parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+                Else
+                    ' Handle timestamp without milliseconds
+                    parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+                End If
             ElseIf timestamp.Contains("+") OrElse timestamp.Contains("-") Then
-                ' RFC 3339/ISO 8601 format with timezone offset ("yyyy-MM-ddTHH:mm:sszzz")
-                Dim parsedDateOffset As DateTimeOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:sszzz", Globalization.CultureInfo.InvariantCulture)
-                parsedDate = parsedDateOffset.DateTime
+                Dim parsedDateOffset As DateTimeOffset
+
+                ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds ("yyyy-MM-ddTHH:mm:sszzz" or "yyyy-MM-ddTHH:mm:ss.fffzzz")
+                If timestamp.Contains(".") Then
+                    ' Handle timestamp with milliseconds
+                    parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffzzz", Globalization.CultureInfo.InvariantCulture)
+                    parsedDate = parsedDateOffset.DateTime
+                Else
+                    ' Handle timestamp without milliseconds
+                    parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:sszzz", Globalization.CultureInfo.InvariantCulture)
+                    parsedDate = parsedDateOffset.DateTime
+                End If
             ElseIf timestamp.Length >= 15 AndAlso Char.IsLetter(timestamp(0)) Then
                 ' "MMM dd HH:mm:ss" format (like "Sep  4 22:39:12")
                 timestamp = timestamp.Replace("  ", " 0") ' Handle single-digit day (e.g., "Sep  4" becomes "Sep 04")
@@ -115,6 +164,26 @@ Namespace SyslogParser
 
                 ' If you need to add the current year to the date:
                 parsedDate = parsedDate.AddYears(Date.Now.Year - parsedDate.Year)
+            ElseIf timestamp.Contains("/") Then
+                If timestamp.EndsWith("PM", StringComparison.OrdinalIgnoreCase) Or timestamp.EndsWith("AM", StringComparison.OrdinalIgnoreCase) Then
+                    ' Handle both American and European formats based on localization
+                    If isEuropeanDateFormat Then
+                        ' European format "d/M/yyyy HH:mm:ss"
+                        parsedDate = Date.ParseExact(timestamp, "d/M/yyyy H:mm:ss tt", Globalization.CultureInfo.InvariantCulture)
+                    Else
+                        ' American format "M/d/yyyy h:mm:ss tt"
+                        parsedDate = Date.ParseExact(timestamp, "M/d/yyyy h:mm:ss tt", Globalization.CultureInfo.InvariantCulture)
+                    End If
+                Else
+                    ' Handle both American and European formats based on localization
+                    If isEuropeanDateFormat Then
+                        ' European format "d/M/yyyy HH:mm:ss"
+                        parsedDate = Date.ParseExact(timestamp, "d/M/yyyy H:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                    Else
+                        ' American format "M/d/yyyy h:mm:ss"
+                        parsedDate = Date.ParseExact(timestamp, "M/d/yyyy h:mm:ss", Globalization.CultureInfo.InvariantCulture)
+                    End If
+                End If
             Else
                 Throw New FormatException("Unknown timestamp format.")
             End If
@@ -134,40 +203,66 @@ Namespace SyslogParser
             Return match.Success
         End Function
 
+        Private Function TrySplitLogEntries(regex As Regex, input As String, ByRef matches As String()) As Boolean
+            If IsRegexMatch(regex, input, Nothing) Then
+                matches = regex.Split(input)
+                Return True
+            End If
+
+            Return False
+        End Function
+
         Public Sub ProcessIncomingLog(strRawLogText As String, strSourceIP As String)
+            If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
+                ' Convert all linefeeds.
+                strRawLogText = ConvertLineFeeds(strRawLogText)
+
+                ' Do some pre-processing so that we can separate out the data more easily.
+                strRawLogText = strRawLogText.Replace(vbCrLf, strNewLine).Replace(vbLf, strNewLine)
+                strRawLogText = SyslogPreProcessor1.Replace(strRawLogText, "$1")
+                strRawLogText = SyslogPreProcessor2.Replace(strRawLogText, vbCrLf & "$1")
+
+                ' Split off each syslog entry by using vbCrLf as a delimiter.
+                Dim matches As String() = strRawLogText.Split(vbCrLf)
+
+                ' Check to see if we have anything to work with before we go into the loop.
+                If matches.Count > 0 Then
+                    ' Now work with each syslog entry.
+                    For Each strMatch As String In matches
+                        If Not String.IsNullOrWhiteSpace(strMatch) Then
+                            ProcessIncomingLog_SubRoutine(strMatch, strSourceIP)
+                        End If
+                    Next
+                Else
+                    ' Nope, log it as unable to be parsed.
+                    AddToLogList(Nothing, "local", $"Unable to parse log {strQuote}{strRawLogText}{strQuote}.")
+                End If
+            End If
+        End Sub
+
+        Public Sub ProcessIncomingLog_SubRoutine(strRawLogText As String, strSourceIP As String)
             Try
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
                     Dim boolAlerted As Boolean = False
                     Dim priorityObject As (Facility As String, Severity As String) = Nothing
-                    Dim version, procId, msgId, priority As String
+                    Dim priority As String = Nothing
                     Dim message As String = Nothing
                     Dim timestamp As String = Nothing
                     Dim hostname As String = Nothing
                     Dim appName As String = Nothing
+                    Dim strAlertText As String = Nothing
 
                     ' Step 1: Use Regex to extract the RFC 5424 header and the message
                     Dim match As Match = Nothing
 
-                    If IsRegexMatch(rfc5424TransformRegex, strRawLogText, match) Then
+                    If IsRegexMatch(rfc5424TransformRegex, strRawLogText, match) OrElse IsRegexMatch(rfc5424Regex, strRawLogText, match) Then
                         ' Handling the transformation to RFC 5424 format
-                        priority = If(String.IsNullOrWhiteSpace(match.Groups(1).Value), "", match.Groups(1).Value)
-                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
-                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
-                        appName = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
-                        message = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
-
-                        priorityObject = GetSeverityAndFacility(priority)
-                    ElseIf IsRegexMatch(rfc5424Regex, strRawLogText, match) Then
-                        ' Match against RFC 5424 formatted logs
-                        priority = If(String.IsNullOrWhiteSpace(match.Groups(1).Value), "", match.Groups(1).Value)
-                        version = If(String.IsNullOrWhiteSpace(match.Groups(2).Value), "", match.Groups(2).Value)
-                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups(3).Value), "", match.Groups(3).Value)
-                        hostname = If(String.IsNullOrWhiteSpace(match.Groups(4).Value), "", match.Groups(4).Value)
-                        appName = If(String.IsNullOrWhiteSpace(match.Groups(5).Value), "", match.Groups(5).Value)
-                        procId = If(String.IsNullOrWhiteSpace(match.Groups(6).Value), "", match.Groups(6).Value)
-                        msgId = If(String.IsNullOrWhiteSpace(match.Groups(7).Value), "", match.Groups(7).Value)
-                        message = If(String.IsNullOrWhiteSpace(match.Groups(8).Value), "", match.Groups(8).Value)
+                        priority = If(String.IsNullOrWhiteSpace(match.Groups("priority").Value), "", match.Groups("priority").Value)
+                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups("timestamp").Value), "", match.Groups("timestamp").Value)
+                        hostname = If(String.IsNullOrWhiteSpace(match.Groups("hostname").Value), "", match.Groups("hostname").Value)
+                        appName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
+                        message = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
 
                         priorityObject = GetSeverityAndFacility(priority)
                     Else
@@ -178,19 +273,17 @@ Namespace SyslogParser
                         message = $"An error occured while attempting to parse the log entry. Below is the log entry that failed...{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
                     End If
 
-                    ' Step 2: Process the log message (previous processing logic)
-                    message = ConvertLineFeeds(message)
-                    strRawLogText = ConvertLineFeeds(strRawLogText)
+                    If Not String.IsNullOrWhiteSpace(message) AndAlso message.CaseInsensitiveContains(strNewLine) Then message = message.Replace(strNewLine, vbCrLf).Trim
 
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then boolIgnored = ProcessIgnoredLogPreferences(message)
                     If replacementsList IsNot Nothing AndAlso replacementsList.Count > 0 Then message = ProcessReplacements(message)
-                    If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message)
+                    If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message, strAlertText)
 
                     ' Step 4: Add to log list, separating header and message
-                    AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText)
+                    AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText)
                 End If
             Catch ex As Exception
                 AddToLogList(Nothing, "local", $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
@@ -214,20 +307,37 @@ Namespace SyslogParser
             Return False
         End Function
 
-        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String)
+        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
             If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
                 serverDate = currentDate
             Else
-                serverDate = ParseTimestamp(strTimeStampFromServer)
+                Try
+                    serverDate = ParseTimestamp(strTimeStampFromServer)
+                Catch ex As FormatException
+                    serverDate = currentDate
+                    AddToLogList(Nothing, "local", $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
+                End Try
             End If
 
             If Not boolIgnored Then
                 ParentForm.Invoke(Sub()
                                       SyncLock ParentForm.dataGridLockObject
-                                          ParentForm.Logs.Rows.Add(MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, strHostname, strRemoteProcess, strLogText, $"{priority.Severity}, {priority.Facility}", boolAlerted, strRawLogText, ParentForm.Logs))
+                                          ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                                   dateObject:=currentDate,
+                                                                                   strTime:=currentDate.ToString,
+                                                                                   strSourceAddress:=strSourceIP,
+                                                                                   strHostname:=strHostname,
+                                                                                   strRemoteProcess:=strRemoteProcess,
+                                                                                   strLog:=strLogText,
+                                                                                   strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                                   boolAlerted:=boolAlerted,
+                                                                                   strRawLogText:=strRawLogText,
+                                                                                   strAlertText:=strAlertText,
+                                                                                   dataGrid:=ParentForm.Logs)
+                                                                                  )
                                           If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                       End SyncLock
 
@@ -239,7 +349,19 @@ Namespace SyslogParser
                                   End Sub)
             ElseIf boolIgnored And ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
                 SyncLock ParentForm.IgnoredLogsLockObject
-                    Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverDate, currentDate, currentDate.ToString, strSourceIP, strHostname, strRemoteProcess, strLogText, $"{priority.Severity}, {priority.Facility}", boolAlerted, strRawLogText, ParentForm.Logs)
+                    Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                              dateObject:=currentDate,
+                                                                              strTime:=currentDate.ToString,
+                                                                              strSourceAddress:=strSourceIP,
+                                                                              strHostname:=strHostname,
+                                                                              strRemoteProcess:=strRemoteProcess,
+                                                                              strLog:=strLogText,
+                                                                              strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                              boolAlerted:=boolAlerted,
+                                                                              strRawLogText:=strRawLogText,
+                                                                              strAlertText:=strAlertText,
+                                                                              dataGrid:=ParentForm.Logs
+                                                                             )
                     ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                     If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)
                     ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
@@ -258,12 +380,12 @@ Namespace SyslogParser
             Return input
         End Function
 
-        Private Function GetCachedRegex(pattern As String, Optional boolCaseInsensitive As Boolean = True) As Regex
-            If Not ParentForm.regexCache.ContainsKey(pattern) Then ParentForm.regexCache(pattern) = New Regex(pattern, If(boolCaseInsensitive, RegexOptions.Compiled Or RegexOptions.IgnoreCase, RegexOptions.Compiled))
+        Private Function GetCachedRegex(pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
+            If Not ParentForm.regexCache.ContainsKey(pattern) Then ParentForm.regexCache(pattern) = New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
             Return ParentForm.regexCache(pattern)
         End Function
 
-        Private Function ProcessAlerts(strLogText As String) As Boolean
+        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String) As Boolean
             Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
             Dim RegExObject As Regex
             Dim strAlertText As String
@@ -297,7 +419,8 @@ Namespace SyslogParser
                         End If
                     End If
 
-                    ParentForm.NotifyIcon.ShowBalloonTip(1, "Log Alert", strAlertText, ToolTipIcon)
+                    NotificationLimiter.ShowNotification(1, "Log Alert", strAlertText, ToolTipIcon)
+                    strOutgoingAlertText = strAlertText
                     Return True
                 End If
             Next
