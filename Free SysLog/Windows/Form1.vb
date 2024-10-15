@@ -1538,6 +1538,10 @@ Public Class Form1
         My.Settings.boolShowRawLogOnLogViewer = ShowRawLogOnLogViewer.Checked
     End Sub
 
+    Private Sub LblLogFileSize_Click(sender As Object, e As EventArgs) Handles LblLogFileSize.Click
+        SelectFileInWindowsExplorer(strPathToDataFile)
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
