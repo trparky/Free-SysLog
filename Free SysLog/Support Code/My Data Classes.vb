@@ -114,6 +114,20 @@ Public Class ProxiedSysLogData
     Public ip, log As String
 End Class
 
+Public Class CustomHostname
+    Public ip, deviceName As String
+
+    Public Function ToListViewItem() As ListViewItem
+        Dim ListViewItem As New ListViewItem(ip)
+
+        With ListViewItem
+            .SubItems.Add(deviceName)
+        End With
+
+        Return ListViewItem
+    End Function
+End Class
+
 Public Class SysLogProxyServer
     Public ip As String
     Public name As String = Nothing

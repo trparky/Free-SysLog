@@ -48,35 +48,27 @@ Public Class Hostnames
     End Sub
 
     Private Sub Hostnames_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim ipHostNameSplit As String()
-        Dim newListViewItem As ListViewItem
+        Dim listOfHostnamesToAdd As New List(Of ListViewItem)
 
         If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
-            For Each item As String In My.Settings.hostnames
-                ipHostNameSplit = item.Split("|")
-
-                newListViewItem = New ListViewItem(ipHostNameSplit(0))
-                newListViewItem.SubItems.Add(ipHostNameSplit(1))
-
-                ListHostnames.Items.Add(newListViewItem)
+            For Each strJSONString As String In My.Settings.hostnames
+                listOfHostnamesToAdd.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(strJSONString, SupportCode.JSONDecoderSettingsForSettingsFiles).ToListViewItem())
             Next
         End If
+
+        ListHostnames.Items.AddRange(listOfHostnamesToAdd.ToArray)
     End Sub
 
     Private Sub Hostnames_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        Dim tempHostnames As New Specialized.StringCollection()
         SupportCode.hostnames.Clear()
 
-        If My.Settings.hostnames IsNot Nothing Then
-            My.Settings.hostnames.Clear()
-        Else
-            My.Settings.hostnames = New Specialized.StringCollection
-        End If
-
         For Each item As ListViewItem In ListHostnames.Items
-            My.Settings.hostnames.Add($"{item.SubItems(0).Text}|{item.SubItems(1).Text}")
+            tempHostnames.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}))
             SupportCode.hostnames.Add(item.SubItems(0).Text, item.SubItems(1).Text)
         Next
 
+        My.Settings.hostnames = tempHostnames
         My.Settings.Save()
     End Sub
 

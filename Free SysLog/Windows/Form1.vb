@@ -298,11 +298,11 @@ Public Class Form1
         End If
 
         If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
-            Dim ipHostnameSplit As String()
+            Dim customHostname As CustomHostname
 
-            For Each item As String In My.Settings.hostnames
-                ipHostnameSplit = item.Split("|")
-                SupportCode.hostnames.Add(ipHostnameSplit(0), ipHostnameSplit(1))
+            For Each strJSONString As String In My.Settings.hostnames
+                customHostname = Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                SupportCode.hostnames.Add(customHostname.ip, customHostname.deviceName)
             Next
         End If
 
