@@ -553,7 +553,7 @@ Partial Class Form1
         '
         Me.ConfigureHostnames.Name = "ConfigureHostnames"
         Me.ConfigureHostnames.Size = New System.Drawing.Size(339, 22)
-        Me.ConfigureHostnames.Text = "Configure Hostnames"
+        Me.ConfigureHostnames.Text = "Configure Custom Hostnames"
         '
         'ChangeAlternatingColorToolStripMenuItem
         '

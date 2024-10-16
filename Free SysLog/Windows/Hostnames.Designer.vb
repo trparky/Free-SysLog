@@ -191,7 +191,7 @@ Partial Class Hostnames
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "Hostnames"
-        Me.Text = "Hostnames"
+        Me.Text = "Configure Custom Hostnames"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
