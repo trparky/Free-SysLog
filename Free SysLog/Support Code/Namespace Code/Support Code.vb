@@ -15,6 +15,7 @@ Namespace SupportCode
         Public ignoredList As New List(Of IgnoredClass)
         Public alertsList As New List(Of AlertsClass)
         Public serversList As New List(Of SysLogProxyServer)
+        Public hostnames As New Dictionary(Of String, String)(StringComparison.OrdinalIgnoreCase)
         Public Const strMutexName As String = "Free SysLog Server"
         Public mutex As Threading.Mutex
         Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName

@@ -297,6 +297,15 @@ Public Class Form1
             Next
         End If
 
+        If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
+            Dim ipHostnameSplit As String()
+
+            For Each item As String In My.Settings.hostnames
+                ipHostnameSplit = item.Split("|")
+                SupportCode.hostnames.Add(ipHostnameSplit(0), ipHostnameSplit(1))
+            Next
+        End If
+
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             For Each strJSONString As String In My.Settings.ServersToSendTo
                 tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettingsForSettingsFiles)
@@ -1540,6 +1549,12 @@ Public Class Form1
 
     Private Sub LblLogFileSize_Click(sender As Object, e As EventArgs) Handles LblLogFileSize.Click
         SelectFileInWindowsExplorer(strPathToDataFile)
+    End Sub
+
+    Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
+        Using hostnames As New Hostnames() With {.Icon = Icon}
+            hostnames.ShowDialog()
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"

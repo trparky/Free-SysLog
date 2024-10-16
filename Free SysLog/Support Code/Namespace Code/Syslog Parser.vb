@@ -264,6 +264,8 @@ Namespace SyslogParser
                         appName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
                         message = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
 
+                        hostname = If(SupportCode.hostnames.ContainsKey(strSourceIP), SupportCode.hostnames(strSourceIP), hostname)
+
                         priorityObject = GetSeverityAndFacility(priority)
                     Else
                         timestamp = Now.ToString

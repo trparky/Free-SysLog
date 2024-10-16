@@ -864,6 +864,17 @@ Namespace My
                 Me("boolShowRawLogOnLogViewer") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property hostnames() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("hostnames"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("hostnames") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

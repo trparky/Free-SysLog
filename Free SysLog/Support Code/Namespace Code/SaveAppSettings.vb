@@ -50,6 +50,7 @@ Namespace SaveAppSettings
                 My.Settings.ServersToSendTo = New Specialized.StringCollection()
                 My.Settings.alerts = New Specialized.StringCollection()
                 My.Settings.ignored2 = New Specialized.StringCollection()
+                My.Settings.hostnames = New Specialized.StringCollection()
 
                 For Each settingProperty As Configuration.SettingsPropertyValue In My.Settings.PropertyValues
                     If exportedSettingsArray.FindKeyInDictionaryAndReturnIt(settingProperty.Name, rawValue) And settingProperty.PropertyValue IsNot Nothing Then
