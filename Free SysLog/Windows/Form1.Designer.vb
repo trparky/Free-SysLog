@@ -520,7 +520,7 @@ Partial Class Form1
         '
         'ColHostname
         '
-        Me.ColHostname.HeaderText = "Hostname"
+        Me.ColHostname.HeaderText = "Hostname/Device Name"
         Me.ColHostname.Name = "ColHostname"
         Me.ColHostname.ReadOnly = True
         Me.ColHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
@@ -553,7 +553,7 @@ Partial Class Form1
         '
         Me.ConfigureHostnames.Name = "ConfigureHostnames"
         Me.ConfigureHostnames.Size = New System.Drawing.Size(339, 22)
-        Me.ConfigureHostnames.Text = "Configure Custom Hostnames"
+        Me.ConfigureHostnames.Text = "Configure Custom Hostnames/Device Names"
         '
         'ChangeAlternatingColorToolStripMenuItem
         '
