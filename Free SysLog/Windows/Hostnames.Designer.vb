@@ -33,6 +33,10 @@ Partial Class Hostnames
         Me.BtnAddSave = New System.Windows.Forms.Button()
         Me.BtnEdit = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.BtnDown = New System.Windows.Forms.Button()
+        Me.BtnUp = New System.Windows.Forms.Button()
+        Me.BtnImport = New System.Windows.Forms.Button()
+        Me.BtnExport = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ListHostnames
@@ -42,7 +46,7 @@ Partial Class Hostnames
         Me.ListHostnames.HideSelection = False
         Me.ListHostnames.Location = New System.Drawing.Point(12, 12)
         Me.ListHostnames.Name = "ListHostnames"
-        Me.ListHostnames.Size = New System.Drawing.Size(591, 191)
+        Me.ListHostnames.Size = New System.Drawing.Size(566, 191)
         Me.ListHostnames.TabIndex = 0
         Me.ListHostnames.UseCompatibleStateImageBehavior = False
         Me.ListHostnames.View = System.Windows.Forms.View.Details
@@ -127,11 +131,53 @@ Partial Class Hostnames
         Me.Label3.TabIndex = 8
         Me.Label3.Text = "Add/Edit"
         '
+        'BtnDown
+        '
+        Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnDown.Location = New System.Drawing.Point(584, 180)
+        Me.BtnDown.Name = "BtnDown"
+        Me.BtnDown.Size = New System.Drawing.Size(24, 23)
+        Me.BtnDown.TabIndex = 21
+        Me.BtnDown.Text = "▼"
+        Me.BtnDown.UseVisualStyleBackColor = True
+        '
+        'BtnUp
+        '
+        Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnUp.Location = New System.Drawing.Point(584, 12)
+        Me.BtnUp.Name = "BtnUp"
+        Me.BtnUp.Size = New System.Drawing.Size(24, 23)
+        Me.BtnUp.TabIndex = 20
+        Me.BtnUp.Text = "▲"
+        Me.BtnUp.UseVisualStyleBackColor = True
+        '
+        'BtnImport
+        '
+        Me.BtnImport.Location = New System.Drawing.Point(533, 209)
+        Me.BtnImport.Name = "BtnImport"
+        Me.BtnImport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnImport.TabIndex = 22
+        Me.BtnImport.Text = "Import"
+        Me.BtnImport.UseVisualStyleBackColor = True
+        '
+        'BtnExport
+        '
+        Me.BtnExport.Location = New System.Drawing.Point(452, 209)
+        Me.BtnExport.Name = "BtnExport"
+        Me.BtnExport.Size = New System.Drawing.Size(75, 23)
+        Me.BtnExport.TabIndex = 23
+        Me.BtnExport.Text = "Export"
+        Me.BtnExport.UseVisualStyleBackColor = True
+        '
         'Hostnames
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(614, 365)
+        Me.Controls.Add(Me.BtnExport)
+        Me.Controls.Add(Me.BtnImport)
+        Me.Controls.Add(Me.BtnDown)
+        Me.Controls.Add(Me.BtnUp)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.BtnAddSave)
@@ -162,4 +208,8 @@ Partial Class Hostnames
     Friend WithEvents BtnAddSave As Button
     Friend WithEvents BtnEdit As Button
     Friend WithEvents Label3 As Label
+    Friend WithEvents BtnDown As Button
+    Friend WithEvents BtnUp As Button
+    Friend WithEvents BtnImport As Button
+    Friend WithEvents BtnExport As Button
 End Class

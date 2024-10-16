@@ -39,9 +39,12 @@ Public Class Hostnames
         End If
     End Sub
 
-    Private Sub ListHostnames_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListHostnames.SelectedIndexChanged
+    Private Sub ListHostnames_Click(sender As Object, e As EventArgs) Handles ListHostnames.Click
         BtnDelete.Enabled = ListHostnames.SelectedItems.Count > 0
         BtnEdit.Enabled = ListHostnames.SelectedItems.Count > 0
+
+        BtnUp.Enabled = ListHostnames.SelectedIndices(0) <> 0
+        BtnDown.Enabled = ListHostnames.SelectedIndices(0) <> ListHostnames.Items.Count - 1
     End Sub
 
     Private Sub Hostnames_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -79,5 +82,82 @@ Public Class Hostnames
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
         ListHostnames.SelectedItems(0).Remove()
+    End Sub
+
+    Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
+        If ListHostnames.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = ListHostnames.SelectedIndices(0)
+
+        ' Ensure the item is not already at the top
+        If selectedIndex > 0 Then
+            Dim item As ListViewItem = ListHostnames.SelectedItems(0)
+            ListHostnames.Items.RemoveAt(selectedIndex)
+            ListHostnames.Items.Insert(selectedIndex - 1, item)
+            ListHostnames.Items(selectedIndex - 1).Selected = True
+        End If
+
+        BtnUp.Enabled = ListHostnames.SelectedIndices(0) <> 0
+        BtnDown.Enabled = ListHostnames.SelectedIndices(0) <> ListHostnames.Items.Count - 1
+    End Sub
+
+    Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
+        If ListHostnames.SelectedItems.Count = 0 Then Return ' No item selected
+        Dim selectedIndex As Integer = ListHostnames.SelectedIndices(0)
+
+        ' Ensure the item is not already at the bottom
+        If selectedIndex < ListHostnames.Items.Count - 1 Then
+            Dim item As ListViewItem = ListHostnames.SelectedItems(0)
+            ListHostnames.Items.RemoveAt(selectedIndex)
+            ListHostnames.Items.Insert(selectedIndex + 1, item)
+            ListHostnames.Items(selectedIndex + 1).Selected = True
+        End If
+
+        BtnUp.Enabled = ListHostnames.SelectedIndices(0) <> 0
+        BtnDown.Enabled = ListHostnames.SelectedIndices(0) <> ListHostnames.Items.Count - 1
+    End Sub
+
+    Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
+        Dim saveFileDialog As New SaveFileDialog() With {.Title = "Export Hostnames", .Filter = "JSON File|*.json", .OverwritePrompt = True}
+        Dim stringCollection As New Specialized.StringCollection()
+
+        If saveFileDialog.ShowDialog() = DialogResult.OK Then
+            For Each item As ListViewItem In ListHostnames.Items
+                stringCollection.Add($"{item.SubItems(0).Text}|{item.SubItems(1).Text}")
+            Next
+
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(stringCollection))
+
+            MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
+        End If
+    End Sub
+
+    Private Sub BtnImport_Click(sender As Object, e As EventArgs) Handles BtnImport.Click
+        Dim openFileDialog As New OpenFileDialog() With {.Title = "Import Alerts", .Filter = "JSON File|*.json"}
+        Dim stringCollection As New Specialized.StringCollection()
+        Dim ipHostnameSplit As String()
+        Dim newListViewItem As ListViewItem
+
+        If openFileDialog.ShowDialog() = DialogResult.OK Then
+            Try
+                stringCollection = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Specialized.StringCollection)(IO.File.ReadAllText(openFileDialog.FileName), SupportCode.JSONDecoderSettingsForLogFiles)
+
+                ListHostnames.Items.Clear()
+
+                For Each item As String In stringCollection
+                    ipHostnameSplit = item.Split("|")
+
+                    newListViewItem = New ListViewItem(ipHostnameSplit(0))
+                    newListViewItem.SubItems.Add(ipHostnameSplit(1))
+
+                    ListHostnames.Items.Add(newListViewItem)
+                Next
+
+                My.Settings.Save()
+
+                MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
+            Catch ex As Newtonsoft.Json.JsonSerializationException
+                MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+            End Try
+        End If
     End Sub
 End Class
