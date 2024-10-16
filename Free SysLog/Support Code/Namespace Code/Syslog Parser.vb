@@ -250,6 +250,7 @@ Namespace SyslogParser
                     Dim message As String = Nothing
                     Dim timestamp As String = Nothing
                     Dim hostname As String = Nothing
+                    Dim customHostname As String = Nothing
                     Dim appName As String = Nothing
                     Dim strAlertText As String = Nothing
 
@@ -264,7 +265,7 @@ Namespace SyslogParser
                         appName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
                         message = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
 
-                        hostname = If(SupportCode.hostnames.ContainsKey(strSourceIP), SupportCode.hostnames(strSourceIP), hostname)
+                        If SupportCode.hostnames.TryGetValue(strSourceIP, customHostname) Then hostname = customHostname
 
                         priorityObject = GetSeverityAndFacility(priority)
                     Else
