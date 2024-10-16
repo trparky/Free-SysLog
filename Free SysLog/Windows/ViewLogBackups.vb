@@ -10,9 +10,13 @@ Public Class ViewLogBackups
     Private boolDoneLoading As Boolean = False
 
     Private Function GetEntryCount(strFileName As String) As Integer
-        Using fileStream As New StreamReader(strFileName)
-            Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
-        End Using
+        Try
+            Using fileStream As New StreamReader(strFileName)
+                Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
+            End Using
+        Catch ex As Exception
+            Return -1
+        End Try
     End Function
 
     Private Sub LoadFileList()
@@ -26,12 +30,15 @@ Public Class ViewLogBackups
 
         For Each file As FileInfo In filesInDirectory
             intCount = GetEntryCount(file.FullName)
-            longTotalLogCount += intCount
 
-            listViewItem = New ListViewItem With {.Text = file.Name}
-            listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
-            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
-            listOfListViewItems.Add(listViewItem)
+            If intCount <> -1 Then
+                longTotalLogCount += intCount
+
+                listViewItem = New ListViewItem With {.Text = file.Name}
+                listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
+                listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
+                listOfListViewItems.Add(listViewItem)
+            End If
         Next
 
         Invoke(Sub()
