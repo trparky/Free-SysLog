@@ -252,42 +252,7 @@ Public Class Form1
         IPv6Support.Checked = My.Settings.IPv6Support
     End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        SyslogParser.SetParentForm = Me
-        DataHandling.SetParentForm = Me
-        TaskHandling.SetParentForm = Me
-
-        TaskHandling.ConvertRegistryRunCommandToTask()
-
-        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
-                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
-                                                                                       End Sub)
-        If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
-
-        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
-        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
-
-        ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
-        ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
-
-        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
-        Icon = Icon.ExtractAssociatedIcon(strEXEPath)
-        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
-        If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
-        NotifyIcon.Icon = Icon
-        NotifyIcon.Text = "Free SysLog"
-
-        LoadCheckboxSettings()
-
-        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
-        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-        propInfo?.SetValue(Logs, True, Nothing)
-
-        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
-        Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
-        ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
-
+    Private Sub LoadAndDeserializeArrays()
         Dim tempReplacementsClass As ReplacementsClass
         Dim tempSysLogProxyServer As SysLogProxyServer
         Dim tempIgnoredClass As IgnoredClass
@@ -346,6 +311,45 @@ Public Class Form1
                 tempAlertsClass = Nothing
             Next
         End If
+    End Sub
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        SyslogParser.SetParentForm = Me
+        DataHandling.SetParentForm = Me
+        TaskHandling.SetParentForm = Me
+
+        TaskHandling.ConvertRegistryRunCommandToTask()
+
+        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
+                                                                                       End Sub)
+        If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
+
+        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
+        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
+
+        ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
+        ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+
+        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
+        Icon = Icon.ExtractAssociatedIcon(strEXEPath)
+        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
+        If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
+        NotifyIcon.Icon = Icon
+        NotifyIcon.Text = "Free SysLog"
+
+        LoadCheckboxSettings()
+
+        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
+        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
+        propInfo?.SetValue(Logs, True, Nothing)
+
+        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+        ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+
+        LoadAndDeserializeArrays()
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
