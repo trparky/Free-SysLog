@@ -171,7 +171,7 @@ Namespace DataHandling
 
                 Try
                     Using fileStream As New StreamWriter(strPathToDataFile & ".new")
-                        fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                        fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                     End Using
 
                     File.Delete(strPathToDataFile)
