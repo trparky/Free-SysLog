@@ -337,7 +337,7 @@ Namespace SyslogParser
                                                                                    strLog:=strLogText,
                                                                                    strLogType:=$"{priority.Severity}, {priority.Facility}",
                                                                                    boolAlerted:=boolAlerted,
-                                                                                   strRawLogText:=strRawLogText,
+                                                                                   strRawLogText:=strRawLogText.Trim,
                                                                                    strAlertText:=strAlertText,
                                                                                    dataGrid:=ParentForm.Logs)
                                                                                   )
@@ -361,7 +361,7 @@ Namespace SyslogParser
                                                                               strLog:=strLogText,
                                                                               strLogType:=$"{priority.Severity}, {priority.Facility}",
                                                                               boolAlerted:=boolAlerted,
-                                                                              strRawLogText:=strRawLogText,
+                                                                              strRawLogText:=strRawLogText.Trim,
                                                                               strAlertText:=strAlertText,
                                                                               dataGrid:=ParentForm.Logs
                                                                              )
