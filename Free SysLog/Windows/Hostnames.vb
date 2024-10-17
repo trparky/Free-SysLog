@@ -117,7 +117,7 @@ Public Class Hostnames
                 stringCollection.Add($"{item.SubItems(0).Text}|{item.SubItems(1).Text}")
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(stringCollection))
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(stringCollection, Newtonsoft.Json.Formatting.Indented))
 
             MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If

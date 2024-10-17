@@ -32,7 +32,7 @@ Namespace SaveAppSettings
             Next
 
             Using streamWriter As New IO.StreamWriter(strFileName)
-                streamWriter.Write(Newtonsoft.Json.JsonConvert.SerializeObject(exportedSettingsArray))
+                streamWriter.Write(Newtonsoft.Json.JsonConvert.SerializeObject(exportedSettingsArray, Newtonsoft.Json.Formatting.Indented))
             End Using
         End Sub
 

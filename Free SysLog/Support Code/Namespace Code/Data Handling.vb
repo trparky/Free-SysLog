@@ -64,7 +64,7 @@ Namespace DataHandling
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
                             xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
                         ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                         ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                             fileStream.Write(csvStringBuilder.ToString.Trim)
                         End If
@@ -129,7 +129,7 @@ Namespace DataHandling
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
                             xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
                         ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                         ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                             fileStream.Write(csvStringBuilder.ToString.Trim)
                         End If

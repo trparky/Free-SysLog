@@ -141,7 +141,7 @@ Public Class ConfigureSysLogMirrorServers
                 listOfSysLogProxyServer.Add(New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text})
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer))
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer, Newtonsoft.Json.Formatting.Indented))
 
             MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If
