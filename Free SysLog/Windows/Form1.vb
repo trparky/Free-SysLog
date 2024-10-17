@@ -242,6 +242,11 @@ Public Class Form1
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
+        Icon = Icon.ExtractAssociatedIcon(strEXEPath)
+        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
+        If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
+        NotifyIcon.Icon = Icon
+        NotifyIcon.Text = "Free SysLog"
 
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
@@ -262,11 +267,6 @@ Public Class Form1
         BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
         ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
         ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
-        Icon = Icon.ExtractAssociatedIcon(strEXEPath)
-        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
-        If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
-        NotifyIcon.Icon = Icon
-        NotifyIcon.Text = "Free SysLog"
         ColHostname.Visible = My.Settings.boolShowHostnameColumn
         ChkShowHostnameColumn.Checked = My.Settings.boolShowHostnameColumn
         colServerTime.Visible = My.Settings.boolShowServerTimeColumn
