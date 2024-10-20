@@ -45,7 +45,7 @@ Namespace DataHandling
                             Else
                                 collectionOfSavedData.Add(New SavedData With {
                                                         .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                        .ServerDate = myItem.Cells(ColumnIndex_ServerTime).Value,
+                                                        .ServerDate = SyslogParser.ParseTimestamp(myItem.Cells(ColumnIndex_ServerTime).Value),
                                                         .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                                         .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
                                                         .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
