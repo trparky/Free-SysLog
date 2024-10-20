@@ -130,13 +130,18 @@ Namespace SyslogParser
         ''' <param name="timestamp">A date timestamp in String format.</param>
         ''' <returns>A Date Object.</returns>
         ''' <exception cref="FormatException">Throws a FormatException if the function can't parse the input.</exception>
-        Private Function ParseTimestamp(timestamp As String) As Date
+        Public Function ParseTimestamp(timestamp As String) As Date
             Dim parsedDate As Date
             Dim userCulture As Globalization.CultureInfo = Globalization.CultureInfo.CurrentCulture
             Dim isEuropeanDateFormat As Boolean = userCulture.DateTimeFormat.ShortDatePattern.StartsWith("d")
 
             If timestamp.EndsWith("Z") Then
-                ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds ("yyyy-MM-ddTHH:mm:ssZ" or "yyyy-MM-ddTHH:mm:ss.fffZ")
+                ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds
+                If timestamp.Contains(":") AndAlso timestamp.Count(Function(c) c = ":") = 3 Then
+                    ' Handle timestamp with extra colon before milliseconds (e.g., "yyyy-MM-ddTHH:mm:ss:fffZ")
+                    timestamp = timestamp.Remove(timestamp.LastIndexOf(":"), 1).Insert(timestamp.LastIndexOf(":"), ".")
+                End If
+
                 If timestamp.Contains(".") Then
                     ' Handle timestamp with milliseconds
                     parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
@@ -147,7 +152,7 @@ Namespace SyslogParser
             ElseIf timestamp.Contains("+") OrElse timestamp.Contains("-") Then
                 Dim parsedDateOffset As DateTimeOffset
 
-                ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds ("yyyy-MM-ddTHH:mm:sszzz" or "yyyy-MM-ddTHH:mm:ss.fffzzz")
+                ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds
                 If timestamp.Contains(".") Then
                     ' Handle timestamp with milliseconds
                     parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffzzz", Globalization.CultureInfo.InvariantCulture)
