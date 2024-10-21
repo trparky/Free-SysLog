@@ -24,15 +24,15 @@ Public Class ViewLogBackups
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
         Dim intCount As Integer
+        Dim intNumberOfFilesInDirectory As Integer = 0
         Dim longTotalLogCount As Long
-
-        lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
 
         For Each file As FileInfo In filesInDirectory
             If ChkShowHidden.Checked OrElse (file.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden Then
                 intCount = GetEntryCount(file.FullName)
 
                 If intCount <> -1 Then
+                    intNumberOfFilesInDirectory += 1
                     longTotalLogCount += intCount
 
                     listViewItem = New ListViewItem With {.Text = file.Name}
@@ -49,6 +49,8 @@ Public Class ViewLogBackups
                 End If
             End If
         Next
+
+        lblNumberOfFiles.Text = $"Number of Files: {intNumberOfFilesInDirectory:N0}"
 
         Invoke(Sub()
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
@@ -262,26 +264,50 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub UnhideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnhideToolStripMenuItem.Click
-        Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+        Dim fileName As String
 
-        If File.Exists(fileName) Then
-            Dim attributes As FileAttributes = File.GetAttributes(fileName)
-            attributes = attributes And Not FileAttributes.Hidden
-            File.SetAttributes(fileName, attributes)
+        If FileList.SelectedItems.Count > 1 Then
+            For Each item As ListViewItem In FileList.SelectedItems
+                fileName = Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text)
+                UnhideFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            UnhideFile(fileName)
         End If
 
         BtnRefresh.PerformClick()
     End Sub
 
     Private Sub HideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideToolStripMenuItem.Click
-        Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+        Dim fileName As String
 
+        If FileList.SelectedItems.Count > 1 Then
+            For Each item As ListViewItem In FileList.SelectedItems
+                fileName = Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text)
+                HideFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            HideFile(fileName)
+        End If
+
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub HideFile(fileName As String)
         If File.Exists(fileName) Then
             Dim attributes As FileAttributes = File.GetAttributes(fileName)
             attributes = attributes Or FileAttributes.Hidden
             File.SetAttributes(fileName, attributes)
         End If
+    End Sub
 
-        BtnRefresh.PerformClick()
+    Private Sub UnhideFile(fileName As String)
+        If File.Exists(fileName) Then
+            Dim attributes As FileAttributes = File.GetAttributes(fileName)
+            attributes = attributes And Not FileAttributes.Hidden
+            File.SetAttributes(fileName, attributes)
+        End If
     End Sub
 End Class
