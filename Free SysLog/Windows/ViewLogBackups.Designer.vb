@@ -41,6 +41,10 @@ Partial Class ViewLogBackups
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
         Me.lblTotalNumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ChkShowHidden = New System.Windows.Forms.CheckBox()
+        Me.colHidden = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.HideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -50,13 +54,13 @@ Partial Class ViewLogBackups
         Me.FileList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.FileList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize})
+        Me.FileList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize, Me.colHidden})
         Me.FileList.ContextMenuStrip = Me.ContextMenuStrip1
         Me.FileList.FullRowSelect = True
         Me.FileList.HideSelection = False
         Me.FileList.Location = New System.Drawing.Point(12, 12)
         Me.FileList.Name = "FileList"
-        Me.FileList.Size = New System.Drawing.Size(776, 298)
+        Me.FileList.Size = New System.Drawing.Size(857, 298)
         Me.FileList.TabIndex = 1
         Me.FileList.UseCompatibleStateImageBehavior = False
         Me.FileList.View = System.Windows.Forms.View.Details
@@ -78,21 +82,33 @@ Partial Class ViewLogBackups
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.UnhideToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(181, 70)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(113, 92)
         '
         'DeleteToolStripMenuItem
         '
         Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
-        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
         Me.DeleteToolStripMenuItem.Text = "&Delete"
         '
         'ViewToolStripMenuItem
         '
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
-        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
         Me.ViewToolStripMenuItem.Text = "&View"
+        '
+        'HideToolStripMenuItem
+        '
+        Me.HideToolStripMenuItem.Name = "HideToolStripMenuItem"
+        Me.HideToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.HideToolStripMenuItem.Text = "Hide"
+        '
+        'UnhideToolStripMenuItem
+        '
+        Me.UnhideToolStripMenuItem.Name = "UnhideToolStripMenuItem"
+        Me.UnhideToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.UnhideToolStripMenuItem.Text = "Unhide"
         '
         'BtnView
         '
@@ -131,7 +147,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblTotalNumberOfLogs})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(800, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(881, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -200,11 +216,27 @@ Partial Class ViewLogBackups
         Me.lblTotalNumberOfLogs.Size = New System.Drawing.Size(124, 17)
         Me.lblTotalNumberOfLogs.Text = "Total Number of Logs:"
         '
+        'ChkShowHidden
+        '
+        Me.ChkShowHidden.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowHidden.AutoSize = True
+        Me.ChkShowHidden.Location = New System.Drawing.Point(752, 320)
+        Me.ChkShowHidden.Name = "ChkShowHidden"
+        Me.ChkShowHidden.Size = New System.Drawing.Size(114, 17)
+        Me.ChkShowHidden.TabIndex = 34
+        Me.ChkShowHidden.Text = "Show Hidden Files"
+        Me.ChkShowHidden.UseVisualStyleBackColor = True
+        '
+        'colHidden
+        '
+        Me.colHidden.Text = "Hidden?"
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 364)
+        Me.ClientSize = New System.Drawing.Size(881, 364)
+        Me.Controls.Add(Me.ChkShowHidden)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
         Me.Controls.Add(Me.ChkRegExSearch)
         Me.Controls.Add(Me.BtnSearch)
@@ -218,7 +250,7 @@ Partial Class ViewLogBackups
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(816, 403)
+        Me.MinimumSize = New System.Drawing.Size(897, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
@@ -247,4 +279,8 @@ Partial Class ViewLogBackups
     Friend WithEvents DeleteToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ViewToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblTotalNumberOfLogs As ToolStripStatusLabel
+    Friend WithEvents ChkShowHidden As CheckBox
+    Friend WithEvents HideToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents UnhideToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents colHidden As ColumnHeader
 End Class

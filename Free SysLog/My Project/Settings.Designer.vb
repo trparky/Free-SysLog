@@ -875,6 +875,18 @@ Namespace My
                 Me("hostnames") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property boolShowHiddenFilesOnViewLogBackyupsWindow() As Boolean
+            Get
+                Return CType(Me("boolShowHiddenFilesOnViewLogBackyupsWindow"),Boolean)
+            End Get
+            Set
+                Me("boolShowHiddenFilesOnViewLogBackyupsWindow") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -29,15 +29,24 @@ Public Class ViewLogBackups
         lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
 
         For Each file As FileInfo In filesInDirectory
-            intCount = GetEntryCount(file.FullName)
+            If ChkShowHidden.Checked OrElse (file.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden Then
+                intCount = GetEntryCount(file.FullName)
 
-            If intCount <> -1 Then
-                longTotalLogCount += intCount
+                If intCount <> -1 Then
+                    longTotalLogCount += intCount
 
-                listViewItem = New ListViewItem With {.Text = file.Name}
-                listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
-                listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
-                listOfListViewItems.Add(listViewItem)
+                    listViewItem = New ListViewItem With {.Text = file.Name}
+                    listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
+                    listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
+
+                    If (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
+                        listViewItem.SubItems.Add("Yes")
+                    Else
+                        listViewItem.SubItems.Add("No")
+                    End If
+
+                    listOfListViewItems.Add(listViewItem)
+                End If
             End If
         Next
 
@@ -49,6 +58,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
         Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
@@ -222,6 +232,16 @@ Public Class ViewLogBackups
         If FileList.SelectedItems.Count > 0 Then
             DeleteToolStripMenuItem.Enabled = True
             ViewToolStripMenuItem.Enabled = FileList.SelectedItems.Count <= 1
+
+            Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+
+            If (New FileInfo(fileName).Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
+                UnhideToolStripMenuItem.Visible = True
+                HideToolStripMenuItem.Visible = False
+            Else
+                UnhideToolStripMenuItem.Visible = False
+                HideToolStripMenuItem.Visible = True
+            End If
         Else
             DeleteToolStripMenuItem.Enabled = False
             ViewToolStripMenuItem.Enabled = False
@@ -234,5 +254,34 @@ Public Class ViewLogBackups
 
     Private Sub ViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewToolStripMenuItem.Click
         BtnView.PerformClick()
+    End Sub
+
+    Private Sub ChkShowHidden_Click(sender As Object, e As EventArgs) Handles ChkShowHidden.Click
+        My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub UnhideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnhideToolStripMenuItem.Click
+        Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+
+        If File.Exists(fileName) Then
+            Dim attributes As FileAttributes = File.GetAttributes(fileName)
+            attributes = attributes And Not FileAttributes.Hidden
+            File.SetAttributes(fileName, attributes)
+        End If
+
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub HideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideToolStripMenuItem.Click
+        Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+
+        If File.Exists(fileName) Then
+            Dim attributes As FileAttributes = File.GetAttributes(fileName)
+            attributes = attributes Or FileAttributes.Hidden
+            File.SetAttributes(fileName, attributes)
+        End If
+
+        BtnRefresh.PerformClick()
     End Sub
 End Class
