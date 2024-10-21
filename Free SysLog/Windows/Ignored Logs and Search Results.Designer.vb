@@ -52,6 +52,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
+        Me.ExportSelectedLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -192,14 +193,14 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LogsContextMenu
         '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem})
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem})
         Me.LogsContextMenu.Name = "LogsContextMenu"
         Me.LogsContextMenu.Size = New System.Drawing.Size(211, 92)
         '
         'CopyLogTextToolStripMenuItem
         '
         Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
-        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
         Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
         '
         'BtnViewMainWindow
@@ -217,7 +218,7 @@ Partial Class IgnoredLogsAndSearchResults
         'CreateAlertToolStripMenuItem
         '
         Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
-        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
         Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
         'ChkCaseInsensitiveSearch
@@ -284,6 +285,12 @@ Partial Class IgnoredLogsAndSearchResults
         Me.OpenLogFileForViewingToolStripMenuItem.Text = "Open Log File for Viewing"
         Me.OpenLogFileForViewingToolStripMenuItem.Visible = False
         '
+        'ExportSelectedLogsToolStripMenuItem
+        '
+        Me.ExportSelectedLogsToolStripMenuItem.Name = "ExportSelectedLogsToolStripMenuItem"
+        Me.ExportSelectedLogsToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.ExportSelectedLogsToolStripMenuItem.Text = "Export Selected Logs"
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -336,4 +343,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents OpenLogFileForViewingToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents colLogType As DataGridViewTextBoxColumn
     Friend WithEvents ColHostname As DataGridViewTextBoxColumn
+    Friend WithEvents ExportSelectedLogsToolStripMenuItem As ToolStripMenuItem
 End Class

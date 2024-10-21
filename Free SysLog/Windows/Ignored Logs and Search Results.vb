@@ -292,7 +292,17 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub LogsContextMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsContextMenu.Opening
-        If Logs.SelectedRows.Count <> 1 Then e.Cancel = True
+        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
+            ExportSelectedLogsToolStripMenuItem.Visible = True
+            CopyLogTextToolStripMenuItem.Visible = False
+            CreateAlertToolStripMenuItem.Visible = False
+            OpenLogFileForViewingToolStripMenuItem.Visible = False
+        Else
+            ExportSelectedLogsToolStripMenuItem.Visible = False
+            CopyLogTextToolStripMenuItem.Visible = True
+            CreateAlertToolStripMenuItem.Visible = True
+            OpenLogFileForViewingToolStripMenuItem.Visible = True
+        End If
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
@@ -440,6 +450,10 @@ Public Class IgnoredLogsAndSearchResults
             e.SuppressKeyPress = True
             BtnSearch.PerformClick()
         End If
+    End Sub
+
+    Private Sub ExportSelectedLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportSelectedLogsToolStripMenuItem.Click
+        DataHandling.ExportSelectedLogs(Logs.SelectedRows)
     End Sub
 
     Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
