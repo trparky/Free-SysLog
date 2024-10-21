@@ -12,7 +12,7 @@ Namespace DataHandling
             End Set
         End Property
 
-        Public Sub ExportSelectedLogs()
+        Public Sub ExportSelectedLogs(selectedRows As DataGridViewSelectedRowCollection)
             SyncLock ParentForm.dataGridLockObject
                 Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}
 
@@ -26,7 +26,7 @@ Namespace DataHandling
 
                     If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted,Raw Log Text,Alert Text")
 
-                    For Each item As DataGridViewRow In ParentForm.Logs.SelectedRows
+                    For Each item As DataGridViewRow In selectedRows
                         If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                             myItem = DirectCast(item, MyDataGridViewRow)
 
@@ -80,7 +80,7 @@ Namespace DataHandling
             End SyncLock
         End Sub
 
-        Public Sub ExportAllLogs()
+        Public Sub ExportAllLogs(rows As DataGridViewRowCollection)
             SyncLock ParentForm.dataGridLockObject
                 Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}
 
@@ -94,7 +94,7 @@ Namespace DataHandling
 
                     If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted,Raw Log Text,Alert Text")
 
-                    For Each item As DataGridViewRow In ParentForm.Logs.Rows
+                    For Each item As DataGridViewRow In rows
                         If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                             myItem = DirectCast(item, MyDataGridViewRow)
 

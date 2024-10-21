@@ -1177,11 +1177,11 @@ Public Class Form1
     End Sub
 
     Private Sub ExportAllLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportAllLogsToolStripMenuItem.Click
-        DataHandling.ExportAllLogs()
+        DataHandling.ExportAllLogs(Logs.Rows)
     End Sub
 
     Private Sub ExportsLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportsLogsToolStripMenuItem.Click
-        DataHandling.ExportSelectedLogs()
+        DataHandling.ExportSelectedLogs(Logs.SelectedRows)
     End Sub
 
     Private Sub DonationStripMenuItem_Click(sender As Object, e As EventArgs) Handles DonationStripMenuItem.Click
