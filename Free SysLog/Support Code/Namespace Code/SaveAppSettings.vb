@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
 
 Namespace SaveAppSettings
@@ -38,22 +39,28 @@ Namespace SaveAppSettings
 
         Private Function ParseFontFromString(fontString As String) As Font
             Try
-                ' Split by comma to separate the font name and size portion
-                Dim parts() As String = fontString.Split(","c)
+                Dim MatchResults As Match = Regex.Match(fontString, "(?<fontname>[^\n\r,]+), (?<size>[0-9]+\.[0-9]{2})[pt]{2}(?:, style=)?(?<style>.*)", RegexOptions.IgnoreCase)
 
-                ' Get the font name (remove leading/trailing spaces if any)
-                Dim fontName As String = parts(0).Trim()
+                If MatchResults.Success Then
+                    Dim fontName As String = MatchResults.Groups("fontname").Value
+                    Dim fontSize As Single = 8.25
+                    Dim fontStyle As FontStyle = FontStyle.Regular
 
-                ' Extract the size part, remove the "pt" suffix, and convert to float
-                Dim fontSize As Single = 8.25 ' Default size
+                    If Not Single.TryParse(MatchResults.Groups("size").Value, fontSize) Then fontSize = 8.25
 
-                If parts.Length > 1 Then
-                    Dim sizePart As String = parts(1).Trim().Replace("pt", "").Trim()
-                    If Not Single.TryParse(sizePart, fontSize) Then fontSize = 8.25
+                    If Not String.IsNullOrWhiteSpace(MatchResults.Groups("style").Value) Then
+                        Dim strStyleValue As String = MatchResults.Groups("style").Value
+
+                        If strStyleValue.CaseInsensitiveContains("Bold") Then fontStyle = fontStyle Or FontStyle.Bold
+                        If strStyleValue.CaseInsensitiveContains("Italic") Then fontStyle = fontStyle Or FontStyle.Italic
+                        If strStyleValue.CaseInsensitiveContains("Underline") Then fontStyle = fontStyle Or FontStyle.Underline
+                        If strStyleValue.CaseInsensitiveContains("Strikeout") Then fontStyle = fontStyle Or FontStyle.Strikeout
+                    End If
+
+                    Return New Font(fontName, fontSize, fontStyle)
+                Else
+                    Return New Font("Microsoft Sans Serif", 9.75)
                 End If
-
-                ' Create and return a new Font object using the parsed name and size
-                Return New Font(fontName, fontSize)
             Catch ex As Exception
                 Return New Font("Microsoft Sans Serif", 9.75)
             End Try
