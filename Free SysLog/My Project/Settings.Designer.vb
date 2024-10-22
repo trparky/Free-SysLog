@@ -911,6 +911,42 @@ Namespace My
                 Me("font") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+        Public Property ColViewLogBackupsFileSize() As Integer
+            Get
+                Return CType(Me("ColViewLogBackupsFileSize"),Integer)
+            End Get
+            Set
+                Me("ColViewLogBackupsFileSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+        Public Property ColViewLogBackupsFileDate() As Integer
+            Get
+                Return CType(Me("ColViewLogBackupsFileDate"),Integer)
+            End Get
+            Set
+                Me("ColViewLogBackupsFileDate") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+        Public Property ColViewLogBackupsFileName() As Integer
+            Get
+                Return CType(Me("ColViewLogBackupsFileName"),Integer)
+            End Get
+            Set
+                Me("ColViewLogBackupsFileName") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

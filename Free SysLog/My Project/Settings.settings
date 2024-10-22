@@ -218,5 +218,14 @@
     <Setting Name="font" Type="System.Drawing.Font" Scope="User">
       <Value Profile="(Default)">Microsoft Sans Serif, 8.25pt</Value>
     </Setting>
+    <Setting Name="ColViewLogBackupsFileSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
+    <Setting Name="ColViewLogBackupsFileDate" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
+    <Setting Name="ColViewLogBackupsFileName" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

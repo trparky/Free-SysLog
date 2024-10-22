@@ -83,6 +83,10 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ColFileDate.Width = My.Settings.ColViewLogBackupsFileDate
+        ColFileName.Width = My.Settings.ColViewLogBackupsFileName
+        ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
+
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
         Size = My.Settings.ViewLogBackupsSize
@@ -338,5 +342,13 @@ Public Class ViewLogBackups
     Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
         My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
         BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub FileList_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles FileList.ColumnWidthChanged
+        If boolDoneLoading Then
+            My.Settings.ColViewLogBackupsFileDate = ColFileDate.Width
+            My.Settings.ColViewLogBackupsFileName = ColFileName.Width
+            My.Settings.ColViewLogBackupsFileSize = ColFileSize.Width
+        End If
     End Sub
 End Class
