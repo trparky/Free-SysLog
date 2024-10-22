@@ -7,7 +7,6 @@ Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 Imports System.Reflection
 Imports System.Configuration
-Imports Microsoft.Win32.TaskScheduler
 Imports Free_SysLog.SupportCode
 
 Public Class Form1
@@ -146,7 +145,7 @@ Public Class Form1
             StartUpDelay.Enabled = True
             StartUpDelay.Text = "        Startup Delay (60 Seconds)"
         Else
-            Using taskService As New TaskService
+            Using taskService As New TaskScheduler.TaskService
                 taskService.RootFolder.DeleteTask($"Free SysLog for {Environment.UserName}")
             End Using
 
@@ -1462,13 +1461,13 @@ Public Class Form1
     Private Sub StartUpDelay_Click(sender As Object, e As EventArgs) Handles StartUpDelay.Click
         Dim dblSeconds As Double = 0
 
-        Using taskService As New TaskService
-            Dim task As Task = Nothing
+        Using taskService As New TaskScheduler.TaskService
+            Dim task As TaskScheduler.Task = Nothing
 
             If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                 If task.Definition.Triggers.Count > 0 Then
-                    Dim trigger As Trigger = task.Definition.Triggers(0)
-                    If trigger.TriggerType = TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+                    Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
+                    If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, TaskScheduler.LogonTrigger).Delay.TotalSeconds
                 End If
             End If
         End Using
@@ -1483,15 +1482,15 @@ Public Class Form1
                 If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 300 Then
                     MsgBox("The time in seconds must be in the range of 1 - 300.", MsgBoxStyle.Critical, Text)
                 Else
-                    Using taskService As New TaskService
-                        Dim task As Task = Nothing
+                    Using taskService As New TaskScheduler.TaskService
+                        Dim task As TaskScheduler.Task = Nothing
 
                         If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                             If task.Definition.Triggers.Count > 0 Then
-                                Dim trigger As Trigger = task.Definition.Triggers(0)
+                                Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
-                                If trigger.TriggerType = TaskTriggerType.Logon Then
-                                    DirectCast(trigger, LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
+                                If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
+                                    DirectCast(trigger, TaskScheduler.LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
                                     task.RegisterChanges()
                                 End If
                             End If
