@@ -43,6 +43,17 @@ Namespace SyslogParser
                     .RawLogData = strRawLogText
                     .AlertText = strAlertText
                     .MinimumHeight = GetMinimumHeight(strLog, ParentForm.Logs.DefaultCellStyle.Font, ParentForm.ColLog.Width)
+
+                    If My.Settings.font IsNot Nothing Then
+                        .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_LogType).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_IPAddress).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_RemoteProcess).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_Hostname).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
+                    End If
                 End With
 
                 Return MyDataGridViewRow

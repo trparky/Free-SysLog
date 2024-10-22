@@ -48,6 +48,7 @@ Public Class ViewLogBackups
                 End If
 
                 listViewItem = New ListViewItem With {.Text = file.Name}
+                If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
                 listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
                 listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
 

@@ -369,7 +369,7 @@ Public Class Form1
         boolDoneLoading = True
 
         Dim worker As New BackgroundWorker()
-        AddHandler worker.DoWork, AddressOf LoadDataFile
+        AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
         worker.RunWorkerAsync()
     End Sub
@@ -395,7 +395,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
+    Private Sub LoadDataFile(Optional boolShowDataLoadedEvent As Boolean = True)
         If File.Exists(strPathToDataFile) Then
             Try
                 Invoke(Sub()
@@ -438,19 +438,21 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = False)
                 End If
 
-                listOfLogEntries.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                  dateObject:=Now,
-                                                                  strTime:=Now.ToString,
-                                                                  strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                  strHostname:=Nothing,
-                                                                  strRemoteProcess:=Nothing,
-                                                                  strLog:=$"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.",
-                                                                  strLogType:="Informational, Local",
-                                                                  boolAlerted:=False,
-                                                                  strRawLogText:=Nothing,
-                                                                  strAlertText:=Nothing,
-                                                                  dataGrid:=Logs)
-                                                                 )
+                If boolShowDataLoadedEvent Then
+                    listOfLogEntries.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
+                                                                      dateObject:=Now,
+                                                                      strTime:=Now.ToString,
+                                                                      strSourceAddress:=IPAddress.Loopback.ToString,
+                                                                      strHostname:=Nothing,
+                                                                      strRemoteProcess:=Nothing,
+                                                                      strLog:=$"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.",
+                                                                      strLogType:="Informational, Local",
+                                                                      boolAlerted:=False,
+                                                                      strRawLogText:=Nothing,
+                                                                      strAlertText:=Nothing,
+                                                                      dataGrid:=Logs)
+                                                                     )
+                End If
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -1562,6 +1564,22 @@ Public Class Form1
     Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
         Using hostnames As New Hostnames() With {.Icon = Icon}
             hostnames.ShowDialog()
+        End Using
+    End Sub
+
+    Private Sub ChangeFont_Click(sender As Object, e As EventArgs) Handles ChangeFont.Click
+        Using FontDialog As New FontDialog
+            If My.Settings.font IsNot Nothing Then FontDialog.Font = My.Settings.font
+
+            If FontDialog.ShowDialog() = DialogResult.OK Then
+                My.Settings.font = FontDialog.Font
+
+                DataHandling.WriteLogsToDisk()
+
+                SyncLock dataGridLockObject
+                    Threading.Tasks.Task.Run(Sub() LoadDataFile(False))
+                End SyncLock
+            End If
         End Using
     End Sub
 

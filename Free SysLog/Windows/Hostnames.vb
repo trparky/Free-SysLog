@@ -28,6 +28,7 @@ Public Class Hostnames
             Else
                 Dim newListViewItem As New ListViewItem(txtIP.Text)
                 newListViewItem.SubItems.Add(txtHostname.Text)
+                If My.Settings.font IsNot Nothing Then newListViewItem.Font = My.Settings.font
 
                 ListHostnames.Items.Add(newListViewItem)
 

@@ -30,6 +30,7 @@ Public Class Replacements
                     .BoolRegex = AddReplacement.boolRegex
                     .BoolCaseSensitive = AddReplacement.boolCaseSensitive
                     .BoolEnabled = AddIgnored.boolEnabled
+                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
                 ReplacementsListView.Items.Add(MyReplacementsListViewItem)

@@ -215,5 +215,8 @@
     <Setting Name="boolShowHiddenAsGray" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="font" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Microsoft Sans Serif, 8.25pt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

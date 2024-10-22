@@ -64,9 +64,14 @@ Public Class ConfigureSysLogMirrorServers
 
             If AddSysLogMirrorServer.boolSuccess Then
                 Dim ServerListView As New ServerListViewItem(AddSysLogMirrorServer.strIP)
-                ServerListView.SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
-                ServerListView.SubItems.Add(If(AddSysLogMirrorServer.boolEnabled, "Yes", "No"))
-                ServerListView.SubItems.Add(AddSysLogMirrorServer.strName)
+
+                With ServerListView
+                    .SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
+                    .SubItems.Add(If(AddSysLogMirrorServer.boolEnabled, "Yes", "No"))
+                    .SubItems.Add(AddSysLogMirrorServer.strName)
+                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                End With
+
                 servers.Items.Add(ServerListView)
             End If
         End Using
