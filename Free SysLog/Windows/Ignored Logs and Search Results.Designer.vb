@@ -63,7 +63,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'ColHostname
         '
-        Me.ColHostname.HeaderText = "Hostname"
+        Me.ColHostname.HeaderText = "Hostname/Device Name"
         Me.ColHostname.Name = "ColHostname"
         Me.ColHostname.ReadOnly = True
         Me.ColHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
