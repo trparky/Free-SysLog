@@ -47,6 +47,7 @@ Public Class ViewLogBackups
 
                 If (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
                     listViewItem.SubItems.Add("Yes")
+                    If ChkShowHiddenAsGray.Checked Then listViewItem.ForeColor = Color.Gray
                 Else
                     listViewItem.SubItems.Add("No")
                 End If
@@ -64,6 +65,7 @@ Public Class ViewLogBackups
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
+        ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
         Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
@@ -312,5 +314,10 @@ Public Class ViewLogBackups
             attributes = attributes And Not FileAttributes.Hidden
             File.SetAttributes(fileName, attributes)
         End If
+    End Sub
+
+    Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
+        My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
+        BtnRefresh.PerformClick()
     End Sub
 End Class

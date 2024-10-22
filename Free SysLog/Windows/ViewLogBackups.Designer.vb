@@ -43,6 +43,7 @@ Partial Class ViewLogBackups
         Me.lblTotalNumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkShowHidden = New System.Windows.Forms.CheckBox()
         Me.colHidden = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ChkShowHiddenAsGray = New System.Windows.Forms.CheckBox()
         Me.HideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip1.SuspendLayout()
@@ -60,7 +61,7 @@ Partial Class ViewLogBackups
         Me.FileList.HideSelection = False
         Me.FileList.Location = New System.Drawing.Point(12, 12)
         Me.FileList.Name = "FileList"
-        Me.FileList.Size = New System.Drawing.Size(857, 298)
+        Me.FileList.Size = New System.Drawing.Size(1011, 298)
         Me.FileList.TabIndex = 1
         Me.FileList.UseCompatibleStateImageBehavior = False
         Me.FileList.View = System.Windows.Forms.View.Details
@@ -147,7 +148,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblTotalNumberOfLogs})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(881, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(1035, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -231,11 +232,23 @@ Partial Class ViewLogBackups
         '
         Me.colHidden.Text = "Hidden?"
         '
+        'ChkShowHiddenAsGray
+        '
+        Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowHiddenAsGray.AutoSize = True
+        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(872, 320)
+        Me.ChkShowHiddenAsGray.Name = "ChkShowHiddenAsGray"
+        Me.ChkShowHiddenAsGray.Size = New System.Drawing.Size(153, 17)
+        Me.ChkShowHiddenAsGray.TabIndex = 35
+        Me.ChkShowHiddenAsGray.Text = "Show Hidden Files as Gray"
+        Me.ChkShowHiddenAsGray.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(881, 364)
+        Me.ClientSize = New System.Drawing.Size(1035, 364)
+        Me.Controls.Add(Me.ChkShowHiddenAsGray)
         Me.Controls.Add(Me.ChkShowHidden)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
         Me.Controls.Add(Me.ChkRegExSearch)
@@ -250,7 +263,7 @@ Partial Class ViewLogBackups
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(897, 403)
+        Me.MinimumSize = New System.Drawing.Size(1051, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
@@ -283,4 +296,5 @@ Partial Class ViewLogBackups
     Friend WithEvents HideToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UnhideToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents colHidden As ColumnHeader
+    Friend WithEvents ChkShowHiddenAsGray As CheckBox
 End Class
