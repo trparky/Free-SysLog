@@ -30,22 +30,28 @@ Public Class ViewLogBackups
 
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
-        Dim intCount As Integer
+        Dim intCount, intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount As Long
-
-        lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
+        Dim boolIsHidden As Boolean
 
         For Each file As FileInfo In filesInDirectory
+            boolIsHidden = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
             intCount = GetEntryCount(file.FullName)
 
             If intCount <> -1 Then
-                longTotalLogCount += intCount
+                If boolIsHidden Then
+                    intHiddenFileCount += 1
+                    intHiddenTotalLogCount += intCount
+                Else
+                    intFileCount += 1
+                    longTotalLogCount += intCount
+                End If
 
                 listViewItem = New ListViewItem With {.Text = file.Name}
                 listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
                 listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
 
-                If (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
+                If boolIsHidden Then
                     listViewItem.SubItems.Add("Yes")
                     If ChkShowHiddenAsGray.Checked Then listViewItem.ForeColor = Color.Gray
                 Else
@@ -55,6 +61,18 @@ Public Class ViewLogBackups
                 listOfListViewItems.Add(listViewItem)
             End If
         Next
+
+        lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
+
+        If intHiddenFileCount > 0 Then
+            lblNumberOfHiddenFiles.Visible = True
+            lblTotalNumberOfHiddenLogs.Visible = True
+            lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
+            lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
+        Else
+            lblNumberOfHiddenFiles.Visible = False
+            lblTotalNumberOfHiddenLogs.Visible = False
+        End If
 
         Invoke(Sub()
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
