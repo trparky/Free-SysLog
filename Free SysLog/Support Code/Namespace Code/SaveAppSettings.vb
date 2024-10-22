@@ -36,6 +36,29 @@ Namespace SaveAppSettings
             End Using
         End Sub
 
+        Private Function ParseFontFromString(fontString As String) As Font
+            Try
+                ' Split by comma to separate the font name and size portion
+                Dim parts() As String = fontString.Split(","c)
+
+                ' Get the font name (remove leading/trailing spaces if any)
+                Dim fontName As String = parts(0).Trim()
+
+                ' Extract the size part, remove the "pt" suffix, and convert to float
+                Dim fontSize As Single = 8.25 ' Default size
+
+                If parts.Length > 1 Then
+                    Dim sizePart As String = parts(1).Trim().Replace("pt", "").Trim()
+                    If Not Single.TryParse(sizePart, fontSize) Then fontSize = 8.25
+                End If
+
+                ' Create and return a new Font object using the parsed name and size
+                Return New Font(fontName, fontSize)
+            Catch ex As Exception
+                Return New Font("Microsoft Sans Serif", 9.75)
+            End Try
+        End Function
+
         Public Function LoadApplicationSettingsFromFile(strFileName As String, strMessageBoxTitle As String) As Boolean
             Try
                 Dim exportedSettingsArray As New Dictionary(Of String, Object)(StringComparison.OrdinalIgnoreCase)
@@ -66,6 +89,8 @@ Namespace SaveAppSettings
                             splitArray = rawValue.split("|")
                             My.Settings(settingProperty.Name) = New Point() With {.X = splitArray(0), .Y = splitArray(1)}
                             splitArray = Nothing
+                        ElseIf settingType = GetType(Font) Then
+                            My.Settings(settingProperty.Name) = ParseFontFromString(rawValue)
                         ElseIf settingType = GetType(Size) Then
                             splitArray = rawValue.split("|")
                             My.Settings(settingProperty.Name) = New Size() With {.Height = splitArray(0), .Width = splitArray(1)}
