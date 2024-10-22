@@ -20,37 +20,40 @@ Public Class ViewLogBackups
     End Function
 
     Private Sub LoadFileList()
-        Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+        Dim filesInDirectory As FileInfo()
+
+        If ChkShowHidden.Checked Then
+            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+        Else
+            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
+        End If
+
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
         Dim intCount As Integer
-        Dim intNumberOfFilesInDirectory As Integer = 0
         Dim longTotalLogCount As Long
 
+        lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
+
         For Each file As FileInfo In filesInDirectory
-            If ChkShowHidden.Checked OrElse (file.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden Then
-                intCount = GetEntryCount(file.FullName)
+            intCount = GetEntryCount(file.FullName)
 
-                If intCount <> -1 Then
-                    intNumberOfFilesInDirectory += 1
-                    longTotalLogCount += intCount
+            If intCount <> -1 Then
+                longTotalLogCount += intCount
 
-                    listViewItem = New ListViewItem With {.Text = file.Name}
-                    listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
-                    listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
+                listViewItem = New ListViewItem With {.Text = file.Name}
+                listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
+                listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
 
-                    If (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
-                        listViewItem.SubItems.Add("Yes")
-                    Else
-                        listViewItem.SubItems.Add("No")
-                    End If
-
-                    listOfListViewItems.Add(listViewItem)
+                If (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
+                    listViewItem.SubItems.Add("Yes")
+                Else
+                    listViewItem.SubItems.Add("No")
                 End If
+
+                listOfListViewItems.Add(listViewItem)
             End If
         Next
-
-        lblNumberOfFiles.Text = $"Number of Files: {intNumberOfFilesInDirectory:N0}"
 
         Invoke(Sub()
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
