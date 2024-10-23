@@ -31,12 +31,13 @@ Public Class ViewLogBackups
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
         Dim intCount, intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
-        Dim longTotalLogCount As Long
+        Dim longTotalLogCount, longUsedDiskSpace As Long
         Dim boolIsHidden As Boolean
 
         For Each file As FileInfo In filesInDirectory
             boolIsHidden = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
             intCount = GetEntryCount(file.FullName)
+            longUsedDiskSpace += file.Length
 
             If intCount <> -1 Then
                 If boolIsHidden Then
@@ -64,6 +65,7 @@ Public Class ViewLogBackups
         Next
 
         lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
+        LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
 
         If intHiddenFileCount > 0 Then
             lblNumberOfHiddenFiles.Visible = True

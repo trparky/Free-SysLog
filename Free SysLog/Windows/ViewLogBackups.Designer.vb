@@ -48,6 +48,7 @@ Partial Class ViewLogBackups
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblTotalNumberOfHiddenLogs = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -147,7 +148,7 @@ Partial Class ViewLogBackups
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1035, 22)
@@ -261,6 +262,13 @@ Partial Class ViewLogBackups
         Me.lblTotalNumberOfHiddenLogs.Text = "Number of Hidden Logs:"
         Me.lblTotalNumberOfHiddenLogs.Visible = False
         '
+        'LblTotalDiskSpace
+        '
+        Me.LblTotalDiskSpace.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.LblTotalDiskSpace.Name = "LblTotalDiskSpace"
+        Me.LblTotalDiskSpace.Size = New System.Drawing.Size(123, 17)
+        Me.LblTotalDiskSpace.Text = "Total Disk Space Used:"
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -317,4 +325,5 @@ Partial Class ViewLogBackups
     Friend WithEvents ChkShowHiddenAsGray As CheckBox
     Friend WithEvents lblNumberOfHiddenFiles As ToolStripStatusLabel
     Friend WithEvents lblTotalNumberOfHiddenLogs As ToolStripStatusLabel
+    Friend WithEvents LblTotalDiskSpace As ToolStripStatusLabel
 End Class
