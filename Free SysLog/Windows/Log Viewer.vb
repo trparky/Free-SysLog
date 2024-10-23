@@ -1,8 +1,12 @@
-﻿Public Class LogViewer
+﻿Imports Microsoft.VisualBasic.Logging
+
+Public Class LogViewer
     Public strLogText, strRawLogText As String
     Public MyParentForm As Form1
 
     Private Sub Log_Viewer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Settings.font IsNot Nothing Then LogText.Font = My.Settings.font
+
         ChkShowRawLog.Checked = My.Settings.boolShowRawLogOnLogViewer
         Size = My.Settings.logViewerWindowSize
         LogText.Text = If(ChkShowRawLog.Checked, strRawLogText, strLogText)
