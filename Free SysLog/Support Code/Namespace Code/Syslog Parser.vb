@@ -83,7 +83,7 @@ Namespace SyslogParser
                                                                                dateObject:=currentDate,
                                                                                strTime:=currentDate.ToString,
                                                                                strSourceAddress:=strSourceIP,
-                                                                               strHostname:=Nothing,
+                                                                               strHostname:="Local",
                                                                                strRemoteProcess:=Nothing,
                                                                                strLog:=strLogText,
                                                                                strLogType:="Informational, Local",
