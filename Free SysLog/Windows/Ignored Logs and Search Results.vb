@@ -99,6 +99,8 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Settings.font IsNot Nothing Then Logs.DefaultCellStyle.Font = My.Settings.font
+
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             BtnClearIgnoredLogs.Visible = True
             BtnViewMainWindow.Visible = True

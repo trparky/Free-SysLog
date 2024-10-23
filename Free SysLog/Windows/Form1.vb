@@ -365,6 +365,8 @@ Public Class Form1
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
 
+        If My.Settings.font IsNot Nothing Then Logs.DefaultCellStyle.Font = My.Settings.font
+
         boolDoneLoading = True
 
         Dim worker As New BackgroundWorker()
