@@ -864,6 +864,89 @@ Namespace My
                 Me("boolShowRawLogOnLogViewer") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property hostnames() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("hostnames"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("hostnames") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property boolShowHiddenFilesOnViewLogBackyupsWindow() As Boolean
+            Get
+                Return CType(Me("boolShowHiddenFilesOnViewLogBackyupsWindow"),Boolean)
+            End Get
+            Set
+                Me("boolShowHiddenFilesOnViewLogBackyupsWindow") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property boolShowHiddenAsGray() As Boolean
+            Get
+                Return CType(Me("boolShowHiddenAsGray"),Boolean)
+            End Get
+            Set
+                Me("boolShowHiddenAsGray") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt")>  _
+        Public Property font() As Global.System.Drawing.Font
+            Get
+                Return CType(Me("font"),Global.System.Drawing.Font)
+            End Get
+            Set
+                Me("font") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+        Public Property ColViewLogBackupsFileSize() As Integer
+            Get
+                Return CType(Me("ColViewLogBackupsFileSize"),Integer)
+            End Get
+            Set
+                Me("ColViewLogBackupsFileSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+        Public Property ColViewLogBackupsFileDate() As Integer
+            Get
+                Return CType(Me("ColViewLogBackupsFileDate"),Integer)
+            End Get
+            Set
+                Me("ColViewLogBackupsFileDate") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+        Public Property ColViewLogBackupsFileName() As Integer
+            Get
+                Return CType(Me("ColViewLogBackupsFileName"),Integer)
+            End Get
+            Set
+                Me("ColViewLogBackupsFileName") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -191,6 +191,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Support Code\HTTPHelper.vb" />
+    <Compile Include="Windows\Hostnames.Designer.vb">
+      <DependentUpon>Hostnames.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Hostnames.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Ignored Logs and Search Results.Designer.vb">
       <DependentUpon>Ignored Logs and Search Results.vb</DependentUpon>
     </Compile>
@@ -285,6 +291,9 @@
     <EmbeddedResource Include="Windows\Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Hostnames.resx">
+      <DependentUpon>Hostnames.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Ignored Logs and Search Results.resx">
       <DependentUpon>Ignored Logs and Search Results.vb</DependentUpon>

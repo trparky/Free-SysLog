@@ -25,6 +25,17 @@ Public Class SavedData
                 .MinimumHeight = height
                 .RawLogData = rawLogData
                 .AlertText = alertText
+
+                If My.Settings.font IsNot Nothing Then
+                    .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
+                    .Cells(ColumnIndex_LogType).Style.Font = My.Settings.font
+                    .Cells(ColumnIndex_IPAddress).Style.Font = My.Settings.font
+                    .Cells(ColumnIndex_RemoteProcess).Style.Font = My.Settings.font
+                    .Cells(ColumnIndex_Hostname).Style.Font = My.Settings.font
+                    .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
+                    .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
+                    .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
+                End If
             End With
 
             Return MyDataGridViewRow
@@ -47,6 +58,7 @@ Public Class ReplacementsClass
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
+        If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         Return listViewItem
     End Function
 End Class
@@ -65,6 +77,7 @@ Public Class IgnoredClass
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
+        If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         Return listViewItem
     End Function
 End Class
@@ -106,12 +119,29 @@ Public Class AlertsClass
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.AlertType = alertType
         listViewItem.BoolEnabled = BoolEnabled
+        If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         Return listViewItem
     End Function
 End Class
 
 Public Class ProxiedSysLogData
     Public ip, log As String
+End Class
+
+Public Class CustomHostname
+    Public ip, deviceName As String
+
+    Public Function ToListViewItem() As ListViewItem
+        Dim ListViewItem As New ListViewItem(ip)
+
+        With ListViewItem
+            .SubItems.Add(deviceName)
+        End With
+
+        If My.Settings.font IsNot Nothing Then ListViewItem.Font = My.Settings.font
+
+        Return ListViewItem
+    End Function
 End Class
 
 Public Class SysLogProxyServer
@@ -129,6 +159,7 @@ Public Class SysLogProxyServer
             .SubItems.Add(name)
             .StrName = name
             .BoolEnabled = boolEnabled
+            If My.Settings.font IsNot Nothing Then ServerListView.Font = My.Settings.font
         End With
 
         Return ServerListView

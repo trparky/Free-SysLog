@@ -12,7 +12,7 @@ Namespace DataHandling
             End Set
         End Property
 
-        Public Sub ExportSelectedLogs()
+        Public Sub ExportSelectedLogs(selectedRows As DataGridViewSelectedRowCollection)
             SyncLock ParentForm.dataGridLockObject
                 Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}
 
@@ -22,11 +22,11 @@ Namespace DataHandling
                     Dim collectionOfSavedData As New List(Of SavedData)
                     Dim myItem As MyDataGridViewRow
                     Dim csvStringBuilder As New StringBuilder
-                    Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strHostname, strRemoteProcess, strServerTime As String
+                    Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strHostname, strRemoteProcess, strServerTime, strRawLog, strAlertText As String
 
-                    If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted")
+                    If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted,Raw Log Text,Alert Text")
 
-                    For Each item As DataGridViewRow In ParentForm.Logs.SelectedRows
+                    For Each item As DataGridViewRow In selectedRows
                         If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                             myItem = DirectCast(item, MyDataGridViewRow)
 
@@ -38,14 +38,16 @@ Namespace DataHandling
                                 strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
                                 strHostname = SanitizeForCSV(myItem.Cells(ColumnIndex_Hostname).Value)
                                 strRemoteProcess = SanitizeForCSV(myItem.Cells(ColumnIndex_RemoteProcess).Value)
-                                strServerTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ServerTime).Value)
+                                strServerTime = SanitizeForCSV(myItem.ServerDate)
+                                strRawLog = SanitizeForCSV(myItem.RawLogData)
+                                strAlertText = If(myItem.BoolAlerted, myItem.AlertText, "")
                                 strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
-                                csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted}")
+                                csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted},{strRawLog},{strAlertText}")
                             Else
                                 collectionOfSavedData.Add(New SavedData With {
                                                         .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                        .ServerDate = myItem.Cells(ColumnIndex_ServerTime).Value,
+                                                        .ServerDate = myItem.ServerDate,
                                                         .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                                         .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
                                                         .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
@@ -53,7 +55,8 @@ Namespace DataHandling
                                                         .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                         .DateObject = myItem.DateObject,
                                                         .BoolAlerted = myItem.BoolAlerted,
-                                                        .rawLogData = myItem.RawLogData
+                                                        .rawLogData = myItem.RawLogData,
+                                                        .alertText = myItem.AlertText
                                                       })
                             End If
                         End If
@@ -64,7 +67,7 @@ Namespace DataHandling
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
                             xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
                         ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                         ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                             fileStream.Write(csvStringBuilder.ToString.Trim)
                         End If
@@ -77,7 +80,7 @@ Namespace DataHandling
             End SyncLock
         End Sub
 
-        Public Sub ExportAllLogs()
+        Public Sub ExportAllLogs(rows As DataGridViewRowCollection)
             SyncLock ParentForm.dataGridLockObject
                 Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}
 
@@ -87,11 +90,11 @@ Namespace DataHandling
                     Dim collectionOfSavedData As New List(Of SavedData)
                     Dim myItem As MyDataGridViewRow
                     Dim csvStringBuilder As New StringBuilder
-                    Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strHostname, strRemoteProcess, strServerTime As String
+                    Dim strLogType, strTime, strSourceIP, strHeader, strLogText, strAlerted, strHostname, strRemoteProcess, strServerTime, strRawLog, strAlertText As String
 
-                    If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted")
+                    If fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then csvStringBuilder.AppendLine("Time,Server Time,Log Type,IP Address,Hostname,Remote Process,Log Text,Alerted,Raw Log Text,Alert Text")
 
-                    For Each item As DataGridViewRow In ParentForm.Logs.Rows
+                    For Each item As DataGridViewRow In rows
                         If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                             myItem = DirectCast(item, MyDataGridViewRow)
 
@@ -103,22 +106,25 @@ Namespace DataHandling
                                 strLogText = SanitizeForCSV(myItem.Cells(ColumnIndex_LogText).Value)
                                 strHostname = SanitizeForCSV(myItem.Cells(ColumnIndex_Hostname).Value)
                                 strRemoteProcess = SanitizeForCSV(myItem.Cells(ColumnIndex_RemoteProcess).Value)
-                                strServerTime = SanitizeForCSV(myItem.Cells(ColumnIndex_ServerTime).Value)
+                                strServerTime = SanitizeForCSV(myItem.ServerDate)
+                                strRawLog = SanitizeForCSV(myItem.RawLogData)
+                                strAlertText = If(myItem.BoolAlerted, myItem.AlertText, "")
                                 strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
-                                csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted}")
+                                csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted},{strRawLog},{strAlertText}")
                             Else
                                 collectionOfSavedData.Add(New SavedData With {
-                                                        .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                        .ServerDate = myItem.Cells(ColumnIndex_ServerTime).Value,
-                                                        .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                                        .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                        .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                                        .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                                        .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                                        .DateObject = myItem.DateObject,
-                                                        .BoolAlerted = myItem.BoolAlerted,
-                                                        .rawLogData = myItem.RawLogData
+                                                       .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                       .ServerDate = myItem.ServerDate,
+                                                       .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                                       .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                                       .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                                       .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
+                                                       .log = myItem.Cells(ColumnIndex_LogText).Value,
+                                                       .DateObject = myItem.DateObject,
+                                                       .BoolAlerted = myItem.BoolAlerted,
+                                                       .rawLogData = myItem.RawLogData,
+                                                       .alertText = myItem.AlertText
                                                       })
                             End If
                         End If
@@ -129,7 +135,7 @@ Namespace DataHandling
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
                             xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
                         ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                         ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                             fileStream.Write(csvStringBuilder.ToString.Trim)
                         End If
@@ -171,7 +177,7 @@ Namespace DataHandling
 
                 Try
                     Using fileStream As New StreamWriter(strPathToDataFile & ".new")
-                        fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                        fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                     End Using
 
                     File.Delete(strPathToDataFile)

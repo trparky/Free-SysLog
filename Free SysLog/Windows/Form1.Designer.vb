@@ -76,7 +76,9 @@ Partial Class Form1
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ChkEnableConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeFont = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureAlertsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureHostnames = New System.Windows.Forms.ToolStripMenuItem()
         Me.ColumnControls = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -380,7 +382,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -519,7 +521,7 @@ Partial Class Form1
         '
         'ColHostname
         '
-        Me.ColHostname.HeaderText = "Hostname"
+        Me.ColHostname.HeaderText = "Hostname/Device Name"
         Me.ColHostname.Name = "ColHostname"
         Me.ColHostname.ReadOnly = True
         Me.ColHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
@@ -548,11 +550,23 @@ Partial Class Form1
         Me.ConfigureAlertsToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ConfigureAlertsToolStripMenuItem.Text = "Configure Alerts"
         '
+        'ConfigureHostnames
+        '
+        Me.ConfigureHostnames.Name = "ConfigureHostnames"
+        Me.ConfigureHostnames.Size = New System.Drawing.Size(339, 22)
+        Me.ConfigureHostnames.Text = "Configure Custom Hostnames/Device Names"
+        '
         'ChangeAlternatingColorToolStripMenuItem
         '
         Me.ChangeAlternatingColorToolStripMenuItem.Name = "ChangeAlternatingColorToolStripMenuItem"
         Me.ChangeAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ChangeAlternatingColorToolStripMenuItem.Text = "Change Alternating Row Color"
+        '
+        'ChangeFont
+        '
+        Me.ChangeFont.Name = "ChangeFont"
+        Me.ChangeFont.Size = New System.Drawing.Size(339, 22)
+        Me.ChangeFont.Text = "Change Font"
         '
         'AboutToolStripMenuItem
         '
@@ -831,7 +845,9 @@ Partial Class Form1
     Friend WithEvents ColHostname As DataGridViewTextBoxColumn
     Friend WithEvents ColorDialog As ColorDialog
     Friend WithEvents ChangeAlternatingColorToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChangeFont As ToolStripMenuItem
     Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ConfigureHostnames As ToolStripMenuItem
     Friend WithEvents ColumnControls As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CloseMe As ToolStripMenuItem

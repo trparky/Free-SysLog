@@ -10,29 +10,72 @@ Public Class ViewLogBackups
     Private boolDoneLoading As Boolean = False
 
     Private Function GetEntryCount(strFileName As String) As Integer
-        Using fileStream As New StreamReader(strFileName)
-            Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
-        End Using
+        Try
+            Using fileStream As New StreamReader(strFileName)
+                Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
+            End Using
+        Catch ex As Exception
+            Return -1
+        End Try
     End Function
 
     Private Sub LoadFileList()
-        Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+        Dim filesInDirectory As FileInfo()
+
+        If ChkShowHidden.Checked Then
+            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+        Else
+            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
+        End If
+
         Dim listOfListViewItems As New List(Of ListViewItem)
         Dim listViewItem As ListViewItem
-        Dim intCount As Integer
-        Dim longTotalLogCount As Long
-
-        lblNumberOfFiles.Text = $"Number of Files: {filesInDirectory.Count:N0}"
+        Dim intCount, intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
+        Dim longTotalLogCount, longUsedDiskSpace As Long
+        Dim boolIsHidden As Boolean
 
         For Each file As FileInfo In filesInDirectory
+            boolIsHidden = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
             intCount = GetEntryCount(file.FullName)
-            longTotalLogCount += intCount
+            longUsedDiskSpace += file.Length
 
-            listViewItem = New ListViewItem With {.Text = file.Name}
-            listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
-            listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
-            listOfListViewItems.Add(listViewItem)
+            If intCount <> -1 Then
+                If boolIsHidden Then
+                    intHiddenFileCount += 1
+                    intHiddenTotalLogCount += intCount
+                Else
+                    intFileCount += 1
+                    longTotalLogCount += intCount
+                End If
+
+                listViewItem = New ListViewItem With {.Text = file.Name}
+                If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+                listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
+                listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
+
+                If boolIsHidden Then
+                    listViewItem.SubItems.Add("Yes")
+                    If ChkShowHiddenAsGray.Checked Then listViewItem.ForeColor = Color.Gray
+                Else
+                    listViewItem.SubItems.Add("No")
+                End If
+
+                listOfListViewItems.Add(listViewItem)
+            End If
         Next
+
+        lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
+        LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+
+        If intHiddenFileCount > 0 Then
+            lblNumberOfHiddenFiles.Visible = True
+            lblTotalNumberOfHiddenLogs.Visible = True
+            lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
+            lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
+        Else
+            lblNumberOfHiddenFiles.Visible = False
+            lblTotalNumberOfHiddenLogs.Visible = False
+        End If
 
         Invoke(Sub()
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
@@ -42,6 +85,12 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ColFileDate.Width = My.Settings.ColViewLogBackupsFileDate
+        ColFileName.Width = My.Settings.ColViewLogBackupsFileName
+        ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
+
+        ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
+        ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
         Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
@@ -215,6 +264,16 @@ Public Class ViewLogBackups
         If FileList.SelectedItems.Count > 0 Then
             DeleteToolStripMenuItem.Enabled = True
             ViewToolStripMenuItem.Enabled = FileList.SelectedItems.Count <= 1
+
+            Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+
+            If (New FileInfo(fileName).Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
+                UnhideToolStripMenuItem.Visible = True
+                HideToolStripMenuItem.Visible = False
+            Else
+                UnhideToolStripMenuItem.Visible = False
+                HideToolStripMenuItem.Visible = True
+            End If
         Else
             DeleteToolStripMenuItem.Enabled = False
             ViewToolStripMenuItem.Enabled = False
@@ -227,5 +286,71 @@ Public Class ViewLogBackups
 
     Private Sub ViewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewToolStripMenuItem.Click
         BtnView.PerformClick()
+    End Sub
+
+    Private Sub ChkShowHidden_Click(sender As Object, e As EventArgs) Handles ChkShowHidden.Click
+        My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub UnhideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnhideToolStripMenuItem.Click
+        Dim fileName As String
+
+        If FileList.SelectedItems.Count > 1 Then
+            For Each item As ListViewItem In FileList.SelectedItems
+                fileName = Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text)
+                UnhideFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            UnhideFile(fileName)
+        End If
+
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub HideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideToolStripMenuItem.Click
+        Dim fileName As String
+
+        If FileList.SelectedItems.Count > 1 Then
+            For Each item As ListViewItem In FileList.SelectedItems
+                fileName = Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text)
+                HideFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            HideFile(fileName)
+        End If
+
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub HideFile(fileName As String)
+        If File.Exists(fileName) Then
+            Dim attributes As FileAttributes = File.GetAttributes(fileName)
+            attributes = attributes Or FileAttributes.Hidden
+            File.SetAttributes(fileName, attributes)
+        End If
+    End Sub
+
+    Private Sub UnhideFile(fileName As String)
+        If File.Exists(fileName) Then
+            Dim attributes As FileAttributes = File.GetAttributes(fileName)
+            attributes = attributes And Not FileAttributes.Hidden
+            File.SetAttributes(fileName, attributes)
+        End If
+    End Sub
+
+    Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
+        My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub FileList_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles FileList.ColumnWidthChanged
+        If boolDoneLoading Then
+            My.Settings.ColViewLogBackupsFileDate = ColFileDate.Width
+            My.Settings.ColViewLogBackupsFileName = ColFileName.Width
+            My.Settings.ColViewLogBackupsFileSize = ColFileSize.Width
+        End If
     End Sub
 End Class

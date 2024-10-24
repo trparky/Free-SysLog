@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
 
 Namespace SaveAppSettings
@@ -32,9 +33,38 @@ Namespace SaveAppSettings
             Next
 
             Using streamWriter As New IO.StreamWriter(strFileName)
-                streamWriter.Write(Newtonsoft.Json.JsonConvert.SerializeObject(exportedSettingsArray))
+                streamWriter.Write(Newtonsoft.Json.JsonConvert.SerializeObject(exportedSettingsArray, Newtonsoft.Json.Formatting.Indented))
             End Using
         End Sub
+
+        Private Function ParseFontFromString(fontString As String) As Font
+            Try
+                Dim MatchResults As Match = Regex.Match(fontString, "(?<fontname>[^\n\r,]+), (?<size>[0-9]+\.[0-9]{2})[pt]{2}(?:, style=)?(?<style>.*)", RegexOptions.IgnoreCase)
+
+                If MatchResults.Success Then
+                    Dim fontName As String = MatchResults.Groups("fontname").Value
+                    Dim fontSize As Single = 8.25
+                    Dim fontStyle As FontStyle = FontStyle.Regular
+
+                    If Not Single.TryParse(MatchResults.Groups("size").Value, fontSize) Then fontSize = 8.25
+
+                    If Not String.IsNullOrWhiteSpace(MatchResults.Groups("style").Value) Then
+                        Dim strStyleValue As String = MatchResults.Groups("style").Value
+
+                        If strStyleValue.CaseInsensitiveContains("Bold") Then fontStyle = fontStyle Or FontStyle.Bold
+                        If strStyleValue.CaseInsensitiveContains("Italic") Then fontStyle = fontStyle Or FontStyle.Italic
+                        If strStyleValue.CaseInsensitiveContains("Underline") Then fontStyle = fontStyle Or FontStyle.Underline
+                        If strStyleValue.CaseInsensitiveContains("Strikeout") Then fontStyle = fontStyle Or FontStyle.Strikeout
+                    End If
+
+                    Return New Font(fontName, fontSize, fontStyle)
+                Else
+                    Return New Font("Microsoft Sans Serif", 9.75)
+                End If
+            Catch ex As Exception
+                Return New Font("Microsoft Sans Serif", 9.75)
+            End Try
+        End Function
 
         Public Function LoadApplicationSettingsFromFile(strFileName As String, strMessageBoxTitle As String) As Boolean
             Try
@@ -50,6 +80,7 @@ Namespace SaveAppSettings
                 My.Settings.ServersToSendTo = New Specialized.StringCollection()
                 My.Settings.alerts = New Specialized.StringCollection()
                 My.Settings.ignored2 = New Specialized.StringCollection()
+                My.Settings.hostnames = New Specialized.StringCollection()
 
                 For Each settingProperty As Configuration.SettingsPropertyValue In My.Settings.PropertyValues
                     If exportedSettingsArray.FindKeyInDictionaryAndReturnIt(settingProperty.Name, rawValue) And settingProperty.PropertyValue IsNot Nothing Then
@@ -65,6 +96,8 @@ Namespace SaveAppSettings
                             splitArray = rawValue.split("|")
                             My.Settings(settingProperty.Name) = New Point() With {.X = splitArray(0), .Y = splitArray(1)}
                             splitArray = Nothing
+                        ElseIf settingType = GetType(Font) Then
+                            My.Settings(settingProperty.Name) = ParseFontFromString(rawValue)
                         ElseIf settingType = GetType(Size) Then
                             splitArray = rawValue.split("|")
                             My.Settings(settingProperty.Name) = New Size() With {.Height = splitArray(0), .Width = splitArray(1)}

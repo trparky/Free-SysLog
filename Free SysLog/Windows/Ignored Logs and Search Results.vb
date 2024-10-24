@@ -99,6 +99,8 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Settings.font IsNot Nothing Then Logs.DefaultCellStyle.Font = My.Settings.font
+
         If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             BtnClearIgnoredLogs.Visible = True
             BtnViewMainWindow.Visible = True
@@ -271,7 +273,7 @@ Public Class IgnoredLogsAndSearchResults
                     Dim xmlSerializerObject As New XmlSerializer(collectionOfSavedData.GetType)
                     xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
                 ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
-                    fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData))
+                    fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                 ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
                     fileStream.Write(csvStringBuilder.ToString.Trim)
                 End If
@@ -292,7 +294,17 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub LogsContextMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsContextMenu.Opening
-        If Logs.SelectedRows.Count <> 1 Then e.Cancel = True
+        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
+            ExportSelectedLogsToolStripMenuItem.Visible = True
+            CopyLogTextToolStripMenuItem.Visible = False
+            CreateAlertToolStripMenuItem.Visible = False
+            OpenLogFileForViewingToolStripMenuItem.Visible = False
+        Else
+            ExportSelectedLogsToolStripMenuItem.Visible = False
+            CopyLogTextToolStripMenuItem.Visible = True
+            CreateAlertToolStripMenuItem.Visible = True
+            OpenLogFileForViewingToolStripMenuItem.Visible = True
+        End If
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
@@ -440,6 +452,10 @@ Public Class IgnoredLogsAndSearchResults
             e.SuppressKeyPress = True
             BtnSearch.PerformClick()
         End If
+    End Sub
+
+    Private Sub ExportSelectedLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportSelectedLogsToolStripMenuItem.Click
+        DataHandling.ExportSelectedLogs(Logs.SelectedRows)
     End Sub
 
     Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize

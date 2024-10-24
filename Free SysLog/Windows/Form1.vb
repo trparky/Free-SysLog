@@ -7,7 +7,6 @@ Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 Imports System.Reflection
 Imports System.Configuration
-Imports Microsoft.Win32.TaskScheduler
 Imports Free_SysLog.SupportCode
 
 Public Class Form1
@@ -70,7 +69,7 @@ Public Class Form1
                                                        dateObject:=Now,
                                                        strTime:=Now.ToString,
                                                        strSourceAddress:=IPAddress.Loopback.ToString,
-                                                       strHostname:=Nothing,
+                                                       strHostname:="Local",
                                                        strRemoteProcess:=Nothing,
                                                        strLog:=$"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.",
                                                        strLogType:="Informational",
@@ -146,7 +145,7 @@ Public Class Form1
             StartUpDelay.Enabled = True
             StartUpDelay.Text = "        Startup Delay (60 Seconds)"
         Else
-            Using taskService As New TaskService
+            Using taskService As New TaskScheduler.TaskService
                 taskService.RootFolder.DeleteTask($"Free SysLog for {Environment.UserName}")
             End Using
 
@@ -222,27 +221,7 @@ Public Class Form1
         RestoreWindow()
     End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        SyslogParser.SetParentForm = Me
-        DataHandling.SetParentForm = Me
-        TaskHandling.SetParentForm = Me
-
-        TaskHandling.ConvertRegistryRunCommandToTask()
-
-        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
-                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
-                                                                                       End Sub)
-        If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
-
-        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
-        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
-
-        ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
-        ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
-
-        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
-
+    Private Sub LoadCheckboxSettings()
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
@@ -262,11 +241,6 @@ Public Class Form1
         BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
         ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
         ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
-        Icon = Icon.ExtractAssociatedIcon(strEXEPath)
-        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
-        If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
-        NotifyIcon.Icon = Icon
-        NotifyIcon.Text = "Free SysLog"
         ColHostname.Visible = My.Settings.boolShowHostnameColumn
         ChkShowHostnameColumn.Checked = My.Settings.boolShowHostnameColumn
         colServerTime.Visible = My.Settings.boolShowServerTimeColumn
@@ -275,15 +249,9 @@ Public Class Form1
         ChkShowLogTypeColumn.Checked = My.Settings.boolShowLogTypeColumn
         RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
         IPv6Support.Checked = My.Settings.IPv6Support
+    End Sub
 
-        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
-        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-        propInfo?.SetValue(Logs, True, Nothing)
-
-        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
-        Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
-        ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
-
+    Private Sub LoadAndDeserializeArrays()
         Dim tempReplacementsClass As ReplacementsClass
         Dim tempSysLogProxyServer As SysLogProxyServer
         Dim tempIgnoredClass As IgnoredClass
@@ -294,6 +262,15 @@ Public Class Form1
                 tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
                 If tempReplacementsClass.BoolEnabled Then replacementsList.Add(tempReplacementsClass)
                 tempReplacementsClass = Nothing
+            Next
+        End If
+
+        If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
+            Dim customHostname As CustomHostname
+
+            For Each strJSONString As String In My.Settings.hostnames
+                customHostname = Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                SupportCode.hostnames.Add(customHostname.ip, customHostname.deviceName)
             Next
         End If
 
@@ -333,6 +310,45 @@ Public Class Form1
                 tempAlertsClass = Nothing
             Next
         End If
+    End Sub
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        SyslogParser.SetParentForm = Me
+        DataHandling.SetParentForm = Me
+        TaskHandling.SetParentForm = Me
+
+        TaskHandling.ConvertRegistryRunCommandToTask()
+
+        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
+                                                                                       End Sub)
+        If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
+
+        ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
+        ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
+
+        ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
+        ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
+
+        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
+        Icon = Icon.ExtractAssociatedIcon(strEXEPath)
+        Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
+        If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
+        NotifyIcon.Icon = Icon
+        NotifyIcon.Text = "Free SysLog"
+
+        LoadCheckboxSettings()
+
+        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
+        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
+        propInfo?.SetValue(Logs, True, Nothing)
+
+        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+        ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+
+        LoadAndDeserializeArrays()
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
@@ -349,10 +365,12 @@ Public Class Form1
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
 
+        If My.Settings.font IsNot Nothing Then Logs.DefaultCellStyle.Font = My.Settings.font
+
         boolDoneLoading = True
 
         Dim worker As New BackgroundWorker()
-        AddHandler worker.DoWork, AddressOf LoadDataFile
+        AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
         worker.RunWorkerAsync()
     End Sub
@@ -378,7 +396,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub LoadDataFile(sender As Object, e As DoWorkEventArgs)
+    Private Sub LoadDataFile(Optional boolShowDataLoadedEvent As Boolean = True)
         If File.Exists(strPathToDataFile) Then
             Try
                 Invoke(Sub()
@@ -386,7 +404,7 @@ Public Class Form1
                                                                       dateObject:=Now,
                                                                       strTime:=Nothing,
                                                                       strSourceAddress:=Nothing,
-                                                                      strHostname:=Nothing,
+                                                                      strHostname:="Local",
                                                                       strRemoteProcess:=Nothing,
                                                                       strLog:="Loading data and populating data grid... Please Wait.",
                                                                       strLogType:="Informational, Local",
@@ -421,19 +439,21 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = False)
                 End If
 
-                listOfLogEntries.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                  dateObject:=Now,
-                                                                  strTime:=Now.ToString,
-                                                                  strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                  strHostname:=Nothing,
-                                                                  strRemoteProcess:=Nothing,
-                                                                  strLog:=$"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.",
-                                                                  strLogType:="Informational, Local",
-                                                                  boolAlerted:=False,
-                                                                  strRawLogText:=Nothing,
-                                                                  strAlertText:=Nothing,
-                                                                  dataGrid:=Logs)
-                                                                 )
+                If boolShowDataLoadedEvent Then
+                    listOfLogEntries.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
+                                                                      dateObject:=Now,
+                                                                      strTime:=Now.ToString,
+                                                                      strSourceAddress:=IPAddress.Loopback.ToString,
+                                                                      strHostname:="Local",
+                                                                      strRemoteProcess:=Nothing,
+                                                                      strLog:=$"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.",
+                                                                      strLogType:="Informational, Local",
+                                                                      boolAlerted:=False,
+                                                                      strRawLogText:=Nothing,
+                                                                      strAlertText:=Nothing,
+                                                                      dataGrid:=Logs)
+                                                                     )
+                End If
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
@@ -473,7 +493,7 @@ Public Class Form1
                                                         dateObject:=Now,
                                                         strTime:=Now.ToString,
                                                         strSourceAddress:=IPAddress.Loopback.ToString,
-                                                        strHostname:=Nothing,
+                                                        strHostname:="Local",
                                                         strRemoteProcess:=Nothing,
                                                         strLog:="Free SysLog Server Started.",
                                                         strLogType:="Informational, Local",
@@ -486,7 +506,7 @@ Public Class Form1
                                                         dateObject:=Now,
                                                         strTime:=Now.ToString,
                                                         strSourceAddress:=IPAddress.Loopback.ToString,
-                                                        strHostname:=Nothing,
+                                                        strHostname:="Local",
                                                         strRemoteProcess:=Nothing,
                                                         strLog:="There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.",
                                                         strLogType:="Informational, Local",
@@ -499,7 +519,7 @@ Public Class Form1
                                                         dateObject:=Now,
                                                         strTime:=Now.ToString,
                                                         strSourceAddress:=IPAddress.Loopback.ToString,
-                                                        strHostname:=Nothing,
+                                                        strHostname:="Local",
                                                         strRemoteProcess:=Nothing,
                                                         strLog:=$"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}",
                                                         strLogType:="Informational, Local",
@@ -594,7 +614,7 @@ Public Class Form1
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
                                                            strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:=Nothing,
+                                                           strHostname:="Local",
                                                            strRemoteProcess:=Nothing,
                                                            strLog:=$"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.",
                                                            strLogType:="Informational, Local",
@@ -652,7 +672,7 @@ Public Class Form1
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
                                                            strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:=Nothing,
+                                                           strHostname:="Local",
                                                            strRemoteProcess:=Nothing,
                                                            strLog:=$"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.",
                                                            strLogType:="Informational, Local",
@@ -908,7 +928,7 @@ Public Class Form1
                                                                    dateObject:=Now,
                                                                    strTime:=Now.ToString,
                                                                    strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                   strHostname:=Nothing,
+                                                                   strHostname:="Local",
                                                                    strRemoteProcess:=Nothing,
                                                                    strLog:=$"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.",
                                                                    strLogType:="Informational, Local",
@@ -1029,7 +1049,7 @@ Public Class Form1
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
                                                            strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:=Nothing,
+                                                           strHostname:="Local",
                                                            strRemoteProcess:=Nothing,
                                                            strLog:=$"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.",
                                                            strLogType:="Informational, Local",
@@ -1142,7 +1162,7 @@ Public Class Form1
                                                        dateObject:=Now,
                                                        strTime:=Now.ToString,
                                                        strSourceAddress:=IPAddress.Loopback.ToString,
-                                                       strHostname:=Nothing,
+                                                       strHostname:="Local",
                                                        strRemoteProcess:=Nothing,
                                                        strLog:=$"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.",
                                                        strLogType:="Informational, Local",
@@ -1160,11 +1180,11 @@ Public Class Form1
     End Sub
 
     Private Sub ExportAllLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportAllLogsToolStripMenuItem.Click
-        DataHandling.ExportAllLogs()
+        DataHandling.ExportAllLogs(Logs.Rows)
     End Sub
 
     Private Sub ExportsLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportsLogsToolStripMenuItem.Click
-        DataHandling.ExportSelectedLogs()
+        DataHandling.ExportSelectedLogs(Logs.SelectedRows)
     End Sub
 
     Private Sub DonationStripMenuItem_Click(sender As Object, e As EventArgs) Handles DonationStripMenuItem.Click
@@ -1192,7 +1212,7 @@ Public Class Form1
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
                                                            strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:=Nothing,
+                                                           strHostname:="Local",
                                                            strRemoteProcess:=Nothing,
                                                            strLog:="Free SysLog Server Started.",
                                                            strLogType:="Informational, Local",
@@ -1279,7 +1299,7 @@ Public Class Form1
                                                                        dateObject:=Now,
                                                                        strTime:=Now.ToString,
                                                                        strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                       strHostname:=Nothing,
+                                                                       strHostname:="Local",
                                                                        strRemoteProcess:=Nothing,
                                                                        strLog:="Free SysLog Server Started.",
                                                                        strLogType:="Informational, Local",
@@ -1443,13 +1463,13 @@ Public Class Form1
     Private Sub StartUpDelay_Click(sender As Object, e As EventArgs) Handles StartUpDelay.Click
         Dim dblSeconds As Double = 0
 
-        Using taskService As New TaskService
-            Dim task As Task = Nothing
+        Using taskService As New TaskScheduler.TaskService
+            Dim task As TaskScheduler.Task = Nothing
 
             If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                 If task.Definition.Triggers.Count > 0 Then
-                    Dim trigger As Trigger = task.Definition.Triggers(0)
-                    If trigger.TriggerType = TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+                    Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
+                    If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, TaskScheduler.LogonTrigger).Delay.TotalSeconds
                 End If
             End If
         End Using
@@ -1464,15 +1484,15 @@ Public Class Form1
                 If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 300 Then
                     MsgBox("The time in seconds must be in the range of 1 - 300.", MsgBoxStyle.Critical, Text)
                 Else
-                    Using taskService As New TaskService
-                        Dim task As Task = Nothing
+                    Using taskService As New TaskScheduler.TaskService
+                        Dim task As TaskScheduler.Task = Nothing
 
                         If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                             If task.Definition.Triggers.Count > 0 Then
-                                Dim trigger As Trigger = task.Definition.Triggers(0)
+                                Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
-                                If trigger.TriggerType = TaskTriggerType.Logon Then
-                                    DirectCast(trigger, LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
+                                If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
+                                    DirectCast(trigger, TaskScheduler.LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
                                     task.RegisterChanges()
                                 End If
                             End If
@@ -1536,6 +1556,32 @@ Public Class Form1
 
     Private Sub ShowRawLogOnLogViewer_Click(sender As Object, e As EventArgs) Handles ShowRawLogOnLogViewer.Click
         My.Settings.boolShowRawLogOnLogViewer = ShowRawLogOnLogViewer.Checked
+    End Sub
+
+    Private Sub LblLogFileSize_Click(sender As Object, e As EventArgs) Handles LblLogFileSize.Click
+        SelectFileInWindowsExplorer(strPathToDataFile)
+    End Sub
+
+    Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
+        Using hostnames As New Hostnames() With {.Icon = Icon}
+            hostnames.ShowDialog()
+        End Using
+    End Sub
+
+    Private Sub ChangeFont_Click(sender As Object, e As EventArgs) Handles ChangeFont.Click
+        Using FontDialog As New FontDialog
+            If My.Settings.font IsNot Nothing Then FontDialog.Font = My.Settings.font
+
+            If FontDialog.ShowDialog() = DialogResult.OK Then
+                My.Settings.font = FontDialog.Font
+
+                DataHandling.WriteLogsToDisk()
+
+                SyncLock dataGridLockObject
+                    Threading.Tasks.Task.Run(Sub() LoadDataFile(False))
+                End SyncLock
+            End If
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"
@@ -1605,7 +1651,7 @@ Public Class Form1
                                                                       dateObject:=Now,
                                                                       strTime:=Now.ToString,
                                                                       strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                      strHostname:=Nothing,
+                                                                      strHostname:="Local",
                                                                       strRemoteProcess:=Nothing,
                                                                       strLog:=$"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}",
                                                                       strLogType:="Error",

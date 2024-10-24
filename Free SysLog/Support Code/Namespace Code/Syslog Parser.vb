@@ -43,6 +43,17 @@ Namespace SyslogParser
                     .RawLogData = strRawLogText
                     .AlertText = strAlertText
                     .MinimumHeight = GetMinimumHeight(strLog, ParentForm.Logs.DefaultCellStyle.Font, ParentForm.ColLog.Width)
+
+                    If My.Settings.font IsNot Nothing Then
+                        .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_LogType).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_IPAddress).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_RemoteProcess).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_Hostname).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
+                        .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
+                    End If
                 End With
 
                 Return MyDataGridViewRow
@@ -72,7 +83,7 @@ Namespace SyslogParser
                                                                                dateObject:=currentDate,
                                                                                strTime:=currentDate.ToString,
                                                                                strSourceAddress:=strSourceIP,
-                                                                               strHostname:=Nothing,
+                                                                               strHostname:="Local",
                                                                                strRemoteProcess:=Nothing,
                                                                                strLog:=strLogText,
                                                                                strLogType:="Informational, Local",
@@ -130,13 +141,18 @@ Namespace SyslogParser
         ''' <param name="timestamp">A date timestamp in String format.</param>
         ''' <returns>A Date Object.</returns>
         ''' <exception cref="FormatException">Throws a FormatException if the function can't parse the input.</exception>
-        Private Function ParseTimestamp(timestamp As String) As Date
+        Public Function ParseTimestamp(timestamp As String) As Date
             Dim parsedDate As Date
             Dim userCulture As Globalization.CultureInfo = Globalization.CultureInfo.CurrentCulture
             Dim isEuropeanDateFormat As Boolean = userCulture.DateTimeFormat.ShortDatePattern.StartsWith("d")
 
             If timestamp.EndsWith("Z") Then
-                ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds ("yyyy-MM-ddTHH:mm:ssZ" or "yyyy-MM-ddTHH:mm:ss.fffZ")
+                ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds
+                If timestamp.Contains(":") AndAlso timestamp.Count(Function(c) c = ":") = 3 Then
+                    ' Handle timestamp with extra colon before milliseconds (e.g., "yyyy-MM-ddTHH:mm:ss:fffZ")
+                    timestamp = timestamp.Remove(timestamp.LastIndexOf(":"), 1).Insert(timestamp.LastIndexOf(":"), ".")
+                End If
+
                 If timestamp.Contains(".") Then
                     ' Handle timestamp with milliseconds
                     parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
@@ -147,7 +163,7 @@ Namespace SyslogParser
             ElseIf timestamp.Contains("+") OrElse timestamp.Contains("-") Then
                 Dim parsedDateOffset As DateTimeOffset
 
-                ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds ("yyyy-MM-ddTHH:mm:sszzz" or "yyyy-MM-ddTHH:mm:ss.fffzzz")
+                ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds
                 If timestamp.Contains(".") Then
                     ' Handle timestamp with milliseconds
                     parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffzzz", Globalization.CultureInfo.InvariantCulture)
@@ -250,6 +266,7 @@ Namespace SyslogParser
                     Dim message As String = Nothing
                     Dim timestamp As String = Nothing
                     Dim hostname As String = Nothing
+                    Dim customHostname As String = Nothing
                     Dim appName As String = Nothing
                     Dim strAlertText As String = Nothing
 
@@ -263,6 +280,8 @@ Namespace SyslogParser
                         hostname = If(String.IsNullOrWhiteSpace(match.Groups("hostname").Value), "", match.Groups("hostname").Value)
                         appName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
                         message = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
+
+                        If SupportCode.hostnames.TryGetValue(strSourceIP, customHostname) Then hostname = customHostname
 
                         priorityObject = GetSeverityAndFacility(priority)
                     Else
@@ -334,7 +353,7 @@ Namespace SyslogParser
                                                                                    strLog:=strLogText,
                                                                                    strLogType:=$"{priority.Severity}, {priority.Facility}",
                                                                                    boolAlerted:=boolAlerted,
-                                                                                   strRawLogText:=strRawLogText,
+                                                                                   strRawLogText:=strRawLogText.Trim,
                                                                                    strAlertText:=strAlertText,
                                                                                    dataGrid:=ParentForm.Logs)
                                                                                   )
@@ -358,7 +377,7 @@ Namespace SyslogParser
                                                                               strLog:=strLogText,
                                                                               strLogType:=$"{priority.Severity}, {priority.Facility}",
                                                                               boolAlerted:=boolAlerted,
-                                                                              strRawLogText:=strRawLogText,
+                                                                              strRawLogText:=strRawLogText.Trim,
                                                                               strAlertText:=strAlertText,
                                                                               dataGrid:=ParentForm.Logs
                                                                              )

@@ -64,9 +64,14 @@ Public Class ConfigureSysLogMirrorServers
 
             If AddSysLogMirrorServer.boolSuccess Then
                 Dim ServerListView As New ServerListViewItem(AddSysLogMirrorServer.strIP)
-                ServerListView.SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
-                ServerListView.SubItems.Add(If(AddSysLogMirrorServer.boolEnabled, "Yes", "No"))
-                ServerListView.SubItems.Add(AddSysLogMirrorServer.strName)
+
+                With ServerListView
+                    .SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
+                    .SubItems.Add(If(AddSysLogMirrorServer.boolEnabled, "Yes", "No"))
+                    .SubItems.Add(AddSysLogMirrorServer.strName)
+                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                End With
+
                 servers.Items.Add(ServerListView)
             End If
         End Using
@@ -141,7 +146,7 @@ Public Class ConfigureSysLogMirrorServers
                 listOfSysLogProxyServer.Add(New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text})
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer))
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer, Newtonsoft.Json.Formatting.Indented))
 
             MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If

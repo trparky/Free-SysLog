@@ -29,6 +29,7 @@ Public Class IgnoredWordsAndPhrases
                     .BoolRegex = AddIgnored.boolRegex
                     .BoolCaseSensitive = AddIgnored.boolCaseSensitive
                     .BoolEnabled = AddIgnored.boolEnabled
+                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
                 IgnoredListView.Items.Add(IgnoredListViewItem)
@@ -220,7 +221,7 @@ Public Class IgnoredWordsAndPhrases
                 listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled})
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass))
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
 
             MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If
