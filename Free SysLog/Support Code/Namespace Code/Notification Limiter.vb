@@ -1,4 +1,8 @@
-﻿Namespace NotificationLimiter
+﻿Imports System.IO
+Imports System.Reflection
+Imports Microsoft.Toolkit.Uwp.Notifications
+
+Namespace NotificationLimiter
     Public Class NotificationLimiter
         Private Property NotifyIcon As NotifyIcon
 
@@ -34,8 +38,21 @@
             ' Update the last shown time for this message
             lastNotificationTime(tipText) = currentTime
 
-            ' Create and display the toast notification (example using Windows 10 Toast Notification)
-            NotifyIcon.ShowBalloonTip(timeout, tipTitle, tipText, tipIcon)
+            Dim strIconPath As String = Nothing
+            Dim notification As New ToastContentBuilder()
+            notification.AddText(tipText)
+
+            If tipIcon = ToolTipIcon.Error Then
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
+            ElseIf tipIcon = ToolTipIcon.Warning Then
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
+            ElseIf tipIcon = ToolTipIcon.Info Then
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
+            End If
+
+            If Not String.IsNullOrWhiteSpace(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
+
+            notification.Show()
         End Sub
 
         ' Function to clean up old notification entries
