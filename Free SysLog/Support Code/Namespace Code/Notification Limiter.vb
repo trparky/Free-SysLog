@@ -1,5 +1,4 @@
 ﻿Imports System.IO
-Imports System.Reflection
 Imports Microsoft.Toolkit.Uwp.Notifications
 
 Namespace NotificationLimiter
