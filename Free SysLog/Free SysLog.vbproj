@@ -327,7 +327,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Resources\iconstoptom.png" />
   </ItemGroup>
   <ItemGroup>
