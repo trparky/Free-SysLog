@@ -327,6 +327,7 @@ Public Class Form1
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
+        ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds)"
 
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
@@ -1628,6 +1629,29 @@ Public Class Form1
                 SyncLock dataGridLockObject
                     Threading.Tasks.Task.Run(Sub() LoadDataFile(False))
                 End SyncLock
+            End If
+        End Using
+    End Sub
+
+    Private Sub ConfigureTimeBetweenSameNotifications_Click(sender As Object, e As EventArgs) Handles ConfigureTimeBetweenSameNotifications.Click
+        Using IntegerInputForm As New IntegerInputForm(30, 240) With {.Icon = Icon, .Text = "Configure Time Between Same Notifications", .StartPosition = FormStartPosition.CenterParent}
+            IntegerInputForm.lblSetting.Text = "Time Between Same Notifications (In Seconds)"
+            IntegerInputForm.TxtSetting.Text = My.Settings.TimeBetweenSameNotifications
+            IntegerInputForm.Width = IntegerInputForm.Width + 60
+
+            IntegerInputForm.ShowDialog(Me)
+
+            If IntegerInputForm.boolSuccess Then
+                If IntegerInputForm.intResult < 30 Or IntegerInputForm.intResult > 240 Then
+                    MsgBox("The time in seconds must be in the range of 30 - 240.", MsgBoxStyle.Critical, Text)
+                Else
+                    ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({IntegerInputForm.intResult} Seconds)"
+
+                    My.Settings.TimeBetweenSameNotifications = IntegerInputForm.intResult
+                    My.Settings.Save()
+
+                    MsgBox("Done.", MsgBoxStyle.Information, Text)
+                End If
             End If
         End Using
     End Sub

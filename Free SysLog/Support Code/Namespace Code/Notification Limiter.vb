@@ -7,9 +7,6 @@ Namespace NotificationLimiter
         ' Dictionary to track when the notification was last shown, keyed by message text
         Private Shared lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
 
-        ' Time limit between showing the same notification (in seconds)
-        Private Const TimeLimitInSeconds As Integer = 30
-
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
 
@@ -26,7 +23,7 @@ Namespace NotificationLimiter
                 Dim timeSinceLastNotification As TimeSpan = currentTime - lastTime
 
                 ' If the message was shown within the time limit, do not show it again
-                If timeSinceLastNotification.TotalSeconds < TimeLimitInSeconds Then Return
+                If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Return
             End If
 
             ' Update the last shown time for this message

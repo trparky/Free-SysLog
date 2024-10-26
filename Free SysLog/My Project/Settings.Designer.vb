@@ -947,6 +947,18 @@ Namespace My
                 Me("ColViewLogBackupsFileName") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property TimeBetweenSameNotifications() As Integer
+            Get
+                Return CType(Me("TimeBetweenSameNotifications"),Integer)
+            End Get
+            Set
+                Me("TimeBetweenSameNotifications") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
