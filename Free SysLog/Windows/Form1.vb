@@ -375,6 +375,10 @@ Public Class Form1
         AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
         worker.RunWorkerAsync()
 
+        AddNotificationActionHandler()
+    End Sub
+
+    Private Sub AddNotificationActionHandler()
         AddHandler ToastNotificationManagerCompat.OnActivated, Sub(args)
                                                                    ' Parse arguments
                                                                    Dim argsDictionary As New Dictionary(Of String, String)
@@ -392,7 +396,7 @@ Public Class Form1
 
                                                                    If argsDictionary.ContainsKey("action") Then
                                                                        If argsDictionary("action").ToString.Equals(strOpenSysLog, StringComparison.OrdinalIgnoreCase) Then
-                                                                           Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
+                                                                           Invoke(Sub() RestoreWindow())
                                                                        ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
                                                                            Try
                                                                                Dim strDataPacket As String = argsDictionary("datapacket")
