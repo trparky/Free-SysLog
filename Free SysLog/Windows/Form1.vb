@@ -222,6 +222,15 @@ Public Class Form1
     End Sub
 
     Private Sub LoadCheckboxSettings()
+        If My.Settings.NotificationLength = 0 Then
+            NotificationLengthShort.Checked = True
+            NotificationLengthLong.Checked = False
+        Else
+            NotificationLengthShort.Checked = False
+            NotificationLengthLong.Checked = True
+        End If
+
+        IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
@@ -1654,6 +1663,20 @@ Public Class Form1
                 End If
             End If
         End Using
+    End Sub
+
+    Private Sub IncludeButtonsOnNotifications_Click(sender As Object, e As EventArgs) Handles IncludeButtonsOnNotifications.Click
+        My.Settings.IncludeButtonsOnNotifications = IncludeButtonsOnNotifications.Checked
+    End Sub
+
+    Private Sub NotificationLengthShort_Click(sender As Object, e As EventArgs) Handles NotificationLengthShort.Click
+        NotificationLengthLong.Checked = False
+        My.Settings.NotificationLength = 0
+    End Sub
+
+    Private Sub NotificationLengthLong_Click(sender As Object, e As EventArgs) Handles NotificationLengthLong.Click
+        NotificationLengthShort.Checked = False
+        My.Settings.NotificationLength = 1
     End Sub
 
 #Region "-- SysLog Server Code --"

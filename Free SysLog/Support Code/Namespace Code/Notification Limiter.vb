@@ -31,7 +31,9 @@ Namespace NotificationLimiter
 
             Dim strIconPath As String = Nothing
             Dim notification As New ToastContentBuilder()
+
             notification.AddText(tipText)
+            notification.SetToastDuration(If(My.Settings.NotificationLength = 0, ToastDuration.Short, ToastDuration.Long))
 
             If tipIcon = ToolTipIcon.Error Then
                 strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
@@ -41,10 +43,12 @@ Namespace NotificationLimiter
                 strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
             End If
 
-            Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText})
+            If My.Settings.IncludeButtonsOnNotifications Then
+                Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText})
 
-            notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", SupportCode.strViewLog).AddArgument("datapacket", strNotificationPacket))
-            notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", SupportCode.strOpenSysLog))
+                notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", SupportCode.strViewLog).AddArgument("datapacket", strNotificationPacket))
+                notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", SupportCode.strOpenSysLog))
+            End If
 
             If Not String.IsNullOrWhiteSpace(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
 

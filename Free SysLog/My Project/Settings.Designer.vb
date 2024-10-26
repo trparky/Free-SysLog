@@ -959,6 +959,30 @@ Namespace My
                 Me("TimeBetweenSameNotifications") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property IncludeButtonsOnNotifications() As Boolean
+            Get
+                Return CType(Me("IncludeButtonsOnNotifications"),Boolean)
+            End Get
+            Set
+                Me("IncludeButtonsOnNotifications") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property NotificationLength() As Byte
+            Get
+                Return CType(Me("NotificationLength"),Byte)
+            End Get
+            Set
+                Me("NotificationLength") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
