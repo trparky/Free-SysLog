@@ -57,8 +57,8 @@ Namespace NotificationLimiter
         End Sub
 
         ' Function to clean up old notification entries
-        Private Shared Sub CleanUpOldEntries(currentTime As Date)
-            Dim keysToRemove As List(Of String) = lastNotificationTime.Where(Function(kvp) (currentTime - kvp.Value).TotalMinutes > CleanupThresholdInMinutes).Select(Function(kvp) kvp.Key).ToList()
+        Private Sub CleanUpOldEntries(currentTime As Date)
+            Dim keysToRemove As List(Of String) = lastNotificationTime.Where(Function(kvp As KeyValuePair(Of String, Date)) (currentTime - kvp.Value).TotalMinutes > CleanupThresholdInMinutes).Select(Function(kvp As KeyValuePair(Of String, Date)) kvp.Key).ToList()
 
             For Each key As String In keysToRemove
                 lastNotificationTime.Remove(key)
