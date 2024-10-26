@@ -211,9 +211,8 @@ Public Class Form1
             WindowState = FormWindowState.Normal
         End If
 
-        TopMost = True
         BringToFront()
-        TopMost = False
+        Activate()
 
         SelectLatestLogEntry()
     End Sub
@@ -403,6 +402,7 @@ Public Class Form1
                                                                                Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(strDataPacket, JSONDecoderSettingsForSettingsFiles)
 
                                                                                Invoke(Sub()
+                                                                                          RestoreWindow()
                                                                                           OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext)
                                                                                       End Sub)
                                                                            Catch ex As Exception
