@@ -47,6 +47,8 @@ Namespace NotificationLimiter
 
                 notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", SupportCode.strViewLog).AddArgument("datapacket", strNotificationPacket))
                 notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", SupportCode.strOpenSysLog))
+            Else
+                notification.AddArgument("action", SupportCode.strOpenSysLog)
             End If
 
             If Not String.IsNullOrWhiteSpace(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
