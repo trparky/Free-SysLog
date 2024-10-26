@@ -18,7 +18,7 @@ Namespace SyslogParser
         Public WriteOnly Property SetParentForm As Form1
             Set(value As Form1)
                 ParentForm = value
-                NotificationLimiter = New NotificationLimiter.NotificationLimiter(value.NotifyIcon)
+                NotificationLimiter = New NotificationLimiter.NotificationLimiter()
             End Set
         End Property
 

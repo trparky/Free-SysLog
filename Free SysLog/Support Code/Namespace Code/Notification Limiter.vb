@@ -4,8 +4,6 @@ Imports Microsoft.Toolkit.Uwp.Notifications
 
 Namespace NotificationLimiter
     Public Class NotificationLimiter
-        Private Property NotifyIcon As NotifyIcon
-
         ' Dictionary to track when the notification was last shown, keyed by message text
         Private Shared lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
 
@@ -14,10 +12,6 @@ Namespace NotificationLimiter
 
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
-
-        Public Sub New(_NotifyIcon As NotifyIcon)
-            NotifyIcon = _NotifyIcon
-        End Sub
 
         Public Sub ShowNotification(timeout As Integer, tipTitle As String, tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
             ' Get the current time
