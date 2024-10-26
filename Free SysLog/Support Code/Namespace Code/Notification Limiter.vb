@@ -19,7 +19,7 @@ Namespace NotificationLimiter
             NotifyIcon = _NotifyIcon
         End Sub
 
-        Public Sub ShowNotification(timeout As Integer, tipTitle As String, tipText As String, tipIcon As ToolTipIcon)
+        Public Sub ShowNotification(timeout As Integer, tipTitle As String, tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
             ' Get the current time
             Dim currentTime As Date = Date.Now
 
@@ -50,7 +50,12 @@ Namespace NotificationLimiter
                 strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
             End If
 
-            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
+            Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText})
+
+            notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", SupportCode.strViewLog).AddArgument("datapacket", strNotificationPacket))
+            notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", SupportCode.strOpenSysLog))
+
+            If Not String.IsNullOrWhiteSpace(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
 
             notification.Show()
         End Sub

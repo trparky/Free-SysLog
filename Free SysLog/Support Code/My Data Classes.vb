@@ -128,6 +128,10 @@ Public Class ProxiedSysLogData
     Public ip, log As String
 End Class
 
+Public Class NotificationDataPacket
+    Public logtext, alerttext, logdate, sourceip, rawlogtext As String
+End Class
+
 Public Class CustomHostname
     Public ip, deviceName As String
 

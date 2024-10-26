@@ -28,6 +28,8 @@ Namespace SupportCode
         Public Const strNoProxyString As String = "noproxy|"
         Public Const strProxiedString As String = "proxied|"
         Public Const strQuote As String = Chr(34)
+        Public Const strViewLog As String = "viewlog"
+        Public Const strOpenSysLog As String = "opensyslog"
 
         Public Const ColumnIndex_ComputedTime As Integer = 0
         Public Const ColumnIndex_ServerTime As Integer = 1

@@ -299,7 +299,7 @@ Namespace SyslogParser
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then boolIgnored = ProcessIgnoredLogPreferences(message)
                     If replacementsList IsNot Nothing AndAlso replacementsList.Count > 0 Then message = ProcessReplacements(message)
-                    If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message, strAlertText)
+                    If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText)
 
                     ' Step 4: Add to log list, separating header and message
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText)
@@ -404,7 +404,7 @@ Namespace SyslogParser
             Return ParentForm.regexCache(pattern)
         End Function
 
-        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String) As Boolean
+        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogData As String, strSourceIP As String, strRawLogText As String) As Boolean
             Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
             Dim RegExObject As Regex
             Dim strAlertText As String
@@ -438,7 +438,7 @@ Namespace SyslogParser
                         End If
                     End If
 
-                    NotificationLimiter.ShowNotification(1, "Log Alert", strAlertText, ToolTipIcon)
+                    NotificationLimiter.ShowNotification(1, "Log Alert", strAlertText, ToolTipIcon, strLogText, strLogData, strSourceIP, strRawLogText)
                     strOutgoingAlertText = strAlertText
                     Return True
                 End If

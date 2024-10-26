@@ -8,6 +8,7 @@ Imports System.Text.RegularExpressions
 Imports System.Reflection
 Imports System.Configuration
 Imports Free_SysLog.SupportCode
+Imports Microsoft.Toolkit.Uwp.Notifications
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
@@ -373,6 +374,38 @@ Public Class Form1
         AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
         worker.RunWorkerAsync()
+
+        AddHandler ToastNotificationManagerCompat.OnActivated, Sub(args)
+                                                                   ' Parse arguments
+                                                                   Dim argsDictionary As New Dictionary(Of String, String)
+                                                                   Dim itemSplit As String()
+
+                                                                   For Each item As String In args.Argument.Split(";")
+                                                                       If Not String.IsNullOrWhiteSpace(item) Then
+                                                                           itemSplit = item.Split("=")
+
+                                                                           If itemSplit.Length = 2 AndAlso Not String.IsNullOrWhiteSpace(itemSplit(0)) Then
+                                                                               argsDictionary(itemSplit(0)) = itemSplit(1)
+                                                                           End If
+                                                                       End If
+                                                                   Next
+
+                                                                   If argsDictionary.ContainsKey("action") Then
+                                                                       If argsDictionary("action").ToString.Equals(strOpenSysLog, StringComparison.OrdinalIgnoreCase) Then
+                                                                           Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
+                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
+                                                                           Try
+                                                                               Dim strDataPacket As String = argsDictionary("datapacket")
+                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(strDataPacket, JSONDecoderSettingsForSettingsFiles)
+
+                                                                               Invoke(Sub()
+                                                                                          OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext)
+                                                                                      End Sub)
+                                                                           Catch ex As Exception
+                                                                           End Try
+                                                                       End If
+                                                                   End If
+                                                               End Sub
     End Sub
 
     Private Async Sub StartTCPServer()
@@ -558,6 +591,17 @@ Public Class Form1
 
     Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles BtnOpenLogLocation.Click
         SelectFileInWindowsExplorer(strPathToDataFile)
+    End Sub
+
+    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me}
+            LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
+            LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
+
+            LogViewerInstance.lblAlertText.Text = $"Alert Text: {strAlertText}"
+
+            LogViewerInstance.ShowDialog(Me)
+        End Using
     End Sub
 
     Private Sub OpenLogViewerWindow()
