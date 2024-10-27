@@ -28,11 +28,12 @@ Public Class ViewLogBackups
             filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
         End If
 
-        Dim listOfListViewItems As New List(Of ListViewItem)
-        Dim listViewItem As ListViewItem
+        Dim listOfDataGridViewRows As New List(Of DataGridViewRow)
         Dim intCount, intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace As Long
         Dim boolIsHidden As Boolean
+
+        Invoke(Sub() FileList.Rows.Clear())
 
         For Each file As FileInfo In filesInDirectory
             boolIsHidden = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
@@ -48,19 +49,43 @@ Public Class ViewLogBackups
                     longTotalLogCount += intCount
                 End If
 
-                listViewItem = New ListViewItem With {.Text = file.Name}
-                If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
-                listViewItem.SubItems.Add($"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}")
-                listViewItem.SubItems.Add($"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)")
+                Using DataGridViewRow As New DataGridViewRow
+                    With DataGridViewRow
+                        .CreateCells(FileList)
+                        .Cells(0).Value = file.Name
+                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                If boolIsHidden Then
-                    listViewItem.SubItems.Add("Yes")
-                    If ChkShowHiddenAsGray.Checked Then listViewItem.ForeColor = Color.Gray
-                Else
-                    listViewItem.SubItems.Add("No")
-                End If
+                        .Cells(1).Value = $"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}"
+                        .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                listOfListViewItems.Add(listViewItem)
+                        .Cells(2).Value = $"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)"
+                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+
+                        If boolIsHidden Then
+                            .Cells(3).Value = "Yes"
+                            .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+                            If ChkShowHiddenAsGray.Checked Then
+                                .Cells(0).Style.ForeColor = Color.Gray
+                                .Cells(1).Style.ForeColor = Color.Gray
+                                .Cells(2).Style.ForeColor = Color.Gray
+                                .Cells(3).Style.ForeColor = Color.Gray
+                            End If
+                        Else
+                            .Cells(3).Value = "No"
+                            .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                        End If
+
+                        If My.Settings.font IsNot Nothing Then
+                            .Cells(0).Style.Font = My.Settings.font
+                            .Cells(1).Style.Font = My.Settings.font
+                            .Cells(2).Style.Font = My.Settings.font
+                            .Cells(3).Style.Font = My.Settings.font
+                        End If
+                    End With
+
+                    listOfDataGridViewRows.Add(DataGridViewRow)
+                End Using
             End If
         Next
 
@@ -77,18 +102,23 @@ Public Class ViewLogBackups
             lblTotalNumberOfHiddenLogs.Visible = False
         End If
 
-        Invoke(Sub()
-                   lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
-                   FileList.Items.Clear()
-                   FileList.Items.AddRange(listOfListViewItems.ToArray)
-               End Sub)
+        Invoke(Sub() FileList.Rows.AddRange(listOfDataGridViewRows.ToArray))
+        lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim flags As Reflection.BindingFlags = Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty
+        Dim propInfo As Reflection.PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
+        propInfo?.SetValue(FileList, True, Nothing)
+
+        FileList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        FileList.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+
         ColFileDate.Width = My.Settings.ColViewLogBackupsFileDate
         ColFileName.Width = My.Settings.ColViewLogBackupsFileName
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
 
+        colHidden.Visible = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
         Size = My.Settings.ViewLogBackupsSize
@@ -97,13 +127,13 @@ Public Class ViewLogBackups
         boolDoneLoading = True
     End Sub
 
-    Private Sub FileList_DoubleClick(sender As Object, e As EventArgs) Handles FileList.DoubleClick
+    Private Sub FileList_DoubleClick(sender As Object, e As EventArgs)
         BtnView.PerformClick()
     End Sub
 
     Private Sub BtnView_Click(sender As Object, e As EventArgs) Handles BtnView.Click
-        If FileList.SelectedItems.Count > 0 Then
-            Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+        If FileList.SelectedRows.Count > 0 Then
+            Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
 
             If File.Exists(fileName) Then
                 Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .boolLoadExternalData = True}
@@ -112,10 +142,10 @@ Public Class ViewLogBackups
         End If
     End Sub
 
-    Private Sub FileList_Click(sender As Object, e As EventArgs) Handles FileList.Click
-        If FileList.SelectedItems.Count > 0 Then
+    Private Sub FileList_Click(sender As Object, e As EventArgs)
+        If FileList.SelectedRows.Count > 0 Then
             BtnDelete.Enabled = True
-            BtnView.Enabled = FileList.SelectedItems.Count <= 1
+            BtnView.Enabled = FileList.SelectedRows.Count <= 1
         Else
             BtnDelete.Enabled = False
             BtnView.Enabled = False
@@ -123,20 +153,20 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        If FileList.SelectedItems.Count > 0 Then
-            If FileList.SelectedItems.Count = 1 Then
-                Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+        If FileList.SelectedRows.Count > 0 Then
+            If FileList.SelectedRows.Count = 1 Then
+                Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
 
-                If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedItems(0).SubItems(0).Text}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
+                If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedRows(0).Cells(0).Value}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     File.Delete(fileName)
-                    SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{FileList.SelectedItems(0).SubItems(0).Text}"" from the log backups folder.")
+                    SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
                     Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             Else
                 Dim msgBoxText As String = "Are you sure you want to delete the following files?" & vbCrLf & vbCrLf
                 Dim listOfFilesThatAreToBeDeleted As New List(Of String)
 
-                For Each item As ListViewItem In FileList.SelectedItems
+                For Each item As ListViewItem In FileList.SelectedRows
                     listOfFilesThatAreToBeDeleted.Add(item.SubItems(0).Text)
                 Next
 
@@ -145,10 +175,10 @@ Public Class ViewLogBackups
                 msgBoxText &= listOfFilesThatAreToBeDeletedInHumanReadableFormat
 
                 If MsgBox(msgBoxText.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
-                    Dim strDeletedFilesLog As String = $"The user deleted the following {FileList.SelectedItems.Count} files from the log backups folder..."
+                    Dim strDeletedFilesLog As String = $"The user deleted the following {FileList.SelectedRows.Count} files from the log backups folder..."
 
-                    For Each item As ListViewItem In FileList.SelectedItems
-                        File.Delete(Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text))
+                    For Each item As DataGridViewRow In FileList.SelectedRows
+                        File.Delete(Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value))
                     Next
 
                     strDeletedFilesLog &= vbCrLf & listOfFilesThatAreToBeDeletedInHumanReadableFormat
@@ -261,11 +291,11 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
-        If FileList.SelectedItems.Count > 0 Then
+        If FileList.SelectedRows.Count > 0 Then
             DeleteToolStripMenuItem.Enabled = True
-            ViewToolStripMenuItem.Enabled = FileList.SelectedItems.Count <= 1
+            ViewToolStripMenuItem.Enabled = FileList.SelectedRows.Count <= 1
 
-            Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
 
             If (New FileInfo(fileName).Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
                 UnhideToolStripMenuItem.Visible = True
@@ -290,19 +320,21 @@ Public Class ViewLogBackups
 
     Private Sub ChkShowHidden_Click(sender As Object, e As EventArgs) Handles ChkShowHidden.Click
         My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
+        ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
+        colHidden.Visible = ChkShowHidden.Checked
         BtnRefresh.PerformClick()
     End Sub
 
     Private Sub UnhideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnhideToolStripMenuItem.Click
         Dim fileName As String
 
-        If FileList.SelectedItems.Count > 1 Then
-            For Each item As ListViewItem In FileList.SelectedItems
-                fileName = Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text)
+        If FileList.SelectedRows.Count > 1 Then
+            For Each item As DataGridViewRow In FileList.SelectedRows
+                fileName = Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value)
                 UnhideFile(fileName)
             Next
         Else
-            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
             UnhideFile(fileName)
         End If
 
@@ -312,13 +344,13 @@ Public Class ViewLogBackups
     Private Sub HideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideToolStripMenuItem.Click
         Dim fileName As String
 
-        If FileList.SelectedItems.Count > 1 Then
-            For Each item As ListViewItem In FileList.SelectedItems
-                fileName = Path.Combine(strPathToDataBackupFolder, item.SubItems(0).Text)
+        If FileList.SelectedRows.Count > 1 Then
+            For Each item As DataGridViewRow In FileList.SelectedRows
+                fileName = Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value)
                 HideFile(fileName)
             Next
         Else
-            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedItems(0).SubItems(0).Text)
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
             HideFile(fileName)
         End If
 
@@ -346,7 +378,7 @@ Public Class ViewLogBackups
         BtnRefresh.PerformClick()
     End Sub
 
-    Private Sub FileList_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles FileList.ColumnWidthChanged
+    Private Sub FileList_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs)
         If boolDoneLoading Then
             My.Settings.ColViewLogBackupsFileDate = ColFileDate.Width
             My.Settings.ColViewLogBackupsFileName = ColFileName.Width

@@ -20,13 +20,13 @@ Partial Class ViewLogBackups
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.FileList = New System.Windows.Forms.ListView()
-        Me.ColFileName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColFileDate = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColFileSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.FileList = New System.Windows.Forms.DataGridView()
+        Me.ColFileName = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColFileDate = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColFileSize = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.DeleteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -42,7 +42,7 @@ Partial Class ViewLogBackups
         Me.LblSearchLabel = New System.Windows.Forms.Label()
         Me.lblTotalNumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkShowHidden = New System.Windows.Forms.CheckBox()
-        Me.colHidden = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colHidden = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ChkShowHiddenAsGray = New System.Windows.Forms.CheckBox()
         Me.HideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -51,37 +51,44 @@ Partial Class ViewLogBackups
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
+        CType(Me.FileList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'FileList
         '
+        Me.FileList.AllowUserToAddRows = False
         Me.FileList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.FileList.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize, Me.colHidden})
-        Me.FileList.ContextMenuStrip = Me.ContextMenuStrip1
-        Me.FileList.FullRowSelect = True
-        Me.FileList.HideSelection = False
-        Me.FileList.Location = New System.Drawing.Point(12, 12)
+        Me.FileList.BackgroundColor = System.Drawing.SystemColors.ControlLightLight
+        Me.FileList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.FileList.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize, Me.colHidden})
+        Me.FileList.Location = New System.Drawing.Point(13, 12)
         Me.FileList.Name = "FileList"
-        Me.FileList.Size = New System.Drawing.Size(1011, 298)
-        Me.FileList.TabIndex = 1
-        Me.FileList.UseCompatibleStateImageBehavior = False
-        Me.FileList.View = System.Windows.Forms.View.Details
+        Me.FileList.ReadOnly = True
+        Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.FileList.Size = New System.Drawing.Size(1010, 299)
+        Me.FileList.TabIndex = 36
         '
         'ColFileName
         '
-        Me.ColFileName.Text = "File Name"
+        Me.ColFileName.HeaderText = "File Name"
+        Me.ColFileName.Name = "ColFileName"
+        Me.ColFileName.ReadOnly = True
         Me.ColFileName.Width = 240
         '
         'ColFileDate
         '
-        Me.ColFileDate.Text = "Date"
+        Me.ColFileDate.HeaderText = "Date"
+        Me.ColFileDate.Name = "ColFileDate"
+        Me.ColFileDate.ReadOnly = True
         Me.ColFileDate.Width = 240
         '
         'ColFileSize
         '
-        Me.ColFileSize.Text = "Size"
+        Me.ColFileSize.HeaderText = "Size"
+        Me.ColFileSize.Name = "ColFileSize"
+        Me.ColFileSize.ReadOnly = True
         Me.ColFileSize.Width = 240
         '
         'ContextMenuStrip1
@@ -233,7 +240,10 @@ Partial Class ViewLogBackups
         '
         'colHidden
         '
-        Me.colHidden.Text = "Hidden?"
+        Me.colHidden.HeaderText = "Hidden?"
+        Me.colHidden.Name = "colHidden"
+        Me.colHidden.ReadOnly = True
+        Me.colHidden.Width = 60
         '
         'ChkShowHiddenAsGray
         '
@@ -295,15 +305,16 @@ Partial Class ViewLogBackups
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
+        CType(Me.FileList, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents FileList As ListView
-    Friend WithEvents ColFileName As ColumnHeader
-    Friend WithEvents ColFileDate As ColumnHeader
-    Friend WithEvents ColFileSize As ColumnHeader
+    Friend WithEvents FileList As DataGridView
+    Friend WithEvents ColFileName As DataGridViewTextBoxColumn
+    Friend WithEvents ColFileDate As DataGridViewTextBoxColumn
+    Friend WithEvents ColFileSize As DataGridViewTextBoxColumn
     Friend WithEvents BtnView As Button
     Friend WithEvents BtnDelete As Button
     Friend WithEvents BtnRefresh As Button
@@ -321,7 +332,7 @@ Partial Class ViewLogBackups
     Friend WithEvents ChkShowHidden As CheckBox
     Friend WithEvents HideToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UnhideToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents colHidden As ColumnHeader
+    Friend WithEvents colHidden As DataGridViewTextBoxColumn
     Friend WithEvents ChkShowHiddenAsGray As CheckBox
     Friend WithEvents lblNumberOfHiddenFiles As ToolStripStatusLabel
     Friend WithEvents lblTotalNumberOfHiddenLogs As ToolStripStatusLabel
