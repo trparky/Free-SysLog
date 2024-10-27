@@ -411,10 +411,7 @@ Public Class Form1
                                                                                Dim strDataPacket As String = argsDictionary("datapacket")
                                                                                Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(strDataPacket, JSONDecoderSettingsForSettingsFiles)
 
-                                                                               Invoke(Sub()
-                                                                                          RestoreWindow()
-                                                                                          OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext)
-                                                                                      End Sub)
+                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext)
                                                                            Catch ex As Exception
                                                                            End Try
                                                                        End If
@@ -608,13 +605,13 @@ Public Class Form1
     End Sub
 
     Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
-        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me}
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
 
             LogViewerInstance.lblAlertText.Text = $"Alert Text: {strAlertText}"
 
-            LogViewerInstance.ShowDialog(Me)
+            LogViewerInstance.ShowDialog()
         End Using
     End Sub
 
