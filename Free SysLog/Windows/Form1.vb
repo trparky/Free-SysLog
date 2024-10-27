@@ -608,7 +608,7 @@ Public Class Form1
         Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
-
+            LogViewerInstance.TopMost = True
             LogViewerInstance.lblAlertText.Text = $"Alert Text: {strAlertText}"
 
             LogViewerInstance.ShowDialog()
