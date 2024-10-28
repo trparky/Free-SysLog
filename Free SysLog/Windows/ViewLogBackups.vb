@@ -3,6 +3,7 @@ Imports System.Text.RegularExpressions
 Imports System.ComponentModel
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
+Imports System.Threading
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -31,79 +32,68 @@ Public Class ViewLogBackups
         Dim listOfDataGridViewRows As New List(Of DataGridViewRow)
         Dim intCount, intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace As Long
-        Dim boolIsHidden As Boolean
 
-        Invoke(Sub() FileList.Rows.Clear())
+        Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                               Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
+                                               intCount = GetEntryCount(file.FullName)
 
-        For Each file As FileInfo In filesInDirectory
-            boolIsHidden = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
-            intCount = GetEntryCount(file.FullName)
-            longUsedDiskSpace += file.Length
+                                               If intCount <> -1 Then
+                                                   ' Accumulate counts and totals
+                                                   Interlocked.Add(longUsedDiskSpace, file.Length)
 
-            If intCount <> -1 Then
-                If boolIsHidden Then
-                    intHiddenFileCount += 1
-                    intHiddenTotalLogCount += intCount
-                Else
-                    intFileCount += 1
-                    longTotalLogCount += intCount
-                End If
+                                                   If boolIsHidden Then
+                                                       Interlocked.Increment(intHiddenFileCount)
+                                                       Interlocked.Add(intHiddenTotalLogCount, intCount)
+                                                   Else
+                                                       Interlocked.Increment(intFileCount)
+                                                       Interlocked.Add(longTotalLogCount, intCount)
+                                                   End If
 
-                Using DataGridViewRow As New DataGridViewRow
-                    With DataGridViewRow
-                        .CreateCells(FileList)
-                        .Cells(0).Value = file.Name
-                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+                                                   Dim row As New DataGridViewRow()
 
-                        .Cells(1).Value = $"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}"
-                        .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+                                                   With row
+                                                       .CreateCells(FileList)
+                                                       .Cells(0).Value = file.Name
+                                                       .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                        .Cells(2).Value = $"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)"
-                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+                                                       .Cells(1).Value = $"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}"
+                                                       .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                        If boolIsHidden Then
-                            .Cells(3).Value = "Yes"
-                            .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                                                       .Cells(2).Value = $"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)"
+                                                       .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                            If ChkShowHiddenAsGray.Checked Then
-                                .Cells(0).Style.ForeColor = Color.Gray
-                                .Cells(1).Style.ForeColor = Color.Gray
-                                .Cells(2).Style.ForeColor = Color.Gray
-                                .Cells(3).Style.ForeColor = Color.Gray
-                            End If
-                        Else
-                            .Cells(3).Value = "No"
-                            .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                        End If
+                                                       .Cells(3).Value = If(boolIsHidden, "Yes", "No")
+                                                       .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                                                   End With
 
-                        If My.Settings.font IsNot Nothing Then
-                            .Cells(0).Style.Font = My.Settings.font
-                            .Cells(1).Style.Font = My.Settings.font
-                            .Cells(2).Style.Font = My.Settings.font
-                            .Cells(3).Style.Font = My.Settings.font
-                        End If
-                    End With
 
-                    listOfDataGridViewRows.Add(DataGridViewRow)
-                End Using
-            End If
-        Next
+                                                   For Each cell As DataGridViewCell In row.Cells
+                                                       cell.Style.Font = My.Settings.font
+                                                       If boolIsHidden AndAlso ChkShowHiddenAsGray.Checked Then cell.Style.ForeColor = Color.Gray
+                                                   Next
 
-        lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
-        LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                                                   ' Thread-safe add to list
+                                                   SyncLock listOfDataGridViewRows
+                                                       listOfDataGridViewRows.Add(row)
+                                                   End SyncLock
+                                               End If
+                                           End Sub)
 
-        If intHiddenFileCount > 0 Then
-            lblNumberOfHiddenFiles.Visible = True
-            lblTotalNumberOfHiddenLogs.Visible = True
-            lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
-            lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
-        Else
-            lblNumberOfHiddenFiles.Visible = False
-            lblTotalNumberOfHiddenLogs.Visible = False
-        End If
+        Invoke(Sub()
+                   listOfDataGridViewRows = listOfDataGridViewRows.OrderBy(Function(row) row.Cells(0).Value.ToString()).ToList()
 
-        Invoke(Sub() FileList.Rows.AddRange(listOfDataGridViewRows.ToArray))
-        lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
+                   FileList.DefaultCellStyle.Font = My.Settings.font
+                   FileList.Rows.Clear()
+                   FileList.Rows.AddRange(listOfDataGridViewRows.ToArray())
+                   lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
+                   LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                   lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
+
+                   lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
+                   lblTotalNumberOfHiddenLogs.Visible = intHiddenFileCount > 0
+                   lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
+                   lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
+               End Sub)
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -124,7 +114,7 @@ Public Class ViewLogBackups
         ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
-        Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
         boolDoneLoading = True
     End Sub
 
@@ -161,7 +151,7 @@ Public Class ViewLogBackups
                 If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedRows(0).Cells(0).Value}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     File.Delete(fileName)
                     SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
-                    Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+                    ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             Else
                 Dim msgBoxText As String = "Are you sure you want to delete the following files?" & vbCrLf & vbCrLf
@@ -186,7 +176,7 @@ Public Class ViewLogBackups
 
                     SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, strDeletedFilesLog.ToString)
 
-                    Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+                    ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             End If
         End If
@@ -194,14 +184,14 @@ Public Class ViewLogBackups
 
     Private Sub ViewLogBackups_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.F5 Then
-            Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
         ElseIf e.KeyCode = Keys.Delete Then
             BtnDelete.PerformClick()
         End If
     End Sub
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
-        Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub ViewLogBackups_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
