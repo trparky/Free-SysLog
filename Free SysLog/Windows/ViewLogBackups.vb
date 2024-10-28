@@ -121,6 +121,7 @@ Public Class ViewLogBackups
         colHidden.Visible = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
+        ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
         Threading.ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
