@@ -474,11 +474,14 @@ Public Class Form1
 
                     Invoke(Sub() LoadingProgressBar.Visible = True)
 
-                    For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
-                        intProgress += 1
-                        Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
-                    Next
+                    Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(item As SavedData)
+                                                                                SyncLock listOfLogEntries
+                                                                                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
+                                                                                End SyncLock
+
+                                                                                Threading.Interlocked.Increment(intProgress)
+                                                                                Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
+                                                                            End Sub)
 
                     Invoke(Sub() LoadingProgressBar.Visible = False)
                 End If
@@ -502,6 +505,7 @@ Public Class Form1
                 SyncLock dataGridLockObject
                     Invoke(Sub()
                                Logs.Rows.Clear()
+                               listOfLogEntries = listOfLogEntries.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
 
                                SelectLatestLogEntry()
@@ -812,17 +816,17 @@ Public Class Form1
 
                                           SyncLock dataGridLockObject
                                               Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
-                                                  MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+                                                                                                                       MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
-                                                  If MyDataGridRowItem IsNot Nothing Then
-                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
+                                                                                                                       If MyDataGridRowItem IsNot Nothing Then
+                                                                                                                           strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
-                                                      If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
+                                                                                                                           If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                                                                                                SyncLock listOfSearchResults
-                                                          listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                                                                                                   listOfSearchResults.Add(MyDataGridRowItem.Clone())
                                                                                                                                End SyncLock
-                                                      End If
-                                                  End If
+                                                                                                                           End If
+                                                                                                                       End If
                                                                                                                    End Sub)
                                           End SyncLock
                                       Catch ex As ArgumentException
