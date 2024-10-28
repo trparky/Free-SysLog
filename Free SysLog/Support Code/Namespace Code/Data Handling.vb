@@ -152,27 +152,30 @@ Namespace DataHandling
             SyncLock ParentForm.lockObject
                 Dim collectionOfSavedData As New List(Of SavedData)
                 Dim myItem As MyDataGridViewRow
+                Dim syncLockObject As New Object
 
                 SyncLock ParentForm.dataGridLockObject
-                    For Each item As DataGridViewRow In ParentForm.Logs.Rows
-                        If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                            myItem = DirectCast(item, MyDataGridViewRow)
+                    Threading.Tasks.Parallel.ForEach(ParentForm.Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
+                                                                                                        SyncLock syncLockObject
+                                                                                                            If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
+                                                                                                                myItem = DirectCast(item, MyDataGridViewRow)
+                                                                                                                collectionOfSavedData.Add(New SavedData With {
+                                                                                                                    .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                                                                                    .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                                                                                                    .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                                                                                                    .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
+                                                                                                                    .log = myItem.Cells(ColumnIndex_LogText).Value,
+                                                                                                                    .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                                                                                                    .DateObject = myItem.DateObject,
+                                                                                                                    .BoolAlerted = myItem.BoolAlerted,
+                                                                                                                    .ServerDate = myItem.ServerDate,
+                                                                                                                    .rawLogData = myItem.RawLogData,
+                                                                                                                    .alertText = myItem.AlertText
+                                                                                                                })
+                                                                                                            End If
+                                                                                                        End SyncLock
+                                                                                                    End Sub)
 
-                            collectionOfSavedData.Add(New SavedData With {
-                                                .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                                .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                                .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                                .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                                .DateObject = myItem.DateObject,
-                                                .BoolAlerted = myItem.BoolAlerted,
-                                                .ServerDate = myItem.ServerDate,
-                                                .rawLogData = myItem.RawLogData,
-                                                .alertText = myItem.AlertText
-                                              })
-                        End If
-                    Next
                 End SyncLock
 
                 Try
