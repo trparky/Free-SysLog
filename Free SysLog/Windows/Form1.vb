@@ -967,11 +967,13 @@ Public Class Form1
                         Dim intOldCount As Integer = Logs.Rows.Count
                         Dim newListOfLogs As New List(Of MyDataGridViewRow)
 
-                        For Each item As MyDataGridViewRow In Logs.Rows
-                            If item.DateObject.Date >= dateChosenDate.Date Then
-                                newListOfLogs.Add(item.Clone())
-                            End If
-                        Next
+                        Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
+                                                                                                   SyncLock newListOfLogs
+                                                                                                       If item.DateObject.Date >= dateChosenDate.Date Then newListOfLogs.Add(item.Clone())
+                                                                                                   End SyncLock
+                                                                                               End Sub)
+
+                        newListOfLogs = newListOfLogs.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
 
                         Logs.Enabled = True
                         Logs.AllowUserToOrderColumns = True
@@ -1088,11 +1090,13 @@ Public Class Form1
                 Dim newListOfLogs As New List(Of MyDataGridViewRow)
                 Dim dateChosenDate As Date = Now.AddDays(daysToKeep * -1)
 
-                For Each item As MyDataGridViewRow In Logs.Rows
-                    If item.DateObject.Date >= dateChosenDate Then
-                        newListOfLogs.Add(item.Clone())
-                    End If
-                Next
+                Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
+                                                                                           SyncLock newListOfLogs
+                                                                                               If item.DateObject.Date >= dateChosenDate Then newListOfLogs.Add(item.Clone())
+                                                                                           End SyncLock
+                                                                                       End Sub)
+
+                newListOfLogs = newListOfLogs.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
 
                 If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
 
