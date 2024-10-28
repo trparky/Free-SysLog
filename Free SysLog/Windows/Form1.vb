@@ -505,7 +505,7 @@ Public Class Form1
                 SyncLock dataGridLockObject
                     Invoke(Sub()
                                Logs.Rows.Clear()
-                               listOfLogEntries = listOfLogEntries.OrderBy(Function(row As MyDataGridViewRow) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
+                               listOfLogEntries = listOfLogEntries.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
 
                                SelectLatestLogEntry()
@@ -836,7 +836,7 @@ Public Class Form1
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
-                                                      listOfSearchResults = listOfSearchResults.OrderBy(Function(row As MyDataGridViewRow) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
+                                                      listOfSearchResults = listOfSearchResults.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
@@ -977,7 +977,7 @@ Public Class Form1
                                                                                                    End SyncLock
                                                                                                End Sub)
 
-                        newListOfLogs = newListOfLogs.OrderBy(Function(row As MyDataGridViewRow) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
+                        newListOfLogs = newListOfLogs.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
 
                         Logs.Enabled = True
                         Logs.AllowUserToOrderColumns = True
@@ -1100,7 +1100,7 @@ Public Class Form1
                                                                                            End SyncLock
                                                                                        End Sub)
 
-                newListOfLogs = newListOfLogs.OrderBy(Function(row As MyDataGridViewRow) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
+                newListOfLogs = newListOfLogs.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
 
                 If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
 
