@@ -811,17 +811,19 @@ Public Class Form1
                                           End If
 
                                           SyncLock dataGridLockObject
-                                              For Each item As DataGridViewRow In Logs.Rows
+                                              Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
                                                   MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                   If MyDataGridRowItem IsNot Nothing Then
                                                       strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
                                                       If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
+                                                                                                                               SyncLock listOfSearchResults
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                                                                                               End SyncLock
                                                       End If
                                                   End If
-                                              Next
+                                                                                                                   End Sub)
                                           End SyncLock
                                       Catch ex As ArgumentException
                                           MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
@@ -830,6 +832,7 @@ Public Class Form1
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
+                                                      listOfSearchResults = listOfSearchResults.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
