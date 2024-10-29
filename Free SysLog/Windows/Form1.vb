@@ -797,6 +797,7 @@ Public Class Form1
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
         Dim MyDataGridRowItem As MyDataGridViewRow
+        Dim stopWatch As Stopwatch = Stopwatch.StartNew
 
         BtnSearch.Enabled = False
 
@@ -833,6 +834,8 @@ Public Class Form1
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      searchResultsWindow.LogsLoadedInLabel.Visible = True
+                                                      searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
