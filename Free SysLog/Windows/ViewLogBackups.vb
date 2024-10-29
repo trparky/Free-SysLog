@@ -225,7 +225,6 @@ Public Class ViewLogBackups
 
                                           Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
                                           Dim dataFromFile As List(Of SavedData)
-                                          Dim myDataGridRow As MyDataGridViewRow
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                                                  If Not (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
@@ -234,7 +233,7 @@ Public Class ViewLogBackups
 
                                                                                          For Each item As SavedData In dataFromFile
                                                                                              If regexCompiledObject.IsMatch(item.log) Then
-                                                                                                 myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
+                                                                                                 Dim myDataGridRow As MyDataGridViewRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
                                                                                                  myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                                  SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                      listOfSearchResults.Add(myDataGridRow)
@@ -249,7 +248,7 @@ Public Class ViewLogBackups
 
                                           Parallel.ForEach(currentLogs.Cast(Of SavedData), Sub(item As SavedData)
                                                                                                If regexCompiledObject.IsMatch(item.log) Then
-                                                                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
+                                                                                                   Dim myDataGridRow As MyDataGridViewRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
                                                                                                    myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                                                                    SyncLock lockObject
                                                                                                        listOfSearchResults.Add(myDataGridRow)

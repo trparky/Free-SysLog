@@ -151,14 +151,14 @@ Namespace DataHandling
         Public Sub WriteLogsToDisk()
             SyncLock ParentForm.lockObject
                 Dim collectionOfSavedData As New List(Of SavedData)
-                Dim myItem As MyDataGridViewRow
                 Dim syncLockObject As New Object
 
                 SyncLock ParentForm.dataGridLockObject
                     Threading.Tasks.Parallel.ForEach(ParentForm.Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
                                                                                                         SyncLock syncLockObject
                                                                                                             If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                                                                                                                myItem = DirectCast(item, MyDataGridViewRow)
+                                                                                                                Dim myItem As MyDataGridViewRow = DirectCast(item, MyDataGridViewRow)
+
                                                                                                                 collectionOfSavedData.Add(New SavedData With {
                                                                                                                     .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
                                                                                                                     .logType = myItem.Cells(ColumnIndex_LogType).Value,

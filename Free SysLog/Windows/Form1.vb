@@ -795,10 +795,8 @@ Public Class Form1
             Exit Sub
         End If
 
-        Dim strLogText As String
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
-        Dim MyDataGridRowItem As MyDataGridViewRow
 
         BtnSearch.Enabled = False
 
@@ -816,10 +814,10 @@ Public Class Form1
 
                                           SyncLock dataGridLockObject
                                               Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
-                                                                                                                       MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+                                                                                                                       Dim MyDataGridRowItem As MyDataGridViewRow = TryCast(item, MyDataGridViewRow)
 
                                                                                                                        If MyDataGridRowItem IsNot Nothing Then
-                                                                                                                           strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
+                                                                                                                           Dim strLogText As String = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
                                                                                                                            If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                                                                                                SyncLock listOfSearchResults
