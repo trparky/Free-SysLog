@@ -63,6 +63,7 @@ Partial Class ViewLogBackups
         Me.FileList.BackgroundColor = System.Drawing.SystemColors.ControlLightLight
         Me.FileList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.FileList.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize, Me.colHidden})
+        Me.FileList.ContextMenuStrip = Me.ContextMenuStrip1
         Me.FileList.Location = New System.Drawing.Point(13, 12)
         Me.FileList.Name = "FileList"
         Me.FileList.ReadOnly = True
