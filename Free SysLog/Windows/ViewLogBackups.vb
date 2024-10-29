@@ -118,7 +118,7 @@ Public Class ViewLogBackups
         boolDoneLoading = True
     End Sub
 
-    Private Sub FileList_DoubleClick(sender As Object, e As EventArgs)
+    Private Sub FileList_DoubleClick(sender As Object, e As EventArgs) Handles FileList.DoubleClick
         BtnView.PerformClick()
     End Sub
 
@@ -133,7 +133,7 @@ Public Class ViewLogBackups
         End If
     End Sub
 
-    Private Sub FileList_Click(sender As Object, e As EventArgs)
+    Private Sub FileList_Click(sender As Object, e As EventArgs) Handles FileList.Click
         If FileList.SelectedRows.Count > 0 Then
             BtnDelete.Enabled = True
             BtnView.Enabled = FileList.SelectedRows.Count <= 1
