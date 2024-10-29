@@ -325,7 +325,12 @@ Public Class IgnoredLogsAndSearchResults
     End Function
 
     Private Sub LoadData(strFileName As String)
-        Invoke(Sub() Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs)))
+        Dim stopWatch As Stopwatch = Stopwatch.StartNew
+
+        Invoke(Sub()
+                   LogsLoadedInLabel.Visible = True
+                   Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs))
+               End Sub)
 
         Dim collectionOfSavedData As New List(Of SavedData)
 
@@ -344,6 +349,7 @@ Public Class IgnoredLogsAndSearchResults
                 Invoke(Sub()
                            Logs.Rows.Clear()
                            Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                           LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                        End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
