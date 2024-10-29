@@ -223,7 +223,14 @@ Public Class ViewLogBackups
                                               regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
                                           End If
 
-                                          Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+                                          Dim filesInDirectory As FileInfo()
+
+                                          If ChkShowHidden.Checked Then
+                                              filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+                                          Else
+                                              filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
+                                          End If
+
                                           Dim dataFromFile As List(Of SavedData)
                                           Dim myDataGridRow As MyDataGridViewRow
 
