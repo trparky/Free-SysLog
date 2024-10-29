@@ -787,6 +787,8 @@ Public Class Form1
             mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
+
+        Process.GetCurrentProcess.Kill()
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
