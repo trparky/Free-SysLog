@@ -18,7 +18,7 @@ Public Class Form1
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
     Public regexCache As New Dictionary(Of String, Regex)
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
-    Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
+    Public sortOrder As SortOrder = sortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
     Public ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
@@ -156,7 +156,7 @@ Public Class Form1
 
     Public Sub SelectLatestLogEntry()
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = sortOrder.Ascending, Logs.Rows.Count - 1, 0)
         End If
     End Sub
 
@@ -341,7 +341,7 @@ Public Class Form1
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
-        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
+        ColTime.HeaderCell.SortGlyphDirection = sortOrder.Ascending
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
@@ -467,7 +467,7 @@ Public Class Form1
                 End Using
 
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
-                Dim stopwatch As Stopwatch = Stopwatch.StartNew
+                Dim stopwatch As Stopwatch = stopwatch.StartNew
 
                 If collectionOfSavedData.Count > 0 Then
                     Dim intProgress As Integer = 0
@@ -797,8 +797,11 @@ Public Class Form1
             Exit Sub
         End If
 
+        Dim strLogText As String
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
+        Dim MyDataGridRowItem As MyDataGridViewRow
+        Dim stopWatch As Stopwatch = stopWatch.StartNew
 
         BtnSearch.Enabled = False
 
@@ -806,7 +809,7 @@ Public Class Form1
 
         AddHandler worker.DoWork, Sub()
                                       Try
-                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, regExOptions.Compiled + regExOptions.IgnoreCase, regExOptions.Compiled)
 
                                           If ChkRegExSearch.Checked Then
                                               regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
@@ -815,19 +818,17 @@ Public Class Form1
                                           End If
 
                                           SyncLock dataGridLockObject
-                                              Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
-                                                                                                                       Dim MyDataGridRowItem As MyDataGridViewRow = TryCast(item, MyDataGridViewRow)
+                                              For Each item As DataGridViewRow In Logs.Rows
+                                                  MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
-                                                                                                                       If MyDataGridRowItem IsNot Nothing Then
-                                                                                                                           Dim strLogText As String = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
+                                                  If MyDataGridRowItem IsNot Nothing Then
+                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
-                                                                                                                           If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
-                                                                                                                               SyncLock listOfSearchResults
-                                                                                                                                   listOfSearchResults.Add(MyDataGridRowItem.Clone())
-                                                                                                                               End SyncLock
-                                                                                                                           End If
-                                                                                                                       End If
-                                                                                                                   End Sub)
+                                                      If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
+                                                          listOfSearchResults.Add(MyDataGridRowItem.Clone())
+                                                      End If
+                                                  End If
+                                              Next
                                           End SyncLock
                                       Catch ex As ArgumentException
                                           MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
@@ -836,8 +837,9 @@ Public Class Form1
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
-                                                      listOfSearchResults = listOfSearchResults.OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      searchResultsWindow.LogsLoadedInLabel.Visible = True
+                                                      searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -863,18 +865,18 @@ Public Class Form1
         Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
         intSortColumnIndex = e.ColumnIndex
 
-        If sortOrder = SortOrder.Descending Then
-            sortOrder = SortOrder.Ascending
-        ElseIf sortOrder = SortOrder.Ascending Then
-            sortOrder = SortOrder.Descending
+        If sortOrder = sortOrder.Descending Then
+            sortOrder = sortOrder.Ascending
+        ElseIf sortOrder = sortOrder.Ascending Then
+            sortOrder = sortOrder.Descending
         Else
-            sortOrder = SortOrder.Ascending
+            sortOrder = sortOrder.Ascending
         End If
 
-        ColAlerts.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColTime.HeaderCell.SortGlyphDirection = SortOrder.None
+        ColAlerts.HeaderCell.SortGlyphDirection = sortOrder.None
+        ColIPAddress.HeaderCell.SortGlyphDirection = sortOrder.None
+        ColLog.HeaderCell.SortGlyphDirection = sortOrder.None
+        ColTime.HeaderCell.SortGlyphDirection = sortOrder.None
 
         Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
@@ -1324,7 +1326,7 @@ Public Class Form1
                     Exit Sub
                 End If
 
-                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex, .alertType = AddAlert.AlertType}
+                Dim AlertsClass As New AlertsClass() With {.strLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex, .alertType = AddAlert.AlertType}
                 alertsList.Add(AlertsClass)
                 My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
 
