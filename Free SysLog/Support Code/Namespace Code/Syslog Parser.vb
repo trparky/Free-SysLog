@@ -22,7 +22,7 @@ Namespace SyslogParser
             End Set
         End Property
 
-        Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+        Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, ByRef dataGrid As DataGridView, backColor As Color, foreColor As Color) As MyDataGridViewRow
             Using MyDataGridViewRow As New MyDataGridViewRow
                 With MyDataGridViewRow
                     .CreateCells(dataGrid)
@@ -53,6 +53,24 @@ Namespace SyslogParser
                         .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
                         .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
                         .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
+
+                        .Cells(ColumnIndex_ComputedTime).Style.BackColor = backColor
+                        .Cells(ColumnIndex_LogType).Style.BackColor = backColor
+                        .Cells(ColumnIndex_IPAddress).Style.BackColor = backColor
+                        .Cells(ColumnIndex_RemoteProcess).Style.BackColor = backColor
+                        .Cells(ColumnIndex_Hostname).Style.BackColor = backColor
+                        .Cells(ColumnIndex_LogText).Style.BackColor = backColor
+                        .Cells(ColumnIndex_Alerted).Style.BackColor = backColor
+                        .Cells(ColumnIndex_ServerTime).Style.BackColor = backColor
+
+                        .Cells(ColumnIndex_ComputedTime).Style.ForeColor = foreColor
+                        .Cells(ColumnIndex_LogType).Style.ForeColor = foreColor
+                        .Cells(ColumnIndex_IPAddress).Style.ForeColor = foreColor
+                        .Cells(ColumnIndex_RemoteProcess).Style.ForeColor = foreColor
+                        .Cells(ColumnIndex_Hostname).Style.ForeColor = foreColor
+                        .Cells(ColumnIndex_LogText).Style.ForeColor = foreColor
+                        .Cells(ColumnIndex_Alerted).Style.ForeColor = foreColor
+                        .Cells(ColumnIndex_ServerTime).Style.ForeColor = foreColor
                     End If
                 End With
 
@@ -79,6 +97,8 @@ Namespace SyslogParser
 
             ParentForm.Invoke(Sub()
                                   SyncLock ParentForm.dataGridLockObject
+                                      Dim previousRowStyle As DataGridViewCellStyle = ParentForm.Logs.Rows(ParentForm.Logs.Rows.Count - 1).Cells(0).Style
+
                                       ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
                                                                                dateObject:=currentDate,
                                                                                strTime:=currentDate.ToString,
@@ -90,7 +110,9 @@ Namespace SyslogParser
                                                                                boolAlerted:=False,
                                                                                strRawLogText:=Nothing,
                                                                                strAlertText:=Nothing,
-                                                                               dataGrid:=ParentForm.Logs)
+                                                                               dataGrid:=ParentForm.Logs,
+                                                                               backColor:=previousRowStyle.BackColor,
+                                                                               foreColor:=previousRowStyle.ForeColor)
                                                                               )
                                       If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                   End SyncLock
@@ -344,6 +366,8 @@ Namespace SyslogParser
             If Not boolIgnored Then
                 ParentForm.Invoke(Sub()
                                       SyncLock ParentForm.dataGridLockObject
+                                          Dim previousRowStyle As DataGridViewCellStyle = ParentForm.Logs.Rows(ParentForm.Logs.Rows.Count - 1).Cells(0).Style
+
                                           ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
                                                                                    dateObject:=currentDate,
                                                                                    strTime:=currentDate.ToString,
@@ -355,7 +379,9 @@ Namespace SyslogParser
                                                                                    boolAlerted:=boolAlerted,
                                                                                    strRawLogText:=strRawLogText.Trim,
                                                                                    strAlertText:=strAlertText,
-                                                                                   dataGrid:=ParentForm.Logs)
+                                                                                   dataGrid:=ParentForm.Logs,
+                                                                                   backColor:=previousRowStyle.BackColor,
+                                                                                   foreColor:=previousRowStyle.ForeColor)
                                                                                   )
                                           If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                       End SyncLock
@@ -368,6 +394,8 @@ Namespace SyslogParser
                                   End Sub)
             ElseIf boolIgnored And ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
                 SyncLock ParentForm.IgnoredLogsLockObject
+                    Dim previousRowStyle As DataGridViewCellStyle = ParentForm.Logs.Rows(ParentForm.Logs.Rows.Count - 1).Cells(0).Style
+
                     Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
                                                                               dateObject:=currentDate,
                                                                               strTime:=currentDate.ToString,
@@ -379,7 +407,9 @@ Namespace SyslogParser
                                                                               boolAlerted:=boolAlerted,
                                                                               strRawLogText:=strRawLogText.Trim,
                                                                               strAlertText:=strAlertText,
-                                                                              dataGrid:=ParentForm.Logs
+                                                                              dataGrid:=ParentForm.Logs,
+                                                                              backColor:=previousRowStyle.BackColor,
+                                                                              foreColor:=previousRowStyle.ForeColor
                                                                              )
                     ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                     If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)

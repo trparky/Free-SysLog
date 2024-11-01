@@ -68,6 +68,8 @@ Public Class Form1
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
 
+            Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
+
             Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                        dateObject:=Now,
                                                        strTime:=Now.ToString,
@@ -79,7 +81,9 @@ Public Class Form1
                                                        boolAlerted:=False,
                                                        strRawLogText:=Nothing,
                                                        strAlertText:=Nothing,
-                                                       dataGrid:=Logs)
+                                                       dataGrid:=Logs,
+                                                       backColor:=previousRowStyle.BackColor,
+                                                       foreColor:=previousRowStyle.ForeColor)
                                                       )
 
             SelectLatestLogEntry()
@@ -458,7 +462,9 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
-                                                                      dataGrid:=Logs)
+                                                                      dataGrid:=Logs,
+                                                                      backColor:=Color.White,
+                                                                      foreColor:=Color.Black)
                                                                      )
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
                        End Sub)
@@ -498,7 +504,9 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
-                                                                      dataGrid:=Logs)
+                                                                      dataGrid:=Logs,
+                                                                      backColor:=Color.White,
+                                                                      foreColor:=Color.Black)
                                                                      )
                 End If
 
@@ -506,6 +514,31 @@ Public Class Form1
                     Invoke(Sub()
                                Logs.Rows.Clear()
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+
+                               For i = 1 To Logs.Rows.Count - 1 Step 2
+                                   With Logs.Rows(i)
+                                       .Cells(ColumnIndex_ComputedTime).Style.BackColor = My.Settings.searchColor
+                                       .Cells(ColumnIndex_LogType).Style.BackColor = My.Settings.searchColor
+                                       .Cells(ColumnIndex_IPAddress).Style.BackColor = My.Settings.searchColor
+                                       .Cells(ColumnIndex_RemoteProcess).Style.BackColor = My.Settings.searchColor
+                                       .Cells(ColumnIndex_Hostname).Style.BackColor = My.Settings.searchColor
+                                       .Cells(ColumnIndex_LogText).Style.BackColor = My.Settings.searchColor
+                                       .Cells(ColumnIndex_Alerted).Style.BackColor = My.Settings.searchColor
+                                       .Cells(ColumnIndex_ServerTime).Style.BackColor = My.Settings.searchColor
+
+                                       Dim goodFontColor As Color = GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)
+
+                                       .Cells(ColumnIndex_ComputedTime).Style.ForeColor = goodFontColor
+                                       .Cells(ColumnIndex_LogType).Style.ForeColor = goodFontColor
+                                       .Cells(ColumnIndex_IPAddress).Style.ForeColor = goodFontColor
+                                       .Cells(ColumnIndex_RemoteProcess).Style.ForeColor = goodFontColor
+                                       .Cells(ColumnIndex_Hostname).Style.ForeColor = goodFontColor
+                                       .Cells(ColumnIndex_LogText).Style.ForeColor = goodFontColor
+                                       .Cells(ColumnIndex_Alerted).Style.ForeColor = goodFontColor
+                                       .Cells(ColumnIndex_ServerTime).Style.ForeColor = goodFontColor
+                                   End With
+                               Next
+
 
                                SelectLatestLogEntry()
 
@@ -535,6 +568,8 @@ Public Class Form1
             Invoke(Sub()
                        Logs.Rows.Clear()
 
+                       Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
+
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
                            SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                         dateObject:=Now,
@@ -547,7 +582,9 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
-                                                        dataGrid:=Logs
+                                                        dataGrid:=Logs,
+                                                        backColor:=previousRowStyle.BackColor,
+                                                        foreColor:=previousRowStyle.ForeColor
                                                        ),
                            SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                         dateObject:=Now,
@@ -560,7 +597,9 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
-                                                        dataGrid:=Logs
+                                                        dataGrid:=Logs,
+                                                        backColor:=previousRowStyle.BackColor,
+                                                        foreColor:=previousRowStyle.ForeColor
                                                        ),
                            SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                         dateObject:=Now,
@@ -573,7 +612,9 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
-                                                        dataGrid:=Logs
+                                                        dataGrid:=Logs,
+                                                        backColor:=previousRowStyle.BackColor,
+                                                        foreColor:=previousRowStyle.ForeColor
                                                        )
                        }
 
@@ -668,6 +709,8 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
+                Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
+
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
@@ -679,7 +722,9 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
-                                                           dataGrid:=Logs)
+                                                           dataGrid:=Logs,
+                                                           backColor:=previousRowStyle.BackColor,
+                                                           foreColor:=previousRowStyle.ForeColor)
                                                           )
 
                 SelectLatestLogEntry()
@@ -726,6 +771,7 @@ Public Class Form1
 
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
+                Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
@@ -737,7 +783,9 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
-                                                           dataGrid:=Logs)
+                                                           dataGrid:=Logs,
+                                                           backColor:=previousRowStyle.BackColor,
+                                                           foreColor:=previousRowStyle.ForeColor)
                                                           )
 
                 SelectLatestLogEntry()
@@ -986,6 +1034,8 @@ Public Class Form1
                         Logs.Rows.Clear()
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
 
+                        Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
+
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                         Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                                    dateObject:=Now,
@@ -998,7 +1048,9 @@ Public Class Form1
                                                                    boolAlerted:=False,
                                                                    strRawLogText:=Nothing,
                                                                    strAlertText:=Nothing,
-                                                                   dataGrid:=Logs)
+                                                                   dataGrid:=Logs,
+                                                                   backColor:=previousRowStyle.BackColor,
+                                                                   foreColor:=previousRowStyle.ForeColor)
                                                                   )
 
                         SelectLatestLogEntry()
@@ -1108,6 +1160,7 @@ Public Class Form1
                 Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
+                Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
@@ -1119,7 +1172,9 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
-                                                           dataGrid:=Logs)
+                                                           dataGrid:=Logs,
+                                                           backColor:=previousRowStyle.BackColor,
+                                                           foreColor:=previousRowStyle.ForeColor)
                                                           )
 
                 SelectLatestLogEntry()
@@ -1221,6 +1276,8 @@ Public Class Form1
                 Logs.Rows.Remove(item)
             Next
 
+            Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
+
             Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                        dateObject:=Now,
                                                        strTime:=Now.ToString,
@@ -1232,7 +1289,9 @@ Public Class Form1
                                                        boolAlerted:=False,
                                                        strRawLogText:=Nothing,
                                                        strAlertText:=Nothing,
-                                                       dataGrid:=Logs)
+                                                       dataGrid:=Logs,
+                                                       backColor:=previousRowStyle.BackColor,
+                                                       foreColor:=previousRowStyle.ForeColor)
                                                       )
 
             SelectLatestLogEntry()
@@ -1271,6 +1330,7 @@ Public Class Form1
             End If
 
             SyncLock dataGridLockObject
+                Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
                 Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                            dateObject:=Now,
                                                            strTime:=Now.ToString,
@@ -1282,7 +1342,9 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
-                                                           dataGrid:=Logs)
+                                                           dataGrid:=Logs,
+                                                           backColor:=previousRowStyle.BackColor,
+                                                           foreColor:=previousRowStyle.ForeColor)
                                                           )
                 SelectLatestLogEntry()
                 UpdateLogCount()
@@ -1358,6 +1420,7 @@ Public Class Form1
                         serverThread.Start()
 
                         SyncLock dataGridLockObject
+                            Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
                             Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                                        dateObject:=Now,
                                                                        strTime:=Now.ToString,
@@ -1369,7 +1432,9 @@ Public Class Form1
                                                                        boolAlerted:=False,
                                                                        strRawLogText:=Nothing,
                                                                        strAlertText:=Nothing,
-                                                                       dataGrid:=Logs)
+                                                                       dataGrid:=Logs,
+                                                                       backColor:=previousRowStyle.BackColor,
+                                                                       foreColor:=previousRowStyle.ForeColor)
                                                                       )
                             SelectLatestLogEntry()
                             UpdateLogCount()
@@ -1752,6 +1817,7 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub()
                        SyncLock dataGridLockObject
+                           Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
                            Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
                                                                       dateObject:=Now,
                                                                       strTime:=Now.ToString,
@@ -1763,7 +1829,9 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
-                                                                      dataGrid:=Logs)
+                                                                      dataGrid:=Logs,
+                                                                      backColor:=previousRowStyle.BackColor,
+                                                                      foreColor:=previousRowStyle.ForeColor)
                                                                      )
                            SelectLatestLogEntry()
                            UpdateLogCount()
