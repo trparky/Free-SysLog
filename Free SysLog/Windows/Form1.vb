@@ -9,6 +9,7 @@ Imports System.Reflection
 Imports System.Configuration
 Imports Free_SysLog.SupportCode
 Imports Microsoft.Toolkit.Uwp.Notifications
+Imports DarkModeForms
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
@@ -26,6 +27,7 @@ Public Class Form1
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
     Private boolServerRunning As Boolean = False
     Private boolTCPServerRunning As Boolean = False
+    Private dmInstance As DarkModeCS
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -322,6 +324,7 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        dmInstance = New DarkModeCS(Me)
         SyslogParser.SetParentForm = Me
         DataHandling.SetParentForm = Me
         TaskHandling.SetParentForm = Me
@@ -1679,6 +1682,11 @@ Public Class Form1
     Private Sub NotificationLengthLong_Click(sender As Object, e As EventArgs) Handles NotificationLengthLong.Click
         NotificationLengthShort.Checked = False
         My.Settings.NotificationLength = 1
+    End Sub
+
+    Private Sub DarkMode_Click(sender As Object, e As EventArgs) Handles DarkMode.Click
+        dmInstance.forceProcessing = True
+        dmInstance.ApplyTheme(DarkMode.Checked, False)
     End Sub
 
 #Region "-- SysLog Server Code --"

@@ -355,6 +355,12 @@
       <Version>2.11.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DarkModeForms\DarkModeForms.csproj">
+      <Project>{fe095783-789e-4dd5-b792-78c66c51efb7}</Project>
+      <Name>DarkModeForms</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
