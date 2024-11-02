@@ -70,7 +70,7 @@ Partial Class ViewLogBackups
         Me.FileList.ReadOnly = True
         Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.FileList.Size = New System.Drawing.Size(1010, 299)
+        Me.FileList.Size = New System.Drawing.Size(730, 269)
         Me.FileList.TabIndex = 36
         '
         'ColFileName
@@ -128,7 +128,7 @@ Partial Class ViewLogBackups
         '
         Me.BtnView.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnView.Enabled = False
-        Me.BtnView.Location = New System.Drawing.Point(13, 316)
+        Me.BtnView.Location = New System.Drawing.Point(13, 287)
         Me.BtnView.Name = "BtnView"
         Me.BtnView.Size = New System.Drawing.Size(75, 23)
         Me.BtnView.TabIndex = 2
@@ -139,7 +139,7 @@ Partial Class ViewLogBackups
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
-        Me.BtnDelete.Location = New System.Drawing.Point(94, 316)
+        Me.BtnDelete.Location = New System.Drawing.Point(13, 316)
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(75, 23)
         Me.BtnDelete.TabIndex = 3
@@ -149,7 +149,7 @@ Partial Class ViewLogBackups
         'BtnRefresh
         '
         Me.BtnRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnRefresh.Location = New System.Drawing.Point(175, 316)
+        Me.BtnRefresh.Location = New System.Drawing.Point(94, 287)
         Me.BtnRefresh.Name = "BtnRefresh"
         Me.BtnRefresh.Size = New System.Drawing.Size(95, 23)
         Me.BtnRefresh.TabIndex = 4
@@ -161,7 +161,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1035, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(755, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -177,7 +177,7 @@ Partial Class ViewLogBackups
         Me.ChkCaseInsensitiveSearch.AutoSize = True
         Me.ChkCaseInsensitiveSearch.Checked = True
         Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(586, 321)
+        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(404, 321)
         Me.ChkCaseInsensitiveSearch.Name = "ChkCaseInsensitiveSearch"
         Me.ChkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
         Me.ChkCaseInsensitiveSearch.TabIndex = 33
@@ -188,7 +188,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRegExSearch.AutoSize = True
-        Me.ChkRegExSearch.Location = New System.Drawing.Point(517, 321)
+        Me.ChkRegExSearch.Location = New System.Drawing.Point(335, 321)
         Me.ChkRegExSearch.Name = "ChkRegExSearch"
         Me.ChkRegExSearch.Size = New System.Drawing.Size(63, 17)
         Me.ChkRegExSearch.TabIndex = 32
@@ -198,7 +198,7 @@ Partial Class ViewLogBackups
         'BtnSearch
         '
         Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnSearch.Location = New System.Drawing.Point(694, 317)
+        Me.BtnSearch.Location = New System.Drawing.Point(512, 317)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
         Me.BtnSearch.TabIndex = 31
@@ -208,7 +208,7 @@ Partial Class ViewLogBackups
         'TxtSearchTerms
         '
         Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.TxtSearchTerms.Location = New System.Drawing.Point(363, 318)
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(181, 318)
         Me.TxtSearchTerms.Name = "TxtSearchTerms"
         Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
         Me.TxtSearchTerms.TabIndex = 30
@@ -217,7 +217,7 @@ Partial Class ViewLogBackups
         '
         Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LblSearchLabel.AutoSize = True
-        Me.LblSearchLabel.Location = New System.Drawing.Point(276, 321)
+        Me.LblSearchLabel.Location = New System.Drawing.Point(94, 321)
         Me.LblSearchLabel.Name = "LblSearchLabel"
         Me.LblSearchLabel.Size = New System.Drawing.Size(81, 13)
         Me.LblSearchLabel.TabIndex = 29
@@ -232,9 +232,9 @@ Partial Class ViewLogBackups
         '
         'ChkShowHidden
         '
-        Me.ChkShowHidden.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowHidden.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHidden.AutoSize = True
-        Me.ChkShowHidden.Location = New System.Drawing.Point(752, 320)
+        Me.ChkShowHidden.Location = New System.Drawing.Point(572, 297)
         Me.ChkShowHidden.Name = "ChkShowHidden"
         Me.ChkShowHidden.Size = New System.Drawing.Size(114, 17)
         Me.ChkShowHidden.TabIndex = 34
@@ -250,9 +250,9 @@ Partial Class ViewLogBackups
         '
         'ChkShowHiddenAsGray
         '
-        Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHiddenAsGray.AutoSize = True
-        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(872, 320)
+        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(572, 320)
         Me.ChkShowHiddenAsGray.Name = "ChkShowHiddenAsGray"
         Me.ChkShowHiddenAsGray.Size = New System.Drawing.Size(153, 17)
         Me.ChkShowHiddenAsGray.TabIndex = 35
@@ -286,7 +286,7 @@ Partial Class ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1035, 364)
+        Me.ClientSize = New System.Drawing.Size(755, 364)
         Me.Controls.Add(Me.ChkShowHiddenAsGray)
         Me.Controls.Add(Me.ChkShowHidden)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
@@ -302,7 +302,7 @@ Partial Class ViewLogBackups
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(1051, 403)
+        Me.MinimumSize = New System.Drawing.Size(771, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
