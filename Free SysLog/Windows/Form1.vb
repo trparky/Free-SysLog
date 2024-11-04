@@ -9,6 +9,7 @@ Imports System.Reflection
 Imports System.Configuration
 Imports Free_SysLog.SupportCode
 Imports Microsoft.Toolkit.Uwp.Notifications
+Imports Windows.AI.MachineLearning
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
@@ -77,6 +78,7 @@ Public Class Form1
                                                        boolAlerted:=False,
                                                        strRawLogText:=Nothing,
                                                        strAlertText:=Nothing,
+                                                       AlertType:=AlertType.None,
                                                        dataGrid:=Logs)
                                                       )
 
@@ -455,6 +457,7 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
+                                                                      AlertType:=AlertType.None,
                                                                       dataGrid:=Logs)
                                                                      )
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
@@ -498,6 +501,7 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
+                                                                      AlertType:=AlertType.None,
                                                                       dataGrid:=Logs)
                                                                      )
                 End If
@@ -548,6 +552,7 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
+                                                        AlertType:=AlertType.None,
                                                         dataGrid:=Logs
                                                        ),
                            SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
@@ -561,6 +566,7 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
+                                                        AlertType:=AlertType.None,
                                                         dataGrid:=Logs
                                                        ),
                            SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
@@ -574,6 +580,7 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
+                                                        AlertType:=AlertType.None,
                                                         dataGrid:=Logs
                                                        )
                        }
@@ -680,6 +687,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
 
@@ -738,6 +746,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
 
@@ -1001,6 +1010,7 @@ Public Class Form1
                                                                    boolAlerted:=False,
                                                                    strRawLogText:=Nothing,
                                                                    strAlertText:=Nothing,
+                                                                   AlertType:=AlertType.None,
                                                                    dataGrid:=Logs)
                                                                   )
 
@@ -1124,6 +1134,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
 
@@ -1237,6 +1248,7 @@ Public Class Form1
                                                        boolAlerted:=False,
                                                        strRawLogText:=Nothing,
                                                        strAlertText:=Nothing,
+                                                       AlertType:=AlertType.None,
                                                        dataGrid:=Logs)
                                                       )
 
@@ -1287,6 +1299,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
                 SelectLatestLogEntry()
@@ -1374,6 +1387,7 @@ Public Class Form1
                                                                        boolAlerted:=False,
                                                                        strRawLogText:=Nothing,
                                                                        strAlertText:=Nothing,
+                                                                       AlertType:=AlertType.None,
                                                                        dataGrid:=Logs)
                                                                       )
                             SelectLatestLogEntry()
@@ -1689,6 +1703,22 @@ Public Class Form1
         My.Settings.NotificationLength = 1
     End Sub
 
+    Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
+        SyncLock dataGridLockObject
+            Dim data As New List(Of AlertsHistory)
+
+            For Each item As MyDataGridViewRow In Logs.Rows
+                If item.BoolAlerted Then
+                    data.Add(New AlertsHistory With {.strTime = item.Cells(ColumnIndex_ComputedTime).Value, .alertType = item.alertType, .strAlertText = item.AlertText})
+                End If
+            Next
+
+            Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent}
+                Alerts_History.ShowDialog(Me)
+            End Using
+        End SyncLock
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1763,6 +1793,7 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
+                                                                      AlertType:=AlertType.None,
                                                                       dataGrid:=Logs)
                                                                      )
                            SelectLatestLogEntry()

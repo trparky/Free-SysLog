@@ -236,5 +236,11 @@
     <Setting Name="NotificationLength" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="AlertHistorySize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">776, 426</Value>
+    </Setting>
+    <Setting Name="AlertHistoryLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
