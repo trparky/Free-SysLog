@@ -66,12 +66,12 @@ Public Class ReplacementsClass
 End Class
 
 Public Class AlertsHistory
-    Public strTime, strAlertText As String
+    Public strTime, strAlertText, strIP, strLog, strRawLog As String
     Public alertType As AlertType
 
-    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView, height As Integer) As DataGridViewRow
-        Using MyDataGridViewRow As New MyDataGridViewRow
-            With MyDataGridViewRow
+    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView, height As Integer) As AlertsHistoryDataGridViewRow
+        Using AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow
+            With AlertsHistoryDataGridViewRow
                 .CreateCells(dataGrid)
                 .Cells(0).Value = strTime
                 .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -94,9 +94,15 @@ Public Class AlertsHistory
                     .Cells(1).Style.Font = My.Settings.font
                     .Cells(2).Style.Font = My.Settings.font
                 End If
+
+                .strRawLog = strRawLog
+                .strIP = strIP
+                .strLog = strLog
+                .strTime = strTime
+                .strAlertText = strAlertText
             End With
 
-            Return MyDataGridViewRow
+            Return AlertsHistoryDataGridViewRow
         End Using
     End Function
 End Class
