@@ -30,12 +30,12 @@ Public Class ViewLogBackups
         End If
 
         Dim listOfDataGridViewRows As New List(Of DataGridViewRow)
-        Dim intCount, intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
+        Dim intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace As Long
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
-                                               intCount = GetEntryCount(file.FullName)
+                                               Dim intCount As Integer = GetEntryCount(file.FullName)
 
                                                If intCount <> -1 Then
                                                    ' Accumulate counts and totals
