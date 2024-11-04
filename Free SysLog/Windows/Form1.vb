@@ -1701,7 +1701,14 @@ Public Class Form1
 
             For Each item As MyDataGridViewRow In Logs.Rows
                 If item.BoolAlerted Then
-                    data.Add(New AlertsHistory With {.strTime = item.Cells(ColumnIndex_ComputedTime).Value, .alertType = item.alertType, .strAlertText = item.AlertText})
+                    data.Add(New AlertsHistory With {
+                             .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
+                             .alertType = item.alertType,
+                             .strAlertText = item.AlertText,
+                             .strIP = item.Cells(ColumnIndex_IPAddress).Value,
+                             .strLog = item.Cells(ColumnIndex_LogText).Value,
+                             .strRawLog = item.RawLogData
+                            })
                 End If
             Next
 
