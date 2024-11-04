@@ -144,6 +144,12 @@
     </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Support Code\Namespace Code\Check for Update.vb" />
+    <Compile Include="Windows\Alerts History.Designer.vb">
+      <DependentUpon>Alerts History.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Alerts History.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Alerts.Designer.vb">
       <DependentUpon>Alerts.vb</DependentUpon>
     </Compile>
@@ -261,6 +267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\AddReplacement.resx">
       <DependentUpon>AddReplacement.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Alerts History.resx">
+      <DependentUpon>Alerts History.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Alerts.resx">
       <DependentUpon>Alerts.vb</DependentUpon>

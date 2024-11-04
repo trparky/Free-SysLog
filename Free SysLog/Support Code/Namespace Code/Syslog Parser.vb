@@ -22,7 +22,7 @@ Namespace SyslogParser
             End Set
         End Property
 
-        Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, ByRef dataGrid As DataGridView, backColor As Color, foreColor As Color) As MyDataGridViewRow
+        Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, AlertType As AlertType, ByRef dataGrid As DataGridView, backColor As Color, foreColor As Color) As MyDataGridViewRow
             Using MyDataGridViewRow As New MyDataGridViewRow
                 With MyDataGridViewRow
                     .CreateCells(dataGrid)
@@ -42,6 +42,7 @@ Namespace SyslogParser
                     .ServerDate = serverTimeStamp
                     .RawLogData = strRawLogText
                     .AlertText = strAlertText
+                    .alertType = AlertType
                     .MinimumHeight = GetMinimumHeight(strLog, ParentForm.Logs.DefaultCellStyle.Font, ParentForm.ColLog.Width)
 
                     If My.Settings.font IsNot Nothing Then
@@ -110,6 +111,7 @@ Namespace SyslogParser
                                                                                boolAlerted:=False,
                                                                                strRawLogText:=Nothing,
                                                                                strAlertText:=Nothing,
+                                                                               AlertType:=AlertType.None,
                                                                                dataGrid:=ParentForm.Logs,
                                                                                backColor:=previousRowStyle.BackColor,
                                                                                foreColor:=previousRowStyle.ForeColor)
@@ -291,6 +293,7 @@ Namespace SyslogParser
                     Dim customHostname As String = Nothing
                     Dim appName As String = Nothing
                     Dim strAlertText As String = Nothing
+                    Dim AlertType As AlertType = AlertType.None
 
                     ' Step 1: Use Regex to extract the RFC 5424 header and the message
                     Dim match As Match = Nothing
@@ -321,10 +324,10 @@ Namespace SyslogParser
                     ' Step 3: Handle the ignored logs and alerts
                     If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then boolIgnored = ProcessIgnoredLogPreferences(message)
                     If replacementsList IsNot Nothing AndAlso replacementsList.Count > 0 Then message = ProcessReplacements(message)
-                    If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText)
+                    If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
                     ' Step 4: Add to log list, separating header and message
-                    AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText)
+                    AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)
                 End If
             Catch ex As Exception
                 AddToLogList(Nothing, "local", $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
@@ -348,7 +351,7 @@ Namespace SyslogParser
             Return False
         End Function
 
-        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String)
+        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
@@ -379,6 +382,7 @@ Namespace SyslogParser
                                                                                    boolAlerted:=boolAlerted,
                                                                                    strRawLogText:=strRawLogText.Trim,
                                                                                    strAlertText:=strAlertText,
+                                                                                   AlertType:=AlertType.None,
                                                                                    dataGrid:=ParentForm.Logs,
                                                                                    backColor:=previousRowStyle.BackColor,
                                                                                    foreColor:=previousRowStyle.ForeColor)
@@ -407,6 +411,7 @@ Namespace SyslogParser
                                                                               boolAlerted:=boolAlerted,
                                                                               strRawLogText:=strRawLogText.Trim,
                                                                               strAlertText:=strAlertText,
+                                                                              AlertType:=alertType,
                                                                               dataGrid:=ParentForm.Logs,
                                                                               backColor:=previousRowStyle.BackColor,
                                                                               foreColor:=previousRowStyle.ForeColor
@@ -434,7 +439,7 @@ Namespace SyslogParser
             Return ParentForm.regexCache(pattern)
         End Function
 
-        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogData As String, strSourceIP As String, strRawLogText As String) As Boolean
+        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogData As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
             Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
             Dim RegExObject As Regex
             Dim strAlertText As String
@@ -446,10 +451,13 @@ Namespace SyslogParser
                 If RegExObject.IsMatch(strLogText) Then
                     If alert.alertType = AlertType.Warning Then
                         ToolTipIcon = ToolTipIcon.Warning
+                        alertTypeAsAlertType = AlertType.Warning
                     ElseIf alert.alertType = AlertType.ErrorMsg Then
                         ToolTipIcon = ToolTipIcon.Error
+                        alertTypeAsAlertType = AlertType.ErrorMsg
                     ElseIf alert.alertType = AlertType.Info Then
                         ToolTipIcon = ToolTipIcon.Info
+                        alertTypeAsAlertType = AlertType.Info
                     End If
 
                     strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
