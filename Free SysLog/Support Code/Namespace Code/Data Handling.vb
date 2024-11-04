@@ -169,7 +169,8 @@ Namespace DataHandling
                                                 .BoolAlerted = myItem.BoolAlerted,
                                                 .ServerDate = myItem.ServerDate,
                                                 .rawLogData = myItem.RawLogData,
-                                                .alertText = myItem.AlertText
+                                                .alertText = myItem.AlertText,
+                                                .alertType = myItem.alertType
                                               })
                         End If
                     Next

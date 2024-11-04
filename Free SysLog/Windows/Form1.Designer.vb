@@ -28,6 +28,7 @@ Partial Class Form1
         Me.BtnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnOpenLogForViewing = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlertsHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
@@ -166,6 +167,14 @@ Partial Class Form1
         Me.BtnOpenLogForViewing.Name = "BtnOpenLogForViewing"
         Me.BtnOpenLogForViewing.Size = New System.Drawing.Size(239, 22)
         Me.BtnOpenLogForViewing.Text = "Open Log File for Viewing"
+        '
+        'AlertsHistory
+        '
+        Me.AlertsHistory.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearAllLogs, Me.LogsOlderThanToolStripMenuItem})
+        Me.AlertsHistory.Enabled = True
+        Me.AlertsHistory.Name = "AlertsHistory"
+        Me.AlertsHistory.Size = New System.Drawing.Size(239, 22)
+        Me.AlertsHistory.Text = "Alerts History"
         '
         'BtnClearLog
         '
@@ -368,7 +377,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ViewLogBackups, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AlertsHistory, Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ViewLogBackups, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -843,6 +852,7 @@ Partial Class Form1
     Friend WithEvents ChkEnableAutoScroll As ToolStripMenuItem
     Friend WithEvents AutomaticallyCheckForUpdates As ToolStripMenuItem
     Friend WithEvents BtnClearLog As ToolStripMenuItem
+    Friend WithEvents AlertsHistory As ToolStripMenuItem
     Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
     Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem
     Friend WithEvents SaveTimer As Timer
