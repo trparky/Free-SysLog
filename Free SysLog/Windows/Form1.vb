@@ -783,6 +783,25 @@ Public Class Form1
             Exit Sub
         End If
 
+        If e.CloseReason = CloseReason.WindowsShutDown Then
+            SyncLock dataGridLockObject
+                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
+                                                                          dateObject:=Now,
+                                                                          strTime:=Now.ToString,
+                                                                          strSourceAddress:=IPAddress.Loopback.ToString,
+                                                                          strHostname:="Local",
+                                                                          strRemoteProcess:=Nothing,
+                                                                          strLog:="Windows shutdown initiated, Free Syslog is closing.",
+                                                                          strLogType:="Informational, Local",
+                                                                          boolAlerted:=False,
+                                                                          strRawLogText:=Nothing,
+                                                                          strAlertText:=Nothing,
+                                                                          AlertType:=AlertType.None,
+                                                                          dataGrid:=Logs)
+                                                                         )
+            End SyncLock
+        End If
+
         My.Settings.Save()
         DataHandling.WriteLogsToDisk()
 
