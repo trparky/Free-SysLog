@@ -9,7 +9,6 @@ Imports System.Reflection
 Imports System.Configuration
 Imports Free_SysLog.SupportCode
 Imports Microsoft.Toolkit.Uwp.Notifications
-Imports Windows.AI.MachineLearning
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
