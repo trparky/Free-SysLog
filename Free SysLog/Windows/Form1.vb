@@ -18,7 +18,7 @@ Public Class Form1
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
     Public regexCache As New Dictionary(Of String, Regex)
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
-    Public sortOrder As SortOrder = sortOrder.Ascending ' Define soSortOrder at class level
+    Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
     Public ReadOnly IgnoredLogsLockObject As New Object
     Private Const strPayPal As String = "https://paypal.me/trparky"
@@ -162,7 +162,7 @@ Public Class Form1
 
     Public Sub SelectLatestLogEntry()
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = sortOrder.Ascending, Logs.Rows.Count - 1, 0)
+            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
         End If
     End Sub
 
@@ -348,7 +348,7 @@ Public Class Form1
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
-        ColTime.HeaderCell.SortGlyphDirection = sortOrder.Ascending
+        ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
         If My.Settings.boolMaximized Then WindowState = FormWindowState.Maximized
@@ -477,7 +477,7 @@ Public Class Form1
                 End Using
 
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
-                Dim stopwatch As Stopwatch = stopwatch.StartNew
+                Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
                 If collectionOfSavedData.Count > 0 Then
                     Dim intProgress As Integer = 0
@@ -827,6 +827,28 @@ Public Class Form1
         If e.CloseReason = CloseReason.UserClosing AndAlso My.Settings.boolConfirmClose AndAlso MsgBox("Are you sure you want to close Free SysLog?", MsgBoxStyle.YesNo + MsgBoxStyle.Question + vbDefaultButton2, Text) = MsgBoxResult.No Then
             e.Cancel = True
             Exit Sub
+        End If
+
+        If e.CloseReason = CloseReason.WindowsShutDown Then
+            SyncLock dataGridLockObject
+                Dim previousRowStyle As DataGridViewCellStyle = Logs.Rows(Logs.Rows.Count - 2).Cells(0).Style
+                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
+                                                                          dateObject:=Now,
+                                                                          strTime:=Now.ToString,
+                                                                          strSourceAddress:=IPAddress.Loopback.ToString,
+                                                                          strHostname:="Local",
+                                                                          strRemoteProcess:=Nothing,
+                                                                          strLog:="Windows shutdown initiated, Free Syslog is closing.",
+                                                                          strLogType:="Informational, Local",
+                                                                          boolAlerted:=False,
+                                                                          strRawLogText:=Nothing,
+                                                                          strAlertText:=Nothing,
+                                                                          AlertType:=AlertType.None,
+                                                                          dataGrid:=Logs,
+                                                                          backColor:=previousRowStyle.BackColor,
+                                                                          foreColor:=previousRowStyle.ForeColor)
+                                                                         )
+            End SyncLock
         End If
 
         My.Settings.Save()
