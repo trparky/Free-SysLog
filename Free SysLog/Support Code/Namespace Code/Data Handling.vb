@@ -149,17 +149,16 @@ Namespace DataHandling
         End Sub
 
         Public Sub WriteLogsToDisk()
-            SyncLock ParentForm.lockObject
+            SyncLock ParentForm.dataGridLockObject
                 Dim collectionOfSavedData As New List(Of SavedData)
                 Dim syncLockObject As New Object
 
-                SyncLock ParentForm.dataGridLockObject
-                    Threading.Tasks.Parallel.ForEach(ParentForm.Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
-                                                                                                        SyncLock syncLockObject
-                                                                                                            If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                                                                                                                Dim myItem As MyDataGridViewRow = DirectCast(item, MyDataGridViewRow)
+                Threading.Tasks.Parallel.ForEach(ParentForm.Logs.Rows.Cast(Of DataGridViewRow), Sub(item As DataGridViewRow)
+                                                                                                    SyncLock syncLockObject
+                                                                                                        If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
+                                                                                                            Dim myItem As MyDataGridViewRow = DirectCast(item, MyDataGridViewRow)
 
-                                                                                                                collectionOfSavedData.Add(New SavedData With {
+                                                                                                            collectionOfSavedData.Add(New SavedData With {
                                                                                                                     .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
                                                                                                                     .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                                                                                                     .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
@@ -173,11 +172,10 @@ Namespace DataHandling
                                                                                                                     .alertText = myItem.AlertText,
                                                                                                                     .alertType = myItem.alertType
                                                                                                                 })
-                                                                                                            End If
-                                                                                                        End SyncLock
-                                                                                                    End Sub)
+                                                                                                        End If
+                                                                                                    End SyncLock
+                                                                                                End Sub)
 
-                End SyncLock
 
                 Try
                     Using fileStream As New StreamWriter(strPathToDataFile & ".new")
