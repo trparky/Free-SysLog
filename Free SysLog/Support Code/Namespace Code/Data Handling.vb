@@ -149,32 +149,30 @@ Namespace DataHandling
         End Sub
 
         Public Sub WriteLogsToDisk()
-            SyncLock ParentForm.lockObject
+            SyncLock ParentForm.dataGridLockObject
                 Dim collectionOfSavedData As New List(Of SavedData)
                 Dim myItem As MyDataGridViewRow
 
-                SyncLock ParentForm.dataGridLockObject
-                    For Each item As DataGridViewRow In ParentForm.Logs.Rows
-                        If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                            myItem = DirectCast(item, MyDataGridViewRow)
+                For Each item As DataGridViewRow In ParentForm.Logs.Rows
+                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
+                        myItem = DirectCast(item, MyDataGridViewRow)
 
-                            collectionOfSavedData.Add(New SavedData With {
-                                                .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                                .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                                .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                                .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                                .DateObject = myItem.DateObject,
-                                                .BoolAlerted = myItem.BoolAlerted,
-                                                .ServerDate = myItem.ServerDate,
-                                                .rawLogData = myItem.RawLogData,
-                                                .alertText = myItem.AlertText,
-                                                .alertType = myItem.alertType
-                                              })
-                        End If
-                    Next
-                End SyncLock
+                        collectionOfSavedData.Add(New SavedData With {
+                                            .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                            .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                            .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                            .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
+                                            .log = myItem.Cells(ColumnIndex_LogText).Value,
+                                            .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                            .DateObject = myItem.DateObject,
+                                            .BoolAlerted = myItem.BoolAlerted,
+                                            .ServerDate = myItem.ServerDate,
+                                            .rawLogData = myItem.RawLogData,
+                                            .alertText = myItem.AlertText,
+                                            .alertType = myItem.alertType
+                                          })
+                    End If
+                Next
 
                 Try
                     Using fileStream As New StreamWriter(strPathToDataFile & ".new")
