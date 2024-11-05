@@ -14,7 +14,6 @@ Imports Windows.AI.MachineLearning
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
-    Public lockObject As New Object
     Public longNumberOfIgnoredLogs As Long = 0
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
     Public regexCache As New Dictionary(Of String, Regex)
