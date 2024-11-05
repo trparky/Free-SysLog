@@ -1768,9 +1768,9 @@ Public Class Form1
     End Sub
 
     Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
-        SyncLock dataGridLockObject
-            Dim data As New List(Of AlertsHistory)
+        Dim data As New List(Of AlertsHistory)
 
+        SyncLock dataGridLockObject
             For Each item As MyDataGridViewRow In Logs.Rows
                 If item.BoolAlerted Then
                     data.Add(New AlertsHistory With {
@@ -1783,11 +1783,11 @@ Public Class Form1
                             })
                 End If
             Next
-
-            Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent}
-                Alerts_History.ShowDialog(Me)
-            End Using
         End SyncLock
+
+        Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent}
+            Alerts_History.ShowDialog(Me)
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"
