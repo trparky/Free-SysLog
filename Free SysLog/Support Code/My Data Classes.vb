@@ -2,7 +2,7 @@
 
 Public Class SavedData
     Public time, ip, log, fileName, logType, hostname, appName, rawLogData, alertText As String
-    Public alertType As AlertType
+    Public alertType As AlertType = AlertType.None
     Public DateObject, ServerDate As Date
     Public BoolAlerted As Boolean = False
 
