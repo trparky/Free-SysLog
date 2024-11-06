@@ -855,8 +855,8 @@ Public Class Form1
         DataHandling.WriteLogsToDisk()
 
         If boolDoWeOwnTheMutex Then
-            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+            SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
         End If
 
         Try
@@ -1347,8 +1347,8 @@ Public Class Form1
 
     Private Sub StopServerStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopServerStripMenuItem.Click
         If StopServerStripMenuItem.Text = "Stop Server" Then
-            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+            SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
             StopServerStripMenuItem.Text = "Start Server"
             boolServerRunning = False
         ElseIf StopServerStripMenuItem.Text = "Start Server" And boolDoWeOwnTheMutex Then
@@ -1438,8 +1438,8 @@ Public Class Form1
                         MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
                     Else
                         If boolDoWeOwnTheMutex Then
-                            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-                            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                            SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+                            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
                         End If
 
                         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
@@ -1674,7 +1674,7 @@ Public Class Form1
         If ChkEnableTCPSyslogServer.Checked Then
             StartTCPServer()
         Else
-            SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+            SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
         End If
     End Sub
 
@@ -1703,8 +1703,8 @@ Public Class Form1
 
         If boolDoWeOwnTheMutex AndAlso boolServerRunning AndAlso MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
             Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                       SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-                                                       If boolTCPServerRunning Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                                                       SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+                                                       If boolTCPServerRunning Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
 
                                                        Threading.Thread.Sleep(5000)
 
@@ -1837,11 +1837,11 @@ Public Class Form1
                     Dim strReceivedData As String = Encoding.UTF8.GetString(buffer, 0, bytesReceived)
                     Dim strSourceIP As String = GetIPv4Address(CType(remoteEndPoint, IPEndPoint).Address).ToString()
 
-                    If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
+                    If strReceivedData.Trim.Equals(strRestore, StringComparison.OrdinalIgnoreCase) Then
                         Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
-                    ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
+                    ElseIf strReceivedData.Trim.Equals(strTerminate, StringComparison.OrdinalIgnoreCase) Then
                         boolDoServerLoop = False
-                    ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
+                    ElseIf strReceivedData.Trim.StartsWith(strProxiedString, StringComparison.OrdinalIgnoreCase) Then
                         Try
                             strReceivedData = strReceivedData.Replace(strProxiedString, "", StringComparison.OrdinalIgnoreCase)
                             ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData, JSONDecoderSettingsForLogFiles)

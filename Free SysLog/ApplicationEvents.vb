@@ -50,7 +50,7 @@ Namespace My
             mutex = New Threading.Mutex(True, strMutexName, boolDoWeOwnTheMutex)
 
             If Not boolDoWeOwnTheMutex And Not Debugger.IsAttached Then
-                SendMessageToSysLogServer("restore", Settings.sysLogPort)
+                SendMessageToSysLogServer(strRestore, Settings.sysLogPort)
                 e.Cancel = True
                 Exit Sub
             End If
