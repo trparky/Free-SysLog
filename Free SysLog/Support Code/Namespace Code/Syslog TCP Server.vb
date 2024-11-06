@@ -52,7 +52,7 @@ Namespace SyslogTcpServer
                             If intBytesRead <> 0 Then
                                 strMessage = Encoding.UTF8.GetString(dataBuffer, 0, intBytesRead).Trim()
 
-                                If strMessage.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
+                                If strMessage.Equals(strTerminate, StringComparison.OrdinalIgnoreCase) Then
                                     TCPListener.Stop()
                                     boolLoopControl = False
                                     Exit Do
