@@ -30,6 +30,8 @@ Namespace SupportCode
         Public Const strQuote As String = Chr(34)
         Public Const strViewLog As String = "viewlog"
         Public Const strOpenSysLog As String = "opensyslog"
+        Public Const strRestore As String = "restore"
+        Public Const strTerminate As String = "terminate"
 
         Public Const ColumnIndex_ComputedTime As Integer = 0
         Public Const ColumnIndex_ServerTime As Integer = 1
