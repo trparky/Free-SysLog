@@ -1,8 +1,16 @@
 ﻿Imports System.Reflection
+Imports Microsoft.VisualBasic.Logging
 
 Public Class Alerts_History
     Public Property data As List(Of AlertsHistory)
+    Private Shadows ParentForm As Form1
     Private boolDoneLoading As Boolean = False
+
+    Public WriteOnly Property SetParentForm As Form1
+        Set(value As Form1)
+            ParentForm = value
+        End Set
+    End Property
 
     Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
         Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
@@ -60,6 +68,44 @@ Public Class Alerts_History
 
             With AlertsHistoryDataGridViewRow
                 OpenLogViewerWindow(.strLog, .strAlertText, .strTime, .strIP, .strRawLog)
+            End With
+        End If
+    End Sub
+
+    Private Sub Alerts_History_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.F5 Then BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
+        If ParentForm IsNot Nothing Then
+            With ParentForm
+                Dim data As New List(Of AlertsHistory)
+
+                SyncLock ParentForm.dataGridLockObject
+                    For Each item As MyDataGridViewRow In ParentForm.Logs.Rows
+                        If item.BoolAlerted Then
+                            data.Add(New AlertsHistory With {
+                                     .strTime = item.Cells(SupportCode.ColumnIndex_ComputedTime).Value,
+                                     .alertType = item.alertType,
+                                     .strAlertText = item.AlertText,
+                                     .strIP = item.Cells(SupportCode.ColumnIndex_IPAddress).Value,
+                                     .strLog = item.Cells(SupportCode.ColumnIndex_LogText).Value,
+                                     .strRawLog = item.RawLogData
+                                    })
+                        End If
+                    Next
+                End SyncLock
+
+                If data.Count > 0 Then
+                    Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
+
+                    For Each item As AlertsHistory In data
+                        listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList, SupportCode.GetMinimumHeight(item.strAlertText, AlertHistoryList.DefaultCellStyle.Font, colAlert.Width)))
+                    Next
+
+                    AlertHistoryList.Rows.Clear()
+                    AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
+                End If
             End With
         End If
     End Sub
