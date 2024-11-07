@@ -26,6 +26,7 @@ Partial Class Alerts_History
         Me.colTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colAlertType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colAlert = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.BtnRefresh = New System.Windows.Forms.Button()
         CType(Me.AlertHistoryList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -41,7 +42,7 @@ Partial Class Alerts_History
         Me.AlertHistoryList.Name = "AlertHistoryList"
         Me.AlertHistoryList.ReadOnly = True
         Me.AlertHistoryList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.AlertHistoryList.Size = New System.Drawing.Size(1227, 426)
+        Me.AlertHistoryList.Size = New System.Drawing.Size(1227, 397)
         Me.AlertHistoryList.TabIndex = 0
         '
         'colTime
@@ -63,12 +64,24 @@ Partial Class Alerts_History
         Me.colAlert.Name = "colAlert"
         Me.colAlert.ReadOnly = True
         '
+        'BtnRefresh
+        '
+        Me.BtnRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.BtnRefresh.Location = New System.Drawing.Point(1139, 415)
+        Me.BtnRefresh.Name = "BtnRefresh"
+        Me.BtnRefresh.Size = New System.Drawing.Size(100, 23)
+        Me.BtnRefresh.TabIndex = 1
+        Me.BtnRefresh.Text = "&Refresh (F5)"
+        Me.BtnRefresh.UseVisualStyleBackColor = True
+        '
         'Alerts_History
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1251, 450)
+        Me.Controls.Add(Me.BtnRefresh)
         Me.Controls.Add(Me.AlertHistoryList)
+        Me.KeyPreview = True
         Me.MinimumSize = New System.Drawing.Size(1267, 489)
         Me.Name = "Alerts_History"
         Me.Text = "Alerts History"
@@ -81,4 +94,5 @@ Partial Class Alerts_History
     Friend WithEvents colTime As DataGridViewTextBoxColumn
     Friend WithEvents colAlertType As DataGridViewTextBoxColumn
     Friend WithEvents colAlert As DataGridViewTextBoxColumn
+    Friend WithEvents BtnRefresh As Button
 End Class
