@@ -1789,26 +1789,28 @@ Public Class Form1
     End Sub
 
     Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
-        Dim data As New List(Of AlertsHistory)
+        If Logs.Rows.Count > 0 Then
+            Dim data As New List(Of AlertsHistory)
 
-        SyncLock dataGridLockObject
-            For Each item As MyDataGridViewRow In Logs.Rows
-                If item.BoolAlerted Then
-                    data.Add(New AlertsHistory With {
-                             .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
-                             .alertType = item.alertType,
-                             .strAlertText = item.AlertText,
-                             .strIP = item.Cells(ColumnIndex_IPAddress).Value,
-                             .strLog = item.Cells(ColumnIndex_LogText).Value,
-                             .strRawLog = item.RawLogData
-                            })
-                End If
-            Next
-        End SyncLock
+            SyncLock dataGridLockObject
+                For Each item As MyDataGridViewRow In Logs.Rows
+                    If item.BoolAlerted Then
+                        data.Add(New AlertsHistory With {
+                                 .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
+                                 .alertType = item.alertType,
+                                 .strAlertText = item.AlertText,
+                                 .strIP = item.Cells(ColumnIndex_IPAddress).Value,
+                                 .strLog = item.Cells(ColumnIndex_LogText).Value,
+                                 .strRawLog = item.RawLogData
+                                })
+                    End If
+                Next
+            End SyncLock
 
-        Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent}
-            Alerts_History.ShowDialog(Me)
-        End Using
+            Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent}
+                Alerts_History.ShowDialog(Me)
+            End Using
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"
