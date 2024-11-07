@@ -1739,9 +1739,13 @@ Public Class Form1
                 Next
             End SyncLock
 
-            Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent}
-                Alerts_History.ShowDialog(Me)
-            End Using
+            If data.Count = 0 Then
+                MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
+            Else
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent}
+                    Alerts_History.ShowDialog(Me)
+                End Using
+            End If
         End If
     End Sub
 
