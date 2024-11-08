@@ -35,6 +35,7 @@ Public Class Alerts_History
         colTime.Width = My.Settings.columnTimeSize
 
         If data IsNot Nothing AndAlso data.Count > 0 Then
+            lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
             Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
             For Each item As AlertsHistory In data
@@ -97,6 +98,7 @@ Public Class Alerts_History
                 End SyncLock
 
                 If data.Count > 0 Then
+                    lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
                     Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
                     For Each item As AlertsHistory In data
