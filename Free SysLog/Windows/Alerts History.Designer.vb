@@ -44,6 +44,7 @@ Partial Class Alerts_History
         Me.AlertHistoryList.Location = New System.Drawing.Point(12, 12)
         Me.AlertHistoryList.Name = "AlertHistoryList"
         Me.AlertHistoryList.ReadOnly = True
+        Me.AlertHistoryList.RowHeadersVisible = False
         Me.AlertHistoryList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.AlertHistoryList.Size = New System.Drawing.Size(1227, 381)
         Me.AlertHistoryList.TabIndex = 0

@@ -104,6 +104,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Logs.Location = New System.Drawing.Point(12, 12)
         Me.Logs.Name = "Logs"
         Me.Logs.ReadOnly = True
+        Me.Logs.RowHeadersVisible = False
         Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.Logs.Size = New System.Drawing.Size(1128, 359)
         Me.Logs.TabIndex = 19
