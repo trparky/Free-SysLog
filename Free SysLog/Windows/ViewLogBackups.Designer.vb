@@ -67,6 +67,7 @@ Partial Class ViewLogBackups
         Me.FileList.Location = New System.Drawing.Point(13, 12)
         Me.FileList.Name = "FileList"
         Me.FileList.ReadOnly = True
+        Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.FileList.Size = New System.Drawing.Size(1010, 299)
         Me.FileList.TabIndex = 36
