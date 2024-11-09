@@ -8,11 +8,11 @@ Imports System.Text.RegularExpressions
 Imports System.Reflection
 Imports System.Configuration
 Imports Free_SysLog.SupportCode
+Imports Microsoft.Toolkit.Uwp.Notifications
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
-    Public lockObject As New Object
     Public longNumberOfIgnoredLogs As Long = 0
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
     Public regexCache As New Dictionary(Of String, Regex)
@@ -76,6 +76,7 @@ Public Class Form1
                                                        boolAlerted:=False,
                                                        strRawLogText:=Nothing,
                                                        strAlertText:=Nothing,
+                                                       AlertType:=AlertType.None,
                                                        dataGrid:=Logs)
                                                       )
 
@@ -210,9 +211,8 @@ Public Class Form1
             WindowState = FormWindowState.Normal
         End If
 
-        TopMost = True
         BringToFront()
-        TopMost = False
+        Activate()
 
         SelectLatestLogEntry()
     End Sub
@@ -222,6 +222,15 @@ Public Class Form1
     End Sub
 
     Private Sub LoadCheckboxSettings()
+        If My.Settings.NotificationLength = 0 Then
+            NotificationLengthShort.Checked = True
+            NotificationLengthLong.Checked = False
+        Else
+            NotificationLengthShort.Checked = False
+            NotificationLengthLong.Checked = True
+        End If
+
+        IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
@@ -327,6 +336,7 @@ Public Class Form1
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
+        ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds)"
 
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
@@ -344,7 +354,7 @@ Public Class Form1
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
         propInfo?.SetValue(Logs, True, Nothing)
 
-        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
@@ -373,6 +383,40 @@ Public Class Form1
         AddHandler worker.DoWork, Sub() LoadDataFile()
         AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
         worker.RunWorkerAsync()
+
+        AddNotificationActionHandler()
+    End Sub
+
+    Private Sub AddNotificationActionHandler()
+        AddHandler ToastNotificationManagerCompat.OnActivated, Sub(args)
+                                                                   ' Parse arguments
+                                                                   Dim argsDictionary As New Dictionary(Of String, String)
+                                                                   Dim itemSplit As String()
+
+                                                                   For Each item As String In args.Argument.Split(";")
+                                                                       If Not String.IsNullOrWhiteSpace(item) Then
+                                                                           itemSplit = item.Split("=")
+
+                                                                           If itemSplit.Length = 2 AndAlso Not String.IsNullOrWhiteSpace(itemSplit(0)) Then
+                                                                               argsDictionary(itemSplit(0)) = itemSplit(1)
+                                                                           End If
+                                                                       End If
+                                                                   Next
+
+                                                                   If argsDictionary.ContainsKey("action") Then
+                                                                       If argsDictionary("action").ToString.Equals(strOpenSysLog, StringComparison.OrdinalIgnoreCase) Then
+                                                                           Invoke(Sub() RestoreWindow())
+                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
+                                                                           Try
+                                                                               Dim strDataPacket As String = argsDictionary("datapacket")
+                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(strDataPacket, JSONDecoderSettingsForSettingsFiles)
+
+                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext)
+                                                                           Catch ex As Exception
+                                                                           End Try
+                                                                       End If
+                                                                   End If
+                                                               End Sub
     End Sub
 
     Private Async Sub StartTCPServer()
@@ -411,6 +455,7 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
+                                                                      AlertType:=AlertType.None,
                                                                       dataGrid:=Logs)
                                                                      )
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
@@ -451,6 +496,7 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
+                                                                      AlertType:=AlertType.None,
                                                                       dataGrid:=Logs)
                                                                      )
                 End If
@@ -500,6 +546,7 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
+                                                        AlertType:=AlertType.None,
                                                         dataGrid:=Logs
                                                        ),
                            SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
@@ -513,6 +560,7 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
+                                                        AlertType:=AlertType.None,
                                                         dataGrid:=Logs
                                                        ),
                            SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
@@ -526,6 +574,7 @@ Public Class Form1
                                                         boolAlerted:=False,
                                                         strRawLogText:=Nothing,
                                                         strAlertText:=Nothing,
+                                                        AlertType:=AlertType.None,
                                                         dataGrid:=Logs
                                                        )
                        }
@@ -558,6 +607,17 @@ Public Class Form1
 
     Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles BtnOpenLogLocation.Click
         SelectFileInWindowsExplorer(strPathToDataFile)
+    End Sub
+
+    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
+            LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
+            LogViewerInstance.TopMost = True
+            LogViewerInstance.lblAlertText.Text = $"Alert Text: {strAlertText}"
+
+            LogViewerInstance.ShowDialog()
+        End Using
     End Sub
 
     Private Sub OpenLogViewerWindow()
@@ -621,6 +681,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
 
@@ -679,6 +740,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
 
@@ -716,18 +778,39 @@ Public Class Form1
             Exit Sub
         End If
 
+        If e.CloseReason = CloseReason.WindowsShutDown Then
+            SyncLock dataGridLockObject
+                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
+                                                                          dateObject:=Now,
+                                                                          strTime:=Now.ToString,
+                                                                          strSourceAddress:=IPAddress.Loopback.ToString,
+                                                                          strHostname:="Local",
+                                                                          strRemoteProcess:=Nothing,
+                                                                          strLog:="Windows shutdown initiated, Free Syslog is closing.",
+                                                                          strLogType:="Informational, Local",
+                                                                          boolAlerted:=False,
+                                                                          strRawLogText:=Nothing,
+                                                                          strAlertText:=Nothing,
+                                                                          AlertType:=AlertType.None,
+                                                                          dataGrid:=Logs)
+                                                                         )
+            End SyncLock
+        End If
+
         My.Settings.Save()
         DataHandling.WriteLogsToDisk()
 
         If boolDoWeOwnTheMutex Then
-            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+            SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
         End If
 
         Try
             mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
+
+        Process.GetCurrentProcess.Kill()
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
@@ -740,6 +823,7 @@ Public Class Form1
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
         Dim MyDataGridRowItem As MyDataGridViewRow
+        Dim stopWatch As Stopwatch = Stopwatch.StartNew
 
         BtnSearch.Enabled = False
 
@@ -776,6 +860,8 @@ Public Class Form1
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      searchResultsWindow.LogsLoadedInLabel.Visible = True
+                                                      searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -935,6 +1021,7 @@ Public Class Form1
                                                                    boolAlerted:=False,
                                                                    strRawLogText:=Nothing,
                                                                    strAlertText:=Nothing,
+                                                                   AlertType:=AlertType.None,
                                                                    dataGrid:=Logs)
                                                                   )
 
@@ -1056,6 +1143,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
 
@@ -1169,6 +1257,7 @@ Public Class Form1
                                                        boolAlerted:=False,
                                                        strRawLogText:=Nothing,
                                                        strAlertText:=Nothing,
+                                                       AlertType:=AlertType.None,
                                                        dataGrid:=Logs)
                                                       )
 
@@ -1193,8 +1282,8 @@ Public Class Form1
 
     Private Sub StopServerStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopServerStripMenuItem.Click
         If StopServerStripMenuItem.Text = "Stop Server" Then
-            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+            SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
             StopServerStripMenuItem.Text = "Start Server"
             boolServerRunning = False
         ElseIf StopServerStripMenuItem.Text = "Start Server" And boolDoWeOwnTheMutex Then
@@ -1219,6 +1308,7 @@ Public Class Form1
                                                            boolAlerted:=False,
                                                            strRawLogText:=Nothing,
                                                            strAlertText:=Nothing,
+                                                           AlertType:=AlertType.None,
                                                            dataGrid:=Logs)
                                                           )
                 SelectLatestLogEntry()
@@ -1280,8 +1370,8 @@ Public Class Form1
                         MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
                     Else
                         If boolDoWeOwnTheMutex Then
-                            SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-                            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                            SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+                            If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
                         End If
 
                         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {IntegerInputForm.intResult})"
@@ -1306,6 +1396,7 @@ Public Class Form1
                                                                        boolAlerted:=False,
                                                                        strRawLogText:=Nothing,
                                                                        strAlertText:=Nothing,
+                                                                       AlertType:=AlertType.None,
                                                                        dataGrid:=Logs)
                                                                       )
                             SelectLatestLogEntry()
@@ -1512,7 +1603,7 @@ Public Class Form1
         If ChkEnableTCPSyslogServer.Checked Then
             StartTCPServer()
         Else
-            SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+            SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
         End If
     End Sub
 
@@ -1541,8 +1632,8 @@ Public Class Form1
 
         If boolDoWeOwnTheMutex AndAlso boolServerRunning AndAlso MsgBox("Changing this setting will require a reset of the Syslog Client. Do you want to restart the Syslog Client now?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, Text) = MsgBoxResult.Yes Then
             Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                       SendMessageToSysLogServer("terminate", My.Settings.sysLogPort)
-                                                       If boolTCPServerRunning Then SendMessageToTCPSysLogServer("terminate", My.Settings.sysLogPort)
+                                                       SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+                                                       If boolTCPServerRunning Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
 
                                                        Threading.Thread.Sleep(5000)
 
@@ -1584,6 +1675,72 @@ Public Class Form1
         End Using
     End Sub
 
+    Private Sub ConfigureTimeBetweenSameNotifications_Click(sender As Object, e As EventArgs) Handles ConfigureTimeBetweenSameNotifications.Click
+        Using IntegerInputForm As New IntegerInputForm(30, 240) With {.Icon = Icon, .Text = "Configure Time Between Same Notifications", .StartPosition = FormStartPosition.CenterParent}
+            IntegerInputForm.lblSetting.Text = "Time Between Same Notifications (In Seconds)"
+            IntegerInputForm.TxtSetting.Text = My.Settings.TimeBetweenSameNotifications
+            IntegerInputForm.Width = IntegerInputForm.Width + 60
+
+            IntegerInputForm.ShowDialog(Me)
+
+            If IntegerInputForm.boolSuccess Then
+                If IntegerInputForm.intResult < 30 Or IntegerInputForm.intResult > 240 Then
+                    MsgBox("The time in seconds must be in the range of 30 - 240.", MsgBoxStyle.Critical, Text)
+                Else
+                    ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({IntegerInputForm.intResult} Seconds)"
+
+                    My.Settings.TimeBetweenSameNotifications = IntegerInputForm.intResult
+                    My.Settings.Save()
+
+                    MsgBox("Done.", MsgBoxStyle.Information, Text)
+                End If
+            End If
+        End Using
+    End Sub
+
+    Private Sub IncludeButtonsOnNotifications_Click(sender As Object, e As EventArgs) Handles IncludeButtonsOnNotifications.Click
+        My.Settings.IncludeButtonsOnNotifications = IncludeButtonsOnNotifications.Checked
+    End Sub
+
+    Private Sub NotificationLengthShort_Click(sender As Object, e As EventArgs) Handles NotificationLengthShort.Click
+        NotificationLengthLong.Checked = False
+        My.Settings.NotificationLength = 0
+    End Sub
+
+    Private Sub NotificationLengthLong_Click(sender As Object, e As EventArgs) Handles NotificationLengthLong.Click
+        NotificationLengthShort.Checked = False
+        My.Settings.NotificationLength = 1
+    End Sub
+
+    Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
+        If Logs.Rows.Count > 0 Then
+            Dim data As New List(Of AlertsHistory)
+
+            SyncLock dataGridLockObject
+                For Each item As MyDataGridViewRow In Logs.Rows
+                    If item.BoolAlerted Then
+                        data.Add(New AlertsHistory With {
+                                 .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
+                                 .alertType = item.alertType,
+                                 .strAlertText = item.AlertText,
+                                 .strIP = item.Cells(ColumnIndex_IPAddress).Value,
+                                 .strLog = item.Cells(ColumnIndex_LogText).Value,
+                                 .strRawLog = item.RawLogData
+                                })
+                    End If
+                Next
+            End SyncLock
+
+            If data.Count = 0 Then
+                MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
+            Else
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me}
+                    Alerts_History.ShowDialog(Me)
+                End Using
+            End If
+        End If
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1610,11 +1767,11 @@ Public Class Form1
                     Dim strReceivedData As String = Encoding.UTF8.GetString(buffer, 0, bytesReceived)
                     Dim strSourceIP As String = GetIPv4Address(CType(remoteEndPoint, IPEndPoint).Address).ToString()
 
-                    If strReceivedData.Trim.Equals("restore", StringComparison.OrdinalIgnoreCase) Then
+                    If strReceivedData.Trim.Equals(strRestore, StringComparison.OrdinalIgnoreCase) Then
                         Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
-                    ElseIf strReceivedData.Trim.Equals("terminate", StringComparison.OrdinalIgnoreCase) Then
+                    ElseIf strReceivedData.Trim.Equals(strTerminate, StringComparison.OrdinalIgnoreCase) Then
                         boolDoServerLoop = False
-                    ElseIf strReceivedData.Trim.StartsWith("proxied", StringComparison.OrdinalIgnoreCase) Then
+                    ElseIf strReceivedData.Trim.StartsWith(strProxiedString, StringComparison.OrdinalIgnoreCase) Then
                         Try
                             strReceivedData = strReceivedData.Replace(strProxiedString, "", StringComparison.OrdinalIgnoreCase)
                             ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ProxiedSysLogData)(strReceivedData, JSONDecoderSettingsForLogFiles)
@@ -1658,6 +1815,7 @@ Public Class Form1
                                                                       boolAlerted:=False,
                                                                       strRawLogText:=Nothing,
                                                                       strAlertText:=Nothing,
+                                                                      AlertType:=AlertType.None,
                                                                       dataGrid:=Logs)
                                                                      )
                            SelectLatestLogEntry()

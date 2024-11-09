@@ -947,6 +947,66 @@ Namespace My
                 Me("ColViewLogBackupsFileName") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property TimeBetweenSameNotifications() As Integer
+            Get
+                Return CType(Me("TimeBetweenSameNotifications"),Integer)
+            End Get
+            Set
+                Me("TimeBetweenSameNotifications") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property IncludeButtonsOnNotifications() As Boolean
+            Get
+                Return CType(Me("IncludeButtonsOnNotifications"),Boolean)
+            End Get
+            Set
+                Me("IncludeButtonsOnNotifications") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property NotificationLength() As Byte
+            Get
+                Return CType(Me("NotificationLength"),Byte)
+            End Get
+            Set
+                Me("NotificationLength") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("776, 426")>  _
+        Public Property AlertHistorySize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("AlertHistorySize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("AlertHistorySize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property AlertHistoryLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("AlertHistoryLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("AlertHistoryLocation") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -56,6 +56,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
@@ -78,7 +79,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount, Me.LogsLoadedInLabel})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 403)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1152, 22)
@@ -103,6 +104,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Logs.Location = New System.Drawing.Point(12, 12)
         Me.Logs.Name = "Logs"
         Me.Logs.ReadOnly = True
+        Me.Logs.RowHeadersVisible = False
         Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.Logs.Size = New System.Drawing.Size(1128, 359)
         Me.Logs.TabIndex = 19
@@ -291,6 +293,14 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ExportSelectedLogsToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
         Me.ExportSelectedLogsToolStripMenuItem.Text = "Export Selected Logs"
         '
+        'LogsLoadedInLabel
+        '
+        Me.LogsLoadedInLabel.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
+        Me.LogsLoadedInLabel.Name = "LogsLoadedInLabel"
+        Me.LogsLoadedInLabel.Size = New System.Drawing.Size(90, 17)
+        Me.LogsLoadedInLabel.Text = "Logs Loaded In:"
+        Me.LogsLoadedInLabel.Visible = False
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -344,4 +354,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents colLogType As DataGridViewTextBoxColumn
     Friend WithEvents ColHostname As DataGridViewTextBoxColumn
     Friend WithEvents ExportSelectedLogsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LogsLoadedInLabel As ToolStripStatusLabel
 End Class

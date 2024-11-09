@@ -2,6 +2,7 @@
 
 Public Class SavedData
     Public time, ip, log, fileName, logType, hostname, appName, rawLogData, alertText As String
+    Public alertType As AlertType = AlertType.None
     Public DateObject, ServerDate As Date
     Public BoolAlerted As Boolean = False
 
@@ -25,6 +26,7 @@ Public Class SavedData
                 .MinimumHeight = height
                 .RawLogData = rawLogData
                 .AlertText = alertText
+                .alertType = alertType
 
                 If My.Settings.font IsNot Nothing Then
                     .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
@@ -60,6 +62,48 @@ Public Class ReplacementsClass
         listViewItem.BoolEnabled = BoolEnabled
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         Return listViewItem
+    End Function
+End Class
+
+Public Class AlertsHistory
+    Public strTime, strAlertText, strIP, strLog, strRawLog As String
+    Public alertType As AlertType
+
+    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView, height As Integer) As AlertsHistoryDataGridViewRow
+        Using AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow
+            With AlertsHistoryDataGridViewRow
+                .CreateCells(dataGrid)
+                .Cells(0).Value = strTime
+                .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+                If alertType = AlertType.ErrorMsg Then
+                    .Cells(1).Value = "Error"
+                ElseIf alertType = AlertType.Warning Then
+                    .Cells(1).Value = "Warning"
+                ElseIf alertType = AlertType.Info Then
+                    .Cells(1).Value = "Information"
+                Else
+                    .Cells(1).Value = ""
+                End If
+
+                .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .Cells(2).Value = strAlertText
+
+                If My.Settings.font IsNot Nothing Then
+                    .Cells(0).Style.Font = My.Settings.font
+                    .Cells(1).Style.Font = My.Settings.font
+                    .Cells(2).Style.Font = My.Settings.font
+                End If
+
+                .strRawLog = strRawLog
+                .strIP = strIP
+                .strLog = strLog
+                .strTime = strTime
+                .strAlertText = strAlertText
+            End With
+
+            Return AlertsHistoryDataGridViewRow
+        End Using
     End Function
 End Class
 
@@ -126,6 +170,10 @@ End Class
 
 Public Class ProxiedSysLogData
     Public ip, log As String
+End Class
+
+Public Class NotificationDataPacket
+    Public logtext, alerttext, logdate, sourceip, rawlogtext As String
 End Class
 
 Public Class CustomHostname

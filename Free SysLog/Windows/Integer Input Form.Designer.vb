@@ -41,6 +41,8 @@ Partial Class IntegerInputForm
         '
         'TxtSetting
         '
+        Me.TxtSetting.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtSetting.Location = New System.Drawing.Point(15, 26)
         Me.TxtSetting.Name = "TxtSetting"
         Me.TxtSetting.Size = New System.Drawing.Size(186, 20)
@@ -48,6 +50,7 @@ Partial Class IntegerInputForm
         '
         'BtnUp
         '
+        Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnUp.Location = New System.Drawing.Point(207, 9)
         Me.BtnUp.Name = "BtnUp"
         Me.BtnUp.Size = New System.Drawing.Size(24, 23)
@@ -57,6 +60,7 @@ Partial Class IntegerInputForm
         '
         'BtnDown
         '
+        Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnDown.Location = New System.Drawing.Point(207, 32)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)

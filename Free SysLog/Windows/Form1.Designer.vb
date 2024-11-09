@@ -1,9 +1,11 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿Imports Windows.Networking.Sockets
+
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Form1
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,12 +22,13 @@ Partial Class Form1
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.BtnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnOpenLogForViewing = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearLog = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlertsHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
@@ -89,6 +92,7 @@ Partial Class Form1
         Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.IncludeButtonsOnNotifications = New System.Windows.Forms.ToolStripMenuItem()
         Me.IPv6Support = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -111,15 +115,40 @@ Partial Class Form1
         Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureSysLogMirrorServers = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureTimeBetweenSameNotifications = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
         Me.BackupFileNameDateFormatChooser = New System.Windows.Forms.ToolStripMenuItem()
         Me.MinimizeToClockTray = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NotificationLength = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NotificationLengthLong = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NotificationLengthShort = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
         Me.SuspendLayout()
+        '
+        'NotificationLength
+        '
+        Me.NotificationLength.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NotificationLengthLong, Me.NotificationLengthShort})
+        Me.NotificationLength.Name = "NotificationLength"
+        Me.NotificationLength.Size = New System.Drawing.Size(339, 22)
+        Me.NotificationLength.Text = "Notification Length"
+        '
+        'NotificationLengthLong
+        '
+        Me.NotificationLengthLong.CheckOnClick = True
+        Me.NotificationLengthLong.Name = "NotificationLengthLong"
+        Me.NotificationLengthLong.Size = New System.Drawing.Size(50, 22)
+        Me.NotificationLengthLong.Text = "Long"
+        '
+        'NotificationLengthShort
+        '
+        Me.NotificationLengthShort.CheckOnClick = True
+        Me.NotificationLengthShort.Name = "NotificationLengthShort"
+        Me.NotificationLengthShort.Size = New System.Drawing.Size(50, 22)
+        Me.NotificationLengthShort.Text = "Short"
         '
         'CreateAlertToolStripMenuItem
         '
@@ -138,6 +167,14 @@ Partial Class Form1
         Me.BtnOpenLogForViewing.Name = "BtnOpenLogForViewing"
         Me.BtnOpenLogForViewing.Size = New System.Drawing.Size(239, 22)
         Me.BtnOpenLogForViewing.Text = "Open Log File for Viewing"
+        '
+        'AlertsHistory
+        '
+        Me.AlertsHistory.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearAllLogs, Me.LogsOlderThanToolStripMenuItem})
+        Me.AlertsHistory.Enabled = True
+        Me.AlertsHistory.Name = "AlertsHistory"
+        Me.AlertsHistory.Size = New System.Drawing.Size(239, 22)
+        Me.AlertsHistory.Text = "Alerts History"
         '
         'BtnClearLog
         '
@@ -340,7 +377,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ViewLogBackups, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AlertsHistory, Me.BtnClearLog, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ViewLogBackups, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -382,7 +419,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.MinimizeToClockTray, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.MinimizeToClockTray, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -411,6 +448,12 @@ Partial Class Form1
         Me.ConfigureSysLogMirrorServers.Name = "ConfigureSysLogMirrorServers"
         Me.ConfigureSysLogMirrorServers.Size = New System.Drawing.Size(339, 22)
         Me.ConfigureSysLogMirrorServers.Text = "Configure SysLog Mirror Servers"
+        '
+        'ConfigureTimeBetweenSameNotifications
+        '
+        Me.ConfigureTimeBetweenSameNotifications.Name = "ConfigureTimeBetweenSameNotifications"
+        Me.ConfigureTimeBetweenSameNotifications.Size = New System.Drawing.Size(339, 22)
+        Me.ConfigureTimeBetweenSameNotifications.Text = "Configure Time Between Same Notifications"
         '
         'ChkEnableRecordingOfIgnoredLogs
         '
@@ -475,6 +518,7 @@ Partial Class Form1
         Me.Logs.Location = New System.Drawing.Point(12, 52)
         Me.Logs.Name = "Logs"
         Me.Logs.ReadOnly = True
+        Me.Logs.RowHeadersVisible = False
         Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.Logs.Size = New System.Drawing.Size(1151, 369)
         Me.Logs.TabIndex = 18
@@ -580,6 +624,13 @@ Partial Class Form1
         Me.ImportExportSettingsToolStripMenuItem.Name = "ImportExportSettingsToolStripMenuItem"
         Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(339, 22)
         Me.ImportExportSettingsToolStripMenuItem.Text = "Import/Export Program Settings"
+        '
+        'IncludeButtonsOnNotifications
+        '
+        Me.IncludeButtonsOnNotifications.CheckOnClick = True
+        Me.IncludeButtonsOnNotifications.Name = "ImportExportSIncludeButtonsOnNotificationsettingsToolStripMenuItem"
+        Me.IncludeButtonsOnNotifications.Size = New System.Drawing.Size(339, 22)
+        Me.IncludeButtonsOnNotifications.Text = "Include Buttons on Notifications"
         '
         'IPv6Support
         '
@@ -802,6 +853,7 @@ Partial Class Form1
     Friend WithEvents ChkEnableAutoScroll As ToolStripMenuItem
     Friend WithEvents AutomaticallyCheckForUpdates As ToolStripMenuItem
     Friend WithEvents BtnClearLog As ToolStripMenuItem
+    Friend WithEvents AlertsHistory As ToolStripMenuItem
     Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
     Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem
     Friend WithEvents SaveTimer As Timer
@@ -853,6 +905,7 @@ Partial Class Form1
     Friend WithEvents CloseMe As ToolStripMenuItem
     Friend WithEvents ToolStripMenuSeparator As ToolStripSeparator
     Friend WithEvents ImportExportSettingsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents IncludeButtonsOnNotifications As ToolStripMenuItem
     Friend WithEvents IPv6Support As ToolStripMenuItem
     Friend WithEvents ExportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportToolStripMenuItem As ToolStripMenuItem
@@ -886,7 +939,11 @@ Partial Class Form1
     Friend WithEvents ChkShowServerTimeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowHostnameColumn As ToolStripMenuItem
     Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
+    Friend WithEvents ConfigureTimeBetweenSameNotifications As ToolStripMenuItem
     Friend WithEvents LoadingProgressBar As ProgressBar
     Friend WithEvents MinimizeToClockTray As ToolStripMenuItem
     Friend WithEvents BackupFileNameDateFormatChooser As ToolStripMenuItem
+    Friend WithEvents NotificationLength As ToolStripMenuItem
+    Friend WithEvents NotificationLengthLong As ToolStripMenuItem
+    Friend WithEvents NotificationLengthShort As ToolStripMenuItem
 End Class
