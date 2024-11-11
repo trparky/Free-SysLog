@@ -1180,6 +1180,14 @@ Public Class Form1
     End Sub
 
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
+        If Logs.SelectedRows.Count = 0 Then
+            DeleteLogsToolStripMenuItem.Visible = False
+            ExportsLogsToolStripMenuItem.Visible = False
+        Else
+            DeleteLogsToolStripMenuItem.Visible = True
+            ExportsLogsToolStripMenuItem.Visible = True
+        End If
+
         If Logs.SelectedRows.Count = 1 Then
             CopyLogTextToolStripMenuItem.Visible = True
             OpenLogViewerToolStripMenuItem.Visible = True
