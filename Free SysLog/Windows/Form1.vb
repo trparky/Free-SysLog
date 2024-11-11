@@ -1679,7 +1679,7 @@ Public Class Form1
         Using IntegerInputForm As New IntegerInputForm(30, 240) With {.Icon = Icon, .Text = "Configure Time Between Same Notifications", .StartPosition = FormStartPosition.CenterParent}
             IntegerInputForm.lblSetting.Text = "Time Between Same Notifications (In Seconds)"
             IntegerInputForm.TxtSetting.Text = My.Settings.TimeBetweenSameNotifications
-            IntegerInputForm.Width = IntegerInputForm.Width + 60
+            IntegerInputForm.Width += 60
 
             IntegerInputForm.ShowDialog(Me)
 
