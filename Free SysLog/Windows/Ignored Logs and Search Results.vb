@@ -134,6 +134,8 @@ Public Class IgnoredLogsAndSearchResults
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
 
+        LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
+
         ColHostname.Visible = My.Settings.boolShowHostnameColumn
         colServerTime.Visible = My.Settings.boolShowServerTimeColumn
         colLogType.Visible = My.Settings.boolShowLogTypeColumn

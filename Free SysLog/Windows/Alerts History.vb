@@ -34,6 +34,8 @@ Public Class Alerts_History
 
         colTime.Width = My.Settings.columnTimeSize
 
+        SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
+
         If data IsNot Nothing AndAlso data.Count > 0 Then
             lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
             Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
@@ -110,5 +112,9 @@ Public Class Alerts_History
                 End If
             End With
         End If
+    End Sub
+
+    Private Sub Alerts_History_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        My.Settings.alertsHistoryColumnOrder = SupportCode.SaveColumnOrders(AlertHistoryList.Columns)
     End Sub
 End Class

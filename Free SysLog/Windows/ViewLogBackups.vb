@@ -108,6 +108,8 @@ Public Class ViewLogBackups
         ColFileName.Width = My.Settings.ColViewLogBackupsFileName
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
 
+        LoadColumnOrders(FileList.Columns, My.Settings.fileListColumnOrder)
+
         colHidden.Visible = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
@@ -382,5 +384,9 @@ Public Class ViewLogBackups
             My.Settings.ColViewLogBackupsFileName = ColFileName.Width
             My.Settings.ColViewLogBackupsFileSize = ColFileSize.Width
         End If
+    End Sub
+
+    Private Sub ViewLogBackups_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        My.Settings.fileListColumnOrder = SaveColumnOrders(FileList.Columns)
     End Sub
 End Class

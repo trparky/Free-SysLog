@@ -43,6 +43,39 @@ Namespace SupportCode
         Public Const ColumnIndex_Alerted As Integer = 7
         Public Const ColumnIndex_FileName As Integer = 8
 
+        Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
+            Try
+                Dim SpecializedStringCollection As New Specialized.StringCollection
+
+                For Each column As DataGridViewTextBoxColumn In columns
+                    SpecializedStringCollection.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New ColumnOrder With {.ColumnName = column.Name, .ColumnIndex = column.DisplayIndex}))
+                Next
+
+                Return SpecializedStringCollection
+            Catch ex As Exception
+                Return New Specialized.StringCollection
+            End Try
+        End Function
+
+        Public Sub LoadColumnOrders(ByRef columns As DataGridViewColumnCollection, ByRef specializedStringCollection As Specialized.StringCollection)
+            Try
+                Dim columnOrder As ColumnOrder
+                Dim jsonSerializerSettings As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error}
+
+                If specializedStringCollection IsNot Nothing AndAlso specializedStringCollection.Count <> 0 Then
+                    Try
+                        For Each item As String In specializedStringCollection
+                            columnOrder = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ColumnOrder)(item, jsonSerializerSettings)
+                            columns(columnOrder.ColumnName).DisplayIndex = columnOrder.ColumnIndex
+                        Next
+                    Catch ex As Newtonsoft.Json.JsonSerializationException
+                        specializedStringCollection = Nothing
+                    End Try
+                End If
+            Catch ex As Exception
+            End Try
+        End Sub
+
         Public Function ConvertListOfStringsToString(input As List(Of String), Optional boolUseOnlyOneLine As Boolean = False) As String
             If input.Count = 1 Then Return input(0)
 

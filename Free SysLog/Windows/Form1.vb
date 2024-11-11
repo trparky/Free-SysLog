@@ -359,6 +359,7 @@ Public Class Form1
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         LoadAndDeserializeArrays()
+        LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
@@ -797,6 +798,7 @@ Public Class Form1
             End SyncLock
         End If
 
+        My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         DataHandling.WriteLogsToDisk()
 
