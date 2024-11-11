@@ -2,7 +2,7 @@
 Imports Microsoft.VisualBasic.Logging
 
 Public Class Alerts_History
-    Public Property data As List(Of AlertsHistory)
+    Public Property DataToLoad As List(Of AlertsHistory)
     Private Shadows ParentForm As Form1
     Private boolDoneLoading As Boolean = False
 
@@ -36,11 +36,11 @@ Public Class Alerts_History
 
         SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
 
-        If data IsNot Nothing AndAlso data.Count > 0 Then
-            lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
+        If DataToLoad IsNot Nothing AndAlso DataToLoad.Count > 0 Then
+            lblNumberOfAlerts.Text = $"Number of Alerts: {DataToLoad.Count:N0}"
             Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
-            For Each item As AlertsHistory In data
+            For Each item As AlertsHistory In DataToLoad
                 listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList, SupportCode.GetMinimumHeight(item.strAlertText, AlertHistoryList.DefaultCellStyle.Font, colAlert.Width)))
             Next
 

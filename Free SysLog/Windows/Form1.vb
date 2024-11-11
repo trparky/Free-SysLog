@@ -1716,12 +1716,12 @@ Public Class Form1
 
     Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
         If Logs.Rows.Count > 0 Then
-            Dim data As New List(Of AlertsHistory)
+            Dim DataToLoad As New List(Of AlertsHistory)
 
             SyncLock dataGridLockObject
                 For Each item As MyDataGridViewRow In Logs.Rows
                     If item.BoolAlerted Then
-                        data.Add(New AlertsHistory With {
+                        DataToLoad.Add(New AlertsHistory With {
                                  .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
                                  .alertType = item.alertType,
                                  .strAlertText = item.AlertText,
@@ -1733,10 +1733,10 @@ Public Class Form1
                 Next
             End SyncLock
 
-            If data.Count = 0 Then
+            If DataToLoad.Count = 0 Then
                 MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
             Else
-                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me}
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me}
                     Alerts_History.ShowDialog(Me)
                 End Using
             End If
