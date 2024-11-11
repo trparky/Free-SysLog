@@ -1007,6 +1007,39 @@ Namespace My
                 Me("AlertHistoryLocation") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property logsColumnOrder() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("logsColumnOrder"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("logsColumnOrder") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property fileListColumnOrder() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("fileListColumnOrder"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("fileListColumnOrder") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
+        Public Property alertsHistoryColumnOrder() As Global.System.Collections.Specialized.StringCollection
+            Get
+                Return CType(Me("alertsHistoryColumnOrder"),Global.System.Collections.Specialized.StringCollection)
+            End Get
+            Set
+                Me("alertsHistoryColumnOrder") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -1,5 +1,10 @@
 ﻿Imports Free_SysLog.SupportCode
 
+Public Class ColumnOrder
+    Public ColumnName As String
+    Public ColumnIndex As Integer
+End Class
+
 Public Class SavedData
     Public time, ip, log, fileName, logType, hostname, appName, rawLogData, alertText As String
     Public alertType As AlertType = AlertType.None

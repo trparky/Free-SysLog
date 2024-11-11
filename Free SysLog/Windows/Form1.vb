@@ -359,6 +359,7 @@ Public Class Form1
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         LoadAndDeserializeArrays()
+        LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 
         If My.Settings.autoSave Then
             SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
@@ -797,6 +798,7 @@ Public Class Form1
             End SyncLock
         End If
 
+        My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         DataHandling.WriteLogsToDisk()
 
@@ -881,28 +883,30 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.ColumnHeaderMouseClick
-        ' Disable user sorting
-        Logs.AllowUserToOrderColumns = False
+        If e.Button = MouseButtons.Left Then
+            ' Disable user sorting
+            Logs.AllowUserToOrderColumns = False
 
-        Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
-        intSortColumnIndex = e.ColumnIndex
+            Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
+            intSortColumnIndex = e.ColumnIndex
 
-        If sortOrder = SortOrder.Descending Then
-            sortOrder = SortOrder.Ascending
-        ElseIf sortOrder = SortOrder.Ascending Then
-            sortOrder = SortOrder.Descending
-        Else
-            sortOrder = SortOrder.Ascending
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
+            Else
+                sortOrder = SortOrder.Ascending
+            End If
+
+            ColAlerts.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColTime.HeaderCell.SortGlyphDirection = SortOrder.None
+
+            Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
+
+            SortLogsByDateObject(column.Index, sortOrder)
         End If
-
-        ColAlerts.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColTime.HeaderCell.SortGlyphDirection = SortOrder.None
-
-        Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
-
-        SortLogsByDateObject(column.Index, sortOrder)
     End Sub
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
@@ -1178,6 +1182,14 @@ Public Class Form1
     End Sub
 
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
+        If Logs.SelectedRows.Count = 0 Then
+            DeleteLogsToolStripMenuItem.Visible = False
+            ExportsLogsToolStripMenuItem.Visible = False
+        Else
+            DeleteLogsToolStripMenuItem.Visible = True
+            ExportsLogsToolStripMenuItem.Visible = True
+        End If
+
         If Logs.SelectedRows.Count = 1 Then
             CopyLogTextToolStripMenuItem.Visible = True
             OpenLogViewerToolStripMenuItem.Visible = True
@@ -1679,7 +1691,7 @@ Public Class Form1
         Using IntegerInputForm As New IntegerInputForm(30, 240) With {.Icon = Icon, .Text = "Configure Time Between Same Notifications", .StartPosition = FormStartPosition.CenterParent}
             IntegerInputForm.lblSetting.Text = "Time Between Same Notifications (In Seconds)"
             IntegerInputForm.TxtSetting.Text = My.Settings.TimeBetweenSameNotifications
-            IntegerInputForm.Width = IntegerInputForm.Width + 60
+            IntegerInputForm.Width += 60
 
             IntegerInputForm.ShowDialog(Me)
 
@@ -1714,12 +1726,12 @@ Public Class Form1
 
     Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
         If Logs.Rows.Count > 0 Then
-            Dim data As New List(Of AlertsHistory)
+            Dim DataToLoad As New List(Of AlertsHistory)
 
             SyncLock dataGridLockObject
                 For Each item As MyDataGridViewRow In Logs.Rows
                     If item.BoolAlerted Then
-                        data.Add(New AlertsHistory With {
+                        DataToLoad.Add(New AlertsHistory With {
                                  .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
                                  .alertType = item.alertType,
                                  .strAlertText = item.AlertText,
@@ -1731,10 +1743,10 @@ Public Class Form1
                 Next
             End SyncLock
 
-            If data.Count = 0 Then
+            If DataToLoad.Count = 0 Then
                 MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
             Else
-                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .data = data, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me}
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me}
                     Alerts_History.ShowDialog(Me)
                 End Using
             End If

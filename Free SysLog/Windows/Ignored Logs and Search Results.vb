@@ -41,27 +41,29 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.ColumnHeaderMouseClick
-        ' Disable user sorting
-        Logs.AllowUserToOrderColumns = False
+        If e.Button = MouseButtons.Left Then
+            ' Disable user sorting
+            Logs.AllowUserToOrderColumns = False
 
-        Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
+            Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
 
-        If sortOrder = SortOrder.Descending Then
-            sortOrder = SortOrder.Ascending
-        ElseIf sortOrder = SortOrder.Ascending Then
-            sortOrder = SortOrder.Descending
-        Else
-            sortOrder = SortOrder.Ascending
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
+            Else
+                sortOrder = SortOrder.Ascending
+            End If
+
+            ColAlerts.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColTime.HeaderCell.SortGlyphDirection = SortOrder.None
+
+            Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
+
+            SortLogsByDateObject(column.Index, sortOrder)
         End If
-
-        ColAlerts.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColIPAddress.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColLog.HeaderCell.SortGlyphDirection = SortOrder.None
-        ColTime.HeaderCell.SortGlyphDirection = SortOrder.None
-
-        Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
-
-        SortLogsByDateObject(column.Index, sortOrder)
     End Sub
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
@@ -133,6 +135,8 @@ Public Class IgnoredLogsAndSearchResults
         ColHostname.Width = My.Settings.HostnameWidth
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
+
+        LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 
         ColHostname.Visible = My.Settings.boolShowHostnameColumn
         colServerTime.Visible = My.Settings.boolShowServerTimeColumn

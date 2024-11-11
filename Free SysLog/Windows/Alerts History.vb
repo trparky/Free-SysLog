@@ -1,8 +1,7 @@
 ﻿Imports System.Reflection
-Imports Microsoft.VisualBasic.Logging
 
 Public Class Alerts_History
-    Public Property data As List(Of AlertsHistory)
+    Public Property DataToLoad As List(Of AlertsHistory)
     Private Shadows ParentForm As Form1
     Private boolDoneLoading As Boolean = False
 
@@ -34,11 +33,13 @@ Public Class Alerts_History
 
         colTime.Width = My.Settings.columnTimeSize
 
-        If data IsNot Nothing AndAlso data.Count > 0 Then
-            lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
+        SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
+
+        If DataToLoad IsNot Nothing AndAlso DataToLoad.Count > 0 Then
+            lblNumberOfAlerts.Text = $"Number of Alerts: {DataToLoad.Count:N0}"
             Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
-            For Each item As AlertsHistory In data
+            For Each item As AlertsHistory In DataToLoad
                 listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList, SupportCode.GetMinimumHeight(item.strAlertText, AlertHistoryList.DefaultCellStyle.Font, colAlert.Width)))
             Next
 
@@ -110,5 +111,9 @@ Public Class Alerts_History
                 End If
             End With
         End If
+    End Sub
+
+    Private Sub Alerts_History_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        My.Settings.alertsHistoryColumnOrder = SupportCode.SaveColumnOrders(AlertHistoryList.Columns)
     End Sub
 End Class
