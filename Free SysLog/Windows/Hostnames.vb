@@ -11,6 +11,7 @@ Public Class Hostnames
             txtHostname.Text = selectedItem.SubItems(1).Text
 
             BtnAddSave.Text = "Save"
+            lblAddEditHostNameLabel.Text = "Edit Custom Hostname"
         End If
     End Sub
 
@@ -22,6 +23,7 @@ Public Class Hostnames
                 selectedItem.SubItems(0).Text = txtIP.Text
                 selectedItem.SubItems(1).Text = txtHostname.Text
 
+                lblAddEditHostNameLabel.Text = "Add New Custom Hostname"
                 BtnAddSave.Text = "Add"
                 txtIP.Text = Nothing
                 txtHostname.Text = Nothing
