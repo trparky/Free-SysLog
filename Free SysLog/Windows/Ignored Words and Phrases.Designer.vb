@@ -246,7 +246,8 @@ Partial Class IgnoredWordsAndPhrases
         '
         'TxtIgnored
         '
-        Me.TxtIgnored.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.TxtIgnored.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtIgnored.Location = New System.Drawing.Point(61, 299)
         Me.TxtIgnored.Name = "TxtIgnored"
         Me.TxtIgnored.Size = New System.Drawing.Size(727, 20)
