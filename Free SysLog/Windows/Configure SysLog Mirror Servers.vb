@@ -1,8 +1,11 @@
 ﻿Imports System.ComponentModel
+Imports System.Net
 Imports Free_SysLog.SupportCode
+Imports Windows.AI.MachineLearning
 
 Public Class ConfigureSysLogMirrorServers
     Public boolSuccess As Boolean = False
+    Private boolEditMode As Boolean = False
 
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
@@ -23,7 +26,6 @@ Public Class ConfigureSysLogMirrorServers
             btnEnableDisable.Enabled = True
 
             btnEnableDisable.Text = If(DirectCast(servers.SelectedItems(0), ServerListViewItem).BoolEnabled, "Disable", "Enable")
-
         Else
             BtnDeleteServer.Enabled = False
             BtnEditServer.Enabled = False
@@ -33,48 +35,64 @@ Public Class ConfigureSysLogMirrorServers
 
     Private Sub EditItem()
         If servers.SelectedItems.Count > 0 Then
-            Using AddSysLogMirrorServer As New AddSysLogMirrorServer With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-                Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
+            servers.Enabled = False
+            boolEditMode = True
+            BtnAddServer.Text = "Save"
+            Label4.Text = "Edit Server"
 
-                With AddSysLogMirrorServer
-                    .strIP = selectedItemObject.SubItems(0).Text
-                    .intPort = selectedItemObject.SubItems(1).Text
-                    .strName = selectedItemObject.SubItems(3).Text
-                    .boolEnabled = selectedItemObject.BoolEnabled
-                End With
+            Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
 
-                AddSysLogMirrorServer.ShowDialog(Me)
-
-                If AddSysLogMirrorServer.boolSuccess Then
-                    With selectedItemObject
-                        .SubItems(0).Text = AddSysLogMirrorServer.strIP
-                        .SubItems(1).Text = AddSysLogMirrorServer.intPort
-                        .SubItems(2).Text = If(AddSysLogMirrorServer.boolEnabled, "Yes", "No")
-                        .SubItems(3).Text = AddSysLogMirrorServer.strName
-                        .BoolEnabled = AddSysLogMirrorServer.boolEnabled
-                    End With
-                End If
-            End Using
+            With selectedItemObject
+                txtIP.Text = .SubItems(0).Text
+                txtPort.Text = .SubItems(1).Text
+                txtName.Text = .SubItems(3).Text
+                chkEnabled.Checked = .BoolEnabled
+            End With
         End If
     End Sub
 
     Private Sub BtnAddServer_Click(sender As Object, e As EventArgs) Handles BtnAddServer.Click
-        Using AddSysLogMirrorServer As New AddSysLogMirrorServer With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            AddSysLogMirrorServer.ShowDialog(Me)
+        If Not String.IsNullOrWhiteSpace(txtIP.Text) And Not String.IsNullOrWhiteSpace(txtPort.Text) And Not String.IsNullOrWhiteSpace(txtName.Text) Then
+            Dim tempIP As IPAddress = Nothing
+            If Not IPAddress.TryParse(txtIP.Text, tempIP) Then
+                MsgBox("You must input a valid IP address.", MsgBoxStyle.Critical, Text)
+                Exit Sub
+            End If
 
-            If AddSysLogMirrorServer.boolSuccess Then
-                Dim ServerListView As New ServerListViewItem(AddSysLogMirrorServer.strIP)
+            If boolEditMode Then
+                Dim selectedItemObject As ServerListViewItem = servers.SelectedItems(0)
+
+                With selectedItemObject
+                    .SubItems(0).Text = txtIP.Text
+                    .SubItems(1).Text = txtPort.Text
+                    .SubItems(2).Text = If(chkEnabled.Checked, "Yes", "No")
+                    .SubItems(3).Text = txtName.Text
+                    .BoolEnabled = chkEnabled.Checked
+                End With
+
+                servers.Enabled = True
+                BtnAddServer.Text = "Add"
+                Label4.Text = "Add Server"
+            Else
+                Dim ServerListView As New ServerListViewItem(txtIP.Text)
 
                 With ServerListView
-                    .SubItems.Add(AddSysLogMirrorServer.intPort.ToString)
-                    .SubItems.Add(If(AddSysLogMirrorServer.boolEnabled, "Yes", "No"))
-                    .SubItems.Add(AddSysLogMirrorServer.strName)
-                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                    .SubItems.Add(txtPort.Text)
+                    .SubItems.Add(If(chkEnabled.Checked, "Yes", "No"))
+                    .SubItems.Add(txtName.Text)
+                    .BoolEnabled = chkEnabled.Checked
                 End With
 
                 servers.Items.Add(ServerListView)
             End If
-        End Using
+
+            txtIP.Text = Nothing
+            txtName.Text = Nothing
+            txtPort.Text = Nothing
+            chkEnabled.Checked = True
+        Else
+            MsgBox("You need to fill in the appropriate information to create a server entry.", MsgBoxStyle.Critical, Text)
+        End If
     End Sub
 
     Private Sub BtnEditServer_Click(sender As Object, e As EventArgs) Handles BtnEditServer.Click
