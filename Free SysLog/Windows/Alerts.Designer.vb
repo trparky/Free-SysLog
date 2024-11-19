@@ -337,9 +337,9 @@ Partial Class Alerts
         Me.Label4.AutoSize = True
         Me.Label4.Location = New System.Drawing.Point(12, 291)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(83, 13)
+        Me.Label4.Size = New System.Drawing.Size(50, 13)
         Me.Label4.TabIndex = 38
-        Me.Label4.Text = "Add or Edit Alert"
+        Me.Label4.Text = "Add Alert"
         '
         'Alerts
         '

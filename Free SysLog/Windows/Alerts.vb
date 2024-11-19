@@ -112,6 +112,7 @@ Public Class Alerts
             AlertsListView.Enabled = False
             boolEditMode = True
             BtnAdd.Text = "Save"
+            Label4.Text = "Edit Alert"
 
             Dim selectedItemObject As AlertsListViewItem = DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem)
 
@@ -187,6 +188,7 @@ Public Class Alerts
 
                 AlertsListView.Enabled = True
                 BtnAdd.Text = "Add"
+                Label4.Text = "Add Alert"
             Else
                 Dim AlertsListViewItem As New AlertsListViewItem(TxtLogText.Text) With {.StrLogText = TxtLogText.Text, .StrAlertText = TxtAlertText.Text}
 

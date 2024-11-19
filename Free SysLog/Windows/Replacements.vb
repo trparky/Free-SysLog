@@ -34,6 +34,7 @@ Public Class Replacements
 
                 ReplacementsListView.Enabled = True
                 BtnAdd.Text = "Add"
+                Label3.Text = "Add Replacement"
             Else
                 If CheckForExistingItem(TxtReplace.Text, TxtReplaceWith.Text) Then
                     MsgBox("A similar item has already been found in your replacements list.", MsgBoxStyle.Critical, Text)
@@ -140,6 +141,7 @@ Public Class Replacements
             ReplacementsListView.Enabled = False
             boolEditMode = True
             BtnAdd.Text = "Save"
+            Label3.Text = "Edit Replacement"
 
             Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
 

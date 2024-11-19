@@ -286,9 +286,9 @@ Partial Class Replacements
         Me.Label3.AutoSize = True
         Me.Label3.Location = New System.Drawing.Point(17, 424)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(125, 13)
+        Me.Label3.Size = New System.Drawing.Size(92, 13)
         Me.Label3.TabIndex = 34
-        Me.Label3.Text = "Add or Edit Replacement"
+        Me.Label3.Text = "Add Replacement"
         '
         'Replacements
         '

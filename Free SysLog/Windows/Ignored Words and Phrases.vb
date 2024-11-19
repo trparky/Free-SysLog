@@ -30,6 +30,7 @@ Public Class IgnoredWordsAndPhrases
 
                 IgnoredListView.Enabled = True
                 BtnAdd.Text = "Add"
+                Label4.Text = "Add Ignored Words and Phrases"
             Else
                 Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
 
@@ -141,6 +142,7 @@ Public Class IgnoredWordsAndPhrases
             IgnoredListView.Enabled = False
             boolEditMode = True
             BtnAdd.Text = "Save"
+            Label4.Text = "Edit Ignored Words and Phrases"
 
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
