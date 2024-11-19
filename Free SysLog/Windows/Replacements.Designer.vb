@@ -315,7 +315,7 @@ Partial Class Replacements
         Me.Controls.Add(Me.BtnAdd)
         Me.Controls.Add(Me.ReplacementsListView)
         Me.KeyPreview = True
-        Me.MinimumSize = New System.Drawing.Size(917, 489)
+        Me.MinimumSize = New System.Drawing.Size(1051, 592)
         Me.Name = "Replacements"
         Me.Text = "Replacements"
         Me.ListViewMenu.ResumeLayout(False)

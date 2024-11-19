@@ -200,6 +200,7 @@ Partial Class Alerts
         '
         'BtnUp
         '
+        Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnUp.Location = New System.Drawing.Point(951, 12)
         Me.BtnUp.Name = "BtnUp"
         Me.BtnUp.Size = New System.Drawing.Size(24, 23)
@@ -370,6 +371,7 @@ Partial Class Alerts
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnAdd)
         Me.KeyPreview = True
+        Me.MinimumSize = New System.Drawing.Size(1003, 497)
         Me.Name = "Alerts"
         Me.Text = "Alerts"
         Me.ListViewMenu.ResumeLayout(False)

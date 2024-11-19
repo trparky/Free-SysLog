@@ -42,6 +42,9 @@ Partial Class Hostnames
         '
         'ListHostnames
         '
+        Me.ListHostnames.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListHostnames.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colIP, Me.colHostname})
         Me.ListHostnames.FullRowSelect = True
         Me.ListHostnames.HideSelection = False
@@ -64,6 +67,7 @@ Partial Class Hostnames
         '
         'ipAddressLabel
         '
+        Me.ipAddressLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ipAddressLabel.AutoSize = True
         Me.ipAddressLabel.Location = New System.Drawing.Point(12, 275)
         Me.ipAddressLabel.Name = "ipAddressLabel"
@@ -73,6 +77,7 @@ Partial Class Hostnames
         '
         'BtnDelete
         '
+        Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
         Me.BtnDelete.Location = New System.Drawing.Point(12, 209)
         Me.BtnDelete.Name = "BtnDelete"
@@ -83,6 +88,8 @@ Partial Class Hostnames
         '
         'txtIP
         '
+        Me.txtIP.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtIP.Location = New System.Drawing.Point(76, 272)
         Me.txtIP.Name = "txtIP"
         Me.txtIP.Size = New System.Drawing.Size(526, 20)
@@ -90,6 +97,8 @@ Partial Class Hostnames
         '
         'txtHostname
         '
+        Me.txtHostname.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtHostname.Location = New System.Drawing.Point(76, 298)
         Me.txtHostname.Name = "txtHostname"
         Me.txtHostname.Size = New System.Drawing.Size(526, 20)
@@ -97,6 +106,7 @@ Partial Class Hostnames
         '
         'hostnameLabel
         '
+        Me.hostnameLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.hostnameLabel.AutoSize = True
         Me.hostnameLabel.Location = New System.Drawing.Point(12, 301)
         Me.hostnameLabel.Name = "hostnameLabel"
@@ -106,6 +116,7 @@ Partial Class Hostnames
         '
         'BtnAddSave
         '
+        Me.BtnAddSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnAddSave.Location = New System.Drawing.Point(15, 326)
         Me.BtnAddSave.Name = "BtnAddSave"
         Me.BtnAddSave.Size = New System.Drawing.Size(75, 23)
@@ -115,6 +126,7 @@ Partial Class Hostnames
         '
         'BtnEdit
         '
+        Me.BtnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEdit.Enabled = False
         Me.BtnEdit.Location = New System.Drawing.Point(93, 209)
         Me.BtnEdit.Name = "BtnEdit"
@@ -125,6 +137,7 @@ Partial Class Hostnames
         '
         'lblAddEditHostNameLabel
         '
+        Me.lblAddEditHostNameLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblAddEditHostNameLabel.AutoSize = True
         Me.lblAddEditHostNameLabel.Location = New System.Drawing.Point(12, 251)
         Me.lblAddEditHostNameLabel.Name = "lblAddEditHostNameLabel"
@@ -154,6 +167,7 @@ Partial Class Hostnames
         '
         'BtnImport
         '
+        Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnImport.Location = New System.Drawing.Point(533, 209)
         Me.BtnImport.Name = "BtnImport"
         Me.BtnImport.Size = New System.Drawing.Size(75, 23)
@@ -163,6 +177,7 @@ Partial Class Hostnames
         '
         'BtnExport
         '
+        Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnExport.Location = New System.Drawing.Point(452, 209)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
@@ -172,6 +187,8 @@ Partial Class Hostnames
         '
         'SeparatingLine
         '
+        Me.SeparatingLine.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SeparatingLine.BackColor = System.Drawing.Color.Black
         Me.SeparatingLine.Location = New System.Drawing.Point(-1, 240)
         Me.SeparatingLine.Name = "SeparatingLine"
@@ -200,6 +217,7 @@ Partial Class Hostnames
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(630, 395)
         Me.Name = "Hostnames"
         Me.Text = "Configure Custom Hostnames"
         Me.ResumeLayout(False)

@@ -297,6 +297,7 @@ Partial Class ConfigureSysLogMirrorServers
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(653, 439)
         Me.Name = "ConfigureSysLogMirrorServers"
         Me.Text = "Configure SysLog Mirror Servers"
         Me.ContextMenuStrip1.ResumeLayout(False)
