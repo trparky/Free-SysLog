@@ -364,28 +364,9 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            AddAlert.TxtLogText.Text = strLogText
-
-            AddAlert.ShowDialog(Me)
-
-            If AddAlert.boolSuccess Then
-                Dim boolExistCheck As Boolean = alertsList.Any(Function(item As AlertsClass)
-                                                                   Return item.StrLogText.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
-                                                               End Function)
-
-                If boolExistCheck Then
-                    MsgBox("A similar item has already been found in your alerts list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
-
-                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex, .alertType = AddAlert.AlertType}
-                alertsList.Add(AlertsClass)
-                My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
-
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+        Using Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+            Alerts.ShowDialog(Me)
         End Using
     End Sub
 

@@ -125,24 +125,6 @@
     <Compile Include="Windows\Add SysLog Mirror Server.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\AddAlert.Designer.vb">
-      <DependentUpon>AddAlert.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AddAlert.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Windows\AddIgnored.Designer.vb">
-      <DependentUpon>AddIgnored.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AddIgnored.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Windows\AddReplacement.Designer.vb">
-      <DependentUpon>AddReplacement.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AddReplacement.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Support Code\Namespace Code\Check for Update.vb" />
     <Compile Include="Windows\Alerts History.Designer.vb">
@@ -258,16 +240,6 @@
     <EmbeddedResource Include="Windows\Add SysLog Mirror Server.resx">
       <DependentUpon>Add SysLog Mirror Server.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\AddAlert.resx">
-      <DependentUpon>AddAlert.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\AddIgnored.resx">
-      <DependentUpon>AddIgnored.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\AddReplacement.resx">
-      <DependentUpon>AddReplacement.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Alerts History.resx">
       <DependentUpon>Alerts History.vb</DependentUpon>

@@ -3,6 +3,7 @@
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
+    Private boolEditMode As Boolean = False
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Any(Function(item As MyIgnoredListViewItem)
@@ -11,31 +12,45 @@ Public Class IgnoredWordsAndPhrases
     End Function
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
-        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            AddIgnored.ShowDialog(Me)
+        If Not String.IsNullOrWhiteSpace(TxtIgnored.Text) Then
+            If ChkRegex.Checked AndAlso Not IsRegexPatternValid(TxtIgnored.Text) Then
+                MsgBox("Invalid regex pattern detected.", MsgBoxStyle.Critical, Text)
+                Exit Sub
+            End If
 
-            If AddIgnored.boolSuccess Then
-                If CheckForExistingItem(AddIgnored.strIgnored) Then
-                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
+            If boolEditMode Then
+                Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
-                Dim IgnoredListViewItem As New MyIgnoredListViewItem(AddIgnored.strIgnored)
+                With selectedItemObject
+                    .SubItems(0).Text = TxtIgnored.Text
+                    .BoolCaseSensitive = ChkCaseSensitive.Checked
+                    .BoolEnabled = ChkEnabled.Checked
+                    .BoolRegex = ChkRegex.Checked
+                End With
+
+                IgnoredListView.Enabled = True
+                BtnAdd.Text = "Add"
+            Else
+                Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
 
                 With IgnoredListViewItem
-                    .SubItems.Add(If(AddIgnored.boolRegex, "Yes", "No"))
-                    .SubItems.Add(If(AddIgnored.boolCaseSensitive, "Yes", "No"))
-                    .SubItems.Add(If(AddIgnored.boolEnabled, "Yes", "No"))
-                    .BoolRegex = AddIgnored.boolRegex
-                    .BoolCaseSensitive = AddIgnored.boolCaseSensitive
-                    .BoolEnabled = AddIgnored.boolEnabled
-                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                    .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
+                    .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
+                    .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                    .BoolRegex = ChkRegex.Checked
+                    .BoolCaseSensitive = ChkCaseSensitive.Checked
+                    .BoolEnabled = ChkEnabled.Checked
                 End With
 
                 IgnoredListView.Items.Add(IgnoredListViewItem)
-                boolChanged = True
             End If
-        End Using
+
+            boolChanged = True
+            TxtIgnored.Text = Nothing
+            ChkCaseSensitive.Checked = False
+            ChkRegex.Checked = False
+            ChkEnabled.Checked = True
+        End If
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -123,32 +138,16 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub EditItem()
         If IgnoredListView.SelectedItems.Count > 0 Then
-            Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-                Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
+            IgnoredListView.Enabled = False
+            boolEditMode = True
+            BtnAdd.Text = "Save"
 
-                With AddIgnored
-                    .strIgnored = selectedItemObject.SubItems(0).Text
-                    .boolRegex = selectedItemObject.BoolRegex
-                    .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
-                    .boolEnabled = selectedItemObject.BoolEnabled
-                End With
+            Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
-                AddIgnored.ShowDialog(Me)
-
-                If AddIgnored.boolSuccess Then
-                    With selectedItemObject
-                        .SubItems(0).Text = AddIgnored.strIgnored
-                        .SubItems(1).Text = If(AddIgnored.boolRegex, "Yes", "No")
-                        .SubItems(2).Text = If(AddIgnored.boolCaseSensitive, "Yes", "No")
-                        .SubItems(3).Text = If(AddIgnored.boolEnabled, "Yes", "No")
-                        .BoolRegex = AddIgnored.boolRegex
-                        .BoolCaseSensitive = AddIgnored.boolCaseSensitive
-                        .BoolEnabled = AddIgnored.boolEnabled
-                    End With
-
-                    boolChanged = True
-                End If
-            End Using
+            TxtIgnored.Text = selectedItemObject.SubItems(0).Text
+            ChkRegex.Checked = selectedItemObject.BoolRegex
+            ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
+            ChkEnabled.Checked = selectedItemObject.BoolEnabled
         End If
     End Sub
 

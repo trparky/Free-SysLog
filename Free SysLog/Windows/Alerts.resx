@@ -120,4 +120,8 @@
   <metadata name="ListViewMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="lblRegExBackReferences.Text" xml:space="preserve">
+    <value>You can use RegEx back-references in your alert text. For numerical back-referenences, simply use put a $ before the number.
+For named back-references, put a $ and then put the name of the back-reference inside parentheses. For example... $(name)</value>
+  </data>
 </root>

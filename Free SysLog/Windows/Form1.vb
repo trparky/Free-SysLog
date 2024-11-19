@@ -1188,28 +1188,9 @@ Public Class Form1
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            AddAlert.TxtLogText.Text = strLogText
-
-            AddAlert.ShowDialog(Me)
-
-            If AddAlert.boolSuccess Then
-                Dim boolExistCheck As Boolean = alertsList.Any(Function(item As AlertsClass)
-                                                                   Return item.StrLogText.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
-                                                               End Function)
-
-                If boolExistCheck Then
-                    MsgBox("A similar item has already been found in your alerts list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
-
-                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex, .alertType = AddAlert.AlertType}
-                alertsList.Add(AlertsClass)
-                My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
-
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+        Using Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+            Alerts.ShowDialog(Me)
         End Using
     End Sub
 
@@ -1271,54 +1252,16 @@ Public Class Form1
     End Sub
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
-        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            AddIgnored.TxtIgnored.Text = strLogText
-
-            AddIgnored.ShowDialog(Me)
-
-            If AddIgnored.boolSuccess Then
-                Dim boolExistCheck As Boolean = ignoredList.Cast(Of IgnoredClass).Any(Function(item As IgnoredClass)
-                                                                                          Return item.StrIgnore.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
-                                                                                      End Function)
-
-                If boolExistCheck Then
-                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
-
-                Dim IgnoredClass As New IgnoredClass() With {.StrIgnore = AddIgnored.TxtIgnored.Text, .BoolCaseSensitive = AddIgnored.boolCaseSensitive, .BoolRegex = AddIgnored.boolRegex}
-                ignoredList.Add(IgnoredClass)
-                My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredClass))
-
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+        Using Ignored As New IgnoredWordsAndPhrases With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Ignored.TxtIgnored.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+            Ignored.ShowDialog(Me)
         End Using
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            AddReplacement.TxtReplace.Text = strLogText
-
-            AddReplacement.ShowDialog(Me)
-
-            If AddReplacement.boolSuccess Then
-                Dim boolExistCheck As Boolean = replacementsList.Cast(Of ReplacementsClass).Any(Function(item As ReplacementsClass)
-                                                                                                    Return item.StrReplace.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
-                                                                                                End Function)
-
-                If boolExistCheck Then
-                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
-
-                Dim ReplacementClass As New ReplacementsClass() With {.StrReplace = AddReplacement.TxtReplace.Text, .StrReplaceWith = AddReplacement.TxtReplaceWith.Text, .BoolCaseSensitive = AddReplacement.boolCaseSensitive, .BoolRegex = AddReplacement.boolRegex}
-                replacementsList.Add(ReplacementClass)
-                My.Settings.replacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ReplacementClass))
-
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+        Using Replacements As New Replacements With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Replacements.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+            Replacements.ShowDialog(Me)
         End Using
     End Sub
 
