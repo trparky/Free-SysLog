@@ -223,6 +223,7 @@ Public Class Alerts
                 AlertsListView.Items.Add(AlertsListViewItem)
             End If
 
+            boolEditMode = False
             boolChanged = True
             TxtAlertText.Text = Nothing
             TxtLogText.Text = Nothing

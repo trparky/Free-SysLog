@@ -46,6 +46,7 @@ Public Class IgnoredWordsAndPhrases
                 IgnoredListView.Items.Add(IgnoredListViewItem)
             End If
 
+            boolEditMode = False
             boolChanged = True
             TxtIgnored.Text = Nothing
             ChkCaseSensitive.Checked = False

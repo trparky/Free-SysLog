@@ -86,6 +86,7 @@ Public Class ConfigureSysLogMirrorServers
                 servers.Items.Add(ServerListView)
             End If
 
+            boolEditMode = False
             txtIP.Text = Nothing
             txtName.Text = Nothing
             txtPort.Text = Nothing

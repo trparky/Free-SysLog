@@ -2,6 +2,7 @@
 
 Public Class Hostnames
     Private selectedItem As ListViewItem
+    Private boolEditMode As Boolean = False
 
     Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles BtnEdit.Click
         If ListHostnames.SelectedItems.Count > 0 Then
@@ -10,6 +11,7 @@ Public Class Hostnames
             txtIP.Text = selectedItem.SubItems(0).Text
             txtHostname.Text = selectedItem.SubItems(1).Text
 
+            boolEditMode = True
             BtnAddSave.Text = "Save"
             lblAddEditHostNameLabel.Text = "Edit Custom Hostname"
         End If
@@ -19,24 +21,22 @@ Public Class Hostnames
         Dim tempIP As IPAddress = Nothing
 
         If IPAddress.TryParse(txtIP.Text, tempIP) Then
-            If BtnAddSave.Text = "Save" Then
+            If boolEditMode Then
                 selectedItem.SubItems(0).Text = txtIP.Text
                 selectedItem.SubItems(1).Text = txtHostname.Text
 
                 lblAddEditHostNameLabel.Text = "Add New Custom Hostname"
                 BtnAddSave.Text = "Add"
-                txtIP.Text = Nothing
-                txtHostname.Text = Nothing
             Else
                 Dim newListViewItem As New ListViewItem(txtIP.Text)
                 newListViewItem.SubItems.Add(txtHostname.Text)
-                If My.Settings.font IsNot Nothing Then newListViewItem.Font = My.Settings.font
 
                 ListHostnames.Items.Add(newListViewItem)
-
-                txtIP.Text = Nothing
-                txtHostname.Text = Nothing
             End If
+
+            boolEditMode = False
+            txtIP.Text = Nothing
+            txtHostname.Text = Nothing
         Else
             MsgBox("Invalid IP Address.", MsgBoxStyle.Critical, Text)
         End If

@@ -58,6 +58,7 @@ Public Class Replacements
                 boolChanged = True
             End If
 
+            boolEditMode = False
             boolChanged = True
             TxtReplace.Text = Nothing
             TxtReplaceWith.Text = Nothing
