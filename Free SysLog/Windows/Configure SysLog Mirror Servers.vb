@@ -1,13 +1,14 @@
 ﻿Imports System.ComponentModel
 Imports System.Net
 Imports Free_SysLog.SupportCode
-Imports Windows.AI.MachineLearning
 
 Public Class ConfigureSysLogMirrorServers
     Public boolSuccess As Boolean = False
     Private boolEditMode As Boolean = False
+    Private boolDoneLoading As Boolean = False
 
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Location = SupportCode.VerifyWindowLocation(My.Settings.syslogProxyLocation, Me)
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             Dim SysLogProxyServer As SysLogProxyServer
 
@@ -17,6 +18,16 @@ Public Class ConfigureSysLogMirrorServers
                 SysLogProxyServer = Nothing
             Next
         End If
+
+        boolDoneLoading = True
+    End Sub
+
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.syslogProxyLocation = Location
     End Sub
 
     Private Sub Servers_SelectedIndexChanged(sender As Object, e As EventArgs) Handles servers.SelectedIndexChanged
