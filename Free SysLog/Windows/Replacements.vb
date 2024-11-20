@@ -133,8 +133,17 @@ Public Class Replacements
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
-        boolChanged = True
+        If ReplacementsListView.SelectedItems.Count > 0 Then
+            If ReplacementsListView.SelectedItems.Count = 1 Then
+                ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
+            Else
+                For Each item As ListViewItem In ReplacementsListView.SelectedItems
+                    item.Remove()
+                Next
+            End If
+
+            boolChanged = True
+        End If
     End Sub
 
     Private Sub EditItem()

@@ -88,7 +88,15 @@ Public Class Hostnames
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        ListHostnames.SelectedItems(0).Remove()
+        If ListHostnames.SelectedItems.Count > 0 Then
+            If ListHostnames.SelectedItems.Count = 1 Then
+                ListHostnames.Items.Remove(ListHostnames.SelectedItems(0))
+            Else
+                For Each item As ListViewItem In ListHostnames.SelectedItems
+                    item.Remove()
+                Next
+            End If
+        End If
     End Sub
 
     Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click

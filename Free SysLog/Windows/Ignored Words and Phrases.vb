@@ -106,8 +106,15 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        If IgnoredListView.SelectedItems().Count > 0 Then
-            IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
+        If IgnoredListView.SelectedItems.Count > 0 Then
+            If IgnoredListView.SelectedItems.Count = 1 Then
+                IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
+            Else
+                For Each item As ListViewItem In IgnoredListView.SelectedItems
+                    item.Remove()
+                Next
+            End If
+
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
             boolChanged = True

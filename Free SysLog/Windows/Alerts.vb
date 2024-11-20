@@ -91,8 +91,15 @@ Public Class Alerts
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        If AlertsListView.SelectedItems().Count > 0 Then
-            AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
+        If AlertsListView.SelectedItems.Count > 0 Then
+            If AlertsListView.SelectedItems.Count = 1 Then
+                AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
+            Else
+                For Each item As ListViewItem In AlertsListView.SelectedItems
+                    item.Remove()
+                Next
+            End If
+
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
             boolChanged = True
