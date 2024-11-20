@@ -3,6 +3,7 @@
 Public Class Hostnames
     Private selectedItem As ListViewItem
     Private boolEditMode As Boolean = False
+    Private boolDoneLoading As Boolean = False
 
     Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles BtnEdit.Click
         If ListHostnames.SelectedItems.Count > 0 Then
@@ -51,7 +52,16 @@ Public Class Hostnames
         BtnDown.Enabled = ListHostnames.SelectedIndices(0) <> ListHostnames.Items.Count - 1
     End Sub
 
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.hostnamesLocation = Location
+    End Sub
+
     Private Sub Hostnames_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Location = SupportCode.VerifyWindowLocation(My.Settings.hostnamesLocation, Me)
         Dim listOfHostnamesToAdd As New List(Of ListViewItem)
 
         If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
@@ -61,6 +71,7 @@ Public Class Hostnames
         End If
 
         ListHostnames.Items.AddRange(listOfHostnamesToAdd.ToArray)
+        boolDoneLoading = True
     End Sub
 
     Private Sub Hostnames_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
