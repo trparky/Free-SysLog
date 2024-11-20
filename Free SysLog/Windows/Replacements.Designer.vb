@@ -63,7 +63,7 @@ Partial Class Replacements
         Me.ReplacementsListView.HideSelection = False
         Me.ReplacementsListView.Location = New System.Drawing.Point(12, 12)
         Me.ReplacementsListView.Name = "ReplacementsListView"
-        Me.ReplacementsListView.Size = New System.Drawing.Size(981, 363)
+        Me.ReplacementsListView.Size = New System.Drawing.Size(915, 363)
         Me.ReplacementsListView.TabIndex = 4
         Me.ReplacementsListView.UseCompatibleStateImageBehavior = False
         Me.ReplacementsListView.View = System.Windows.Forms.View.Details
@@ -149,7 +149,7 @@ Partial Class Replacements
         'BtnExport
         '
         Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnExport.Location = New System.Drawing.Point(867, 381)
+        Me.BtnExport.Location = New System.Drawing.Point(801, 381)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
         Me.BtnExport.TabIndex = 14
@@ -159,7 +159,7 @@ Partial Class Replacements
         'BtnImport
         '
         Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnImport.Location = New System.Drawing.Point(948, 381)
+        Me.BtnImport.Location = New System.Drawing.Point(882, 381)
         Me.BtnImport.Name = "BtnImport"
         Me.BtnImport.Size = New System.Drawing.Size(75, 23)
         Me.BtnImport.TabIndex = 13
@@ -179,7 +179,7 @@ Partial Class Replacements
         'BtnDown
         '
         Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnDown.Location = New System.Drawing.Point(999, 352)
+        Me.BtnDown.Location = New System.Drawing.Point(933, 352)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)
         Me.BtnDown.TabIndex = 19
@@ -189,7 +189,7 @@ Partial Class Replacements
         'BtnUp
         '
         Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnUp.Location = New System.Drawing.Point(999, 12)
+        Me.BtnUp.Location = New System.Drawing.Point(933, 12)
         Me.BtnUp.Name = "BtnUp"
         Me.BtnUp.Size = New System.Drawing.Size(24, 23)
         Me.BtnUp.TabIndex = 18
@@ -203,7 +203,7 @@ Partial Class Replacements
         Me.SeparatingLine.BackColor = System.Drawing.Color.Black
         Me.SeparatingLine.Location = New System.Drawing.Point(-1, 413)
         Me.SeparatingLine.Name = "SeparatingLine"
-        Me.SeparatingLine.Size = New System.Drawing.Size(1037, 1)
+        Me.SeparatingLine.Size = New System.Drawing.Size(971, 1)
         Me.SeparatingLine.TabIndex = 26
         '
         'ChkEnabled
@@ -248,7 +248,7 @@ Partial Class Replacements
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtReplaceWith.Location = New System.Drawing.Point(62, 472)
         Me.TxtReplaceWith.Name = "TxtReplaceWith"
-        Me.TxtReplaceWith.Size = New System.Drawing.Size(961, 20)
+        Me.TxtReplaceWith.Size = New System.Drawing.Size(895, 20)
         Me.TxtReplaceWith.TabIndex = 30
         '
         'Label2
@@ -267,7 +267,7 @@ Partial Class Replacements
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtReplace.Location = New System.Drawing.Point(62, 446)
         Me.TxtReplace.Name = "TxtReplace"
-        Me.TxtReplace.Size = New System.Drawing.Size(961, 20)
+        Me.TxtReplace.Size = New System.Drawing.Size(895, 20)
         Me.TxtReplace.TabIndex = 28
         '
         'Label1
@@ -294,7 +294,7 @@ Partial Class Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1035, 553)
+        Me.ClientSize = New System.Drawing.Size(969, 553)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.ChkEnabled)
         Me.Controls.Add(Me.ChkCaseSensitive)
@@ -315,7 +315,7 @@ Partial Class Replacements
         Me.Controls.Add(Me.BtnAdd)
         Me.Controls.Add(Me.ReplacementsListView)
         Me.KeyPreview = True
-        Me.MinimumSize = New System.Drawing.Size(1051, 592)
+        Me.MinimumSize = New System.Drawing.Size(985, 592)
         Me.Name = "Replacements"
         Me.Text = "Replacements"
         Me.ListViewMenu.ResumeLayout(False)
