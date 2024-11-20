@@ -41,6 +41,7 @@ Public Class IgnoredWordsAndPhrases
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
+                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
                 IgnoredListView.Items.Add(IgnoredListViewItem)

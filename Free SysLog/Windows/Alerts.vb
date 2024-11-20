@@ -218,6 +218,7 @@ Public Class Alerts
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .AlertType = AlertType
                     .BoolEnabled = ChkEnabled.Checked
+                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
                 AlertsListView.Items.Add(AlertsListViewItem)
