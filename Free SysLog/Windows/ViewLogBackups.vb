@@ -4,11 +4,59 @@ Imports System.ComponentModel
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 Imports System.Threading
+Imports Microsoft.VisualBasic.Logging
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
     Public currentLogs As List(Of SavedData)
     Private boolDoneLoading As Boolean = False
+    Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
+    Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
+
+    Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles FileList.ColumnHeaderMouseClick
+        If e.Button = MouseButtons.Left Then
+            ' Disable user sorting
+            FileList.AllowUserToOrderColumns = False
+
+            Dim column As DataGridViewColumn = FileList.Columns(e.ColumnIndex)
+            intSortColumnIndex = e.ColumnIndex
+
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
+            Else
+                sortOrder = SortOrder.Ascending
+            End If
+
+            colHidden.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColFileName.HeaderCell.SortGlyphDirection = SortOrder.None
+            ColFileSize.HeaderCell.SortGlyphDirection = SortOrder.None
+
+            FileList.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
+
+            SortLogsByDateObject(column.Index, sortOrder)
+        End If
+    End Sub
+
+    Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
+        SortLogsByDateObjectNoLocking(columnIndex, order)
+    End Sub
+
+    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
+        FileList.AllowUserToOrderColumns = False
+        FileList.Enabled = False
+
+        Dim comparer As New MyDataGridViewFileRowComparer(columnIndex, order)
+        Dim rows As MyDataGridViewFileRow() = FileList.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewFileRow)().ToArray()
+
+        Array.Sort(rows, Function(row1 As MyDataGridViewFileRow, row2 As MyDataGridViewFileRow) comparer.Compare(row1, row2))
+
+        FileList.Rows.Clear()
+        FileList.Rows.AddRange(rows)
+        FileList.Enabled = True
+        FileList.AllowUserToOrderColumns = True
+    End Sub
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Try
@@ -49,10 +97,12 @@ Public Class ViewLogBackups
                                                        Interlocked.Add(longTotalLogCount, intCount)
                                                    End If
 
-                                                   Dim row As New DataGridViewRow()
+                                                   Dim row As New MyDataGridViewFileRow()
 
                                                    With row
                                                        .CreateCells(FileList)
+                                                       .fileDate = file.CreationTime
+                                                       .fileSize = file.Length
                                                        .Cells(0).Value = file.Name
                                                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
@@ -80,7 +130,7 @@ Public Class ViewLogBackups
                                            End Sub)
 
         Invoke(Sub()
-                   listOfDataGridViewRows = listOfDataGridViewRows.OrderBy(Function(row) row.Cells(0).Value.ToString()).ToList()
+                   listOfDataGridViewRows = listOfDataGridViewRows.OrderBy(Function(row As MyDataGridViewFileRow) row.fileDate).ToList()
 
                    FileList.DefaultCellStyle.Font = My.Settings.font
                    FileList.Rows.Clear()
@@ -109,6 +159,8 @@ Public Class ViewLogBackups
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
 
         LoadColumnOrders(FileList.Columns, My.Settings.fileListColumnOrder)
+
+        ColFileDate.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
         colHidden.Visible = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
