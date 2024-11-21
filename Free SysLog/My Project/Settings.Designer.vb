@@ -1064,6 +1064,18 @@ Namespace My
                 Me("syslogProxyLocation") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("125")>  _
+        Public Property viewLogBackupsEntryCountColumnSize() As Integer
+            Get
+                Return CType(Me("viewLogBackupsEntryCountColumnSize"),Integer)
+            End Get
+            Set
+                Me("viewLogBackupsEntryCountColumnSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

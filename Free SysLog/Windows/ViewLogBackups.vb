@@ -103,17 +103,21 @@ Public Class ViewLogBackups
                                                        .CreateCells(FileList)
                                                        .fileDate = file.CreationTime
                                                        .fileSize = file.Length
+                                                       .entryCount = intCount
                                                        .Cells(0).Value = file.Name
                                                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(1).Value = $"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}"
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                                                       .Cells(2).Value = $"{FileSizeToHumanSize(file.Length)} ({intCount:N0} entries)"
+                                                       .Cells(2).Value = FileSizeToHumanSize(file.Length)
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                                                       .Cells(3).Value = If(boolIsHidden, "Yes", "No")
-                                                       .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+                                                       .Cells(3).Value = $"{intCount:N0}"
+                                                       .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+
+                                                       .Cells(4).Value = If(boolIsHidden, "Yes", "No")
+                                                       .Cells(4).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                                                    End With
 
 
@@ -157,6 +161,7 @@ Public Class ViewLogBackups
         ColFileDate.Width = My.Settings.ColViewLogBackupsFileDate
         ColFileName.Width = My.Settings.ColViewLogBackupsFileName
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
+        colEntryCount.Width = My.Settings.viewLogBackupsEntryCountColumnSize
 
         LoadColumnOrders(FileList.Columns, My.Settings.fileListColumnOrder)
 
@@ -435,6 +440,7 @@ Public Class ViewLogBackups
             My.Settings.ColViewLogBackupsFileDate = ColFileDate.Width
             My.Settings.ColViewLogBackupsFileName = ColFileName.Width
             My.Settings.ColViewLogBackupsFileSize = ColFileSize.Width
+            My.Settings.viewLogBackupsEntryCountColumnSize = colEntryCount.Width
         End If
     End Sub
 

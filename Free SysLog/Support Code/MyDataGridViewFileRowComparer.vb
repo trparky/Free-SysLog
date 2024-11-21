@@ -21,6 +21,11 @@
             Dim size2 As Long = row2.fileSize
 
             Return If(soSortOrder = SortOrder.Ascending, size1.CompareTo(size2), size2.CompareTo(size1))
+        ElseIf intColumnNumber = 3 Then
+            Dim entry1 As Long = row1.entryCount
+            Dim entry2 As Long = row2.entryCount
+
+            Return If(soSortOrder = SortOrder.Ascending, entry1.CompareTo(entry2), entry2.CompareTo(entry1))
         Else
             Dim strFirstString As String = If(row1.Cells.Count <= intColumnNumber, "", row1.Cells(intColumnNumber).Value?.ToString())
             Dim strSecondString As String = If(row2.Cells.Count <= intColumnNumber, "", row2.Cells(intColumnNumber).Value?.ToString())
