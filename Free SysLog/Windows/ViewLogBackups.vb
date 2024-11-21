@@ -216,8 +216,8 @@ Public Class ViewLogBackups
                 Dim msgBoxText As String = "Are you sure you want to delete the following files?" & vbCrLf & vbCrLf
                 Dim listOfFilesThatAreToBeDeleted As New List(Of String)
 
-                For Each item As ListViewItem In FileList.SelectedRows
-                    listOfFilesThatAreToBeDeleted.Add(item.SubItems(0).Text)
+                For Each item As MyDataGridViewFileRow In FileList.SelectedRows
+                    listOfFilesThatAreToBeDeleted.Add(item.Cells(0).Value)
                 Next
 
                 Dim listOfFilesThatAreToBeDeletedInHumanReadableFormat As String = ConvertListOfStringsToString(listOfFilesThatAreToBeDeleted, True)
@@ -227,7 +227,7 @@ Public Class ViewLogBackups
                 If MsgBox(msgBoxText.Trim, MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     Dim strDeletedFilesLog As String = $"The user deleted the following {FileList.SelectedRows.Count} files from the log backups folder..."
 
-                    For Each item As DataGridViewRow In FileList.SelectedRows
+                    For Each item As MyDataGridViewFileRow In FileList.SelectedRows
                         File.Delete(Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value))
                     Next
 
