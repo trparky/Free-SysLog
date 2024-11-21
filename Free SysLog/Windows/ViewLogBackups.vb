@@ -430,7 +430,7 @@ Public Class ViewLogBackups
         BtnRefresh.PerformClick()
     End Sub
 
-    Private Sub FileList_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs)
+    Private Sub FileList_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles FileList.ColumnWidthChanged
         If boolDoneLoading Then
             My.Settings.ColViewLogBackupsFileDate = ColFileDate.Width
             My.Settings.ColViewLogBackupsFileName = ColFileName.Width
