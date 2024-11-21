@@ -58,6 +58,7 @@ Partial Class ViewLogBackups
         'FileList
         '
         Me.FileList.AllowUserToAddRows = False
+        Me.FileList.AllowUserToDeleteRows = False
         Me.FileList.AllowUserToOrderColumns = True
         Me.FileList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
