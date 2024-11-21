@@ -65,20 +65,7 @@ Public Class Form1
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
 
-            Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                       dateObject:=Now,
-                                                       strTime:=Now.ToString,
-                                                       strSourceAddress:=IPAddress.Loopback.ToString,
-                                                       strHostname:="Local",
-                                                       strRemoteProcess:=Nothing,
-                                                       strLog:=$"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.",
-                                                       strLogType:="Informational",
-                                                       boolAlerted:=False,
-                                                       strRawLogText:=Nothing,
-                                                       strAlertText:=Nothing,
-                                                       AlertType:=AlertType.None,
-                                                       dataGrid:=Logs)
-                                                      )
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", Logs))
 
             SelectLatestLogEntry()
 
@@ -1590,20 +1577,7 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                      dateObject:=Now,
-                                                                      strTime:=Now.ToString,
-                                                                      strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                      strHostname:="Local",
-                                                                      strRemoteProcess:=Nothing,
-                                                                      strLog:=$"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}",
-                                                                      strLogType:="Error",
-                                                                      boolAlerted:=False,
-                                                                      strRawLogText:=Nothing,
-                                                                      strAlertText:=Nothing,
-                                                                      AlertType:=AlertType.None,
-                                                                      dataGrid:=Logs)
-                                                                     )
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
                            SelectLatestLogEntry()
                            UpdateLogCount()
                        End SyncLock
