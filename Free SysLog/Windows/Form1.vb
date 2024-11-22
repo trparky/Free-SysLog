@@ -217,6 +217,9 @@ Public Class Form1
             NotificationLengthLong.Checked = True
         End If
 
+        ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+
+        ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
@@ -1512,6 +1515,11 @@ Public Class Form1
                 End Using
             End If
         End If
+    End Sub
+
+    Private Sub ColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ColLogsAutoFill.Click
+        My.Settings.colLogAutoFill = ColLogsAutoFill.Checked
+        ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
     End Sub
 
 #Region "-- SysLog Server Code --"

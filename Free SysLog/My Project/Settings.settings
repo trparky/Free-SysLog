@@ -260,5 +260,8 @@
     <Setting Name="viewLogBackupsEntryCountColumnSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">125</Value>
     </Setting>
+    <Setting Name="colLogAutoFill" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

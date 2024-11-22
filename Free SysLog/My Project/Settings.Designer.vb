@@ -1076,6 +1076,18 @@ Namespace My
                 Me("viewLogBackupsEntryCountColumnSize") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property colLogAutoFill() As Boolean
+            Get
+                Return CType(Me("colLogAutoFill"),Boolean)
+            End Get
+            Set
+                Me("colLogAutoFill") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
