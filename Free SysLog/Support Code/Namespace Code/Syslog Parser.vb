@@ -24,7 +24,7 @@ Namespace SyslogParser
         End Property
 
         Public Function MakeLocalDataGridRowEntry(strLogText As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
-            Return MakeDataGridRow(serverTimeStamp:=Now,
+            Dim MyDataGridViewRow As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=Now,
                                    dateObject:=Now,
                                    strTime:=Now.ToString,
                                    strSourceAddress:=IPAddress.Loopback.ToString,
@@ -37,6 +37,10 @@ Namespace SyslogParser
                                    strAlertText:=Nothing,
                                    AlertType:=AlertType.None,
                                    dataGrid:=dataGrid)
+
+            MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLogText, My.Settings.font, My.Settings.columnLogSize)
+
+            Return MyDataGridViewRow
         End Function
 
         Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, AlertType As AlertType, ByRef dataGrid As DataGridView) As MyDataGridViewRow
