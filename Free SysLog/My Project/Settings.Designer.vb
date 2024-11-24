@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.12.0.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -1038,6 +1038,54 @@ Namespace My
             End Get
             Set
                 Me("alertsHistoryColumnOrder") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property hostnamesLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("hostnamesLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("hostnamesLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property syslogProxyLocation() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("syslogProxyLocation"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("syslogProxyLocation") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("125")>  _
+        Public Property viewLogBackupsEntryCountColumnSize() As Integer
+            Get
+                Return CType(Me("viewLogBackupsEntryCountColumnSize"),Integer)
+            End Get
+            Set
+                Me("viewLogBackupsEntryCountColumnSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property colLogAutoFill() As Boolean
+            Get
+                Return CType(Me("colLogAutoFill"),Boolean)
+            End Get
+            Set
+                Me("colLogAutoFill") = value
             End Set
         End Property
     End Class

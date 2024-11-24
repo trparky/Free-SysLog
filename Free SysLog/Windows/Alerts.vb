@@ -3,6 +3,36 @@
 Public Class Alerts
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
+    Private boolEditMode As Boolean = False
+
+    Private Function GetToolTipIconImage(icon As ToolTipIcon) As Image
+        Select Case icon
+            Case ToolTipIcon.None
+                Return Nothing
+            Case ToolTipIcon.Info
+                Return SystemIcons.Information.ToBitmap()
+            Case ToolTipIcon.Warning
+                Return SystemIcons.Warning.ToBitmap()
+            Case ToolTipIcon.Error
+                Return SystemIcons.Error.ToBitmap()
+            Case Else
+                Return Nothing
+        End Select
+    End Function
+
+    Private Sub AlertTypeComboBox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles AlertTypeComboBox.SelectedIndexChanged
+        If AlertTypeComboBox.SelectedIndex = 0 Then
+            IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Warning)
+        ElseIf AlertTypeComboBox.SelectedIndex = 1 Then
+            IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Error)
+        ElseIf AlertTypeComboBox.SelectedIndex = 2 Then
+            IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Info)
+        ElseIf AlertTypeComboBox.SelectedIndex = 3 Then
+            IconPictureBox.Image = Nothing
+        End If
+
+        If boolDoneLoading Then boolChanged = True
+    End Sub
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return AlertsListView.Items.Cast(Of AlertsListViewItem).Any(Function(item As AlertsListViewItem)
@@ -61,8 +91,15 @@ Public Class Alerts
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        If AlertsListView.SelectedItems().Count > 0 Then
-            AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
+        If AlertsListView.SelectedItems.Count > 0 Then
+            If AlertsListView.SelectedItems.Count = 1 Then
+                AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
+            Else
+                For Each item As ListViewItem In AlertsListView.SelectedItems
+                    item.Remove()
+                Next
+            End If
+
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
             boolChanged = True
@@ -79,50 +116,32 @@ Public Class Alerts
 
     Private Sub EditItem()
         If AlertsListView.SelectedItems.Count > 0 Then
-            Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True}
-                Dim selectedItemObject As AlertsListViewItem = DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem)
+            AlertsListView.Enabled = False
+            boolEditMode = True
+            BtnAdd.Text = "Save"
+            Label4.Text = "Edit Alert"
 
-                With AddAlert
-                    .strLogText = selectedItemObject.StrLogText
-                    .strAlertText = selectedItemObject.StrAlertText
-                    .boolRegex = selectedItemObject.BoolRegex
-                    .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
-                    .AlertType = selectedItemObject.AlertType
-                    .boolEnabled = selectedItemObject.BoolEnabled
-                End With
+            Dim selectedItemObject As AlertsListViewItem = DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem)
 
-                AddAlert.ShowDialog(Me)
+            TxtAlertText.Text = selectedItemObject.StrAlertText
+            TxtLogText.Text = selectedItemObject.StrLogText
+            ChkEnabled.Checked = selectedItemObject.BoolEnabled
+            ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
+            ChkRegex.Checked = selectedItemObject.BoolRegex
 
-                If AddAlert.boolSuccess Then
-                    With selectedItemObject
-                        .StrLogText = AddAlert.strLogText
-                        .StrAlertText = AddAlert.strAlertText
-                        .SubItems(0).Text = AddAlert.strLogText
-                        .SubItems(1).Text = If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText)
-                        .SubItems(2).Text = If(AddAlert.boolRegex, "Yes", "No")
-                        .SubItems(3).Text = If(AddAlert.boolCaseSensitive, "Yes", "No")
-                        .BoolRegex = AddAlert.boolRegex
-                        .BoolCaseSensitive = AddAlert.boolCaseSensitive
-                        .AlertType = AddAlert.AlertType
-                        .BoolEnabled = AddAlert.boolEnabled
-
-                        Select Case .AlertType
-                            Case AlertType.Warning
-                                .SubItems(4).Text = "Warning"
-                            Case AlertType.ErrorMsg
-                                .SubItems(4).Text = "Error"
-                            Case AlertType.Info
-                                .SubItems(4).Text = "Information"
-                            Case AlertType.None
-                                .SubItems(4).Text = "None"
-                        End Select
-
-                        .SubItems(5).Text = If(AddAlert.boolEnabled, "Yes", "No")
-                    End With
-
-                    boolChanged = True
-                End If
-            End Using
+            If selectedItemObject.AlertType = AlertType.Warning Then
+                IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Warning)
+                AlertTypeComboBox.SelectedIndex = 0
+            ElseIf selectedItemObject.AlertType = AlertType.ErrorMsg Then
+                IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Error)
+                AlertTypeComboBox.SelectedIndex = 1
+            ElseIf selectedItemObject.AlertType = AlertType.Info Then
+                IconPictureBox.Image = GetToolTipIconImage(ToolTipIcon.Info)
+                AlertTypeComboBox.SelectedIndex = 2
+            ElseIf selectedItemObject.AlertType = AlertType.None Then
+                IconPictureBox.Image = Nothing
+                AlertTypeComboBox.SelectedIndex = 3
+            End If
         End If
     End Sub
 
@@ -135,45 +154,95 @@ Public Class Alerts
     End Sub
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
-        Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            AddAlert.ShowDialog(Me)
+        If Not String.IsNullOrWhiteSpace(TxtLogText.Text) Then
+            If ChkRegex.Checked AndAlso Not IsRegexPatternValid(TxtLogText.Text) Then
+                MsgBox("Invalid regex pattern detected.", MsgBoxStyle.Critical, Text)
+                Exit Sub
+            End If
 
-            If AddAlert.boolSuccess Then
-                If CheckForExistingItem(AddAlert.strLogText) Then
-                    MsgBox("A similar item has already been found in your alerts list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
+            If boolEditMode Then
+                Dim selectedItemObject As AlertsListViewItem = DirectCast(AlertsListView.SelectedItems(0), AlertsListViewItem)
 
-                Dim AlertsListViewItem As New AlertsListViewItem(AddAlert.strLogText) With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText}
+                With selectedItemObject
+                    .StrLogText = TxtLogText.Text
+                    .StrAlertText = TxtAlertText.Text
+                    .SubItems(1).Text = If(String.IsNullOrWhiteSpace(TxtAlertText.Text), "(Shows Log Text)", TxtAlertText.Text)
+                    .SubItems(2).Text = If(ChkRegex.Checked, "Yes", "No")
+                    .SubItems(3).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
+
+                    Dim AlertType As AlertType
+
+                    If AlertTypeComboBox.SelectedIndex = 0 Then
+                        AlertType = AlertType.Warning
+                        .SubItems(4).Text = "Warning"
+                    ElseIf AlertTypeComboBox.SelectedIndex = 1 Then
+                        AlertType = AlertType.ErrorMsg
+                        .SubItems(4).Text = "Error"
+                    ElseIf AlertTypeComboBox.SelectedIndex = 2 Then
+                        AlertType = AlertType.Info
+                        .SubItems(4).Text = "Information"
+                    ElseIf AlertTypeComboBox.SelectedIndex = 3 Then
+                        AlertType = AlertType.None
+                        .SubItems(4).Text = "None"
+                    End If
+
+                    .SubItems(5).Text = If(ChkEnabled.Checked, "Yes", "No")
+                    .BoolRegex = ChkRegex.Checked
+                    .BoolCaseSensitive = ChkCaseSensitive.Checked
+                    .AlertType = AlertType
+                    .BoolEnabled = ChkEnabled.Checked
+                End With
+
+                AlertsListView.Enabled = True
+                BtnAdd.Text = "Add"
+                Label4.Text = "Add Alert"
+            Else
+                Dim AlertsListViewItem As New AlertsListViewItem(TxtLogText.Text) With {.StrLogText = TxtLogText.Text, .StrAlertText = TxtAlertText.Text}
 
                 With AlertsListViewItem
-                    .SubItems.Add(If(String.IsNullOrWhiteSpace(AddAlert.strAlertText), "(Shows Log Text)", AddAlert.strAlertText))
-                    .SubItems.Add(If(AddAlert.boolRegex, "Yes", "No"))
-                    .SubItems.Add(If(AddAlert.boolCaseSensitive, "Yes", "No"))
+                    .SubItems.Add(If(String.IsNullOrWhiteSpace(TxtAlertText.Text), "(Shows Log Text)", TxtAlertText.Text))
+                    .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
+                    .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
 
-                    Select Case .AlertType
-                        Case AlertType.Warning
-                            .SubItems.Add("Warning")
-                        Case AlertType.ErrorMsg
-                            .SubItems.Add("Error")
-                        Case AlertType.Info
-                            .SubItems.Add("Information")
-                        Case AlertType.None
-                            .SubItems.Add("None")
-                    End Select
+                    Dim AlertType As AlertType
 
-                    .SubItems.Add(If(AddAlert.boolEnabled, "Yes", "No"))
-                    .BoolRegex = AddAlert.boolRegex
-                    .BoolCaseSensitive = AddAlert.boolCaseSensitive
-                    .AlertType = AddAlert.AlertType
-                    .BoolEnabled = AddAlert.boolEnabled
+                    If AlertTypeComboBox.SelectedIndex = 0 Then
+                        AlertType = AlertType.Warning
+                        .SubItems.Add("Warning")
+                    ElseIf AlertTypeComboBox.SelectedIndex = 1 Then
+                        AlertType = AlertType.ErrorMsg
+                        .SubItems.Add("Error")
+                    ElseIf AlertTypeComboBox.SelectedIndex = 2 Then
+                        AlertType = AlertType.Info
+                        .SubItems.Add("Information")
+                    ElseIf AlertTypeComboBox.SelectedIndex = 3 Then
+                        AlertType = AlertType.None
+                        .SubItems.Add("None")
+                    End If
+
+                    .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                    .BoolRegex = ChkRegex.Checked
+                    .BoolCaseSensitive = ChkCaseSensitive.Checked
+                    .AlertType = AlertType
+                    .BoolEnabled = ChkEnabled.Checked
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
                 AlertsListView.Items.Add(AlertsListViewItem)
-                boolChanged = True
             End If
-        End Using
+
+            boolEditMode = False
+            boolChanged = True
+            TxtAlertText.Text = Nothing
+            TxtLogText.Text = Nothing
+            IconPictureBox.Image = Nothing
+            AlertTypeComboBox.SelectedIndex = -1
+            ChkCaseSensitive.Checked = False
+            ChkRegex.Checked = False
+            ChkEnabled.Checked = True
+        Else
+            MsgBox("You need to fill in the appropriate information to create an alert.", MsgBoxStyle.Critical, Text)
+        End If
     End Sub
 
     Private Sub Alerts_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing

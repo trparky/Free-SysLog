@@ -2,6 +2,8 @@
 
 Public Class Hostnames
     Private selectedItem As ListViewItem
+    Private boolEditMode As Boolean = False
+    Private boolDoneLoading As Boolean = False
 
     Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles BtnEdit.Click
         If ListHostnames.SelectedItems.Count > 0 Then
@@ -10,7 +12,9 @@ Public Class Hostnames
             txtIP.Text = selectedItem.SubItems(0).Text
             txtHostname.Text = selectedItem.SubItems(1).Text
 
+            boolEditMode = True
             BtnAddSave.Text = "Save"
+            lblAddEditHostNameLabel.Text = "Edit Custom Hostname"
         End If
     End Sub
 
@@ -18,23 +22,23 @@ Public Class Hostnames
         Dim tempIP As IPAddress = Nothing
 
         If IPAddress.TryParse(txtIP.Text, tempIP) Then
-            If BtnAddSave.Text = "Save" Then
+            If boolEditMode Then
                 selectedItem.SubItems(0).Text = txtIP.Text
                 selectedItem.SubItems(1).Text = txtHostname.Text
 
+                lblAddEditHostNameLabel.Text = "Add New Custom Hostname"
                 BtnAddSave.Text = "Add"
-                txtIP.Text = Nothing
-                txtHostname.Text = Nothing
             Else
                 Dim newListViewItem As New ListViewItem(txtIP.Text)
                 newListViewItem.SubItems.Add(txtHostname.Text)
                 If My.Settings.font IsNot Nothing Then newListViewItem.Font = My.Settings.font
 
                 ListHostnames.Items.Add(newListViewItem)
-
-                txtIP.Text = Nothing
-                txtHostname.Text = Nothing
             End If
+
+            boolEditMode = False
+            txtIP.Text = Nothing
+            txtHostname.Text = Nothing
         Else
             MsgBox("Invalid IP Address.", MsgBoxStyle.Critical, Text)
         End If
@@ -48,7 +52,16 @@ Public Class Hostnames
         BtnDown.Enabled = ListHostnames.SelectedIndices(0) <> ListHostnames.Items.Count - 1
     End Sub
 
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Const WM_EXITSIZEMOVE As Integer = &H232
+
+        MyBase.WndProc(m)
+
+        If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then My.Settings.hostnamesLocation = Location
+    End Sub
+
     Private Sub Hostnames_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Location = SupportCode.VerifyWindowLocation(My.Settings.hostnamesLocation, Me)
         Dim listOfHostnamesToAdd As New List(Of ListViewItem)
 
         If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
@@ -58,6 +71,7 @@ Public Class Hostnames
         End If
 
         ListHostnames.Items.AddRange(listOfHostnamesToAdd.ToArray)
+        boolDoneLoading = True
     End Sub
 
     Private Sub Hostnames_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -74,7 +88,15 @@ Public Class Hostnames
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        ListHostnames.SelectedItems(0).Remove()
+        If ListHostnames.SelectedItems.Count > 0 Then
+            If ListHostnames.SelectedItems.Count = 1 Then
+                ListHostnames.Items.Remove(ListHostnames.SelectedItems(0))
+            Else
+                For Each item As ListViewItem In ListHostnames.SelectedItems
+                    item.Remove()
+                Next
+            End If
+        End If
     End Sub
 
     Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click

@@ -65,20 +65,7 @@ Public Class Form1
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
 
-            Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                       dateObject:=Now,
-                                                       strTime:=Now.ToString,
-                                                       strSourceAddress:=IPAddress.Loopback.ToString,
-                                                       strHostname:="Local",
-                                                       strRemoteProcess:=Nothing,
-                                                       strLog:=$"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.",
-                                                       strLogType:="Informational",
-                                                       boolAlerted:=False,
-                                                       strRawLogText:=Nothing,
-                                                       strAlertText:=Nothing,
-                                                       AlertType:=AlertType.None,
-                                                       dataGrid:=Logs)
-                                                      )
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", Logs))
 
             SelectLatestLogEntry()
 
@@ -230,6 +217,9 @@ Public Class Form1
             NotificationLengthLong.Checked = True
         End If
 
+        ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+
+        ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
@@ -445,20 +435,7 @@ Public Class Form1
         If File.Exists(strPathToDataFile) Then
             Try
                 Invoke(Sub()
-                           Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                      dateObject:=Now,
-                                                                      strTime:=Nothing,
-                                                                      strSourceAddress:=Nothing,
-                                                                      strHostname:="Local",
-                                                                      strRemoteProcess:=Nothing,
-                                                                      strLog:="Loading data and populating data grid... Please Wait.",
-                                                                      strLogType:="Informational, Local",
-                                                                      boolAlerted:=False,
-                                                                      strRawLogText:=Nothing,
-                                                                      strAlertText:=Nothing,
-                                                                      AlertType:=AlertType.None,
-                                                                      dataGrid:=Logs)
-                                                                     )
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Loading data and populating data grid... Please Wait.", Logs))
                            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
                        End Sub)
 
@@ -486,20 +463,7 @@ Public Class Form1
                 End If
 
                 If boolShowDataLoadedEvent Then
-                    listOfLogEntries.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                      dateObject:=Now,
-                                                                      strTime:=Now.ToString,
-                                                                      strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                      strHostname:="Local",
-                                                                      strRemoteProcess:=Nothing,
-                                                                      strLog:=$"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.",
-                                                                      strLogType:="Informational, Local",
-                                                                      boolAlerted:=False,
-                                                                      strRawLogText:=Nothing,
-                                                                      strAlertText:=Nothing,
-                                                                      AlertType:=AlertType.None,
-                                                                      dataGrid:=Logs)
-                                                                     )
+                    listOfLogEntries.Add(SyslogParser.MakeLocalDataGridRowEntry($"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", Logs))
                 End If
 
                 SyncLock dataGridLockObject
@@ -536,48 +500,9 @@ Public Class Form1
                        Logs.Rows.Clear()
 
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
-                           SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                        dateObject:=Now,
-                                                        strTime:=Now.ToString,
-                                                        strSourceAddress:=IPAddress.Loopback.ToString,
-                                                        strHostname:="Local",
-                                                        strRemoteProcess:=Nothing,
-                                                        strLog:="Free SysLog Server Started.",
-                                                        strLogType:="Informational, Local",
-                                                        boolAlerted:=False,
-                                                        strRawLogText:=Nothing,
-                                                        strAlertText:=Nothing,
-                                                        AlertType:=AlertType.None,
-                                                        dataGrid:=Logs
-                                                       ),
-                           SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                        dateObject:=Now,
-                                                        strTime:=Now.ToString,
-                                                        strSourceAddress:=IPAddress.Loopback.ToString,
-                                                        strHostname:="Local",
-                                                        strRemoteProcess:=Nothing,
-                                                        strLog:="There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.",
-                                                        strLogType:="Informational, Local",
-                                                        boolAlerted:=False,
-                                                        strRawLogText:=Nothing,
-                                                        strAlertText:=Nothing,
-                                                        AlertType:=AlertType.None,
-                                                        dataGrid:=Logs
-                                                       ),
-                           SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                        dateObject:=Now,
-                                                        strTime:=Now.ToString,
-                                                        strSourceAddress:=IPAddress.Loopback.ToString,
-                                                        strHostname:="Local",
-                                                        strRemoteProcess:=Nothing,
-                                                        strLog:=$"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}",
-                                                        strLogType:="Informational, Local",
-                                                        boolAlerted:=False,
-                                                        strRawLogText:=Nothing,
-                                                        strAlertText:=Nothing,
-                                                        AlertType:=AlertType.None,
-                                                        dataGrid:=Logs
-                                                       )
+                           SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs),
+                           SyslogParser.MakeLocalDataGridRowEntry("There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", Logs),
+                           SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", Logs)
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)
@@ -671,20 +596,7 @@ Public Class Form1
                     Logs.Rows.Remove(item)
                 Next
 
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                           dateObject:=Now,
-                                                           strTime:=Now.ToString,
-                                                           strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:="Local",
-                                                           strRemoteProcess:=Nothing,
-                                                           strLog:=$"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.",
-                                                           strLogType:="Informational, Local",
-                                                           boolAlerted:=False,
-                                                           strRawLogText:=Nothing,
-                                                           strAlertText:=Nothing,
-                                                           AlertType:=AlertType.None,
-                                                           dataGrid:=Logs)
-                                                          )
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -730,20 +642,7 @@ Public Class Form1
 
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                           dateObject:=Now,
-                                                           strTime:=Now.ToString,
-                                                           strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:="Local",
-                                                           strRemoteProcess:=Nothing,
-                                                           strLog:=$"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.",
-                                                           strLogType:="Informational, Local",
-                                                           boolAlerted:=False,
-                                                           strRawLogText:=Nothing,
-                                                           strAlertText:=Nothing,
-                                                           AlertType:=AlertType.None,
-                                                           dataGrid:=Logs)
-                                                          )
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -781,20 +680,7 @@ Public Class Form1
 
         If e.CloseReason = CloseReason.WindowsShutDown Then
             SyncLock dataGridLockObject
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                          dateObject:=Now,
-                                                                          strTime:=Now.ToString,
-                                                                          strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                          strHostname:="Local",
-                                                                          strRemoteProcess:=Nothing,
-                                                                          strLog:="Windows shutdown initiated, Free Syslog is closing.",
-                                                                          strLogType:="Informational, Local",
-                                                                          boolAlerted:=False,
-                                                                          strRawLogText:=Nothing,
-                                                                          strAlertText:=Nothing,
-                                                                          AlertType:=AlertType.None,
-                                                                          dataGrid:=Logs)
-                                                                         )
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Windows shutdown initiated, Free Syslog is closing.", Logs))
             End SyncLock
         End If
 
@@ -1014,20 +900,7 @@ Public Class Form1
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                        Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                   dateObject:=Now,
-                                                                   strTime:=Now.ToString,
-                                                                   strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                   strHostname:="Local",
-                                                                   strRemoteProcess:=Nothing,
-                                                                   strLog:=$"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.",
-                                                                   strLogType:="Informational, Local",
-                                                                   boolAlerted:=False,
-                                                                   strRawLogText:=Nothing,
-                                                                   strAlertText:=Nothing,
-                                                                   AlertType:=AlertType.None,
-                                                                   dataGrid:=Logs)
-                                                                  )
+                        Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
 
                         SelectLatestLogEntry()
                     End SyncLock
@@ -1136,20 +1009,7 @@ Public Class Form1
                 Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                           dateObject:=Now,
-                                                           strTime:=Now.ToString,
-                                                           strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:="Local",
-                                                           strRemoteProcess:=Nothing,
-                                                           strLog:=$"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.",
-                                                           strLogType:="Informational, Local",
-                                                           boolAlerted:=False,
-                                                           strRawLogText:=Nothing,
-                                                           strAlertText:=Nothing,
-                                                           AlertType:=AlertType.None,
-                                                           dataGrid:=Logs)
-                                                          )
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -1258,20 +1118,7 @@ Public Class Form1
                 Logs.Rows.Remove(item)
             Next
 
-            Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                       dateObject:=Now,
-                                                       strTime:=Now.ToString,
-                                                       strSourceAddress:=IPAddress.Loopback.ToString,
-                                                       strHostname:="Local",
-                                                       strRemoteProcess:=Nothing,
-                                                       strLog:=$"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.",
-                                                       strLogType:="Informational, Local",
-                                                       boolAlerted:=False,
-                                                       strRawLogText:=Nothing,
-                                                       strAlertText:=Nothing,
-                                                       AlertType:=AlertType.None,
-                                                       dataGrid:=Logs)
-                                                      )
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
 
             SelectLatestLogEntry()
         End SyncLock
@@ -1309,20 +1156,7 @@ Public Class Form1
             End If
 
             SyncLock dataGridLockObject
-                Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                           dateObject:=Now,
-                                                           strTime:=Now.ToString,
-                                                           strSourceAddress:=IPAddress.Loopback.ToString,
-                                                           strHostname:="Local",
-                                                           strRemoteProcess:=Nothing,
-                                                           strLog:="Free SysLog Server Started.",
-                                                           strLogType:="Informational, Local",
-                                                           boolAlerted:=False,
-                                                           strRawLogText:=Nothing,
-                                                           strAlertText:=Nothing,
-                                                           AlertType:=AlertType.None,
-                                                           dataGrid:=Logs)
-                                                          )
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs))
                 SelectLatestLogEntry()
                 UpdateLogCount()
             End SyncLock
@@ -1344,28 +1178,9 @@ Public Class Form1
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        Using AddAlert As New AddAlert With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Alert"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            AddAlert.TxtLogText.Text = strLogText
-
-            AddAlert.ShowDialog(Me)
-
-            If AddAlert.boolSuccess Then
-                Dim boolExistCheck As Boolean = alertsList.Any(Function(item As AlertsClass)
-                                                                   Return item.StrLogText.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
-                                                               End Function)
-
-                If boolExistCheck Then
-                    MsgBox("A similar item has already been found in your alerts list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
-
-                Dim AlertsClass As New AlertsClass() With {.StrLogText = AddAlert.strLogText, .StrAlertText = AddAlert.strAlertText, .BoolCaseSensitive = AddAlert.boolCaseSensitive, .BoolRegex = AddAlert.boolRegex, .alertType = AddAlert.AlertType}
-                alertsList.Add(AlertsClass)
-                My.Settings.alerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
-
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+        Using Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+            Alerts.ShowDialog(Me)
         End Using
     End Sub
 
@@ -1397,20 +1212,7 @@ Public Class Form1
                         serverThread.Start()
 
                         SyncLock dataGridLockObject
-                            Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                       dateObject:=Now,
-                                                                       strTime:=Now.ToString,
-                                                                       strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                       strHostname:="Local",
-                                                                       strRemoteProcess:=Nothing,
-                                                                       strLog:="Free SysLog Server Started.",
-                                                                       strLogType:="Informational, Local",
-                                                                       boolAlerted:=False,
-                                                                       strRawLogText:=Nothing,
-                                                                       strAlertText:=Nothing,
-                                                                       AlertType:=AlertType.None,
-                                                                       dataGrid:=Logs)
-                                                                      )
+                            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs))
                             SelectLatestLogEntry()
                             UpdateLogCount()
                         End SyncLock
@@ -1440,54 +1242,16 @@ Public Class Form1
     End Sub
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
-        Using AddIgnored As New AddIgnored With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            AddIgnored.TxtIgnored.Text = strLogText
-
-            AddIgnored.ShowDialog(Me)
-
-            If AddIgnored.boolSuccess Then
-                Dim boolExistCheck As Boolean = ignoredList.Cast(Of IgnoredClass).Any(Function(item As IgnoredClass)
-                                                                                          Return item.StrIgnore.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
-                                                                                      End Function)
-
-                If boolExistCheck Then
-                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
-
-                Dim IgnoredClass As New IgnoredClass() With {.StrIgnore = AddIgnored.TxtIgnored.Text, .BoolCaseSensitive = AddIgnored.boolCaseSensitive, .BoolRegex = AddIgnored.boolRegex}
-                ignoredList.Add(IgnoredClass)
-                My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredClass))
-
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+        Using Ignored As New IgnoredWordsAndPhrases With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Ignored.TxtIgnored.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+            Ignored.ShowDialog(Me)
         End Using
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Ignored String"}
-            Dim strLogText As String = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            AddReplacement.TxtReplace.Text = strLogText
-
-            AddReplacement.ShowDialog(Me)
-
-            If AddReplacement.boolSuccess Then
-                Dim boolExistCheck As Boolean = replacementsList.Cast(Of ReplacementsClass).Any(Function(item As ReplacementsClass)
-                                                                                                    Return item.StrReplace.Equals(strLogText, StringComparison.OrdinalIgnoreCase)
-                                                                                                End Function)
-
-                If boolExistCheck Then
-                    MsgBox("A similar item has already been found in your ignored list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
-                End If
-
-                Dim ReplacementClass As New ReplacementsClass() With {.StrReplace = AddReplacement.TxtReplace.Text, .StrReplaceWith = AddReplacement.TxtReplaceWith.Text, .BoolCaseSensitive = AddReplacement.boolCaseSensitive, .BoolRegex = AddReplacement.boolRegex}
-                replacementsList.Add(ReplacementClass)
-                My.Settings.replacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ReplacementClass))
-
-                MsgBox("Done", MsgBoxStyle.Information, Text)
-            End If
+        Using Replacements As New Replacements With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+            Replacements.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+            Replacements.ShowDialog(Me)
         End Using
     End Sub
 
@@ -1753,6 +1517,11 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub ColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ColLogsAutoFill.Click
+        My.Settings.colLogAutoFill = ColLogsAutoFill.Checked
+        ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1816,20 +1585,7 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub()
                        SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeDataGridRow(serverTimeStamp:=Now,
-                                                                      dateObject:=Now,
-                                                                      strTime:=Now.ToString,
-                                                                      strSourceAddress:=IPAddress.Loopback.ToString,
-                                                                      strHostname:="Local",
-                                                                      strRemoteProcess:=Nothing,
-                                                                      strLog:=$"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}",
-                                                                      strLogType:="Error",
-                                                                      boolAlerted:=False,
-                                                                      strRawLogText:=Nothing,
-                                                                      strAlertText:=Nothing,
-                                                                      AlertType:=AlertType.None,
-                                                                      dataGrid:=Logs)
-                                                                     )
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
                            SelectLatestLogEntry()
                            UpdateLogCount()
                        End SyncLock

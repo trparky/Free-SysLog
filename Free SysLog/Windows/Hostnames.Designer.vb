@@ -25,22 +25,26 @@ Partial Class Hostnames
         Me.ListHostnames = New System.Windows.Forms.ListView()
         Me.colIP = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colHostname = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.ipAddressLabel = New System.Windows.Forms.Label()
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.txtIP = New System.Windows.Forms.TextBox()
         Me.txtHostname = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
+        Me.hostnameLabel = New System.Windows.Forms.Label()
         Me.BtnAddSave = New System.Windows.Forms.Button()
         Me.BtnEdit = New System.Windows.Forms.Button()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.lblAddEditHostNameLabel = New System.Windows.Forms.Label()
         Me.BtnDown = New System.Windows.Forms.Button()
         Me.BtnUp = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
         Me.BtnExport = New System.Windows.Forms.Button()
+        Me.SeparatingLine = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'ListHostnames
         '
+        Me.ListHostnames.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListHostnames.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colIP, Me.colHostname})
         Me.ListHostnames.FullRowSelect = True
         Me.ListHostnames.HideSelection = False
@@ -61,17 +65,19 @@ Partial Class Hostnames
         Me.colHostname.Text = "Hostname"
         Me.colHostname.Width = 360
         '
-        'Label1
+        'ipAddressLabel
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 281)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(58, 13)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "IP Address"
+        Me.ipAddressLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ipAddressLabel.AutoSize = True
+        Me.ipAddressLabel.Location = New System.Drawing.Point(12, 275)
+        Me.ipAddressLabel.Name = "ipAddressLabel"
+        Me.ipAddressLabel.Size = New System.Drawing.Size(58, 13)
+        Me.ipAddressLabel.TabIndex = 1
+        Me.ipAddressLabel.Text = "IP Address"
         '
         'BtnDelete
         '
+        Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
         Me.BtnDelete.Location = New System.Drawing.Point(12, 209)
         Me.BtnDelete.Name = "BtnDelete"
@@ -82,30 +88,36 @@ Partial Class Hostnames
         '
         'txtIP
         '
-        Me.txtIP.Location = New System.Drawing.Point(76, 278)
+        Me.txtIP.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtIP.Location = New System.Drawing.Point(76, 272)
         Me.txtIP.Name = "txtIP"
         Me.txtIP.Size = New System.Drawing.Size(526, 20)
         Me.txtIP.TabIndex = 3
         '
         'txtHostname
         '
-        Me.txtHostname.Location = New System.Drawing.Point(76, 304)
+        Me.txtHostname.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtHostname.Location = New System.Drawing.Point(76, 298)
         Me.txtHostname.Name = "txtHostname"
         Me.txtHostname.Size = New System.Drawing.Size(526, 20)
         Me.txtHostname.TabIndex = 4
         '
-        'Label2
+        'hostnameLabel
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(12, 307)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(55, 13)
-        Me.Label2.TabIndex = 5
-        Me.Label2.Text = "Hostname"
+        Me.hostnameLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.hostnameLabel.AutoSize = True
+        Me.hostnameLabel.Location = New System.Drawing.Point(12, 301)
+        Me.hostnameLabel.Name = "hostnameLabel"
+        Me.hostnameLabel.Size = New System.Drawing.Size(55, 13)
+        Me.hostnameLabel.TabIndex = 5
+        Me.hostnameLabel.Text = "Hostname"
         '
         'BtnAddSave
         '
-        Me.BtnAddSave.Location = New System.Drawing.Point(15, 332)
+        Me.BtnAddSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnAddSave.Location = New System.Drawing.Point(15, 326)
         Me.BtnAddSave.Name = "BtnAddSave"
         Me.BtnAddSave.Size = New System.Drawing.Size(75, 23)
         Me.BtnAddSave.TabIndex = 6
@@ -114,6 +126,7 @@ Partial Class Hostnames
         '
         'BtnEdit
         '
+        Me.BtnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEdit.Enabled = False
         Me.BtnEdit.Location = New System.Drawing.Point(93, 209)
         Me.BtnEdit.Name = "BtnEdit"
@@ -122,19 +135,20 @@ Partial Class Hostnames
         Me.BtnEdit.Text = "Edit"
         Me.BtnEdit.UseVisualStyleBackColor = True
         '
-        'Label3
+        'lblAddEditHostNameLabel
         '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(12, 257)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(49, 13)
-        Me.Label3.TabIndex = 8
-        Me.Label3.Text = "Add/Edit"
+        Me.lblAddEditHostNameLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblAddEditHostNameLabel.AutoSize = True
+        Me.lblAddEditHostNameLabel.Location = New System.Drawing.Point(12, 251)
+        Me.lblAddEditHostNameLabel.Name = "lblAddEditHostNameLabel"
+        Me.lblAddEditHostNameLabel.Size = New System.Drawing.Size(140, 13)
+        Me.lblAddEditHostNameLabel.TabIndex = 8
+        Me.lblAddEditHostNameLabel.Text = "Add New Custom Hostname"
         '
         'BtnDown
         '
         Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnDown.Location = New System.Drawing.Point(584, 180)
+        Me.BtnDown.Location = New System.Drawing.Point(584, 171)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)
         Me.BtnDown.TabIndex = 21
@@ -153,6 +167,7 @@ Partial Class Hostnames
         '
         'BtnImport
         '
+        Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnImport.Location = New System.Drawing.Point(533, 209)
         Me.BtnImport.Name = "BtnImport"
         Me.BtnImport.Size = New System.Drawing.Size(75, 23)
@@ -162,6 +177,7 @@ Partial Class Hostnames
         '
         'BtnExport
         '
+        Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnExport.Location = New System.Drawing.Point(452, 209)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
@@ -169,27 +185,39 @@ Partial Class Hostnames
         Me.BtnExport.Text = "Export"
         Me.BtnExport.UseVisualStyleBackColor = True
         '
+        'SeparatingLine
+        '
+        Me.SeparatingLine.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.SeparatingLine.BackColor = System.Drawing.Color.Black
+        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 240)
+        Me.SeparatingLine.Name = "SeparatingLine"
+        Me.SeparatingLine.Size = New System.Drawing.Size(618, 1)
+        Me.SeparatingLine.TabIndex = 24
+        '
         'Hostnames
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(614, 365)
+        Me.ClientSize = New System.Drawing.Size(614, 356)
+        Me.Controls.Add(Me.SeparatingLine)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.BtnDown)
         Me.Controls.Add(Me.BtnUp)
-        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.lblAddEditHostNameLabel)
         Me.Controls.Add(Me.BtnEdit)
         Me.Controls.Add(Me.BtnAddSave)
-        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.hostnameLabel)
         Me.Controls.Add(Me.txtHostname)
         Me.Controls.Add(Me.txtIP)
         Me.Controls.Add(Me.BtnDelete)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.ipAddressLabel)
         Me.Controls.Add(Me.ListHostnames)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(630, 395)
         Me.Name = "Hostnames"
         Me.Text = "Configure Custom Hostnames"
         Me.ResumeLayout(False)
@@ -200,16 +228,17 @@ Partial Class Hostnames
     Friend WithEvents ListHostnames As ListView
     Friend WithEvents colIP As ColumnHeader
     Friend WithEvents colHostname As ColumnHeader
-    Friend WithEvents Label1 As Label
+    Friend WithEvents ipAddressLabel As Label
     Friend WithEvents BtnDelete As Button
     Friend WithEvents txtIP As TextBox
     Friend WithEvents txtHostname As TextBox
-    Friend WithEvents Label2 As Label
+    Friend WithEvents hostnameLabel As Label
     Friend WithEvents BtnAddSave As Button
     Friend WithEvents BtnEdit As Button
-    Friend WithEvents Label3 As Label
+    Friend WithEvents lblAddEditHostNameLabel As Label
     Friend WithEvents BtnDown As Button
     Friend WithEvents BtnUp As Button
     Friend WithEvents BtnImport As Button
     Friend WithEvents BtnExport As Button
+    Friend WithEvents SeparatingLine As Label
 End Class

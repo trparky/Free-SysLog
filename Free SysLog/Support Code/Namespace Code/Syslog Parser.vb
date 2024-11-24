@@ -1,4 +1,5 @@
-﻿Imports System.Text.RegularExpressions
+﻿Imports System.Net
+Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
 
 Namespace SyslogParser
@@ -21,6 +22,26 @@ Namespace SyslogParser
                 NotificationLimiter = New NotificationLimiter.NotificationLimiter()
             End Set
         End Property
+
+        Public Function MakeLocalDataGridRowEntry(strLogText As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+            Dim MyDataGridViewRow As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=Now,
+                                   dateObject:=Now,
+                                   strTime:=Now.ToString,
+                                   strSourceAddress:=IPAddress.Loopback.ToString,
+                                   strHostname:="Local",
+                                   strRemoteProcess:=Nothing,
+                                   strLog:=strLogText,
+                                   strLogType:="Informational, Local",
+                                   boolAlerted:=False,
+                                   strRawLogText:=Nothing,
+                                   strAlertText:=Nothing,
+                                   AlertType:=AlertType.None,
+                                   dataGrid:=dataGrid)
+
+            MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLogText, My.Settings.font, My.Settings.columnLogSize)
+
+            Return MyDataGridViewRow
+        End Function
 
         Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, AlertType As AlertType, ByRef dataGrid As DataGridView) As MyDataGridViewRow
             Using MyDataGridViewRow As New MyDataGridViewRow
@@ -80,20 +101,7 @@ Namespace SyslogParser
 
             ParentForm.Invoke(Sub()
                                   SyncLock ParentForm.dataGridLockObject
-                                      ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
-                                                                               dateObject:=currentDate,
-                                                                               strTime:=currentDate.ToString,
-                                                                               strSourceAddress:=strSourceIP,
-                                                                               strHostname:="Local",
-                                                                               strRemoteProcess:=Nothing,
-                                                                               strLog:=strLogText,
-                                                                               strLogType:="Informational, Local",
-                                                                               boolAlerted:=False,
-                                                                               strRawLogText:=Nothing,
-                                                                               strAlertText:=Nothing,
-                                                                               AlertType:=AlertType.None,
-                                                                               dataGrid:=ParentForm.Logs)
-                                                                              )
+                                      ParentForm.Logs.Rows.Add(MakeLocalDataGridRowEntry(strLogText, ParentForm.Logs))
                                       If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                   End SyncLock
 

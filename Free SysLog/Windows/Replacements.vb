@@ -3,6 +3,7 @@
 Public Class Replacements
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
+    Private boolEditMode As Boolean = False
 
     Private Function CheckForExistingItem(strReplace As String, strReplaceWith As String) As Boolean
         Return ReplacementsListView.Items.Cast(Of MyReplacementsListViewItem).Any(Function(item As MyReplacementsListViewItem)
@@ -11,32 +12,62 @@ Public Class Replacements
     End Function
 
     Private Sub BtnAdd_Click(sender As Object, e As EventArgs) Handles BtnAdd.Click
-        Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Text = "Add Replacement"}
-            AddReplacement.ShowDialog(Me)
+        If Not String.IsNullOrWhiteSpace(TxtReplace.Text) Then
+            If ChkRegex.Checked AndAlso Not IsRegexPatternValid(TxtReplace.Text) Then
+                MsgBox("Invalid regex pattern detected.", MsgBoxStyle.Critical, Text)
+                Exit Sub
+            End If
 
-            If AddReplacement.boolSuccess Then
-                If CheckForExistingItem(AddReplacement.strReplace, AddReplacement.strReplaceWith) Then
+            If boolEditMode Then
+                Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
+
+                With selectedItemObject
+                    .SubItems(0).Text = TxtReplace.Text
+                    .SubItems(1).Text = TxtReplaceWith.Text
+                    .SubItems(2).Text = If(ChkRegex.Checked, "Yes", "No")
+                    .SubItems(3).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
+                    .SubItems(4).Text = If(ChkEnabled.Checked, "Yes", "No")
+                    .BoolRegex = ChkRegex.Checked
+                    .BoolCaseSensitive = ChkCaseSensitive.Checked
+                    .BoolEnabled = ChkEnabled.Checked
+                End With
+
+                ReplacementsListView.Enabled = True
+                BtnAdd.Text = "Add"
+                Label3.Text = "Add Replacement"
+            Else
+                If CheckForExistingItem(TxtReplace.Text, TxtReplaceWith.Text) Then
                     MsgBox("A similar item has already been found in your replacements list.", MsgBoxStyle.Critical, Text)
                     Exit Sub
                 End If
 
-                Dim MyReplacementsListViewItem As New MyReplacementsListViewItem(AddReplacement.strReplace)
+                Dim MyReplacementsListViewItem As New MyReplacementsListViewItem(TxtReplace.Text)
 
                 With MyReplacementsListViewItem
-                    .SubItems.Add(AddReplacement.strReplaceWith)
-                    .SubItems.Add(If(AddReplacement.boolRegex, "Yes", "No"))
-                    .SubItems.Add(If(AddReplacement.boolCaseSensitive, "Yes", "No"))
-                    .SubItems.Add(If(AddReplacement.boolEnabled, "Yes", "No"))
-                    .BoolRegex = AddReplacement.boolRegex
-                    .BoolCaseSensitive = AddReplacement.boolCaseSensitive
-                    .BoolEnabled = AddIgnored.boolEnabled
+                    .SubItems.Add(TxtReplaceWith.Text)
+                    .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
+                    .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
+                    .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                    .BoolRegex = ChkRegex.Checked
+                    .BoolCaseSensitive = ChkCaseSensitive.Checked
+                    .BoolEnabled = ChkEnabled.Checked
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
                 ReplacementsListView.Items.Add(MyReplacementsListViewItem)
                 boolChanged = True
             End If
-        End Using
+
+            boolEditMode = False
+            boolChanged = True
+            TxtReplace.Text = Nothing
+            TxtReplaceWith.Text = Nothing
+            ChkCaseSensitive.Checked = False
+            ChkRegex.Checked = False
+            ChkEnabled.Checked = True
+        Else
+            MsgBox("You need to fill in the appropriate information to create an replacement.", MsgBoxStyle.Critical, Text)
+        End If
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)
@@ -102,40 +133,33 @@ Public Class Replacements
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
-        ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
-        boolChanged = True
+        If ReplacementsListView.SelectedItems.Count > 0 Then
+            If ReplacementsListView.SelectedItems.Count = 1 Then
+                ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
+            Else
+                For Each item As ListViewItem In ReplacementsListView.SelectedItems
+                    item.Remove()
+                Next
+            End If
+
+            boolChanged = True
+        End If
     End Sub
 
     Private Sub EditItem()
         If ReplacementsListView.SelectedItems.Count > 0 Then
-            Using AddReplacement As New AddReplacement With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .boolEditMode = True, .Text = "Edit Replacement"}
-                Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
+            ReplacementsListView.Enabled = False
+            boolEditMode = True
+            BtnAdd.Text = "Save"
+            Label3.Text = "Edit Replacement"
 
-                With AddReplacement
-                    .strReplace = selectedItemObject.SubItems(0).Text
-                    .strReplaceWith = selectedItemObject.SubItems(1).Text
-                    .boolRegex = selectedItemObject.BoolRegex
-                    .boolCaseSensitive = selectedItemObject.BoolCaseSensitive
-                    .boolEnabled = selectedItemObject.BoolEnabled
-                End With
+            Dim selectedItemObject As MyReplacementsListViewItem = DirectCast(ReplacementsListView.SelectedItems(0), MyReplacementsListViewItem)
 
-                AddReplacement.ShowDialog(Me)
-
-                If AddReplacement.boolSuccess Then
-                    With selectedItemObject
-                        .SubItems(0).Text = AddReplacement.strReplace
-                        .SubItems(1).Text = AddReplacement.strReplaceWith
-                        .SubItems(2).Text = If(AddReplacement.boolRegex, "Yes", "No")
-                        .SubItems(3).Text = If(AddReplacement.boolCaseSensitive, "Yes", "No")
-                        .SubItems(4).Text = If(AddReplacement.boolEnabled, "Yes", "No")
-                        .BoolRegex = AddReplacement.boolRegex
-                        .BoolCaseSensitive = AddReplacement.boolCaseSensitive
-                        .BoolEnabled = AddReplacement.boolEnabled
-                    End With
-
-                    boolChanged = True
-                End If
-            End Using
+            TxtReplace.Text = selectedItemObject.SubItems(0).Text
+            TxtReplaceWith.Text = selectedItemObject.SubItems(1).Text
+            ChkEnabled.Checked = selectedItemObject.BoolEnabled
+            ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
+            ChkRegex.Checked = selectedItemObject.BoolRegex
         End If
     End Sub
 

@@ -44,6 +44,7 @@ Partial Class ViewLogBackups
         Me.ChkShowHidden = New System.Windows.Forms.CheckBox()
         Me.colHidden = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ChkShowHiddenAsGray = New System.Windows.Forms.CheckBox()
+        Me.colEntryCount = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.HideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
@@ -57,13 +58,14 @@ Partial Class ViewLogBackups
         'FileList
         '
         Me.FileList.AllowUserToAddRows = False
+        Me.FileList.AllowUserToDeleteRows = False
         Me.FileList.AllowUserToOrderColumns = True
         Me.FileList.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.FileList.BackgroundColor = System.Drawing.SystemColors.ControlLightLight
         Me.FileList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.FileList.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize, Me.colHidden})
+        Me.FileList.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColFileName, Me.ColFileDate, Me.ColFileSize, Me.colEntryCount, Me.colHidden})
         Me.FileList.ContextMenuStrip = Me.ContextMenuStrip1
         Me.FileList.Location = New System.Drawing.Point(13, 12)
         Me.FileList.Name = "FileList"
@@ -89,10 +91,17 @@ Partial Class ViewLogBackups
         '
         'ColFileSize
         '
-        Me.ColFileSize.HeaderText = "Size"
+        Me.ColFileSize.HeaderText = "File Size"
         Me.ColFileSize.Name = "ColFileSize"
         Me.ColFileSize.ReadOnly = True
         Me.ColFileSize.Width = 240
+        '
+        'colEntryCount
+        '
+        Me.colEntryCount.HeaderText = "Entry Count"
+        Me.colEntryCount.Name = "colEntryCount"
+        Me.colEntryCount.ReadOnly = True
+        Me.colEntryCount.Width = 125
         '
         'ContextMenuStrip1
         '
@@ -340,4 +349,5 @@ Partial Class ViewLogBackups
     Friend WithEvents lblNumberOfHiddenFiles As ToolStripStatusLabel
     Friend WithEvents lblTotalNumberOfHiddenLogs As ToolStripStatusLabel
     Friend WithEvents LblTotalDiskSpace As ToolStripStatusLabel
+    Friend WithEvents colEntryCount As DataGridViewTextBoxColumn
 End Class

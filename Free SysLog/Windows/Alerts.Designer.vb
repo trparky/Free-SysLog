@@ -23,6 +23,7 @@ Partial Class Alerts
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Alerts))
         Me.BtnEdit = New System.Windows.Forms.Button()
         Me.AlertsListView = New System.Windows.Forms.ListView()
         Me.AlertLogText = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -30,25 +31,39 @@ Partial Class Alerts
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.AlertTypeColumn = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.BtnAdd = New System.Windows.Forms.Button()
-        Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
         Me.btnDeleteAll = New System.Windows.Forms.Button()
         Me.BtnDown = New System.Windows.Forms.Button()
         Me.BtnUp = New System.Windows.Forms.Button()
+        Me.SeparatingLine = New System.Windows.Forms.Label()
+        Me.lblRegExBackReferences = New System.Windows.Forms.Label()
+        Me.ChkEnabled = New System.Windows.Forms.CheckBox()
+        Me.IconPictureBox = New System.Windows.Forms.PictureBox()
+        Me.AlertTypeComboBox = New System.Windows.Forms.ComboBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.TxtAlertText = New System.Windows.Forms.TextBox()
+        Me.ChkCaseSensitive = New System.Windows.Forms.CheckBox()
+        Me.ChkRegex = New System.Windows.Forms.CheckBox()
+        Me.TxtLogText = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
         Me.ListViewMenu.SuspendLayout()
+        CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'BtnEdit
         '
         Me.BtnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEdit.Enabled = False
-        Me.BtnEdit.Location = New System.Drawing.Point(154, 248)
+        Me.BtnEdit.Location = New System.Drawing.Point(83, 248)
         Me.BtnEdit.Name = "BtnEdit"
         Me.BtnEdit.Size = New System.Drawing.Size(75, 23)
         Me.BtnEdit.TabIndex = 12
@@ -95,6 +110,10 @@ Partial Class Alerts
         Me.AlertTypeColumn.Text = "Alert Type"
         Me.AlertTypeColumn.Width = 90
         '
+        'ColEnabled
+        '
+        Me.ColEnabled.Text = "Enabled"
+        '
         'ListViewMenu
         '
         Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem})
@@ -111,7 +130,7 @@ Partial Class Alerts
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
-        Me.BtnDelete.Location = New System.Drawing.Point(83, 248)
+        Me.BtnDelete.Location = New System.Drawing.Point(12, 248)
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(65, 23)
         Me.BtnDelete.TabIndex = 10
@@ -121,22 +140,18 @@ Partial Class Alerts
         'BtnAdd
         '
         Me.BtnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnAdd.Location = New System.Drawing.Point(12, 248)
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 424)
         Me.BtnAdd.Name = "BtnAdd"
         Me.BtnAdd.Size = New System.Drawing.Size(65, 23)
         Me.BtnAdd.TabIndex = 9
         Me.BtnAdd.Text = "Add"
         Me.BtnAdd.UseVisualStyleBackColor = True
         '
-        'ColEnabled
-        '
-        Me.ColEnabled.Text = "Enabled"
-        '
         'BtnEnableDisable
         '
         Me.BtnEnableDisable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEnableDisable.Enabled = False
-        Me.BtnEnableDisable.Location = New System.Drawing.Point(235, 248)
+        Me.BtnEnableDisable.Location = New System.Drawing.Point(164, 248)
         Me.BtnEnableDisable.Name = "BtnEnableDisable"
         Me.BtnEnableDisable.Size = New System.Drawing.Size(75, 23)
         Me.BtnEnableDisable.TabIndex = 13
@@ -166,7 +181,7 @@ Partial Class Alerts
         'btnDeleteAll
         '
         Me.btnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDeleteAll.Location = New System.Drawing.Point(316, 248)
+        Me.btnDeleteAll.Location = New System.Drawing.Point(245, 248)
         Me.btnDeleteAll.Name = "btnDeleteAll"
         Me.btnDeleteAll.Size = New System.Drawing.Size(75, 23)
         Me.btnDeleteAll.TabIndex = 16
@@ -193,11 +208,158 @@ Partial Class Alerts
         Me.BtnUp.Text = "▲"
         Me.BtnUp.UseVisualStyleBackColor = True
         '
+        'SeparatingLine
+        '
+        Me.SeparatingLine.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.SeparatingLine.BackColor = System.Drawing.Color.Black
+        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 280)
+        Me.SeparatingLine.Name = "SeparatingLine"
+        Me.SeparatingLine.Size = New System.Drawing.Size(1000, 1)
+        Me.SeparatingLine.TabIndex = 25
+        '
+        'lblRegExBackReferences
+        '
+        Me.lblRegExBackReferences.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblRegExBackReferences.AutoSize = True
+        Me.lblRegExBackReferences.Location = New System.Drawing.Point(196, 360)
+        Me.lblRegExBackReferences.Name = "lblRegExBackReferences"
+        Me.lblRegExBackReferences.Size = New System.Drawing.Size(602, 26)
+        Me.lblRegExBackReferences.TabIndex = 37
+        Me.lblRegExBackReferences.Text = resources.GetString("lblRegExBackReferences.Text")
+        '
+        'ChkEnabled
+        '
+        Me.ChkEnabled.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkEnabled.AutoSize = True
+        Me.ChkEnabled.Checked = True
+        Me.ChkEnabled.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ChkEnabled.Location = New System.Drawing.Point(717, 401)
+        Me.ChkEnabled.Name = "ChkEnabled"
+        Me.ChkEnabled.Size = New System.Drawing.Size(71, 17)
+        Me.ChkEnabled.TabIndex = 36
+        Me.ChkEnabled.Text = "Enabled?"
+        Me.ChkEnabled.UseVisualStyleBackColor = True
+        '
+        'IconPictureBox
+        '
+        Me.IconPictureBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.IconPictureBox.Location = New System.Drawing.Point(158, 363)
+        Me.IconPictureBox.Name = "IconPictureBox"
+        Me.IconPictureBox.Size = New System.Drawing.Size(32, 32)
+        Me.IconPictureBox.TabIndex = 35
+        Me.IconPictureBox.TabStop = False
+        '
+        'AlertTypeComboBox
+        '
+        Me.AlertTypeComboBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.AlertTypeComboBox.FormattingEnabled = True
+        Me.AlertTypeComboBox.Items.AddRange(New Object() {"Warning", "Error", "Information", "None"})
+        Me.AlertTypeComboBox.Location = New System.Drawing.Point(73, 363)
+        Me.AlertTypeComboBox.Name = "AlertTypeComboBox"
+        Me.AlertTypeComboBox.Size = New System.Drawing.Size(79, 21)
+        Me.AlertTypeComboBox.TabIndex = 34
+        '
+        'Label3
+        '
+        Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(12, 366)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(55, 13)
+        Me.Label3.TabIndex = 33
+        Me.Label3.Text = "Alert Type"
+        '
+        'Label2
+        '
+        Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(12, 340)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(52, 13)
+        Me.Label2.TabIndex = 32
+        Me.Label2.Text = "Alert Text"
+        '
+        'TxtAlertText
+        '
+        Me.TxtAlertText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TxtAlertText.Location = New System.Drawing.Point(67, 337)
+        Me.TxtAlertText.Name = "TxtAlertText"
+        Me.TxtAlertText.Size = New System.Drawing.Size(908, 20)
+        Me.TxtAlertText.TabIndex = 31
+        '
+        'ChkCaseSensitive
+        '
+        Me.ChkCaseSensitive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkCaseSensitive.AutoSize = True
+        Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 401)
+        Me.ChkCaseSensitive.Name = "ChkCaseSensitive"
+        Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
+        Me.ChkCaseSensitive.TabIndex = 30
+        Me.ChkCaseSensitive.Text = "Case Sensitive?"
+        Me.ChkCaseSensitive.UseVisualStyleBackColor = True
+        '
+        'ChkRegex
+        '
+        Me.ChkRegex.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkRegex.AutoSize = True
+        Me.ChkRegex.Location = New System.Drawing.Point(15, 401)
+        Me.ChkRegex.Name = "ChkRegex"
+        Me.ChkRegex.Size = New System.Drawing.Size(478, 17)
+        Me.ChkRegex.TabIndex = 29
+        Me.ChkRegex.Text = "Regex? (Be careful with Regex, a broken regex pattern could cause the program to " &
+    "malfunction)"
+        Me.ChkRegex.UseVisualStyleBackColor = True
+        '
+        'TxtLogText
+        '
+        Me.TxtLogText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TxtLogText.Location = New System.Drawing.Point(67, 311)
+        Me.TxtLogText.Name = "TxtLogText"
+        Me.TxtLogText.Size = New System.Drawing.Size(908, 20)
+        Me.TxtLogText.TabIndex = 28
+        '
+        'Label1
+        '
+        Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(12, 314)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(49, 13)
+        Me.Label1.TabIndex = 27
+        Me.Label1.Text = "Log Text"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'Label4
+        '
+        Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(12, 291)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(50, 13)
+        Me.Label4.TabIndex = 38
+        Me.Label4.Text = "Add Alert"
+        '
         'Alerts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(987, 283)
+        Me.ClientSize = New System.Drawing.Size(987, 458)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.lblRegExBackReferences)
+        Me.Controls.Add(Me.ChkEnabled)
+        Me.Controls.Add(Me.IconPictureBox)
+        Me.Controls.Add(Me.AlertTypeComboBox)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.TxtAlertText)
+        Me.Controls.Add(Me.ChkCaseSensitive)
+        Me.Controls.Add(Me.ChkRegex)
+        Me.Controls.Add(Me.TxtLogText)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.SeparatingLine)
         Me.Controls.Add(Me.BtnDown)
         Me.Controls.Add(Me.BtnUp)
         Me.Controls.Add(Me.btnDeleteAll)
@@ -209,10 +371,13 @@ Partial Class Alerts
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnAdd)
         Me.KeyPreview = True
+        Me.MinimumSize = New System.Drawing.Size(1003, 497)
         Me.Name = "Alerts"
         Me.Text = "Alerts"
         Me.ListViewMenu.ResumeLayout(False)
+        CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -234,4 +399,17 @@ Partial Class Alerts
     Friend WithEvents btnDeleteAll As Button
     Friend WithEvents BtnDown As Button
     Friend WithEvents BtnUp As Button
+    Friend WithEvents SeparatingLine As Label
+    Friend WithEvents lblRegExBackReferences As Label
+    Friend WithEvents ChkEnabled As CheckBox
+    Friend WithEvents IconPictureBox As PictureBox
+    Friend WithEvents AlertTypeComboBox As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents TxtAlertText As TextBox
+    Friend WithEvents ChkCaseSensitive As CheckBox
+    Friend WithEvents ChkRegex As CheckBox
+    Friend WithEvents TxtLogText As TextBox
+    Friend WithEvents Label1 As Label
+    Friend WithEvents Label4 As Label
 End Class
