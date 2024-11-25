@@ -215,6 +215,7 @@ Partial Class Hostnames
         Me.Controls.Add(Me.ipAddressLabel)
         Me.Controls.Add(Me.ListHostnames)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(630, 395)

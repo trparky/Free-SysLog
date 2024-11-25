@@ -191,4 +191,8 @@ Public Class Hostnames
             End Try
         End If
     End Sub
+
+    Private Sub Hostnames_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Delete Then BtnDelete.PerformClick()
+    End Sub
 End Class
