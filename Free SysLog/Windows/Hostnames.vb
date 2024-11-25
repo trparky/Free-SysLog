@@ -137,10 +137,10 @@ Public Class Hostnames
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As ListViewItem In ListHostnames.Items
-                stringCollection.Add($"{item.SubItems(0).Text}|{item.SubItems(1).Text}")
+                stringCollection.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}))
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(stringCollection, Newtonsoft.Json.Formatting.Indented))
+            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(My.Settings.hostnames, Newtonsoft.Json.Formatting.Indented))
 
             MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
         End If
@@ -154,18 +154,34 @@ Public Class Hostnames
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
             Try
-                stringCollection = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Specialized.StringCollection)(IO.File.ReadAllText(openFileDialog.FileName), SupportCode.JSONDecoderSettingsForLogFiles)
-
+                Dim strDataFromFile As String = IO.File.ReadAllText(openFileDialog.FileName)
                 ListHostnames.Items.Clear()
 
-                For Each item As String In stringCollection
-                    ipHostnameSplit = item.Split("|")
+                If strDataFromFile.CaseInsensitiveContains("ip") And strDataFromFile.CaseInsensitiveContains("deviceName") Then
+                    stringCollection = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Specialized.StringCollection)(strDataFromFile, SupportCode.JSONDecoderSettingsForLogFiles)
 
-                    newListViewItem = New ListViewItem(ipHostnameSplit(0))
-                    newListViewItem.SubItems.Add(ipHostnameSplit(1))
+                    Dim customHostname As CustomHostname
 
-                    ListHostnames.Items.Add(newListViewItem)
-                Next
+                    For Each item As String In stringCollection
+                        customHostname = Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(item, SupportCode.JSONDecoderSettingsForLogFiles)
+
+                        newListViewItem = New ListViewItem(customHostname.ip)
+                        newListViewItem.SubItems.Add(customHostname.deviceName)
+
+                        ListHostnames.Items.Add(newListViewItem)
+                    Next
+                Else
+                    stringCollection = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Specialized.StringCollection)(strDataFromFile, SupportCode.JSONDecoderSettingsForLogFiles)
+
+                    For Each item As String In stringCollection
+                        ipHostnameSplit = item.Split("|")
+
+                        newListViewItem = New ListViewItem(ipHostnameSplit(0))
+                        newListViewItem.SubItems.Add(ipHostnameSplit(1))
+
+                        ListHostnames.Items.Add(newListViewItem)
+                    Next
+                End If
 
                 My.Settings.Save()
 
@@ -174,5 +190,9 @@ Public Class Hostnames
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             End Try
         End If
+    End Sub
+
+    Private Sub Hostnames_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Delete Then BtnDelete.PerformClick()
     End Sub
 End Class
