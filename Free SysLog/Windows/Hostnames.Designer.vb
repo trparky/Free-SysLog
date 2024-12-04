@@ -148,7 +148,7 @@ Partial Class Hostnames
         'BtnDown
         '
         Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnDown.Location = New System.Drawing.Point(584, 171)
+        Me.BtnDown.Location = New System.Drawing.Point(584, 180)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)
         Me.BtnDown.TabIndex = 21
@@ -214,7 +214,6 @@ Partial Class Hostnames
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.ipAddressLabel)
         Me.Controls.Add(Me.ListHostnames)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
