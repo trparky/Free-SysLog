@@ -110,7 +110,12 @@ Namespace SyslogParser
                                   ParentForm.BtnSaveLogsToDisk.Enabled = True
 
                                   If ParentForm.ChkEnableAutoScroll.Checked And ParentForm.Logs.Rows.Count > 0 And ParentForm.intSortColumnIndex = 0 Then
-                                      ParentForm.Logs.FirstDisplayedScrollingRowIndex = If(ParentForm.sortOrder = SortOrder.Ascending, ParentForm.Logs.Rows.Count - 1, 0)
+                                      Try
+                                          boolIsProgrammaticScroll = True
+                                          ParentForm.Logs.FirstDisplayedScrollingRowIndex = If(ParentForm.sortOrder = SortOrder.Ascending, ParentForm.Logs.Rows.Count - 1, 0)
+                                      Finally
+                                          boolIsProgrammaticScroll = False
+                                      End Try
                                   End If
                               End Sub)
         End Sub

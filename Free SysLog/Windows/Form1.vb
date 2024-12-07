@@ -143,7 +143,12 @@ Public Class Form1
 
     Public Sub SelectLatestLogEntry()
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+            Try
+                boolIsProgrammaticScroll = True
+                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+            Finally
+                boolIsProgrammaticScroll = False
+            End Try
         End If
     End Sub
 
@@ -1522,6 +1527,13 @@ Public Class Form1
     Private Sub ColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ColLogsAutoFill.Click
         My.Settings.colLogAutoFill = ColLogsAutoFill.Checked
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+    End Sub
+
+    Private Sub Logs_Scroll(sender As Object, e As ScrollEventArgs) Handles Logs.Scroll
+        If Not boolIsProgrammaticScroll And My.Settings.autoScroll Then
+            My.Settings.autoScroll = False
+            ChkEnableAutoScroll.Checked = False
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"
