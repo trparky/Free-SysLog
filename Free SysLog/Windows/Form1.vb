@@ -371,7 +371,10 @@ Public Class Form1
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
 
-        If My.Settings.font IsNot Nothing Then Logs.DefaultCellStyle.Font = My.Settings.font
+        If My.Settings.font IsNot Nothing Then
+            Logs.DefaultCellStyle.Font = My.Settings.font
+            Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+        End If
 
         boolDoneLoading = True
 
@@ -1448,6 +1451,9 @@ Public Class Form1
 
             If FontDialog.ShowDialog() = DialogResult.OK Then
                 My.Settings.font = FontDialog.Font
+
+                Logs.DefaultCellStyle.Font = My.Settings.font
+                Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
 
                 DataHandling.WriteLogsToDisk()
 

@@ -101,7 +101,10 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If My.Settings.font IsNot Nothing Then Logs.DefaultCellStyle.Font = My.Settings.font
+        If My.Settings.font IsNot Nothing Then
+            Logs.DefaultCellStyle.Font = My.Settings.font
+            Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+        End If
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
