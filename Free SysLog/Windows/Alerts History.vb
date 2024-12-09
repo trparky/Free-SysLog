@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports Microsoft.VisualBasic.Logging
 
 Public Class Alerts_History
     Public Property DataToLoad As List(Of AlertsHistory)
@@ -12,6 +13,8 @@ Public Class Alerts_History
     End Property
 
     Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+        strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
+
         Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
@@ -23,6 +26,11 @@ Public Class Alerts_History
     End Sub
 
     Private Sub Alerts_History_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Settings.font IsNot Nothing Then
+            AlertHistoryList.DefaultCellStyle.Font = My.Settings.font
+            AlertHistoryList.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+        End If
+
         Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
         Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
         propInfo?.SetValue(AlertHistoryList, True, Nothing)

@@ -143,7 +143,12 @@ Public Class Form1
 
     Public Sub SelectLatestLogEntry()
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-            Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+            Try
+                boolIsProgrammaticScroll = True
+                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+            Finally
+                boolIsProgrammaticScroll = False
+            End Try
         End If
     End Sub
 
@@ -248,6 +253,7 @@ Public Class Form1
         ChkShowLogTypeColumn.Checked = My.Settings.boolShowLogTypeColumn
         RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
         IPv6Support.Checked = My.Settings.IPv6Support
+        ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -366,7 +372,10 @@ Public Class Form1
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
 
-        If My.Settings.font IsNot Nothing Then Logs.DefaultCellStyle.Font = My.Settings.font
+        If My.Settings.font IsNot Nothing Then
+            Logs.DefaultCellStyle.Font = My.Settings.font
+            Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+        End If
 
         boolDoneLoading = True
 
@@ -536,6 +545,8 @@ Public Class Form1
     End Sub
 
     Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+        strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
+
         Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
@@ -550,7 +561,7 @@ Public Class Form1
         If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
             Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
-            Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData)
+            Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
 
             Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
@@ -1442,6 +1453,9 @@ Public Class Form1
             If FontDialog.ShowDialog() = DialogResult.OK Then
                 My.Settings.font = FontDialog.Font
 
+                Logs.DefaultCellStyle.Font = My.Settings.font
+                Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+
                 DataHandling.WriteLogsToDisk()
 
                 SyncLock dataGridLockObject
@@ -1520,6 +1534,17 @@ Public Class Form1
     Private Sub ColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ColLogsAutoFill.Click
         My.Settings.colLogAutoFill = ColLogsAutoFill.Checked
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+    End Sub
+
+    Private Sub Logs_Scroll(sender As Object, e As ScrollEventArgs) Handles Logs.Scroll
+        If Not boolIsProgrammaticScroll And ChkEnableAutoScroll.Checked And ChkDisableAutoScrollUponScrolling.Checked Then
+            My.Settings.autoScroll = False
+            ChkEnableAutoScroll.Checked = False
+        End If
+    End Sub
+
+    Private Sub ChkDisableAutoScrollUponScrolling_Click(sender As Object, e As EventArgs) Handles ChkDisableAutoScrollUponScrolling.Click
+        My.Settings.disableAutoScrollUponScrolling = ChkDisableAutoScrollUponScrolling.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

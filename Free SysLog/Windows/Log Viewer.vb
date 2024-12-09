@@ -27,7 +27,7 @@ Public Class LogViewer
 
     Private Sub ChkShowRawLog_Click(sender As Object, e As EventArgs) Handles ChkShowRawLog.Click
         My.Settings.boolShowRawLogOnLogViewer = ChkShowRawLog.Checked
-        LogText.Text = If(ChkShowRawLog.Checked, strRawLogText, strLogText)
+        LogText.Text = If(ChkShowRawLog.Checked, strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase), strLogText)
         If MyParentForm IsNot Nothing Then MyParentForm.ShowRawLogOnLogViewer.Checked = ChkShowRawLog.Checked
     End Sub
 End Class

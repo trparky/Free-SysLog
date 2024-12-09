@@ -136,7 +136,11 @@ Public Class ViewLogBackups
         Invoke(Sub()
                    listOfDataGridViewRows = listOfDataGridViewRows.OrderBy(Function(row As MyDataGridViewFileRow) row.fileDate).ToList()
 
-                   FileList.DefaultCellStyle.Font = My.Settings.font
+                   If My.Settings.font IsNot Nothing Then
+                       FileList.DefaultCellStyle.Font = My.Settings.font
+                       FileList.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+                   End If
+
                    FileList.Rows.Clear()
                    FileList.Rows.AddRange(listOfDataGridViewRows.ToArray())
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"

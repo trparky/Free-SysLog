@@ -10,6 +10,7 @@ Namespace SupportCode
     End Enum
 
     Module SupportCode
+        Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
         Public replacementsList As New List(Of ReplacementsClass)
         Public ignoredList As New List(Of IgnoredClass)
