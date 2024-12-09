@@ -40,6 +40,7 @@ Partial Class Form1
         Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkDisableAutoScrollUponScrolling = New System.Windows.Forms.ToolStripMenuItem()
         Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
@@ -263,6 +264,13 @@ Partial Class Form1
         Me.ChkEnableAutoScroll.Size = New System.Drawing.Size(339, 22)
         Me.ChkEnableAutoScroll.Text = "Enable Auto Scroll"
         '
+        'ToolStripMenuItem
+        '
+        Me.ChkDisableAutoScrollUponScrolling.CheckOnClick = True
+        Me.ChkDisableAutoScrollUponScrolling.Name = "ChkDisableAutoScrollUponScrolling"
+        Me.ChkDisableAutoScrollUponScrolling.Size = New System.Drawing.Size(339, 22)
+        Me.ChkDisableAutoScrollUponScrolling.Text = "        Disable Auto Scroll upon scrolling"
+        '
         'BtnCheckForUpdates
         '
         Me.BtnCheckForUpdates.Name = "BtnCheckForUpdates"
@@ -420,7 +428,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.MinimizeToClockTray, Me.ColLogsAutoFill, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.MinimizeToClockTray, Me.ColLogsAutoFill, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -860,6 +868,7 @@ Partial Class Form1
     Friend WithEvents StatusStrip As StatusStrip
     Friend WithEvents NumberOfLogs As ToolStripStatusLabel
     Friend WithEvents ChkEnableAutoScroll As ToolStripMenuItem
+    Friend WithEvents ChkDisableAutoScrollUponScrolling As ToolStripMenuItem
     Friend WithEvents AutomaticallyCheckForUpdates As ToolStripMenuItem
     Friend WithEvents BtnClearLog As ToolStripMenuItem
     Friend WithEvents AlertsHistory As ToolStripMenuItem

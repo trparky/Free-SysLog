@@ -253,6 +253,7 @@ Public Class Form1
         ChkShowLogTypeColumn.Checked = My.Settings.boolShowLogTypeColumn
         RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
         IPv6Support.Checked = My.Settings.IPv6Support
+        ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -1536,10 +1537,14 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_Scroll(sender As Object, e As ScrollEventArgs) Handles Logs.Scroll
-        If Not boolIsProgrammaticScroll And My.Settings.autoScroll Then
+        If Not boolIsProgrammaticScroll And ChkEnableAutoScroll.Checked And ChkDisableAutoScrollUponScrolling.Checked Then
             My.Settings.autoScroll = False
             ChkEnableAutoScroll.Checked = False
         End If
+    End Sub
+
+    Private Sub ChkDisableAutoScrollUponScrolling_Click(sender As Object, e As EventArgs) Handles ChkDisableAutoScrollUponScrolling.Click
+        My.Settings.disableAutoScrollUponScrolling = ChkDisableAutoScrollUponScrolling.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
