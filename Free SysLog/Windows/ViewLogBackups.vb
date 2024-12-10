@@ -166,6 +166,7 @@ Public Class ViewLogBackups
         ColFileName.Width = My.Settings.ColViewLogBackupsFileName
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
         colEntryCount.Width = My.Settings.viewLogBackupsEntryCountColumnSize
+        colHidden.Width = My.Settings.viewLogBackupsHiddenColumnSize
 
         LoadColumnOrders(FileList.Columns, My.Settings.fileListColumnOrder)
 
@@ -445,6 +446,7 @@ Public Class ViewLogBackups
             My.Settings.ColViewLogBackupsFileName = ColFileName.Width
             My.Settings.ColViewLogBackupsFileSize = ColFileSize.Width
             My.Settings.viewLogBackupsEntryCountColumnSize = colEntryCount.Width
+            My.Settings.viewLogBackupsHiddenColumnSize = colHidden.Width
         End If
     End Sub
 
