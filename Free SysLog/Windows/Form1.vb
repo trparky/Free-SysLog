@@ -371,6 +371,7 @@ Public Class Form1
         ColHostname.Width = My.Settings.HostnameWidth
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
+        ColAlerts.Width = My.Settings.columnAlertedSize
 
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
@@ -643,6 +644,7 @@ Public Class Form1
             My.Settings.HostnameWidth = ColHostname.Width
             My.Settings.RemoteProcessHeaderSize = ColRemoteProcess.Width
             My.Settings.columnLogSize = ColLog.Width
+            My.Settings.columnAlertedSize = ColAlerts.Width
         End If
     End Sub
 

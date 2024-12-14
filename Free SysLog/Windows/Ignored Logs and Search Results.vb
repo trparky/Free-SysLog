@@ -140,6 +140,7 @@ Public Class IgnoredLogsAndSearchResults
         ColHostname.Width = My.Settings.HostnameWidth
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
+        ColAlerts.Width = My.Settings.columnAlertedSize
 
         LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 

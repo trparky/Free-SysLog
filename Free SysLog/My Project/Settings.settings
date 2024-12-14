@@ -269,5 +269,8 @@
     <Setting Name="viewLogBackupsHiddenColumnSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
+    <Setting Name="columnAlertedSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
