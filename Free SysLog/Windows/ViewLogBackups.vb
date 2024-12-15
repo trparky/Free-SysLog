@@ -306,6 +306,7 @@ Public Class ViewLogBackups
                                                                                          If regexCompiledObject.IsMatch(item.log) Then
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                             If My.Settings.font IsNot Nothing Then myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                  listOfSearchResults.Add(myDataGridRow)
                                                                                              End SyncLock
