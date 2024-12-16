@@ -175,7 +175,7 @@ Public Class Form1
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
 
             For Each item As MyDataGridViewRow In Logs.Rows
-                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_IPAddress).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_IPAddress).Value, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)
             Next
 
             Logs.Invalidate()
@@ -464,7 +464,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = True)
 
                     For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
+                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)))
                         intProgress += 1
                         Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
                     Next

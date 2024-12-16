@@ -48,7 +48,7 @@ Public Class Alerts_History
             Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
             For Each item As AlertsHistory In DataToLoad
-                listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList, SupportCode.GetMinimumHeight(item.strAlertText, AlertHistoryList.DefaultCellStyle.Font, colAlert.Width)))
+                listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList, SupportCode.GetMinimumHeight(item.strAlertText, AlertHistoryList.DefaultCellStyle.Font, colAlert.Width, AlertHistoryList)))
             Next
 
             AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
@@ -111,7 +111,7 @@ Public Class Alerts_History
                     Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
                     For Each item As AlertsHistory In data
-                        listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList, SupportCode.GetMinimumHeight(item.strAlertText, AlertHistoryList.DefaultCellStyle.Font, colAlert.Width)))
+                        listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList, SupportCode.GetMinimumHeight(item.strAlertText, AlertHistoryList.DefaultCellStyle.Font, colAlert.Width, AlertHistoryList)))
                     Next
 
                     AlertHistoryList.Rows.Clear()

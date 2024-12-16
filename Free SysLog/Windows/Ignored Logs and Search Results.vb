@@ -357,7 +357,7 @@ Public Class IgnoredLogsAndSearchResults
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
                 For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
+                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)))
                 Next
 
                 Invoke(Sub()
@@ -465,7 +465,7 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
             For Each item As MyDataGridViewRow In Logs.Rows
-                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
+                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)
             Next
         End If
     End Sub
