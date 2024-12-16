@@ -16,9 +16,12 @@ Partial Class IgnoredLogsAndSearchResults
 
     Private Shadows parentForm As Object
 
-    Public Sub New(parentForm As Object)
+    Public Sub New(parentForm As Object, WindowDisplayMode As SupportCode.IgnoreOrSearchWindowDisplayMode)
         InitializeComponent()
         Me.parentForm = parentForm
+
+        _WindowDisplayMode = WindowDisplayMode
+        If WindowDisplayMode = SupportCode.IgnoreOrSearchWindowDisplayMode.search Then ChkColLogsAutoFill.Location = New Point(12, 382)
     End Sub
 
     'Required by the Windows Form Designer

@@ -760,7 +760,7 @@ Public Class Form1
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
-                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                       searchResultsWindow.LogsLoadedInLabel.Visible = True
                                                       searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                                       searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
@@ -840,7 +840,7 @@ Public Class Form1
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         If IgnoredLogsAndSearchResultsInstance Is Nothing Then
-            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
+            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
             IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
             IgnoredLogsAndSearchResultsInstance.Show()
         Else
@@ -1298,7 +1298,7 @@ Public Class Form1
     Private Sub BtnOpenLogForViewing_Click(sender As Object, e As EventArgs) Handles BtnOpenLogForViewing.Click
         Using OpenFileDialog As New OpenFileDialog With {.Title = "Open Log File", .Filter = "JSON File|*.json"}
             If OpenFileDialog.ShowDialog() = DialogResult.OK Then
-                Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = OpenFileDialog.FileName, .boolLoadExternalData = True}
+                Dim logFileViewer As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.viewer) With {.MainProgramForm = Me, .Icon = Icon, .Text = "Log File Viewer", .strFileToLoad = OpenFileDialog.FileName, .boolLoadExternalData = True}
                 logFileViewer.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                 logFileViewer.Show(Me)
             End If

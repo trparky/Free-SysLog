@@ -7,7 +7,7 @@ Imports Free_SysLog.SupportCode
 
 Public Class IgnoredLogsAndSearchResults
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
-    Public WindowDisplayMode As IgnoreOrSearchWindowDisplayMode
+    Private _WindowDisplayMode As IgnoreOrSearchWindowDisplayMode
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
     Public MainProgramForm As Form1
@@ -90,11 +90,11 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub Ignored_Logs_and_Search_Results_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         If boolDoneLoading Then
-            If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+            If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 My.Settings.ignoredWindowSize = Size
-            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
+            ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
                 My.Settings.searchWindowSize = Size
-            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+            ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
                 My.Settings.logFileViewerSize = Size
             End If
         End If
@@ -114,10 +114,10 @@ Public Class IgnoredLogsAndSearchResults
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
-        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+        If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             BtnClearIgnoredLogs.Visible = True
             BtnViewMainWindow.Visible = True
-        ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+        ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
             BtnExport.Visible = False
             BtnViewMainWindow.Visible = True
 
@@ -128,13 +128,13 @@ Public Class IgnoredLogsAndSearchResults
             BtnSearch.Visible = True
         End If
 
-        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+        If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             Size = My.Settings.ignoredWindowSize
             Location = VerifyWindowLocation(My.Settings.ignoredWindowLocation, Me)
-        ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
+        ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
             Size = My.Settings.searchWindowSize
             Location = VerifyWindowLocation(My.Settings.searchWindowLocation, Me)
-        ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+        ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
             Size = My.Settings.logFileViewerSize
             Location = VerifyWindowLocation(My.Settings.logFileViewerLocation, Me)
         End If
@@ -165,18 +165,18 @@ Public Class IgnoredLogsAndSearchResults
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
-        If WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
+        If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
             Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
             SortLogsByDateObject(0, SortOrder.Ascending)
 
-            If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+            If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
             Else
                 LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
             End If
         End If
 
-        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
+        If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
             Dim worker As New BackgroundWorker()
             AddHandler worker.DoWork, Sub() LoadData(strFileToLoad)
             AddHandler worker.RunWorkerCompleted, Sub()
@@ -204,11 +204,11 @@ Public Class IgnoredLogsAndSearchResults
         MyBase.WndProc(m)
 
         If m.Msg = WM_EXITSIZEMOVE AndAlso boolDoneLoading Then
-            If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+            If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 My.Settings.ignoredWindowLocation = Location
-            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
+            ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search Then
                 My.Settings.searchWindowLocation = Location
-            ElseIf WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
+            ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
                 My.Settings.logFileViewerLocation = Location
             End If
         End If
@@ -311,7 +311,7 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub LogsContextMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsContextMenu.Opening
-        If WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
+        If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
             ExportSelectedLogsToolStripMenuItem.Visible = True
             CopyLogTextToolStripMenuItem.Visible = False
             CreateAlertToolStripMenuItem.Visible = False
@@ -432,7 +432,7 @@ Public Class IgnoredLogsAndSearchResults
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
-                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                       searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
@@ -446,7 +446,7 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
-        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_FileName).Value), .boolLoadExternalData = True}
+        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.viewer) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_FileName).Value), .boolLoadExternalData = True}
         logFileViewer.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         logFileViewer.Show(Me)
     End Sub

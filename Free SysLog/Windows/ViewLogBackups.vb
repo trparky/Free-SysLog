@@ -190,7 +190,7 @@ Public Class ViewLogBackups
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
 
             If File.Exists(fileName) Then
-                Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .boolLoadExternalData = True}
+                Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.viewer) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .boolLoadExternalData = True}
                 searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                 searchResultsWindow.ShowDialog(Me)
             End If
@@ -271,7 +271,7 @@ Public Class ViewLogBackups
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
-        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results"}
         searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
 
         BtnSearch.Enabled = False
