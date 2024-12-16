@@ -100,6 +100,12 @@ Public Class IgnoredLogsAndSearchResults
         End If
     End Sub
 
+    Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
+        If boolDoneLoading Then
+            My.Settings.columnFileNameSize = ColFileName.Width
+        End If
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
@@ -141,6 +147,7 @@ Public Class IgnoredLogsAndSearchResults
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
         ColAlerts.Width = My.Settings.columnAlertedSize
+        ColFileName.Width = My.Settings.columnFileNameSize
 
         LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 
