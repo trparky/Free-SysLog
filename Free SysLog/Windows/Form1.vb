@@ -763,6 +763,7 @@ Public Class Form1
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
                                                       searchResultsWindow.LogsLoadedInLabel.Visible = True
                                                       searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                                      searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -840,6 +841,7 @@ Public Class Form1
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         If IgnoredLogsAndSearchResultsInstance Is Nothing Then
             IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
+            IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
             IgnoredLogsAndSearchResultsInstance.Show()
         Else
             IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
@@ -1297,6 +1299,7 @@ Public Class Form1
         Using OpenFileDialog As New OpenFileDialog With {.Title = "Open Log File", .Filter = "JSON File|*.json"}
             If OpenFileDialog.ShowDialog() = DialogResult.OK Then
                 Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = OpenFileDialog.FileName, .boolLoadExternalData = True}
+                logFileViewer.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                 logFileViewer.Show(Me)
             End If
         End Using

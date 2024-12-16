@@ -426,6 +426,7 @@ Public Class IgnoredLogsAndSearchResults
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -439,6 +440,7 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
         Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_FileName).Value), .boolLoadExternalData = True}
+        logFileViewer.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         logFileViewer.Show(Me)
     End Sub
 
@@ -458,6 +460,16 @@ Public Class IgnoredLogsAndSearchResults
             For Each item As MyDataGridViewRow In Logs.Rows
                 item.Height = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
             Next
+        End If
+    End Sub
+
+    Private Sub ChkColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ChkColLogsAutoFill.Click
+        My.Settings.colLogAutoFill = ChkColLogsAutoFill.Checked
+        ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+
+        If MainProgramForm IsNot Nothing Then
+            MainProgramForm.ColLogsAutoFill.Checked = ChkColLogsAutoFill.Checked
+            MainProgramForm.ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
         End If
     End Sub
 End Class

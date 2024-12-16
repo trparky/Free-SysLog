@@ -48,6 +48,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
+        Me.ChkColLogsAutoFill = New System.Windows.Forms.CheckBox()
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
@@ -164,7 +165,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColAlerts.ToolTipText = "True or False. Indicates if the log entry triggered an alert from this program."
         Me.ColAlerts.Width = 50
         '
-        'ColSyslogHeader
+        'ColRemoteProcess
         '
         Me.ColRemoteProcess.HeaderText = "Remote Process"
         Me.ColRemoteProcess.Name = "ColRemoteProcess"
@@ -237,6 +238,17 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ChkCaseInsensitiveSearch.UseVisualStyleBackColor = True
         Me.ChkCaseInsensitiveSearch.Visible = False
         '
+        'ChkColLogsAutoFill
+        '
+        Me.ChkColLogsAutoFill.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkColLogsAutoFill.AutoSize = True
+        Me.ChkColLogsAutoFill.Location = New System.Drawing.Point(597, 382)
+        Me.ChkColLogsAutoFill.Name = "ChkColLogsAutoFill"
+        Me.ChkColLogsAutoFill.Size = New System.Drawing.Size(124, 17)
+        Me.ChkColLogsAutoFill.TabIndex = 29
+        Me.ChkColLogsAutoFill.Text = "Logs Column AutoFill"
+        Me.ChkColLogsAutoFill.UseVisualStyleBackColor = True
+        '
         'ChkRegExSearch
         '
         Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -306,6 +318,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 425)
+        Me.Controls.Add(Me.ChkColLogsAutoFill)
         Me.Controls.Add(Me.BtnViewMainWindow)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.Logs)
@@ -355,4 +368,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents ColHostname As DataGridViewTextBoxColumn
     Friend WithEvents ExportSelectedLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LogsLoadedInLabel As ToolStripStatusLabel
+    Friend WithEvents ChkColLogsAutoFill As CheckBox
 End Class

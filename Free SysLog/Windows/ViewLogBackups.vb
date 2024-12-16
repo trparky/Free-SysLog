@@ -192,6 +192,7 @@ Public Class ViewLogBackups
 
             If File.Exists(fileName) Then
                 Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .boolLoadExternalData = True}
+                searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                 searchResultsWindow.ShowDialog(Me)
             End If
         End If
@@ -272,6 +273,7 @@ Public Class ViewLogBackups
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
         Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+        searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
 
         BtnSearch.Enabled = False
 
