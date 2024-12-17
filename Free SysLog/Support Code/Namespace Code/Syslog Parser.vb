@@ -38,8 +38,7 @@ Namespace SyslogParser
                                    AlertType:=AlertType.None,
                                    dataGrid:=dataGrid)
 
-            MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLogText, My.Settings.font, My.Settings.columnLogSize)
-
+            MyDataGridViewRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
             Return MyDataGridViewRow
         End Function
 
@@ -64,7 +63,6 @@ Namespace SyslogParser
                     .RawLogData = strRawLogText
                     .AlertText = strAlertText
                     .alertType = AlertType
-                    .MinimumHeight = GetMinimumHeight(strLog, ParentForm.Logs.DefaultCellStyle.Font, ParentForm.ColLog.Width)
 
                     If My.Settings.font IsNot Nothing Then
                         .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
@@ -76,6 +74,8 @@ Namespace SyslogParser
                         .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
                         .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
                     End If
+
+                    .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
                 End With
 
                 Return MyDataGridViewRow
@@ -459,7 +459,7 @@ Namespace SyslogParser
                         End If
                     End If
 
-                    NotificationLimiter.ShowNotification(1, "Log Alert", strAlertText, ToolTipIcon, strLogText, strLogData, strSourceIP, strRawLogText)
+                    NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogData, strSourceIP, strRawLogText)
                     strOutgoingAlertText = strAlertText
                     Return True
                 End If

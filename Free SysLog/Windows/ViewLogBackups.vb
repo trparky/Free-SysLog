@@ -118,6 +118,8 @@ Public Class ViewLogBackups
 
                                                        .Cells(4).Value = If(boolIsHidden, "Yes", "No")
                                                        .Cells(4).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+                                                       .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
                                                    End With
 
 
@@ -161,11 +163,13 @@ Public Class ViewLogBackups
 
         FileList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
         FileList.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+        FileList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
 
         ColFileDate.Width = My.Settings.ColViewLogBackupsFileDate
         ColFileName.Width = My.Settings.ColViewLogBackupsFileName
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
         colEntryCount.Width = My.Settings.viewLogBackupsEntryCountColumnSize
+        colHidden.Width = My.Settings.viewLogBackupsHiddenColumnSize
 
         LoadColumnOrders(FileList.Columns, My.Settings.fileListColumnOrder)
 
@@ -190,7 +194,8 @@ Public Class ViewLogBackups
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
 
             If File.Exists(fileName) Then
-                Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .boolLoadExternalData = True}
+                Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.viewer) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Log Viewer", .strFileToLoad = fileName, .boolLoadExternalData = True}
+                searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                 searchResultsWindow.ShowDialog(Me)
             End If
         End If
@@ -270,7 +275,10 @@ Public Class ViewLogBackups
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
-        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results"}
+        searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+
+        If My.Settings.font IsNot Nothing Then searchResultsWindow.Logs.DefaultCellStyle.Font = My.Settings.font
 
         BtnSearch.Enabled = False
 
@@ -303,8 +311,10 @@ Public Class ViewLogBackups
 
                                                                                      For Each item As SavedData In dataFromFile
                                                                                          If regexCompiledObject.IsMatch(item.log) Then
-                                                                                             myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
+                                                                                             myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                             myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+                                                                                             If My.Settings.font IsNot Nothing Then myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                  listOfSearchResults.Add(myDataGridRow)
                                                                                              End SyncLock
@@ -315,7 +325,7 @@ Public Class ViewLogBackups
 
                                           For Each item As SavedData In currentLogs
                                               If regexCompiledObject.IsMatch(item.log) Then
-                                                  myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize))
+                                                  myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
                                                   myDataGridRow = Nothing
@@ -445,6 +455,7 @@ Public Class ViewLogBackups
             My.Settings.ColViewLogBackupsFileName = ColFileName.Width
             My.Settings.ColViewLogBackupsFileSize = ColFileSize.Width
             My.Settings.viewLogBackupsEntryCountColumnSize = colEntryCount.Width
+            My.Settings.viewLogBackupsHiddenColumnSize = colHidden.Width
         End If
     End Sub
 

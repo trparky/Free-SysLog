@@ -171,11 +171,6 @@ Namespace SupportCode
             child.Location = New Point(childLeft, childTop)
         End Sub
 
-        Public Function GetMinimumHeight(strInput As String, font As Font, maxWidth As Integer) As Integer
-            Dim textSize As Size = TextRenderer.MeasureText(strInput, font, New Size(maxWidth, Integer.MaxValue), TextFormatFlags.WordBreak)
-            Return textSize.Height + 10
-        End Function
-
         Public Function IsRegexPatternValid(pattern As String) As Boolean
             Try
                 Dim regex As New RegularExpressions.Regex(pattern)

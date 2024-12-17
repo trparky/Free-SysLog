@@ -1100,6 +1100,42 @@ Namespace My
                 Me("disableAutoScrollUponScrolling") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("60")>  _
+        Public Property viewLogBackupsHiddenColumnSize() As Integer
+            Get
+                Return CType(Me("viewLogBackupsHiddenColumnSize"),Integer)
+            End Get
+            Set
+                Me("viewLogBackupsHiddenColumnSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("50")>  _
+        Public Property columnAlertedSize() As Integer
+            Get
+                Return CType(Me("columnAlertedSize"),Integer)
+            End Get
+            Set
+                Me("columnAlertedSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("150")>  _
+        Public Property columnFileNameSize() As Integer
+            Get
+                Return CType(Me("columnFileNameSize"),Integer)
+            End Get
+            Set
+                Me("columnFileNameSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

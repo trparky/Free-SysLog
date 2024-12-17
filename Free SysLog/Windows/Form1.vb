@@ -152,10 +152,15 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub Form1_ResizeBegin(sender As Object, e As EventArgs) Handles Me.ResizeBegin
+        Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+    End Sub
+
     Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.mainWindowSize = Size
         Threading.Thread.Sleep(100)
         SelectLatestLogEntry()
+        Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -173,10 +178,6 @@ Public Class Form1
 
             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
-
-            For Each item As MyDataGridViewRow In Logs.Rows
-                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_IPAddress).Value, Logs.DefaultCellStyle.Font, ColLog.Width)
-            Next
 
             Logs.Invalidate()
             Logs.Refresh()
@@ -337,6 +338,8 @@ Public Class Form1
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
+        Logs.DefaultCellStyle.Padding = New Padding(0, 20, 0, 20) ' Left, Top, Right, Bottom
+
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)
@@ -371,6 +374,7 @@ Public Class Form1
         ColHostname.Width = My.Settings.HostnameWidth
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
+        ColAlerts.Width = My.Settings.columnAlertedSize
 
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
@@ -463,7 +467,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = True)
 
                     For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width)))
+                        listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                         intProgress += 1
                         Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
                     Next
@@ -484,6 +488,7 @@ Public Class Form1
 
                                Logs.SelectedRows(0).Selected = False
                                UpdateLogCount()
+                               Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
@@ -643,6 +648,7 @@ Public Class Form1
             My.Settings.HostnameWidth = ColHostname.Width
             My.Settings.RemoteProcessHeaderSize = ColRemoteProcess.Width
             My.Settings.columnLogSize = ColLog.Width
+            My.Settings.columnAlertedSize = ColAlerts.Width
         End If
     End Sub
 
@@ -758,9 +764,10 @@ Public Class Form1
 
         AddHandler worker.RunWorkerCompleted, Sub()
                                                   If listOfSearchResults.Count > 0 Then
-                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.search}
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                       searchResultsWindow.LogsLoadedInLabel.Visible = True
                                                       searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                                      searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
                                                       MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
@@ -837,7 +844,8 @@ Public Class Form1
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         If IgnoredLogsAndSearchResultsInstance Is Nothing Then
-            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored}
+            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
+            IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
             IgnoredLogsAndSearchResultsInstance.Show()
         Else
             IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
@@ -1294,7 +1302,8 @@ Public Class Form1
     Private Sub BtnOpenLogForViewing_Click(sender As Object, e As EventArgs) Handles BtnOpenLogForViewing.Click
         Using OpenFileDialog As New OpenFileDialog With {.Title = "Open Log File", .Filter = "JSON File|*.json"}
             If OpenFileDialog.ShowDialog() = DialogResult.OK Then
-                Dim logFileViewer As New IgnoredLogsAndSearchResults(Me) With {.MainProgramForm = Me, .Icon = Icon, .Text = "Log File Viewer", .WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer, .strFileToLoad = OpenFileDialog.FileName, .boolLoadExternalData = True}
+                Dim logFileViewer As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.viewer) With {.MainProgramForm = Me, .Icon = Icon, .Text = "Log File Viewer", .strFileToLoad = OpenFileDialog.FileName, .boolLoadExternalData = True}
+                logFileViewer.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                 logFileViewer.Show(Me)
             End If
         End Using
