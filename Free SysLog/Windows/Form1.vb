@@ -152,10 +152,15 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub Form1_ResizeBegin(sender As Object, e As EventArgs) Handles Me.ResizeBegin
+        Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+    End Sub
+
     Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.mainWindowSize = Size
         Threading.Thread.Sleep(100)
         SelectLatestLogEntry()
+        Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
@@ -173,10 +178,6 @@ Public Class Form1
 
             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
-
-            For Each item As MyDataGridViewRow In Logs.Rows
-                item.MinimumHeight = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)
-            Next
 
             Logs.Invalidate()
             Logs.Refresh()
@@ -464,7 +465,7 @@ Public Class Form1
                     Invoke(Sub() LoadingProgressBar.Visible = True)
 
                     For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)))
+                        listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                         intProgress += 1
                         Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
                     Next
@@ -485,6 +486,7 @@ Public Class Form1
 
                                Logs.SelectedRows(0).Selected = False
                                UpdateLogCount()
+                               Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException

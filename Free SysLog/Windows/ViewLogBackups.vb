@@ -4,6 +4,7 @@ Imports System.ComponentModel
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 Imports System.Threading
+Imports Microsoft.VisualBasic.Logging
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -160,6 +161,7 @@ Public Class ViewLogBackups
 
         FileList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
         FileList.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
+        FileList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
 
         ColFileDate.Width = My.Settings.ColViewLogBackupsFileDate
         ColFileName.Width = My.Settings.ColViewLogBackupsFileName
@@ -307,7 +309,7 @@ Public Class ViewLogBackups
 
                                                                                      For Each item As SavedData In dataFromFile
                                                                                          If regexCompiledObject.IsMatch(item.log) Then
-                                                                                             myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize, searchResultsWindow.Logs))
+                                                                                             myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                              If My.Settings.font IsNot Nothing Then myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
@@ -320,7 +322,7 @@ Public Class ViewLogBackups
 
                                           For Each item As SavedData In currentLogs
                                               If regexCompiledObject.IsMatch(item.log) Then
-                                                  myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs, GetMinimumHeight(item.log, searchResultsWindow.Logs.DefaultCellStyle.Font, My.Settings.columnLogSize, searchResultsWindow.Logs))
+                                                  myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
                                                   myDataGridRow = Nothing

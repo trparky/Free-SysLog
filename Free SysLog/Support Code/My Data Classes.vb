@@ -11,7 +11,7 @@ Public Class SavedData
     Public DateObject, ServerDate As Date
     Public BoolAlerted As Boolean = False
 
-    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView, height As Integer) As MyDataGridViewRow
+    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView) As MyDataGridViewRow
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
@@ -28,7 +28,6 @@ Public Class SavedData
                 .Cells(ColumnIndex_ServerTime).Value = If(ServerDate = Date.MinValue, "", ToIso8601Format(ServerDate))
                 .DateObject = DateObject
                 .BoolAlerted = BoolAlerted
-                .MinimumHeight = height
                 .RawLogData = rawLogData
                 .AlertText = alertText
                 .alertType = alertType
@@ -74,7 +73,7 @@ Public Class AlertsHistory
     Public strTime, strAlertText, strIP, strLog, strRawLog As String
     Public alertType As AlertType
 
-    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView, height As Integer) As AlertsHistoryDataGridViewRow
+    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView) As AlertsHistoryDataGridViewRow
         Using AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow
             With AlertsHistoryDataGridViewRow
                 .CreateCells(dataGrid)

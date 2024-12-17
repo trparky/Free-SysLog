@@ -171,34 +171,6 @@ Namespace SupportCode
             child.Location = New Point(childLeft, childTop)
         End Sub
 
-        Public Function GetMinimumHeight(strInput As String, font As Font, maxWidth As Integer, dgv As DataGridView) As Integer
-            ' Validate parameters
-            If font Is Nothing OrElse dgv Is Nothing Then Throw New ArgumentNullException("Font and DataGridView cannot be null.")
-            If maxWidth <= 0 Then Throw New ArgumentException("MaxWidth must be greater than 0.")
-            If strInput Is Nothing Then strInput = ""
-
-            ' Split text into lines
-            Dim lines As String() = strInput.Split(New String() {vbCrLf}, StringSplitOptions.None)
-            Dim totalHeight As Integer = 0
-
-            ' Pre-calculate blank line height
-            Dim blankLineHeight As Integer = TextRenderer.MeasureText(" ", font, New Size(maxWidth, Integer.MaxValue), TextFormatFlags.WordBreak).Height
-
-            ' Measure each line
-            For Each line As String In lines
-                Dim currentLine As String = If(String.IsNullOrEmpty(line), " ", line)
-                totalHeight += TextRenderer.MeasureText(currentLine, font, New Size(maxWidth, Integer.MaxValue), TextFormatFlags.WordBreak).Height
-            Next
-
-            ' Account for padding and buffer
-            Dim padding As Padding = dgv.DefaultCellStyle.Padding
-            Dim bufferPerLine As Integer = 2 ' Adjustable buffer
-            totalHeight += padding.Top + padding.Bottom + (bufferPerLine * lines.Length)
-
-            ' Return the calculated height
-            Return totalHeight
-        End Function
-
         Public Function IsRegexPatternValid(pattern As String) As Boolean
             Try
                 Dim regex As New RegularExpressions.Regex(pattern)

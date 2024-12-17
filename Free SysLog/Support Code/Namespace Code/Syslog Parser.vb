@@ -38,8 +38,6 @@ Namespace SyslogParser
                                    AlertType:=AlertType.None,
                                    dataGrid:=dataGrid)
 
-            MyDataGridViewRow.MinimumHeight = GetMinimumHeight(strLogText, My.Settings.font, My.Settings.columnLogSize, dataGrid)
-
             Return MyDataGridViewRow
         End Function
 
@@ -64,7 +62,6 @@ Namespace SyslogParser
                     .RawLogData = strRawLogText
                     .AlertText = strAlertText
                     .alertType = AlertType
-                    .MinimumHeight = GetMinimumHeight(strLog, ParentForm.Logs.DefaultCellStyle.Font, ParentForm.ColLog.Width, dataGrid)
 
                     If My.Settings.font IsNot Nothing Then
                         .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font

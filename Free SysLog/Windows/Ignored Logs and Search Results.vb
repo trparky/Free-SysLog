@@ -88,6 +88,10 @@ Public Class IgnoredLogsAndSearchResults
         OpenLogViewerWindow()
     End Sub
 
+    Private Sub Ignored_Logs_and_Search_Results_ResizeBegin(sender As Object, e As EventArgs) Handles Me.ResizeBegin
+        Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         If boolDoneLoading Then
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
@@ -98,6 +102,8 @@ Public Class IgnoredLogsAndSearchResults
                 My.Settings.logFileViewerSize = Size
             End If
         End If
+
+        Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
@@ -113,6 +119,7 @@ Public Class IgnoredLogsAndSearchResults
         End If
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+        Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
 
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             BtnClearIgnoredLogs.Visible = True
@@ -357,7 +364,7 @@ Public Class IgnoredLogsAndSearchResults
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
                 For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(item.MakeDataGridRow(Logs, GetMinimumHeight(item.log, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)))
+                    listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
                 Invoke(Sub()
@@ -460,14 +467,6 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub ExportSelectedLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportSelectedLogsToolStripMenuItem.Click
         DataHandling.ExportSelectedLogs(Logs.SelectedRows)
-    End Sub
-
-    Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-        If boolDoneLoading Then
-            For Each item As MyDataGridViewRow In Logs.Rows
-                item.MinimumHeight = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)
-            Next
-        End If
     End Sub
 
     Private Sub ChkColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ChkColLogsAutoFill.Click
