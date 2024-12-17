@@ -26,6 +26,7 @@
             End With
         Next
 
+        newDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
         Return newDataGridRow
     End Function
 End Class

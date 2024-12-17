@@ -118,6 +118,8 @@ Public Class ViewLogBackups
 
                                                        .Cells(4).Value = If(boolIsHidden, "Yes", "No")
                                                        .Cells(4).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+                                                       .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
                                                    End With
 
 
@@ -311,6 +313,7 @@ Public Class ViewLogBackups
                                                                                          If regexCompiledObject.IsMatch(item.log) Then
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                             myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
                                                                                              If My.Settings.font IsNot Nothing Then myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                  listOfSearchResults.Add(myDataGridRow)

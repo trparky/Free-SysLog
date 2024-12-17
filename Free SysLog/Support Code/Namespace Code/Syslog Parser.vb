@@ -38,6 +38,7 @@ Namespace SyslogParser
                                    AlertType:=AlertType.None,
                                    dataGrid:=dataGrid)
 
+            MyDataGridViewRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
             Return MyDataGridViewRow
         End Function
 
@@ -73,6 +74,8 @@ Namespace SyslogParser
                         .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
                         .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
                     End If
+
+                    .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
                 End With
 
                 Return MyDataGridViewRow

@@ -42,6 +42,8 @@ Public Class SavedData
                     .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
                     .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
                 End If
+
+                .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
             End With
 
             Return MyDataGridViewRow

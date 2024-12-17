@@ -338,6 +338,8 @@ Public Class Form1
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
 
+        Logs.DefaultCellStyle.Padding = New Padding(0, 20, 0, 20) ' Left, Top, Right, Bottom
+
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
         Icon = Icon.ExtractAssociatedIcon(strEXEPath)
         Location = VerifyWindowLocation(My.Settings.windowLocation, Me)

@@ -342,6 +342,7 @@ Public Class IgnoredLogsAndSearchResults
                 .CreateCells(dataGrid)
                 .Cells(ColumnIndex_ComputedTime).Value = Now.ToString
                 .Cells(ColumnIndex_LogText).Value = strLog
+                .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
             End With
 
             Return MyDataGridViewRow
