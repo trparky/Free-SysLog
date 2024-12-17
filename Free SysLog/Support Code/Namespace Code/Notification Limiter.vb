@@ -9,7 +9,7 @@ Namespace NotificationLimiter
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
 
-        Public Sub ShowNotification(timeout As Integer, tipTitle As String, tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+        Public Sub ShowNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
             ' Get the current time
             Dim currentTime As Date = Date.Now
 

@@ -459,7 +459,7 @@ Namespace SyslogParser
                         End If
                     End If
 
-                    NotificationLimiter.ShowNotification(1, "Log Alert", strAlertText, ToolTipIcon, strLogText, strLogData, strSourceIP, strRawLogText)
+                    NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogData, strSourceIP, strRawLogText)
                     strOutgoingAlertText = strAlertText
                     Return True
                 End If
