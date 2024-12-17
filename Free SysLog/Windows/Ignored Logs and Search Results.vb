@@ -465,7 +465,7 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub IgnoredLogsAndSearchResults_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
             For Each item As MyDataGridViewRow In Logs.Rows
-                item.Height = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)
+                item.MinimumHeight = GetMinimumHeight(item.Cells(ColumnIndex_LogText).Value, Logs.DefaultCellStyle.Font, ColLog.Width, Logs)
             Next
         End If
     End Sub
