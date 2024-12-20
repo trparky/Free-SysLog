@@ -1556,6 +1556,13 @@ Public Class Form1
         My.Settings.disableAutoScrollUponScrolling = ChkDisableAutoScrollUponScrolling.Checked
     End Sub
 
+    Private Sub ClearNotificationLimits_Click(sender As Object, e As EventArgs) Handles ClearNotificationLimits.Click
+        If NotificationLimiter.lastNotificationTime IsNot Nothing AndAlso NotificationLimiter.lastNotificationTime.Count > 0 Then
+            NotificationLimiter.lastNotificationTime.Clear()
+            MsgBox("Done.", MsgBoxStyle.Information, Text)
+        End If
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try

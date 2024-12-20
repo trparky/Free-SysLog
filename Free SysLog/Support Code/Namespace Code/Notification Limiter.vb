@@ -2,10 +2,11 @@
 Imports Microsoft.Toolkit.Uwp.Notifications
 
 Namespace NotificationLimiter
-    Public Class NotificationLimiter
-        ' Dictionary to track when the notification was last shown, keyed by message text
-        Private Shared lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
+    Public Module NotificationLimiterModule
+        Public lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
+    End Module
 
+    Public Class NotificationLimiter
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
 
@@ -13,20 +14,22 @@ Namespace NotificationLimiter
             ' Get the current time
             Dim currentTime As Date = Date.Now
 
-            ' Clean up old notification entries
-            CleanUpOldEntries(currentTime)
+            SyncLock lastNotificationTime
+                ' Clean up old notification entries
+                CleanUpOldEntries(currentTime)
 
-            ' Check if this message has been shown recently
-            If lastNotificationTime.ContainsKey(tipText) Then
-                Dim lastTime As Date = lastNotificationTime(tipText)
-                Dim timeSinceLastNotification As TimeSpan = currentTime - lastTime
+                ' Check if this message has been shown recently
+                If lastNotificationTime.ContainsKey(tipText) Then
+                    Dim lastTime As Date = lastNotificationTime(tipText)
+                    Dim timeSinceLastNotification As TimeSpan = currentTime - lastTime
 
-                ' If the message was shown within the time limit, do not show it again
-                If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Return
-            End If
+                    ' If the message was shown within the time limit, do not show it again
+                    If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Return
+                End If
 
-            ' Update the last shown time for this message
-            lastNotificationTime(tipText) = currentTime
+                ' Update the last shown time for this message
+                lastNotificationTime(tipText) = currentTime
+            End SyncLock
 
             Dim strIconPath As String = Nothing
             Dim notification As New ToastContentBuilder()

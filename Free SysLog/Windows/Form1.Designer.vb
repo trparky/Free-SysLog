@@ -84,6 +84,7 @@ Partial Class Form1
         Me.ConfigureAlertsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureHostnames = New System.Windows.Forms.ToolStripMenuItem()
         Me.ColumnControls = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ClearNotificationLimits = New System.Windows.Forms.ToolStripMenuItem()
         Me.ColLogsAutoFill = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -428,10 +429,16 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.MinimizeToClockTray, Me.ColLogsAutoFill, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearNotificationLimits, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.MinimizeToClockTray, Me.ColLogsAutoFill, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
+        '
+        'ClearNotificationLimits
+        '
+        Me.ClearNotificationLimits.Name = "ClearNotificationLimits"
+        Me.ClearNotificationLimits.Size = New System.Drawing.Size(239, 22)
+        Me.ClearNotificationLimits.Text = "Clear Notification Limits"
         '
         'ColumnControls
         '
@@ -919,6 +926,7 @@ Partial Class Form1
     Friend WithEvents ConfigureAlertsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConfigureHostnames As ToolStripMenuItem
     Friend WithEvents ColumnControls As ToolStripMenuItem
+    Friend WithEvents ClearNotificationLimits As ToolStripMenuItem
     Friend WithEvents ColLogsAutoFill As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CloseMe As ToolStripMenuItem
