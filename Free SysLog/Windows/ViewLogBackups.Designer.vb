@@ -72,7 +72,7 @@ Partial Class ViewLogBackups
         Me.FileList.ReadOnly = True
         Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.FileList.Size = New System.Drawing.Size(1010, 272)
+        Me.FileList.Size = New System.Drawing.Size(559, 272)
         Me.FileList.TabIndex = 36
         '
         'ColFileName
@@ -170,7 +170,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1035, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(584, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -295,7 +295,7 @@ Partial Class ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1035, 364)
+        Me.ClientSize = New System.Drawing.Size(584, 364)
         Me.Controls.Add(Me.ChkShowHiddenAsGray)
         Me.Controls.Add(Me.ChkShowHidden)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
@@ -311,7 +311,7 @@ Partial Class ViewLogBackups
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(866, 403)
+        Me.MinimumSize = New System.Drawing.Size(600, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
