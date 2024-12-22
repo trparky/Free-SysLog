@@ -23,7 +23,7 @@ Namespace SyslogParser
             End Set
         End Property
 
-        Public Function MakeLocalDataGridRowEntry(strLogText As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
+        Public Function MakeLocalDataGridRowEntry(strLogText As String, ByRef dataGrid As DataGridView, Optional strLogType As String = "Informational, Local") As MyDataGridViewRow
             Dim MyDataGridViewRow As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=Now,
                                    dateObject:=Now,
                                    strTime:=Now.ToString,
@@ -31,7 +31,7 @@ Namespace SyslogParser
                                    strHostname:="Local",
                                    strRemoteProcess:=Nothing,
                                    strLog:=strLogText,
-                                   strLogType:="Informational, Local",
+                                   strLogType:=strLogType,
                                    boolAlerted:=False,
                                    strRawLogText:=Nothing,
                                    strAlertText:=Nothing,
