@@ -317,11 +317,15 @@ Namespace checkForUpdates
                         If response = ProcessUpdateXMLResponse.newVersion Then
                             SyncLock windowObject.dataGridLockObject
                                 windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"New version detected... {remoteVersion} Build {remoteBuild}.", windowObject.Logs))
+                                windowObject.UpdateLogCount()
+                                windowObject.SelectLatestLogEntry()
                             End SyncLock
 
                             If BackgroundThreadMessageBox($"An update to {strProgramName} (version {remoteVersion} Build {remoteBuild}) is available to be downloaded, do you want to download and update to this new version?", strMessageBoxTitleText) = MsgBoxResult.Yes Then
                                 SyncLock windowObject.dataGridLockObject
                                     windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Beginning program update process.", windowObject.Logs))
+                                    windowObject.UpdateLogCount()
+                                    windowObject.SelectLatestLogEntry()
                                 End SyncLock
 
                                 DownloadAndPerformUpdate()
@@ -331,18 +335,24 @@ Namespace checkForUpdates
                         ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded AndAlso boolShowMessageBox Then
                             SyncLock windowObject.dataGridLockObject
                                 windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("You already have the latest version, there is no need to update this program.", windowObject.Logs))
+                                windowObject.UpdateLogCount()
+                                windowObject.SelectLatestLogEntry()
                             End SyncLock
 
                             windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
                         ElseIf (response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError) AndAlso boolShowMessageBox Then
                             SyncLock windowObject.dataGridLockObject
                                 windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}", windowObject.Logs, "Error, Local"))
+                                windowObject.UpdateLogCount()
+                                windowObject.SelectLatestLogEntry()
                             End SyncLock
 
                             windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite AndAlso boolShowMessageBox Then
                             SyncLock windowObject.dataGridLockObject
                                 windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("This is weird, you have a version that's newer than what's listed on the web site.", windowObject.Logs))
+                                windowObject.UpdateLogCount()
+                                windowObject.SelectLatestLogEntry()
                             End SyncLock
 
                             windowObject.Invoke(Sub() MsgBox("This is weird, you have a version that's newer than what's listed on the web site.", MsgBoxStyle.Information, strMessageBoxTitleText))
@@ -350,6 +360,8 @@ Namespace checkForUpdates
                     Else
                         SyncLock windowObject.dataGridLockObject
                             windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error checking for updates.", windowObject.Logs, "Error, Local"))
+                            windowObject.UpdateLogCount()
+                            windowObject.SelectLatestLogEntry()
                         End SyncLock
 
                         If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("There was an error checking for updates.", MsgBoxStyle.Information, strMessageBoxTitleText))
@@ -358,6 +370,8 @@ Namespace checkForUpdates
                     ' Ok, we crashed but who cares; but we log it.
                     SyncLock windowObject.dataGridLockObject
                         windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", windowObject.Logs, "Error, Local"))
+                        windowObject.UpdateLogCount()
+                        windowObject.SelectLatestLogEntry()
                     End SyncLock
                 Finally
                     windowObject.Invoke(Sub()
