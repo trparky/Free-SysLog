@@ -49,6 +49,7 @@ Partial Class Replacements
         Me.TxtReplace = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.BtnCancel = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -290,11 +291,22 @@ Partial Class Replacements
         Me.Label3.TabIndex = 34
         Me.Label3.Text = "Add Replacement"
         '
+        'BtnCancel
+        '
+        Me.BtnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnCancel.Location = New System.Drawing.Point(93, 521)
+        Me.BtnCancel.Name = "BtnCancel"
+        Me.BtnCancel.Size = New System.Drawing.Size(75, 23)
+        Me.BtnCancel.TabIndex = 46
+        Me.BtnCancel.Text = "Cancel"
+        Me.BtnCancel.UseVisualStyleBackColor = True
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(969, 553)
+        Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.ChkEnabled)
         Me.Controls.Add(Me.ChkCaseSensitive)
@@ -350,4 +362,5 @@ Partial Class Replacements
     Friend WithEvents TxtReplace As TextBox
     Friend WithEvents Label1 As Label
     Friend WithEvents Label3 As Label
+    Friend WithEvents BtnCancel As Button
 End Class

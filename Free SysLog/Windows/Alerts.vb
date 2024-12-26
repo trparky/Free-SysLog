@@ -41,6 +41,7 @@ Public Class Alerts
     End Function
 
     Private Sub Alerts_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        BtnCancel.Visible = False
         Location = VerifyWindowLocation(My.Settings.alertsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of AlertsListViewItem)
 
@@ -116,6 +117,7 @@ Public Class Alerts
 
     Private Sub EditItem()
         If AlertsListView.SelectedItems.Count > 0 Then
+            BtnCancel.Visible = True
             AlertsListView.Enabled = False
             boolEditMode = True
             BtnAdd.Text = "Save"
@@ -405,5 +407,21 @@ Public Class Alerts
 
         BtnUp.Enabled = AlertsListView.SelectedIndices(0) <> 0
         BtnDown.Enabled = AlertsListView.SelectedIndices(0) <> AlertsListView.Items.Count - 1
+    End Sub
+
+    Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
+        AlertsListView.Enabled = True
+        BtnAdd.Text = "Add"
+        Label4.Text = "Add Alert"
+        boolEditMode = False
+        boolChanged = True
+        TxtAlertText.Text = Nothing
+        TxtLogText.Text = Nothing
+        IconPictureBox.Image = Nothing
+        AlertTypeComboBox.SelectedIndex = -1
+        ChkCaseSensitive.Checked = False
+        ChkRegex.Checked = False
+        ChkEnabled.Checked = True
+        BtnCancel.Visible = False
     End Sub
 End Class

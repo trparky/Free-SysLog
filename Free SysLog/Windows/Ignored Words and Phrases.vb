@@ -75,6 +75,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
+        BtnCancel.Visible = False
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
 
@@ -148,6 +149,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub EditItem()
         If IgnoredListView.SelectedItems.Count > 0 Then
+            BtnCancel.Visible = True
             IgnoredListView.Enabled = False
             boolEditMode = True
             BtnAdd.Text = "Save"
@@ -310,5 +312,18 @@ Public Class IgnoredWordsAndPhrases
 
         BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
         BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+    End Sub
+
+    Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
+        IgnoredListView.Enabled = True
+        BtnAdd.Text = "Add"
+        Label4.Text = "Add Ignored Words and Phrases"
+        boolEditMode = False
+        boolChanged = True
+        TxtIgnored.Text = Nothing
+        ChkCaseSensitive.Checked = False
+        ChkRegex.Checked = False
+        ChkEnabled.Checked = True
+        BtnCancel.Visible = False
     End Sub
 End Class

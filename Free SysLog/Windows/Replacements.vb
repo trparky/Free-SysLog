@@ -79,6 +79,7 @@ Public Class Replacements
     End Sub
 
     Private Sub Replacements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        BtnCancel.Visible = False
         Location = VerifyWindowLocation(My.Settings.replacementsLocation, Me)
         Dim listOfReplacementsToAdd As New List(Of MyReplacementsListViewItem)
 
@@ -148,6 +149,7 @@ Public Class Replacements
 
     Private Sub EditItem()
         If ReplacementsListView.SelectedItems.Count > 0 Then
+            BtnCancel.Visible = True
             ReplacementsListView.Enabled = False
             boolEditMode = True
             BtnAdd.Text = "Save"
@@ -329,5 +331,19 @@ Public Class Replacements
 
         BtnUp.Enabled = ReplacementsListView.SelectedIndices(0) <> 0
         BtnDown.Enabled = ReplacementsListView.SelectedIndices(0) <> ReplacementsListView.Items.Count - 1
+    End Sub
+
+    Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
+        ReplacementsListView.Enabled = True
+        BtnAdd.Text = "Add"
+        Label3.Text = "Add Replacement"
+        boolEditMode = False
+        boolChanged = True
+        TxtReplace.Text = Nothing
+        TxtReplaceWith.Text = Nothing
+        ChkCaseSensitive.Checked = False
+        ChkRegex.Checked = False
+        ChkEnabled.Checked = True
+        BtnCancel.Visible = False
     End Sub
 End Class

@@ -8,6 +8,7 @@ Public Class ConfigureSysLogMirrorServers
     Private boolDoneLoading As Boolean = False
 
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        BtnCancel.Visible = False
         Location = SupportCode.VerifyWindowLocation(My.Settings.syslogProxyLocation, Me)
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             Dim SysLogProxyServer As SysLogProxyServer
@@ -46,6 +47,7 @@ Public Class ConfigureSysLogMirrorServers
 
     Private Sub EditItem()
         If servers.SelectedItems.Count > 0 Then
+            BtnCancel.Visible = True
             servers.Enabled = False
             boolEditMode = True
             BtnAddServer.Text = "Save"
@@ -245,5 +247,17 @@ Public Class ConfigureSysLogMirrorServers
             servers.Items.Insert(selectedIndex + 1, item)
             servers.Items(selectedIndex + 1).Selected = True
         End If
+    End Sub
+
+    Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
+        servers.Enabled = True
+        BtnAddServer.Text = "Add"
+        Label4.Text = "Add Server"
+        boolEditMode = False
+        txtIP.Text = Nothing
+        txtName.Text = Nothing
+        txtPort.Text = Nothing
+        chkEnabled.Checked = True
+        BtnCancel.Visible = False
     End Sub
 End Class
