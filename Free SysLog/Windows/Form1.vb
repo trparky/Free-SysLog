@@ -145,7 +145,7 @@ Public Class Form1
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
             Try
                 boolIsProgrammaticScroll = True
-                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                Logs.BeginInvoke(Sub() Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0))
             Finally
                 boolIsProgrammaticScroll = False
             End Try
