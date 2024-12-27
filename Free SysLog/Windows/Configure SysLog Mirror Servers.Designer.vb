@@ -48,6 +48,7 @@ Partial Class ConfigureSysLogMirrorServers
         Me.Label1 = New System.Windows.Forms.Label()
         Me.SeparatingLine = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.BtnCancel = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -270,11 +271,22 @@ Partial Class ConfigureSysLogMirrorServers
         Me.Label4.TabIndex = 28
         Me.Label4.Text = "Add Server"
         '
+        'BtnCancel
+        '
+        Me.BtnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnCancel.Location = New System.Drawing.Point(93, 365)
+        Me.BtnCancel.Name = "BtnCancel"
+        Me.BtnCancel.Size = New System.Drawing.Size(75, 23)
+        Me.BtnCancel.TabIndex = 40
+        Me.BtnCancel.Text = "Cancel"
+        Me.BtnCancel.UseVisualStyleBackColor = True
+        '
         'ConfigureSysLogMirrorServers
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(637, 400)
+        Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.SeparatingLine)
         Me.Controls.Add(Me.txtName)
@@ -331,4 +343,5 @@ Partial Class ConfigureSysLogMirrorServers
     Friend WithEvents Label1 As Label
     Friend WithEvents SeparatingLine As Label
     Friend WithEvents Label4 As Label
+    Friend WithEvents BtnCancel As Button
 End Class

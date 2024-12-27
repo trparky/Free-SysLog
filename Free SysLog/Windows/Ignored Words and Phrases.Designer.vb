@@ -46,6 +46,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkRegex = New System.Windows.Forms.CheckBox()
         Me.TxtIgnored = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.BtnCancel = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -264,11 +265,22 @@ Partial Class IgnoredWordsAndPhrases
         Me.Label1.Text = "Ignored"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'BtnCancel
+        '
+        Me.BtnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnCancel.Location = New System.Drawing.Point(83, 348)
+        Me.BtnCancel.Name = "BtnCancel"
+        Me.BtnCancel.Size = New System.Drawing.Size(75, 23)
+        Me.BtnCancel.TabIndex = 45
+        Me.BtnCancel.Text = "Cancel"
+        Me.BtnCancel.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(799, 378)
+        Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.ChkEnabled)
         Me.Controls.Add(Me.ChkCaseSensitive)
         Me.Controls.Add(Me.ChkRegex)
@@ -318,4 +330,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents ChkRegex As CheckBox
     Friend WithEvents TxtIgnored As TextBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents BtnCancel As Button
 End Class

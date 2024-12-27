@@ -145,7 +145,7 @@ Public Class Form1
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
             Try
                 boolIsProgrammaticScroll = True
-                Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                Logs.BeginInvoke(Sub() Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0))
             Finally
                 boolIsProgrammaticScroll = False
             End Try
@@ -1554,6 +1554,13 @@ Public Class Form1
 
     Private Sub ChkDisableAutoScrollUponScrolling_Click(sender As Object, e As EventArgs) Handles ChkDisableAutoScrollUponScrolling.Click
         My.Settings.disableAutoScrollUponScrolling = ChkDisableAutoScrollUponScrolling.Checked
+    End Sub
+
+    Private Sub ClearNotificationLimits_Click(sender As Object, e As EventArgs) Handles ClearNotificationLimits.Click
+        If NotificationLimiter.lastNotificationTime IsNot Nothing AndAlso NotificationLimiter.lastNotificationTime.Count > 0 Then
+            NotificationLimiter.lastNotificationTime.Clear()
+            MsgBox("Done.", MsgBoxStyle.Information, Text)
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

@@ -55,6 +55,7 @@ Partial Class Alerts
         Me.TxtLogText = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.BtnCancel = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -342,11 +343,22 @@ Partial Class Alerts
         Me.Label4.TabIndex = 38
         Me.Label4.Text = "Add Alert"
         '
+        'BtnCancel
+        '
+        Me.BtnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnCancel.Location = New System.Drawing.Point(83, 424)
+        Me.BtnCancel.Name = "BtnCancel"
+        Me.BtnCancel.Size = New System.Drawing.Size(75, 23)
+        Me.BtnCancel.TabIndex = 39
+        Me.BtnCancel.Text = "Cancel"
+        Me.BtnCancel.UseVisualStyleBackColor = True
+        '
         'Alerts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(987, 458)
+        Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.lblRegExBackReferences)
         Me.Controls.Add(Me.ChkEnabled)
@@ -412,4 +424,5 @@ Partial Class Alerts
     Friend WithEvents TxtLogText As TextBox
     Friend WithEvents Label1 As Label
     Friend WithEvents Label4 As Label
+    Friend WithEvents BtnCancel As Button
 End Class
