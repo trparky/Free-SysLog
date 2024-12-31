@@ -232,6 +232,7 @@ Public Class Form1
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
         ChkEnableAutoScroll.Checked = My.Settings.autoScroll
+        ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
         ChkEnableAutoSave.Checked = My.Settings.autoSave
         ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
         LblAutoSaved.Visible = ChkEnableAutoSave.Checked
@@ -636,6 +637,7 @@ Public Class Form1
 
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
+        ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
