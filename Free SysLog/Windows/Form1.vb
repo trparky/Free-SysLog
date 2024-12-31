@@ -143,12 +143,11 @@ Public Class Form1
 
     Public Sub SelectLatestLogEntry()
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-            Try
-                boolIsProgrammaticScroll = True
-                Logs.BeginInvoke(Sub() Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0))
-            Finally
-                boolIsProgrammaticScroll = False
-            End Try
+            boolIsProgrammaticScroll = True
+            Logs.BeginInvoke(Sub()
+                                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                                 boolIsProgrammaticScroll = False
+                             End Sub)
         End If
     End Sub
 
