@@ -143,12 +143,11 @@ Public Class Form1
 
     Public Sub SelectLatestLogEntry()
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-            Try
-                boolIsProgrammaticScroll = True
-                Logs.BeginInvoke(Sub() Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0))
-            Finally
-                boolIsProgrammaticScroll = False
-            End Try
+            boolIsProgrammaticScroll = True
+            Logs.BeginInvoke(Sub()
+                                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                                 boolIsProgrammaticScroll = False
+                             End Sub)
         End If
     End Sub
 
@@ -233,6 +232,7 @@ Public Class Form1
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
         ChkEnableAutoScroll.Checked = My.Settings.autoScroll
+        ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
         ChkEnableAutoSave.Checked = My.Settings.autoSave
         ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
         LblAutoSaved.Visible = ChkEnableAutoSave.Checked
@@ -637,6 +637,7 @@ Public Class Form1
 
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
+        ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
