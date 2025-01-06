@@ -1,6 +1,7 @@
 ﻿Imports System.Net
 Imports System.Net.Sockets
 Imports System.Text
+Imports System.Net.NetworkInformation
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -180,10 +181,22 @@ Namespace SupportCode
             End Try
         End Function
 
+        Private Function GetLocalIPAddress() As IPAddress
+            For Each ni As NetworkInterface In NetworkInterface.GetAllNetworkInterfaces()
+                If ni.OperationalStatus = OperationalStatus.Up AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Loopback Then
+                    For Each ip As UnicastIPAddressInformation In ni.GetIPProperties().UnicastAddresses
+                        If ip.Address.AddressFamily = AddressFamily.InterNetwork Then Return ip.Address
+                    Next
+                End If
+            Next
+
+            Throw New Exception("No active network adapter with an IPv4 address found.")
+        End Function
+
         Public Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
             Try
                 Using udpClient As New UdpClient()
-                    udpClient.Connect(Net.IPAddress.Loopback, intPort)
+                    udpClient.Connect(GetLocalIPAddress(), intPort)
                     Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
                     udpClient.Send(data, data.Length)
                 End Using
