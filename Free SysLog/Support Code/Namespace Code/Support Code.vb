@@ -183,14 +183,14 @@ Namespace SupportCode
 
         Private Function GetLocalIPAddress() As IPAddress
             For Each ni As NetworkInterface In NetworkInterface.GetAllNetworkInterfaces()
-                If ni.OperationalStatus = OperationalStatus.Up AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Loopback Then
+                If ni.OperationalStatus = OperationalStatus.Up AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Loopback AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Tunnel Then
                     For Each ip As UnicastIPAddressInformation In ni.GetIPProperties().UnicastAddresses
                         If ip.Address.AddressFamily = AddressFamily.InterNetwork Then Return ip.Address
                     Next
                 End If
             Next
 
-            Throw New Exception("No active network adapter with an IPv4 address found.")
+            Throw New Exception("No active network adapter with a matching IP address found.")
         End Function
 
         Public Sub SendMessageToSysLogServer(strMessage As String, intPort As Integer)
