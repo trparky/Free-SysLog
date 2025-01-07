@@ -160,10 +160,13 @@ Public Class Form1
         Threading.Thread.Sleep(100)
         SelectLatestLogEntry()
         Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+        boolIsProgrammaticScroll = False
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
+            boolIsProgrammaticScroll = True
+
             If WindowState = FormWindowState.Minimized Then
                 If My.Settings.boolDeselectItemsWhenMinimizing Then
                     Logs.ClearSelection()
