@@ -1564,6 +1564,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub ReOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReOpenToolStripMenuItem.Click
+        RestoreWindow()
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
