@@ -207,7 +207,7 @@ Namespace SupportCode
         Public Sub SendMessageToTCPSysLogServer(strMessage As String, intPort As Integer)
             Try
                 Using tcpClient As New TcpClient()
-                    tcpClient.Connect(Net.IPAddress.Loopback, intPort)
+                    tcpClient.Connect(GetLocalIPAddress(), intPort)
 
                     Using networkStream As NetworkStream = tcpClient.GetStream()
                         Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
