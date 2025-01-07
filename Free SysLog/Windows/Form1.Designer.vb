@@ -126,10 +126,13 @@ Partial Class Form1
         Me.NotificationLengthLong = New System.Windows.Forms.ToolStripMenuItem()
         Me.NotificationLengthShort = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
+        Me.IconMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ReOpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
+        Me.IconMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'NotificationLength
@@ -677,6 +680,7 @@ Partial Class Form1
         '
         'NotifyIcon
         '
+        Me.NotifyIcon.ContextMenuStrip = Me.IconMenu
         Me.NotifyIcon.Text = "NotifyIcon"
         Me.NotifyIcon.Visible = True
         '
@@ -841,6 +845,18 @@ Partial Class Form1
         Me.LoadingProgressBar.TabIndex = 19
         Me.LoadingProgressBar.Visible = False
         '
+        'IconMenu
+        '
+        Me.IconMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ReOpenToolStripMenuItem})
+        Me.IconMenu.Name = "IconMenu"
+        Me.IconMenu.Size = New System.Drawing.Size(181, 48)
+        '
+        'ReOpenToolStripMenuItem
+        '
+        Me.ReOpenToolStripMenuItem.Name = "ReOpenToolStripMenuItem"
+        Me.ReOpenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ReOpenToolStripMenuItem.Text = "Re-Open"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -865,6 +881,7 @@ Partial Class Form1
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.LogsMenu.ResumeLayout(False)
+        Me.IconMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -973,4 +990,6 @@ Partial Class Form1
     Friend WithEvents NotificationLength As ToolStripMenuItem
     Friend WithEvents NotificationLengthLong As ToolStripMenuItem
     Friend WithEvents NotificationLengthShort As ToolStripMenuItem
+    Friend WithEvents IconMenu As ContextMenuStrip
+    Friend WithEvents ReOpenToolStripMenuItem As ToolStripMenuItem
 End Class

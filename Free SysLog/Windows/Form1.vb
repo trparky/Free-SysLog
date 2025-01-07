@@ -160,10 +160,13 @@ Public Class Form1
         Threading.Thread.Sleep(100)
         SelectLatestLogEntry()
         Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+        boolIsProgrammaticScroll = False
     End Sub
 
     Private Sub Form1_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         If boolDoneLoading Then
+            boolIsProgrammaticScroll = True
+
             If WindowState = FormWindowState.Minimized Then
                 If My.Settings.boolDeselectItemsWhenMinimizing Then
                     Logs.ClearSelection()
@@ -1562,6 +1565,10 @@ Public Class Form1
             NotificationLimiter.lastNotificationTime.Clear()
             MsgBox("Done.", MsgBoxStyle.Information, Text)
         End If
+    End Sub
+
+    Private Sub ReOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReOpenToolStripMenuItem.Click
+        RestoreWindow()
     End Sub
 
 #Region "-- SysLog Server Code --"
