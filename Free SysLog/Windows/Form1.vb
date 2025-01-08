@@ -1113,6 +1113,20 @@ Public Class Form1
                 End If
             End If
         End If
+
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+        End If
+    End Sub
+
+    Private Sub Logs_MouseUp(sender As Object, e As MouseEventArgs) Handles Logs.MouseUp
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+        End If
     End Sub
 
     Private Sub OpenLogViewerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogViewerToolStripMenuItem.Click
