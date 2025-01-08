@@ -368,7 +368,7 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub LoadData(strFileName As String)
         Dim stopWatch As Stopwatch = Stopwatch.StartNew
 
-        Invoke(Sub() Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs)))
+        Logs.Invoke(Sub() Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs)))
 
         Dim collectionOfSavedData As New List(Of SavedData)
 
@@ -384,12 +384,12 @@ Public Class IgnoredLogsAndSearchResults
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                Invoke(Sub()
-                           Logs.Rows.Clear()
-                           Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                           LogsLoadedInLabel.Visible = True
-                           LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
-                       End Sub)
+                Logs.Invoke(Sub()
+                                Logs.Rows.Clear()
+                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                                LogsLoadedInLabel.Visible = True
+                                LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                            End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
             SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
