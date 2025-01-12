@@ -39,6 +39,7 @@ Namespace TaskHandling
                             Dim dblSeconds As Double = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
 
                             If dblSeconds > 0 Then
+                                ParentForm.StartUpDelay.Checked = True
                                 ParentForm.StartUpDelay.Text = $"        Startup Delay ({dblSeconds} {If(dblSeconds = 1, "Second", "Seconds")})"
                             End If
                         End If
