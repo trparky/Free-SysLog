@@ -1626,12 +1626,14 @@ Public Class Form1
                         If serversList.Count > 0 AndAlso Not strReceivedData.StartsWith(strNoProxyString, StringComparison.OrdinalIgnoreCase) Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
+                                                                       Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
 
                                                                        For Each item As SysLogProxyServer In serversList
-                                                                           SendMessageToSysLogServer(strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
+                                                                           SendMessageToSysLogServer(strDataToSend, item.ip, item.port)
                                                                        Next
 
                                                                        ProxiedSysLogData = Nothing
+                                                                       strDataToSend = Nothing
                                                                    End Sub)
                         End If
 
