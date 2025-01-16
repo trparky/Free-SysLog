@@ -300,6 +300,8 @@ Namespace checkForUpdates
                 windowObject.Invoke(Sub()
                                         SyncLock windowObject.dataGridLockObject
                                             windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("No Internet connection detected.", windowObject.Logs, "Error, Local"))
+                                            windowObject.UpdateLogCount()
+                                            windowObject.SelectLatestLogEntry()
                                         End SyncLock
 
                                         MsgBox("No Internet connection detected.", MsgBoxStyle.Information, strMessageBoxTitleText)
