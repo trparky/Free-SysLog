@@ -329,10 +329,6 @@ Public Class Form1
 
         TaskHandling.ConvertRegistryRunCommandToTask()
 
-        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
-                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
-                                                                                       End Sub)
         If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
@@ -433,6 +429,11 @@ Public Class Form1
     End Sub
 
     Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
+                                                                                       End Sub)
+
         If boolDoWeOwnTheMutex Then
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
             serverThread.Start()
