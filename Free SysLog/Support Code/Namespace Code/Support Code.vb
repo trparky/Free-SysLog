@@ -44,6 +44,12 @@ Namespace SupportCode
         Public Const ColumnIndex_Alerted As Integer = 7
         Public Const ColumnIndex_FileName As Integer = 8
 
+#If DEBUG Then
+        Public Const boolDebugBuild As Boolean = True
+#Else
+        Public Const boolDebugBuild As Boolean = False
+#End If
+
         Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
             Try
                 Dim SpecializedStringCollection As New Specialized.StringCollection

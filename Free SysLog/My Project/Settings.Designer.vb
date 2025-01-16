@@ -1136,6 +1136,18 @@ Namespace My
                 Me("columnFileNameSize") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property boolDebug() As Boolean
+            Get
+                Return CType(Me("boolDebug"),Boolean)
+            End Get
+            Set
+                Me("boolDebug") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

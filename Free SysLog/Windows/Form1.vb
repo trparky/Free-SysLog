@@ -258,6 +258,7 @@ Public Class Form1
         RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
         IPv6Support.Checked = My.Settings.IPv6Support
         ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
+        ChkDebug.Checked = My.Settings.boolDebug
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -1585,6 +1586,10 @@ Public Class Form1
         RestoreWindow()
     End Sub
 
+    Private Sub ChkDebug_Click(sender As Object, e As EventArgs) Handles ChkDebug.Click
+        My.Settings.boolDebug = ChkDebug.Checked
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1669,6 +1674,10 @@ Public Class Form1
         End If
 
         Await Threading.Tasks.Task.Delay(100)
+
+        If boolDebugBuild Or ChkDebug.Checked Then
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Restore command received.", Logs))
+        End If
 
         SelectLatestLogEntry()
     End Sub
