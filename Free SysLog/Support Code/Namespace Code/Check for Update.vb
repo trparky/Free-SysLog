@@ -348,7 +348,7 @@ Namespace checkForUpdates
                             Else
                                 windowObject.Invoke(Sub() MsgBox("The update will not be downloaded.", MsgBoxStyle.Information, strMessageBoxTitleText))
                             End If
-                        ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded AndAlso boolShowMessageBox Then
+                        ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
                                 SyncLock windowObject.dataGridLockObject
                                     windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("You already have the latest version, there is no need to update this program.", windowObject.Logs))
@@ -357,7 +357,9 @@ Namespace checkForUpdates
                                 End SyncLock
                             End If
 
-                            windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            If boolShowMessageBox Then
+                                windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            End If
                         ElseIf (response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError) AndAlso boolShowMessageBox Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
                                 SyncLock windowObject.dataGridLockObject
