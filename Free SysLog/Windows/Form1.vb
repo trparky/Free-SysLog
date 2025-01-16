@@ -1623,7 +1623,7 @@ Public Class Form1
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList.Count > 0 Then
+                        If serversList IsNot Nothing AndAlso serversList.Count > 0 Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
                                                                        Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
