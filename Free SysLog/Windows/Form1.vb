@@ -258,6 +258,7 @@ Public Class Form1
         RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
         IPv6Support.Checked = My.Settings.IPv6Support
         ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
+        ChkDebug.Checked = My.Settings.boolDebug
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -328,10 +329,6 @@ Public Class Form1
 
         TaskHandling.ConvertRegistryRunCommandToTask()
 
-        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
-                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
-                                                                                       End Sub)
         If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
@@ -432,6 +429,11 @@ Public Class Form1
     End Sub
 
     Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
+                                                                                       End Sub)
+
         If boolDoWeOwnTheMutex Then
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
             serverThread.Start()
@@ -1113,6 +1115,20 @@ Public Class Form1
                 End If
             End If
         End If
+
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+        End If
+    End Sub
+
+    Private Sub Logs_MouseUp(sender As Object, e As MouseEventArgs) Handles Logs.MouseUp
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+        End If
     End Sub
 
     Private Sub OpenLogViewerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogViewerToolStripMenuItem.Click
@@ -1571,6 +1587,10 @@ Public Class Form1
         RestoreWindow()
     End Sub
 
+    Private Sub ChkDebug_Click(sender As Object, e As EventArgs) Handles ChkDebug.Click
+        My.Settings.boolDebug = ChkDebug.Checked
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1609,19 +1629,20 @@ Public Class Form1
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList.Count > 0 AndAlso Not strReceivedData.StartsWith(strNoProxyString, StringComparison.OrdinalIgnoreCase) Then
+                        If serversList IsNot Nothing AndAlso serversList.Count > 0 Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
+                                                                       Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
 
                                                                        For Each item As SysLogProxyServer In serversList
-                                                                           SendMessageToSysLogServer(strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData), item.ip, item.port)
+                                                                           SendMessageToSysLogServer(strDataToSend, item.ip, item.port)
                                                                        Next
 
                                                                        ProxiedSysLogData = Nothing
+                                                                       strDataToSend = Nothing
                                                                    End Sub)
                         End If
 
-                        If strReceivedData.StartsWith(strNoProxyString) Then strReceivedData = strReceivedData.Replace(strNoProxyString, "", StringComparison.OrdinalIgnoreCase)
                         SyslogParser.ProcessIncomingLog(strReceivedData, strSourceIP)
                     End If
 
@@ -1654,6 +1675,10 @@ Public Class Form1
         End If
 
         Await Threading.Tasks.Task.Delay(100)
+
+        If boolDebugBuild Or ChkDebug.Checked Then
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Restore command received.", Logs))
+        End If
 
         SelectLatestLogEntry()
     End Sub

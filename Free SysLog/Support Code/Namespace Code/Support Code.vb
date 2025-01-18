@@ -27,7 +27,6 @@ Namespace SupportCode
         Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
         Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
         Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
-        Public Const strNoProxyString As String = "noproxy|"
         Public Const strProxiedString As String = "proxied|"
         Public Const strQuote As String = Chr(34)
         Public Const strViewLog As String = "viewlog"
@@ -44,6 +43,12 @@ Namespace SupportCode
         Public Const ColumnIndex_LogText As Integer = 6
         Public Const ColumnIndex_Alerted As Integer = 7
         Public Const ColumnIndex_FileName As Integer = 8
+
+#If DEBUG Then
+        Public Const boolDebugBuild As Boolean = True
+#Else
+        Public Const boolDebugBuild As Boolean = False
+#End If
 
         Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
             Try

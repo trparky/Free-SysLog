@@ -222,7 +222,7 @@ Namespace SyslogParser
             Return parsedDate
         End Function
 
-        Private Function ConvertLineFeeds(strInput As String) As String
+        Public Function ConvertLineFeeds(strInput As String) As String
             strInput = strInput.Replace(vbCrLf, vbLf) ' Temporarily replace all CRLF with LF
             strInput = strInput.Replace(vbCr, vbLf)   ' Convert standalone CR to LF
             strInput = strInput.Replace(vbLf, vbCrLf) ' Finally, replace all LF with CRLF

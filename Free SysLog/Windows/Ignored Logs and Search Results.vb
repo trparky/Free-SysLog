@@ -112,6 +112,22 @@ Public Class IgnoredLogsAndSearchResults
         End If
     End Sub
 
+    Private Sub Logs_MouseDown(sender As Object, e As MouseEventArgs) Handles Logs.MouseDown
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+        End If
+    End Sub
+
+    Private Sub Logs_MouseUp(sender As Object, e As MouseEventArgs) Handles Logs.MouseUp
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+        End If
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
@@ -352,7 +368,7 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub LoadData(strFileName As String)
         Dim stopWatch As Stopwatch = Stopwatch.StartNew
 
-        Invoke(Sub() Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs)))
+        Logs.Invoke(Sub() Logs.Rows.Add(MakeDataGridRow(Now, "Loading data and populating data grid... Please Wait.", Logs)))
 
         Dim collectionOfSavedData As New List(Of SavedData)
 
@@ -368,12 +384,12 @@ Public Class IgnoredLogsAndSearchResults
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                Invoke(Sub()
-                           Logs.Rows.Clear()
-                           Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                           LogsLoadedInLabel.Visible = True
-                           LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
-                       End Sub)
+                Logs.Invoke(Sub()
+                                Logs.Rows.Clear()
+                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                                LogsLoadedInLabel.Visible = True
+                                LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                            End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
             SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")

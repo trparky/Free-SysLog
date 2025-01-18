@@ -462,4 +462,20 @@ Public Class ViewLogBackups
     Private Sub ViewLogBackups_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.fileListColumnOrder = SaveColumnOrders(FileList.Columns)
     End Sub
+
+    Private Sub FileList_MouseDown(sender As Object, e As MouseEventArgs) Handles FileList.MouseDown
+        Dim hitTest As DataGridView.HitTestInfo = FileList.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            FileList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+        End If
+    End Sub
+
+    Private Sub FileList_MouseUp(sender As Object, e As MouseEventArgs) Handles FileList.MouseUp
+        Dim hitTest As DataGridView.HitTestInfo = FileList.HitTest(e.X, e.Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            FileList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+        End If
+    End Sub
 End Class

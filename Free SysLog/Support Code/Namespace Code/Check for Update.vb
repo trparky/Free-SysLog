@@ -298,9 +298,13 @@ Namespace checkForUpdates
 
             If Not My.Computer.Network.IsAvailable Then
                 windowObject.Invoke(Sub()
-                                        SyncLock windowObject.dataGridLockObject
-                                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("No Internet connection detected.", windowObject.Logs, "Error, Local"))
-                                        End SyncLock
+                                        If boolDebugBuild Or My.Settings.boolDebug Then
+                                            SyncLock windowObject.dataGridLockObject
+                                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("No Internet connection detected.", windowObject.Logs, "Error, Local"))
+                                                windowObject.UpdateLogCount()
+                                                windowObject.SelectLatestLogEntry()
+                                            End SyncLock
+                                        End If
 
                                         MsgBox("No Internet connection detected.", MsgBoxStyle.Information, strMessageBoxTitleText)
                                     End Sub)
@@ -314,55 +318,77 @@ Namespace checkForUpdates
                         Dim remoteBuild As String = Nothing
                         Dim response As ProcessUpdateXMLResponse = ProcessUpdateXMLData(xmlData, remoteVersion, remoteBuild)
 
-                        If response = ProcessUpdateXMLResponse.newVersion Then
+                        If boolDebugBuild Or My.Settings.boolDebug Then
                             SyncLock windowObject.dataGridLockObject
-                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"New version detected... {remoteVersion} Build {remoteBuild}.", windowObject.Logs))
+                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The following data was received from the URL ""{programUpdateCheckerXMLFile}""...{vbCrLf}{SyslogParser.ConvertLineFeeds(xmlData)}", windowObject.Logs))
                                 windowObject.UpdateLogCount()
                                 windowObject.SelectLatestLogEntry()
                             End SyncLock
+                        End If
 
-                            If BackgroundThreadMessageBox($"An update to {strProgramName} (version {remoteVersion} Build {remoteBuild}) is available to be downloaded, do you want to download and update to this new version?", strMessageBoxTitleText) = MsgBoxResult.Yes Then
+                        If response = ProcessUpdateXMLResponse.newVersion Then
+                            If boolDebugBuild Or My.Settings.boolDebug Then
                                 SyncLock windowObject.dataGridLockObject
-                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Beginning program update process.", windowObject.Logs))
+                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"New version detected... {remoteVersion} Build {remoteBuild}.", windowObject.Logs))
                                     windowObject.UpdateLogCount()
                                     windowObject.SelectLatestLogEntry()
                                 End SyncLock
+                            End If
+
+                            If BackgroundThreadMessageBox($"An update to {strProgramName} (version {remoteVersion} Build {remoteBuild}) is available to be downloaded, do you want to download and update to this new version?", strMessageBoxTitleText) = MsgBoxResult.Yes Then
+                                If boolDebugBuild Or My.Settings.boolDebug Then
+                                    SyncLock windowObject.dataGridLockObject
+                                        windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Beginning program update process.", windowObject.Logs))
+                                        windowObject.UpdateLogCount()
+                                        windowObject.SelectLatestLogEntry()
+                                    End SyncLock
+                                End If
 
                                 DownloadAndPerformUpdate()
                             Else
                                 windowObject.Invoke(Sub() MsgBox("The update will not be downloaded.", MsgBoxStyle.Information, strMessageBoxTitleText))
                             End If
-                        ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded AndAlso boolShowMessageBox Then
-                            SyncLock windowObject.dataGridLockObject
-                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("You already have the latest version, there is no need to update this program.", windowObject.Logs))
-                                windowObject.UpdateLogCount()
-                                windowObject.SelectLatestLogEntry()
-                            End SyncLock
+                        ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded Then
+                            If boolDebugBuild Or My.Settings.boolDebug Then
+                                SyncLock windowObject.dataGridLockObject
+                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("You already have the latest version, there is no need to update this program.", windowObject.Logs))
+                                    windowObject.UpdateLogCount()
+                                    windowObject.SelectLatestLogEntry()
+                                End SyncLock
+                            End If
 
-                            windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            If boolShowMessageBox Then
+                                windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            End If
                         ElseIf (response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError) AndAlso boolShowMessageBox Then
-                            SyncLock windowObject.dataGridLockObject
-                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}", windowObject.Logs, "Error, Local"))
-                                windowObject.UpdateLogCount()
-                                windowObject.SelectLatestLogEntry()
-                            End SyncLock
+                            If boolDebugBuild Or My.Settings.boolDebug Then
+                                SyncLock windowObject.dataGridLockObject
+                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}", windowObject.Logs, "Error, Local"))
+                                    windowObject.UpdateLogCount()
+                                    windowObject.SelectLatestLogEntry()
+                                End SyncLock
+                            End If
 
                             windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite AndAlso boolShowMessageBox Then
-                            SyncLock windowObject.dataGridLockObject
-                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("This is weird, you have a version that's newer than what's listed on the web site.", windowObject.Logs))
-                                windowObject.UpdateLogCount()
-                                windowObject.SelectLatestLogEntry()
-                            End SyncLock
+                            If boolDebugBuild Or My.Settings.boolDebug Then
+                                SyncLock windowObject.dataGridLockObject
+                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("This is weird, you have a version that's newer than what's listed on the web site.", windowObject.Logs))
+                                    windowObject.UpdateLogCount()
+                                    windowObject.SelectLatestLogEntry()
+                                End SyncLock
+                            End If
 
                             windowObject.Invoke(Sub() MsgBox("This is weird, you have a version that's newer than what's listed on the web site.", MsgBoxStyle.Information, strMessageBoxTitleText))
                         End If
                     Else
-                        SyncLock windowObject.dataGridLockObject
-                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error checking for updates.", windowObject.Logs, "Error, Local"))
-                            windowObject.UpdateLogCount()
-                            windowObject.SelectLatestLogEntry()
-                        End SyncLock
+                        If boolDebugBuild Or My.Settings.boolDebug Then
+                            SyncLock windowObject.dataGridLockObject
+                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error checking for updates.", windowObject.Logs, "Error, Local"))
+                                windowObject.UpdateLogCount()
+                                windowObject.SelectLatestLogEntry()
+                            End SyncLock
+                        End If
 
                         If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("There was an error checking for updates.", MsgBoxStyle.Information, strMessageBoxTitleText))
                     End If
