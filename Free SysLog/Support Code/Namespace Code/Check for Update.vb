@@ -244,9 +244,12 @@ Namespace checkForUpdates
                         windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Launching updater module.", windowObject.Logs))
                         windowObject.UpdateLogCount()
                         windowObject.SelectLatestLogEntry()
-                        windowObject.SaveLogsToDiskSub()
                     End SyncLock
                 End If
+
+                SyncLock windowObject.dataGridLockObject
+                    windowObject.SaveLogsToDiskSub()
+                End SyncLock
 
                 Dim startInfo As New ProcessStartInfo With {
                     .FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "updater.exe"),
