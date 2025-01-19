@@ -44,6 +44,9 @@ Namespace SupportCode
         Public Const ColumnIndex_Alerted As Integer = 7
         Public Const ColumnIndex_FileName As Integer = 8
 
+        Public Const strUpdaterEXE As String = "updater.exe"
+        Public Const strUpdaterPDB As String = "updater.pdb"
+
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True
 #Else

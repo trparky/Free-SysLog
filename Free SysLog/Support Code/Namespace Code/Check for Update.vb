@@ -10,7 +10,6 @@ Namespace checkForUpdates
         ' Change these variables whenever you import this module into a program's code to handle software updates.
         Public Const strMessageBoxTitleText As String = "Free SysLog"
         Public Const strProgramName As String = "Free SysLog"
-        Public Const strUpdaterEXE As String = "updater.exe"
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
         Public versionString As String
