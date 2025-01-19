@@ -675,7 +675,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub SaveLogsToDiskSub()
+    Public Sub SaveLogsToDiskSub()
         DataHandling.WriteLogsToDisk()
         LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
         SaveTimer.Enabled = False

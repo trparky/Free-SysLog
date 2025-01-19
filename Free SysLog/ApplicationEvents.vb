@@ -41,10 +41,10 @@ Namespace My
                 Settings.logFileLocation = Nothing
             End If
 
-            If IO.File.Exists("updater.exe") Then
-                ProcessHandling.SearchForProcessAndKillIt("updater.exe", False)
-                IO.File.Delete("updater.exe")
-                If IO.File.Exists("updater.pdb") Then IO.File.Delete("updater.pdb")
+            If IO.File.Exists(strUpdaterEXE) Then
+                ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
+                IO.File.Delete(strUpdaterEXE)
+                If IO.File.Exists(strUpdaterPDB) Then IO.File.Delete(strUpdaterPDB)
             End If
 
             mutex = New Threading.Mutex(True, strMutexName, boolDoWeOwnTheMutex)

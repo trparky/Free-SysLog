@@ -202,25 +202,57 @@ Namespace checkForUpdates
                 Dim httpHelper As HttpHelper = CreateNewHTTPHelperObject()
 
                 Using memoryStream As New MemoryStream()
+                    If boolDebugBuild Or My.Settings.boolDebug Then
+                        SyncLock windowObject.dataGridLockObject
+                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Downloading updater module.", windowObject.Logs))
+                            windowObject.UpdateLogCount()
+                            windowObject.SelectLatestLogEntry()
+                        End SyncLock
+                    End If
+
                     If Not httpHelper.DownloadFile(updaterURL, memoryStream, False) Then
-                        windowObject.Invoke(Sub() MsgBox("There was an error while downloading required files.", MsgBoxStyle.Critical, strMessageBoxTitleText))
+                        SyncLock windowObject.dataGridLockObject
+                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error while downloading required updater module.", windowObject.Logs))
+                            windowObject.UpdateLogCount()
+                            windowObject.SelectLatestLogEntry()
+                        End SyncLock
+
+                        windowObject.Invoke(Sub() MsgBox("There was an error while downloading required updater module.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         Exit Sub
                     End If
 
                     If Not VerifyChecksum(updaterSHA256URL, memoryStream, httpHelper, True) Then
-                        windowObject.Invoke(Sub() MsgBox("There was an error while downloading required files.", MsgBoxStyle.Critical, strMessageBoxTitleText))
+                        SyncLock windowObject.dataGridLockObject
+                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error while downloading required updater module.", windowObject.Logs))
+                            windowObject.UpdateLogCount()
+                            windowObject.SelectLatestLogEntry()
+                        End SyncLock
+
+                        windowObject.Invoke(Sub() MsgBox("There was an error while downloading required updater module.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         Exit Sub
                     End If
 
                     memoryStream.Position = 0
 
-                    Using fileStream As New FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "updater.exe"), FileMode.OpenOrCreate)
+                    Using fileStream As New FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strUpdaterEXE), FileMode.OpenOrCreate)
                         memoryStream.CopyTo(fileStream)
                     End Using
                 End Using
 
+                If boolDebugBuild Or My.Settings.boolDebug Then
+                    SyncLock windowObject.dataGridLockObject
+                        windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Launching updater module.", windowObject.Logs))
+                        windowObject.UpdateLogCount()
+                        windowObject.SelectLatestLogEntry()
+                    End SyncLock
+                End If
+
+                SyncLock windowObject.dataGridLockObject
+                    windowObject.SaveLogsToDiskSub()
+                End SyncLock
+
                 Dim startInfo As New ProcessStartInfo With {
-                    .FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "updater.exe"),
+                    .FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strUpdaterEXE),
                     .Arguments = $"--programcode={programCode}"
                 }
                 If Not CheckFolderPermissionsByACLs(AppDomain.CurrentDomain.BaseDirectory) Then startInfo.Verb = "runas"
@@ -231,6 +263,13 @@ Namespace checkForUpdates
                 Dim strCrashFile As String = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Free SysLog Crash Details.log")
                 If File.Exists(strCrashFile) Then File.Delete(strCrashFile)
                 File.WriteAllText(strCrashFile, $"{ex.Message} -- {ex.StackTrace}")
+
+                SyncLock windowObject.dataGridLockObject
+                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"{ex.Message} -- {ex.StackTrace}", windowObject.Logs))
+                    windowObject.UpdateLogCount()
+                    windowObject.SelectLatestLogEntry()
+                    windowObject.SaveLogsToDiskSub()
+                End SyncLock
 
                 MsgBox($"An error occurred while attempting to update the program. Crash data has been written to a file named ""Free SysLog Crash Details.log"".{vbCrLf}{vbCrLf}Windows Explorer will open to the file location.", MsgBoxStyle.Critical, strMessageBoxTitleText)
 
