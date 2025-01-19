@@ -10,6 +10,7 @@ Namespace checkForUpdates
         ' Change these variables whenever you import this module into a program's code to handle software updates.
         Public Const strMessageBoxTitleText As String = "Free SysLog"
         Public Const strProgramName As String = "Free SysLog"
+        Public Const strUpdaterEXE As String = "updater.exe"
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
         Public versionString As String
@@ -234,7 +235,7 @@ Namespace checkForUpdates
 
                     memoryStream.Position = 0
 
-                    Using fileStream As New FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "updater.exe"), FileMode.OpenOrCreate)
+                    Using fileStream As New FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strUpdaterEXE), FileMode.OpenOrCreate)
                         memoryStream.CopyTo(fileStream)
                     End Using
                 End Using
@@ -252,7 +253,7 @@ Namespace checkForUpdates
                 End SyncLock
 
                 Dim startInfo As New ProcessStartInfo With {
-                    .FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "updater.exe"),
+                    .FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strUpdaterEXE),
                     .Arguments = $"--programcode={programCode}"
                 }
                 If Not CheckFolderPermissionsByACLs(AppDomain.CurrentDomain.BaseDirectory) Then startInfo.Verb = "runas"
