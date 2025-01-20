@@ -326,10 +326,7 @@ Namespace checkForUpdates
 
             If Not My.Computer.Network.IsAvailable Then
                 windowObject.Invoke(Sub()
-                                        If boolDebugBuild Or My.Settings.boolDebug Then
-                                            MakeLogEntry("No Internet connection detected.")
-                                        End If
-
+                                        MakeLogEntry("No Internet connection detected.")
                                         MsgBox("No Internet connection detected.", MsgBoxStyle.Information, strMessageBoxTitleText)
                                     End Sub)
             Else
