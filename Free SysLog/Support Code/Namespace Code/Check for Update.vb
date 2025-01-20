@@ -281,9 +281,7 @@ Namespace checkForUpdates
                 Dim dblDOTNETVersion As Double = Double.Parse($"{Environment.Version.Major}.{Environment.Version.Minor}")
                 Dim strOSName As String
 
-                If intOSMajorVersion = 5 And intOSMinorVersion = 0 Then
-                    strOSName = "Windows 2000"
-                ElseIf intOSMajorVersion = 5 And intOSMinorVersion = 1 Then
+                If intOSMajorVersion = 5 And intOSMinorVersion = 1 Then
                     strOSName = "Windows XP"
                 ElseIf intOSMajorVersion = 6 And intOSMinorVersion = 0 Then
                     strOSName = "Windows Vista"
