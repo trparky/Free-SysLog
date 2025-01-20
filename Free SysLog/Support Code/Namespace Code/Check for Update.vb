@@ -365,18 +365,18 @@ Namespace checkForUpdates
                             If boolShowMessageBox Then
                                 windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
                             End If
-                        ElseIf (response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError) AndAlso boolShowMessageBox Then
+                        ElseIf response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
                                 MakeLogEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}")
                             End If
 
-                            windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
-                        ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite AndAlso boolShowMessageBox Then
+                            If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
+                        ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
                                 MakeLogEntry("This is weird, you have a version that's newer than what's listed on the web site.")
                             End If
 
-                            windowObject.Invoke(Sub() MsgBox("This is weird, you have a version that's newer than what's listed on the web site.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("This is weird, you have a version that's newer than what's listed on the web site.", MsgBoxStyle.Information, strMessageBoxTitleText))
                         End If
                     Else
                         If boolDebugBuild Or My.Settings.boolDebug Then
