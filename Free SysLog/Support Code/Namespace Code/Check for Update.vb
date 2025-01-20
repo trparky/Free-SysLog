@@ -197,36 +197,34 @@ Namespace checkForUpdates
             End Try
         End Function
 
+        Private Sub MakeLogEntry(strLogText As String, Optional boolSaveLogData As Boolean = False)
+            SyncLock windowObject.dataGridLockObject
+                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, windowObject.Logs))
+                windowObject.UpdateLogCount()
+                windowObject.SelectLatestLogEntry()
+
+                If boolSaveLogData Then windowObject.SaveLogsToDiskSub()
+            End SyncLock
+        End Sub
+
         Private Sub DownloadAndPerformUpdate()
             Try
                 Dim httpHelper As HttpHelper = CreateNewHTTPHelperObject()
 
                 Using memoryStream As New MemoryStream()
                     If boolDebugBuild Or My.Settings.boolDebug Then
-                        SyncLock windowObject.dataGridLockObject
-                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Downloading updater module.", windowObject.Logs))
-                            windowObject.UpdateLogCount()
-                            windowObject.SelectLatestLogEntry()
-                        End SyncLock
+                        MakeLogEntry("Downloading updater module.")
                     End If
 
                     If Not httpHelper.DownloadFile(updaterURL, memoryStream, False) Then
-                        SyncLock windowObject.dataGridLockObject
-                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error while downloading required updater module.", windowObject.Logs))
-                            windowObject.UpdateLogCount()
-                            windowObject.SelectLatestLogEntry()
-                        End SyncLock
+                        MakeLogEntry("There was an error while downloading required updater module.")
 
                         windowObject.Invoke(Sub() MsgBox("There was an error while downloading required updater module.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         Exit Sub
                     End If
 
                     If Not VerifyChecksum(updaterSHA256URL, memoryStream, httpHelper, True) Then
-                        SyncLock windowObject.dataGridLockObject
-                            windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error while downloading required updater module.", windowObject.Logs))
-                            windowObject.UpdateLogCount()
-                            windowObject.SelectLatestLogEntry()
-                        End SyncLock
+                        MakeLogEntry("There was an error while downloading required updater module.")
 
                         windowObject.Invoke(Sub() MsgBox("There was an error while downloading required updater module.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         Exit Sub
@@ -240,11 +238,7 @@ Namespace checkForUpdates
                 End Using
 
                 If boolDebugBuild Or My.Settings.boolDebug Then
-                    SyncLock windowObject.dataGridLockObject
-                        windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Launching updater module.", windowObject.Logs))
-                        windowObject.UpdateLogCount()
-                        windowObject.SelectLatestLogEntry()
-                    End SyncLock
+                    MakeLogEntry("Launching updater module.")
                 End If
 
                 SyncLock windowObject.dataGridLockObject
@@ -264,12 +258,7 @@ Namespace checkForUpdates
                 If File.Exists(strCrashFile) Then File.Delete(strCrashFile)
                 File.WriteAllText(strCrashFile, $"{ex.Message} -- {ex.StackTrace}")
 
-                SyncLock windowObject.dataGridLockObject
-                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"{ex.Message} -- {ex.StackTrace}", windowObject.Logs))
-                    windowObject.UpdateLogCount()
-                    windowObject.SelectLatestLogEntry()
-                    windowObject.SaveLogsToDiskSub()
-                End SyncLock
+                MakeLogEntry($"{ex.Message} -- {ex.StackTrace}", True)
 
                 MsgBox($"An error occurred while attempting to update the program. Crash data has been written to a file named ""Free SysLog Crash Details.log"".{vbCrLf}{vbCrLf}Windows Explorer will open to the file location.", MsgBoxStyle.Critical, strMessageBoxTitleText)
 
@@ -338,11 +327,7 @@ Namespace checkForUpdates
             If Not My.Computer.Network.IsAvailable Then
                 windowObject.Invoke(Sub()
                                         If boolDebugBuild Or My.Settings.boolDebug Then
-                                            SyncLock windowObject.dataGridLockObject
-                                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("No Internet connection detected.", windowObject.Logs, "Error, Local"))
-                                                windowObject.UpdateLogCount()
-                                                windowObject.SelectLatestLogEntry()
-                                            End SyncLock
+                                            MakeLogEntry("No Internet connection detected.")
                                         End If
 
                                         MsgBox("No Internet connection detected.", MsgBoxStyle.Information, strMessageBoxTitleText)
@@ -358,29 +343,17 @@ Namespace checkForUpdates
                         Dim response As ProcessUpdateXMLResponse = ProcessUpdateXMLData(xmlData, remoteVersion, remoteBuild)
 
                         If boolDebugBuild Or My.Settings.boolDebug Then
-                            SyncLock windowObject.dataGridLockObject
-                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The following data was received from the URL ""{programUpdateCheckerXMLFile}""...{vbCrLf}{SyslogParser.ConvertLineFeeds(xmlData)}", windowObject.Logs))
-                                windowObject.UpdateLogCount()
-                                windowObject.SelectLatestLogEntry()
-                            End SyncLock
+                            MakeLogEntry($"The following data was received from the URL ""{programUpdateCheckerXMLFile}""...{vbCrLf}{SyslogParser.ConvertLineFeeds(xmlData)}")
                         End If
 
                         If response = ProcessUpdateXMLResponse.newVersion Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
-                                SyncLock windowObject.dataGridLockObject
-                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"New version detected... {remoteVersion} Build {remoteBuild}.", windowObject.Logs))
-                                    windowObject.UpdateLogCount()
-                                    windowObject.SelectLatestLogEntry()
-                                End SyncLock
+                                MakeLogEntry($"New version detected... {remoteVersion} Build {remoteBuild}.")
                             End If
 
                             If BackgroundThreadMessageBox($"An update to {strProgramName} (version {remoteVersion} Build {remoteBuild}) is available to be downloaded, do you want to download and update to this new version?", strMessageBoxTitleText) = MsgBoxResult.Yes Then
                                 If boolDebugBuild Or My.Settings.boolDebug Then
-                                    SyncLock windowObject.dataGridLockObject
-                                        windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Beginning program update process.", windowObject.Logs))
-                                        windowObject.UpdateLogCount()
-                                        windowObject.SelectLatestLogEntry()
-                                    End SyncLock
+                                    MakeLogEntry("Beginning program update process.")
                                 End If
 
                                 DownloadAndPerformUpdate()
@@ -389,11 +362,7 @@ Namespace checkForUpdates
                             End If
                         ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
-                                SyncLock windowObject.dataGridLockObject
-                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("You already have the latest version, there is no need to update this program.", windowObject.Logs))
-                                    windowObject.UpdateLogCount()
-                                    windowObject.SelectLatestLogEntry()
-                                End SyncLock
+                                MakeLogEntry("You already have the latest version, there is no need to update this program.")
                             End If
 
                             If boolShowMessageBox Then
@@ -401,43 +370,27 @@ Namespace checkForUpdates
                             End If
                         ElseIf (response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError) AndAlso boolShowMessageBox Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
-                                SyncLock windowObject.dataGridLockObject
-                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}", windowObject.Logs, "Error, Local"))
-                                    windowObject.UpdateLogCount()
-                                    windowObject.SelectLatestLogEntry()
-                                End SyncLock
+                                MakeLogEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}")
                             End If
 
                             windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite AndAlso boolShowMessageBox Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
-                                SyncLock windowObject.dataGridLockObject
-                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("This is weird, you have a version that's newer than what's listed on the web site.", windowObject.Logs))
-                                    windowObject.UpdateLogCount()
-                                    windowObject.SelectLatestLogEntry()
-                                End SyncLock
+                                MakeLogEntry("This is weird, you have a version that's newer than what's listed on the web site.")
                             End If
 
                             windowObject.Invoke(Sub() MsgBox("This is weird, you have a version that's newer than what's listed on the web site.", MsgBoxStyle.Information, strMessageBoxTitleText))
                         End If
                     Else
                         If boolDebugBuild Or My.Settings.boolDebug Then
-                            SyncLock windowObject.dataGridLockObject
-                                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("There was an error checking for updates.", windowObject.Logs, "Error, Local"))
-                                windowObject.UpdateLogCount()
-                                windowObject.SelectLatestLogEntry()
-                            End SyncLock
+                            MakeLogEntry("There was an error checking for updates.")
                         End If
 
                         If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("There was an error checking for updates.", MsgBoxStyle.Information, strMessageBoxTitleText))
                     End If
                 Catch ex As Exception
                     ' Ok, we crashed but who cares; but we log it.
-                    SyncLock windowObject.dataGridLockObject
-                        windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", windowObject.Logs, "Error, Local"))
-                        windowObject.UpdateLogCount()
-                        windowObject.SelectLatestLogEntry()
-                    End SyncLock
+                    MakeLogEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
                 Finally
                     windowObject.Invoke(Sub()
                                             windowObject.BtnCheckForUpdates.Enabled = True
