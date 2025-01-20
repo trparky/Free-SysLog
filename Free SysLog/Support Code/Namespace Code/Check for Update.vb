@@ -370,20 +370,26 @@ Namespace checkForUpdates
                                 MakeLogEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}")
                             End If
 
-                            If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
+                            If boolShowMessageBox Then
+                                windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
+                            End If
                         ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
                                 MakeLogEntry("This is weird, you have a version that's newer than what's listed on the web site.")
                             End If
 
-                            If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("This is weird, you have a version that's newer than what's listed on the web site.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            If boolShowMessageBox Then
+                                windowObject.Invoke(Sub() MsgBox("This is weird, you have a version that's newer than what's listed on the web site.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            End If
                         End If
                     Else
                         If boolDebugBuild Or My.Settings.boolDebug Then
                             MakeLogEntry("There was an error checking for updates.")
                         End If
 
-                        If boolShowMessageBox Then windowObject.Invoke(Sub() MsgBox("There was an error checking for updates.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                        If boolShowMessageBox Then
+                            windowObject.Invoke(Sub() MsgBox("There was an error checking for updates.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                        End If
                     End If
                 Catch ex As Exception
                     ' Ok, we crashed but who cares; but we log it.
