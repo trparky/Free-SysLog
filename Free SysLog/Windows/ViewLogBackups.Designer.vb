@@ -107,31 +107,31 @@ Partial Class ViewLogBackups
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.UnhideToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(113, 92)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(181, 114)
         '
         'DeleteToolStripMenuItem
         '
         Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
-        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.DeleteToolStripMenuItem.Text = "&Delete"
         '
         'ViewToolStripMenuItem
         '
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
-        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ViewToolStripMenuItem.Text = "&View"
         '
         'HideToolStripMenuItem
         '
         Me.HideToolStripMenuItem.Name = "HideToolStripMenuItem"
-        Me.HideToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.HideToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.HideToolStripMenuItem.Text = "Hide"
         '
         'UnhideToolStripMenuItem
         '
         Me.UnhideToolStripMenuItem.Name = "UnhideToolStripMenuItem"
-        Me.UnhideToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
-        Me.UnhideToolStripMenuItem.Text = "Unhide"
+        Me.UnhideToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.UnhideToolStripMenuItem.Text = "Unhide/Show"
         '
         'BtnView
         '
