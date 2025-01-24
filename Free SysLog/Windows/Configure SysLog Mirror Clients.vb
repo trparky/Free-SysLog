@@ -2,7 +2,7 @@
 Imports System.Net
 Imports Free_SysLog.SupportCode
 
-Public Class ConfigureSysLogMirrorServers
+Public Class ConfigureSysLogMirrorClients
     Public boolSuccess As Boolean = False
     Private boolEditMode As Boolean = False
     Private boolDoneLoading As Boolean = False
