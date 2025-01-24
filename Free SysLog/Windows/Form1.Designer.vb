@@ -482,7 +482,7 @@ Partial Class Form1
         '
         Me.ConfigureSysLogMirrorServers.Name = "ConfigureSysLogMirrorServers"
         Me.ConfigureSysLogMirrorServers.Size = New System.Drawing.Size(339, 22)
-        Me.ConfigureSysLogMirrorServers.Text = "Configure SysLog Mirror Servers"
+        Me.ConfigureSysLogMirrorServers.Text = "Configure SysLog Mirror Clients"
         '
         'ConfigureTimeBetweenSameNotifications
         '
