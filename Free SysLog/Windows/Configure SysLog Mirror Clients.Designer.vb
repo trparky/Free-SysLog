@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class ConfigureSysLogMirrorServers
+Partial Class ConfigureSysLogMirrorClients
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -281,7 +281,7 @@ Partial Class ConfigureSysLogMirrorServers
         Me.BtnCancel.Text = "Cancel"
         Me.BtnCancel.UseVisualStyleBackColor = True
         '
-        'ConfigureSysLogMirrorServers
+        'ConfigureSysLogMirrorClients
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -310,8 +310,8 @@ Partial Class ConfigureSysLogMirrorServers
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(653, 439)
-        Me.Name = "ConfigureSysLogMirrorServers"
-        Me.Text = "Configure SysLog Mirror Servers"
+        Me.Name = "ConfigureSysLogMirrorClients"
+        Me.Text = "Configure SysLog Mirror Clients"
         Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()

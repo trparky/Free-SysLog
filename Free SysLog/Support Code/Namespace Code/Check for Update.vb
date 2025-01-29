@@ -199,11 +199,13 @@ Namespace checkForUpdates
 
         Private Sub MakeLogEntry(strLogText As String, Optional boolSaveLogData As Boolean = False)
             SyncLock windowObject.dataGridLockObject
-                windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, windowObject.Logs))
-                windowObject.UpdateLogCount()
-                windowObject.SelectLatestLogEntry()
+                windowObject.Invoke(Sub()
+                                        windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, windowObject.Logs))
+                                        windowObject.UpdateLogCount()
+                                        windowObject.SelectLatestLogEntry()
 
-                If boolSaveLogData Then windowObject.SaveLogsToDiskSub()
+                                        If boolSaveLogData Then windowObject.SaveLogsToDiskSub()
+                                    End Sub)
             End SyncLock
         End Sub
 

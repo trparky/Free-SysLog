@@ -141,10 +141,10 @@
     <Compile Include="Windows\Clear logs older than.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\Configure SysLog Mirror Servers.Designer.vb">
-      <DependentUpon>Configure SysLog Mirror Servers.vb</DependentUpon>
+    <Compile Include="Windows\Configure SysLog Mirror Clients.Designer.vb">
+      <DependentUpon>Configure SysLog Mirror Clients.vb</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Configure SysLog Mirror Servers.vb">
+    <Compile Include="Windows\Configure SysLog Mirror Clients.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Windows\Date Format Chooser.Designer.vb">
@@ -244,8 +244,8 @@
     <EmbeddedResource Include="Windows\Clear logs older than.resx">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\Configure SysLog Mirror Servers.resx">
-      <DependentUpon>Configure SysLog Mirror Servers.vb</DependentUpon>
+    <EmbeddedResource Include="Windows\Configure SysLog Mirror Clients.resx">
+      <DependentUpon>Configure SysLog Mirror Clients.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Date Format Chooser.resx">
