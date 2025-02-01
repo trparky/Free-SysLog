@@ -119,6 +119,7 @@ Partial Class Form1
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureSysLogMirrorServers = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureTimeBetweenSameNotifications = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfirmDelete = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDebug = New System.Windows.Forms.ToolStripMenuItem()
         Me.BackupFileNameDateFormatChooser = New System.Windows.Forms.ToolStripMenuItem()
@@ -441,7 +442,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearNotificationLimits, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearNotificationLimits, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -489,6 +490,13 @@ Partial Class Form1
         Me.ConfigureTimeBetweenSameNotifications.Name = "ConfigureTimeBetweenSameNotifications"
         Me.ConfigureTimeBetweenSameNotifications.Size = New System.Drawing.Size(339, 22)
         Me.ConfigureTimeBetweenSameNotifications.Text = "Configure Time Between Same Notifications"
+        '
+        'ConfirmDelete
+        '
+        Me.ConfirmDelete.CheckOnClick = True
+        Me.ConfirmDelete.Name = "ConfirmDelete"
+        Me.ConfirmDelete.Size = New System.Drawing.Size(339, 22)
+        Me.ConfirmDelete.Text = "Confirm Deletion of Logs"
         '
         'ChkEnableRecordingOfIgnoredLogs
         '
@@ -994,6 +1002,7 @@ Partial Class Form1
     Friend WithEvents ChkShowHostnameColumn As ToolStripMenuItem
     Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
     Friend WithEvents ConfigureTimeBetweenSameNotifications As ToolStripMenuItem
+    Friend WithEvents ConfirmDelete As ToolStripMenuItem
     Friend WithEvents LoadingProgressBar As ProgressBar
     Friend WithEvents MinimizeToClockTray As ToolStripMenuItem
     Friend WithEvents BackupFileNameDateFormatChooser As ToolStripMenuItem

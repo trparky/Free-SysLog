@@ -1148,6 +1148,18 @@ Namespace My
                 Me("boolDebug") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property ConfirmDelete() As Boolean
+            Get
+                Return CType(Me("ConfirmDelete"),Boolean)
+            End Get
+            Set
+                Me("ConfirmDelete") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

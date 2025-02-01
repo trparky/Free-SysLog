@@ -259,6 +259,7 @@ Public Class Form1
         IPv6Support.Checked = My.Settings.IPv6Support
         ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
         ChkDebug.Checked = My.Settings.boolDebug
+        ConfirmDelete.Checked = My.Settings.ConfirmDelete
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -598,19 +599,22 @@ Public Class Form1
         ElseIf e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
                 Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
-                Dim choice As Confirm_Delete.UserChoice
 
-                Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-                    Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
-                    Confirm_Delete.ShowDialog(Me)
-                    choice = Confirm_Delete.choice
-                End Using
+                If ConfirmDelete.Checked Then
+                    Dim choice As Confirm_Delete.UserChoice
 
-                If choice = Confirm_Delete.UserChoice.NoDelete Then
-                    MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
-                    Exit Sub
-                ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
-                    MakeLogBackup()
+                    Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                        Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
+                        Confirm_Delete.ShowDialog(Me)
+                        choice = Confirm_Delete.choice
+                    End Using
+
+                    If choice = Confirm_Delete.UserChoice.NoDelete Then
+                        MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
+                        Exit Sub
+                    ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
+                        MakeLogBackup()
+                    End If
                 End If
 
                 For Each item As DataGridViewRow In Logs.SelectedRows
@@ -1589,6 +1593,10 @@ Public Class Form1
 
     Private Sub ChkDebug_Click(sender As Object, e As EventArgs) Handles ChkDebug.Click
         My.Settings.boolDebug = ChkDebug.Checked
+    End Sub
+
+    Private Sub ConfirmDelete_Click(sender As Object, e As EventArgs) Handles ConfirmDelete.Click
+        My.Settings.ConfirmDelete = ConfirmDelete.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
