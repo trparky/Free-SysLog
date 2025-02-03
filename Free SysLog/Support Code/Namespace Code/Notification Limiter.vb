@@ -54,7 +54,7 @@ Namespace NotificationLimiter
                 notification.AddArgument("action", SupportCode.strOpenSysLog)
             End If
 
-            If Not String.IsNullOrWhiteSpace(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
+            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
 
             notification.Show()
         End Sub
