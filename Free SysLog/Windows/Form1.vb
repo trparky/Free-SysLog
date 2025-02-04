@@ -67,7 +67,9 @@ Public Class Form1
 
             Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", Logs))
 
+            UpdateLogCount()
             SelectLatestLogEntry()
+            BtnSaveLogsToDisk.Enabled = True
 
             NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
         End SyncLock
@@ -1686,6 +1688,9 @@ Public Class Form1
 
         If boolDebugBuild Or ChkDebug.Checked Then
             Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Restore command received.", Logs))
+            SelectLatestLogEntry()
+            UpdateLogCount()
+            BtnSaveLogsToDisk.Enabled = True
         End If
 
         SelectLatestLogEntry()

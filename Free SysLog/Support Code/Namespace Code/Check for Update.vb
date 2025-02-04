@@ -203,6 +203,7 @@ Namespace checkForUpdates
                                         windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, windowObject.Logs))
                                         windowObject.UpdateLogCount()
                                         windowObject.SelectLatestLogEntry()
+                                        windowObject.BtnSaveLogsToDisk.Enabled = True
 
                                         If boolSaveLogData Then windowObject.SaveLogsToDiskSub()
                                     End Sub)

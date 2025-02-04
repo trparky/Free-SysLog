@@ -102,6 +102,9 @@ Namespace SyslogParser
             ParentForm.Invoke(Sub()
                                   SyncLock ParentForm.dataGridLockObject
                                       ParentForm.Logs.Rows.Add(MakeLocalDataGridRowEntry(strLogText, ParentForm.Logs))
+                                      ParentForm.UpdateLogCount()
+                                      ParentForm.SelectLatestLogEntry()
+                                      ParentForm.BtnSaveLogsToDisk.Enabled = True
                                       If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
                                   End SyncLock
 
