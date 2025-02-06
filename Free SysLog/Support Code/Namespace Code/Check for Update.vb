@@ -22,9 +22,9 @@ Namespace checkForUpdates
 
     Class CheckForUpdatesClass
         ' Change these variables whenever you import this module into a program's code to handle software updates.
-        Private Const updaterURL As String = "www.toms-world.org/download/updater.exe"
-        Private Const updaterSHA256URL As String = "www.toms-world.org/download/updater.exe.sha2"
-        Private Const programUpdateCheckerXMLFile As String = "www.toms-world.org/updates/freesyslog_update.xml"
+        Private Const updaterURL As String = "https://www.toms-world.org/download/updater.exe"
+        Private Const updaterSHA256URL As String = "https://www.toms-world.org/download/updater.exe.sha2"
+        Private Const programUpdateCheckerXMLFile As String = "https://www.toms-world.org/updates/freesyslog_update.xml"
         Private Const programCode As String = "freesyslog"
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
@@ -126,19 +126,6 @@ Namespace checkForUpdates
             httpHelper.AddHTTPHeader("PROGRAM_NAME", strProgramName)
             httpHelper.AddHTTPHeader("PROGRAM_VERSION", versionString)
             httpHelper.AddHTTPHeader("OPERATING_SYSTEM", GetFullOSVersionString())
-            If File.Exists("dontcount") Then httpHelper.AddHTTPCookie("dontcount", "True", "www.toms-world.org", False)
-
-            httpHelper.SetURLPreProcessor = Function(strURLInput As String) As String
-                                                Try
-                                                    If Not strURLInput.Trim.StartsWith("http", StringComparison.OrdinalIgnoreCase) Then
-                                                        Return $"https://{strURLInput}"
-                                                    Else
-                                                        Return strURLInput
-                                                    End If
-                                                Catch ex As Exception
-                                                    Return strURLInput
-                                                End Try
-                                            End Function
 
             Return httpHelper
         End Function
@@ -203,6 +190,7 @@ Namespace checkForUpdates
                                         windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, windowObject.Logs))
                                         windowObject.UpdateLogCount()
                                         windowObject.SelectLatestLogEntry()
+                                        windowObject.BtnSaveLogsToDisk.Enabled = True
 
                                         If boolSaveLogData Then windowObject.SaveLogsToDiskSub()
                                     End Sub)
