@@ -314,7 +314,7 @@ Public Class ViewLogBackups
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                              myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
-                                                                                             If My.Settings.font IsNot Nothing Then myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
+
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                  listOfSearchResults.Add(myDataGridRow)
                                                                                              End SyncLock
@@ -322,6 +322,10 @@ Public Class ViewLogBackups
                                                                                      Next
                                                                                  End Using
                                                                              End Sub)
+
+                                          For Each item As MyDataGridViewRow In listOfSearchResults
+                                              If My.Settings.font IsNot Nothing Then item.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
+                                          Next
 
                                           For Each item As SavedData In currentLogs
                                               If regexCompiledObject.IsMatch(item.log) Then
