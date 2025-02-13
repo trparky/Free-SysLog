@@ -489,8 +489,10 @@ Public Class Form1
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
+                               Logs.SuspendLayout()
                                Logs.Rows.Clear()
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                               Logs.ResumeLayout()
 
                                SelectLatestLogEntry()
 
@@ -519,6 +521,7 @@ Public Class Form1
 
         SyncLock dataGridLockObject
             Invoke(Sub()
+                       Logs.SuspendLayout()
                        Logs.Rows.Clear()
 
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
@@ -528,6 +531,7 @@ Public Class Form1
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                       Logs.ResumeLayout()
                        UpdateLogCount()
                    End Sub)
         End SyncLock
@@ -840,8 +844,10 @@ Public Class Form1
 
         Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
+        Logs.SuspendLayout()
         Logs.Rows.Clear()
         Logs.Rows.AddRange(rows)
+        Logs.ResumeLayout()
 
         Logs.Enabled = True
         Logs.AllowUserToOrderColumns = True
@@ -927,11 +933,14 @@ Public Class Form1
 
                         If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
 
+                        Logs.SuspendLayout()
                         Logs.Rows.Clear()
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                         Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+
+                        Logs.ResumeLayout()
 
                         SelectLatestLogEntry()
                     End SyncLock
@@ -1036,11 +1045,14 @@ Public Class Form1
                 Logs.Enabled = True
                 Logs.AllowUserToOrderColumns = True
 
+                Logs.SuspendLayout()
                 Logs.Rows.Clear()
                 Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+
+                Logs.ResumeLayout()
 
                 SelectLatestLogEntry()
             End SyncLock

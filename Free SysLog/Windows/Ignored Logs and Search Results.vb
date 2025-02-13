@@ -76,8 +76,10 @@ Public Class IgnoredLogsAndSearchResults
 
             Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
+            Logs.SuspendLayout()
             Logs.Rows.Clear()
             Logs.Rows.AddRange(rows)
+            Logs.ResumeLayout()
 
             Logs.Enabled = True
             Logs.AllowUserToOrderColumns = True
@@ -189,8 +191,10 @@ Public Class IgnoredLogsAndSearchResults
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
+            Logs.SuspendLayout()
             Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
             SortLogsByDateObject(0, SortOrder.Ascending)
+            Logs.ResumeLayout()
 
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
@@ -385,8 +389,10 @@ Public Class IgnoredLogsAndSearchResults
                 Next
 
                 Logs.Invoke(Sub()
+                                Logs.SuspendLayout()
                                 Logs.Rows.Clear()
                                 Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                                Logs.ResumeLayout()
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                             End Sub)

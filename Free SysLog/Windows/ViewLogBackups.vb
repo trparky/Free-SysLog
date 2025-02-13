@@ -52,8 +52,11 @@ Public Class ViewLogBackups
 
         Array.Sort(rows, Function(row1 As MyDataGridViewFileRow, row2 As MyDataGridViewFileRow) comparer.Compare(row1, row2))
 
+        FileList.SuspendLayout()
         FileList.Rows.Clear()
         FileList.Rows.AddRange(rows)
+        FileList.ResumeLayout()
+
         FileList.Enabled = True
         FileList.AllowUserToOrderColumns = True
     End Sub
@@ -143,8 +146,11 @@ Public Class ViewLogBackups
                        FileList.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
                    End If
 
+                   FileList.SuspendLayout()
                    FileList.Rows.Clear()
                    FileList.Rows.AddRange(listOfDataGridViewRows.ToArray())
+                   FileList.ResumeLayout()
+
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
                    LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
