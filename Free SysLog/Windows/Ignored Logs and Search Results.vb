@@ -68,21 +68,23 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
         SyncLock dataGridLockObject
-            Logs.AllowUserToOrderColumns = False
-            Logs.Enabled = False
+            Logs.Invoke(Sub()
+                            Logs.AllowUserToOrderColumns = False
+                            Logs.Enabled = False
 
-            Dim comparer As New DataGridViewComparer(columnIndex, order)
-            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
+                            Dim comparer As New DataGridViewComparer(columnIndex, order)
+                            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
 
-            Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
+                            Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
-            Logs.SuspendLayout()
-            Logs.Rows.Clear()
-            Logs.Rows.AddRange(rows)
-            Logs.ResumeLayout()
+                            Logs.SuspendLayout()
+                            Logs.Rows.Clear()
+                            Logs.Rows.AddRange(rows)
+                            Logs.ResumeLayout()
 
-            Logs.Enabled = True
-            Logs.AllowUserToOrderColumns = True
+                            Logs.Enabled = True
+                            Logs.AllowUserToOrderColumns = True
+                        End Sub)
         End SyncLock
     End Sub
 
@@ -204,14 +206,12 @@ Public Class IgnoredLogsAndSearchResults
         End If
 
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
-            Dim worker As New BackgroundWorker()
-            AddHandler worker.DoWork, Sub() LoadData(strFileToLoad)
-            AddHandler worker.RunWorkerCompleted, Sub()
-                                                      LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
-                                                      boolDoneLoading = True
-                                                      SortLogsByDateObject(0, SortOrder.Ascending)
-                                                  End Sub
-            worker.RunWorkerAsync()
+            Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                       LoadData(strFileToLoad)
+                                                       LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+                                                       boolDoneLoading = True
+                                                       SortLogsByDateObject(0, SortOrder.Ascending)
+                                                   End Sub)
         End If
 
         boolDoneLoading = True
