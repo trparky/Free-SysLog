@@ -47,6 +47,8 @@ Partial Class ViewLogBackups
         Me.colEntryCount = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.HideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ChkIgnoreSearchResultsLimits = New System.Windows.Forms.CheckBox()
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblTotalNumberOfHiddenLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
@@ -291,11 +293,24 @@ Partial Class ViewLogBackups
         Me.LblTotalDiskSpace.Size = New System.Drawing.Size(123, 17)
         Me.LblTotalDiskSpace.Text = "Total Disk Space Used:"
         '
+        'ChkIgnoreSearchResultsLimits
+        '
+        Me.ChkIgnoreSearchResultsLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkIgnoreSearchResultsLimits.AutoSize = True
+        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(556, 321)
+        Me.ChkIgnoreSearchResultsLimits.Name = "ChkIgnoreSearchResultsLimits"
+        Me.ChkIgnoreSearchResultsLimits.Size = New System.Drawing.Size(160, 17)
+        Me.ChkIgnoreSearchResultsLimits.TabIndex = 37
+        Me.ChkIgnoreSearchResultsLimits.Text = "Ignore Search Results Limits"
+        Me.ToolTip.SetToolTip(Me.ChkIgnoreSearchResultsLimits, "Warning: Enabling this could cause performance issues.")
+        Me.ChkIgnoreSearchResultsLimits.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(954, 364)
+        Me.Controls.Add(Me.ChkIgnoreSearchResultsLimits)
         Me.Controls.Add(Me.ChkShowHiddenAsGray)
         Me.Controls.Add(Me.ChkShowHidden)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
@@ -350,4 +365,6 @@ Partial Class ViewLogBackups
     Friend WithEvents lblTotalNumberOfHiddenLogs As ToolStripStatusLabel
     Friend WithEvents LblTotalDiskSpace As ToolStripStatusLabel
     Friend WithEvents colEntryCount As DataGridViewTextBoxColumn
+    Friend WithEvents ToolTip As ToolTip
+    Friend WithEvents ChkIgnoreSearchResultsLimits As CheckBox
 End Class

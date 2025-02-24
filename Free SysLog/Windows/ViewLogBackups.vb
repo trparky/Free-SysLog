@@ -163,6 +163,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ChkIgnoreSearchResultsLimits.Checked = My.Settings.IgnoreSearchResultLimits
         Dim flags As Reflection.BindingFlags = Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty
         Dim propInfo As Reflection.PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
         propInfo?.SetValue(FileList, True, Nothing)
@@ -343,7 +344,7 @@ Public Class ViewLogBackups
                                               End If
                                           Next
 
-                                          If listOfSearchResults.Count > 4000 Then
+                                          If Not My.Settings.IgnoreSearchResultLimits AndAlso listOfSearchResults.Count > 4000 Then
                                               MsgBox($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information, Text)
                                               boolShowSearchResults = False
                                               Exit Sub
@@ -496,5 +497,9 @@ Public Class ViewLogBackups
         If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
             FileList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
         End If
+    End Sub
+
+    Private Sub ChkIgnoreSearchResultsLimits_Click(sender As Object, e As EventArgs) Handles ChkIgnoreSearchResultsLimits.Click
+        My.Settings.IgnoreSearchResultLimits = ChkIgnoreSearchResultsLimits.Checked
     End Sub
 End Class
