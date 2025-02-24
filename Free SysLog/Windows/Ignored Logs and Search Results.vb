@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
 Imports Free_SysLog.SupportCode
+Imports System.Threading.Tasks
 
 Public Class IgnoredLogsAndSearchResults
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
@@ -18,6 +19,8 @@ Public Class IgnoredLogsAndSearchResults
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
+
+    Private Const intBatchSize As Integer = 25
 
     Private Sub OpenLogViewerWindow()
         If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
@@ -194,7 +197,16 @@ Public Class IgnoredLogsAndSearchResults
 
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
             Logs.SuspendLayout()
-            Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
+
+            Task.Run(Sub()
+                         Dim intTotalEntries As Integer = LogsToBeDisplayed.Count
+
+                         For index As Integer = 0 To intTotalEntries - 1 Step intBatchSize
+                             Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
+                             Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                         Next
+                     End Sub)
+
             SortLogsByDateObject(0, SortOrder.Ascending)
             Logs.ResumeLayout()
 
@@ -391,7 +403,17 @@ Public Class IgnoredLogsAndSearchResults
                 Logs.Invoke(Sub()
                                 Logs.SuspendLayout()
                                 Logs.Rows.Clear()
-                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+
+                                Task.Run(Sub()
+                                             Dim intTotalEntries As Integer = listOfLogEntries.Count
+
+                                             For index As Integer = 0 To intTotalEntries - 1 Step intBatchSize
+                                                 Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                                 Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                             Next
+                                         End Sub)
+
+                                SortLogsByDateObject(0, SortOrder.Ascending)
                                 Logs.ResumeLayout()
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
