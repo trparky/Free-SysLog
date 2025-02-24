@@ -205,10 +205,12 @@ Public Class IgnoredLogsAndSearchResults
                              Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
                              Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
                          Next
-                     End Sub)
 
-            SortLogsByDateObject(0, SortOrder.Ascending)
-            Logs.ResumeLayout()
+                         Logs.Invoke(Sub()
+                                         SortLogsByDateObject(0, SortOrder.Ascending)
+                                         Logs.ResumeLayout()
+                                     End Sub)
+                     End Sub)
 
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
@@ -411,10 +413,13 @@ Public Class IgnoredLogsAndSearchResults
                                                  Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
                                                  Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
                                              Next
+
+                                             Logs.Invoke(Sub()
+                                                             SortLogsByDateObject(0, SortOrder.Ascending)
+                                                             Logs.ResumeLayout()
+                                                         End Sub)
                                          End Sub)
 
-                                SortLogsByDateObject(0, SortOrder.Ascending)
-                                Logs.ResumeLayout()
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                             End Sub)
