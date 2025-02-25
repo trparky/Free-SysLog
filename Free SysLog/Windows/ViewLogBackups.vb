@@ -344,10 +344,17 @@ Public Class ViewLogBackups
                                               End If
                                           Next
 
-                                          If Not My.Settings.IgnoreSearchResultLimits AndAlso listOfSearchResults.Count > 4000 Then
-                                              MsgBox($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information, Text)
-                                              boolShowSearchResults = False
-                                              Exit Sub
+                                          If listOfSearchResults.Count > 4000 Then
+                                              If Not My.Settings.IgnoreSearchResultLimits Then
+                                                  MsgBox($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information, Text)
+                                                  boolShowSearchResults = False
+                                                  Exit Sub
+                                              Else
+                                                  If MsgBox("There are more than 4000 search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
+                                                      boolShowSearchResults = False
+                                                      Exit Sub
+                                                  End If
+                                              End If
                                           End If
 
                                           listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(ColumnIndex_LogText).Value.ToString()).ThenBy(Function(row) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
