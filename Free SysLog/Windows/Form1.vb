@@ -922,7 +922,7 @@ Public Class Form1
             ClearLogsOlderThanInstance.LblLogCount.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
             ClearLogsOlderThanInstance.ShowDialog(Me)
 
-            If ClearLogsOlderThanInstance.boolSuccess Then
+            If ClearLogsOlderThanInstance.DialogResult = DialogResult.OK Then
                 Try
                     Dim dateChosenDate As Date = ClearLogsOlderThanInstance.dateChosenDate
 
@@ -1260,7 +1260,7 @@ Public Class Form1
 
                 IntegerInputForm.ShowDialog(Me)
 
-                If IntegerInputForm.boolSuccess Then
+                If IntegerInputForm.DialogResult = DialogResult.OK Then
                     If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 65535 Then
                         MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
                     Else
@@ -1299,7 +1299,7 @@ Public Class Form1
 
             IntegerInputForm.ShowDialog(Me)
 
-            If IntegerInputForm.boolSuccess Then
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
                 ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({IntegerInputForm.intResult} Minutes)"
                 SaveTimer.Interval = TimeSpan.FromMinutes(IntegerInputForm.intResult).TotalMilliseconds
                 My.Settings.autoSaveMinutes = IntegerInputForm.intResult
@@ -1416,7 +1416,7 @@ Public Class Form1
 
             IntegerInputForm.ShowDialog(Me)
 
-            If IntegerInputForm.boolSuccess Then
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
                 If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 300 Then
                     MsgBox("The time in seconds must be in the range of 1 - 300.", MsgBoxStyle.Critical, Text)
                 Else
@@ -1531,7 +1531,7 @@ Public Class Form1
 
             IntegerInputForm.ShowDialog(Me)
 
-            If IntegerInputForm.boolSuccess Then
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
                 If IntegerInputForm.intResult < 30 Or IntegerInputForm.intResult > 240 Then
                     MsgBox("The time in seconds must be in the range of 30 - 240.", MsgBoxStyle.Critical, Text)
                 Else
