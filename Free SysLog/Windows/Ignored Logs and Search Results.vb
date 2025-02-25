@@ -199,9 +199,7 @@ Public Class IgnoredLogsAndSearchResults
             Logs.SuspendLayout()
 
             Task.Run(Sub()
-                         Dim intTotalEntries As Integer = LogsToBeDisplayed.Count
-
-                         For index As Integer = 0 To intTotalEntries - 1 Step intBatchSize
+                         For index As Integer = 0 To LogsToBeDisplayed.Count - 1 Step intBatchSize
                              Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
                              Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
                          Next
@@ -407,9 +405,7 @@ Public Class IgnoredLogsAndSearchResults
                                 Logs.Rows.Clear()
 
                                 Task.Run(Sub()
-                                             Dim intTotalEntries As Integer = listOfLogEntries.Count
-
-                                             For index As Integer = 0 To intTotalEntries - 1 Step intBatchSize
+                                             For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
                                                  Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
                                                  Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
                                              Next
