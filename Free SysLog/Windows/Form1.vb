@@ -706,9 +706,20 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If e.CloseReason = CloseReason.UserClosing AndAlso My.Settings.boolConfirmClose AndAlso MsgBox("Are you sure you want to close Free SysLog?", MsgBoxStyle.YesNo + MsgBoxStyle.Question + vbDefaultButton2, Text) = MsgBoxResult.No Then
-            e.Cancel = True
-            Exit Sub
+        If e.CloseReason = CloseReason.UserClosing AndAlso My.Settings.boolConfirmClose Then
+            Using CloseFreeSysLog As New CloseFreeSysLogDialog()
+                CloseFreeSysLog.StartPosition = FormStartPosition.CenterParent
+                Dim result As DialogResult = CloseFreeSysLog.ShowDialog(Me)
+
+                If result = DialogResult.No Then
+                    e.Cancel = True
+                    Exit Sub
+                ElseIf result = DialogResult.Cancel Then
+                    WindowState = FormWindowState.Minimized
+                    e.Cancel = True
+                    Exit Sub
+                End If
+            End Using
         End If
 
         If e.CloseReason = CloseReason.WindowsShutDown Then

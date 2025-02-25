@@ -141,6 +141,12 @@
     <Compile Include="Windows\Clear logs older than.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Windows\Close Free SysLog Dialog.Designer.vb">
+      <DependentUpon>Close Free SysLog Dialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Close Free SysLog Dialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Configure SysLog Mirror Clients.Designer.vb">
       <DependentUpon>Configure SysLog Mirror Clients.vb</DependentUpon>
     </Compile>
@@ -243,6 +249,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Clear logs older than.resx">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Close Free SysLog Dialog.resx">
+      <DependentUpon>Close Free SysLog Dialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Configure SysLog Mirror Clients.resx">
       <DependentUpon>Configure SysLog Mirror Clients.vb</DependentUpon>
