@@ -196,6 +196,8 @@ Public Class IgnoredLogsAndSearchResults
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
+            LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+
             Logs.SuspendLayout()
 
             Task.Run(Sub()
@@ -204,10 +206,7 @@ Public Class IgnoredLogsAndSearchResults
                              Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
                          Next
 
-                         Logs.Invoke(Sub()
-                                         SortLogsByDateObject(0, SortOrder.Ascending)
-                                         Logs.ResumeLayout()
-                                     End Sub)
+                         Logs.Invoke(Sub() Logs.ResumeLayout())
                      End Sub)
 
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
@@ -401,6 +400,8 @@ Public Class IgnoredLogsAndSearchResults
                 Next
 
                 Logs.Invoke(Sub()
+                                listOfLogEntries.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+
                                 Logs.SuspendLayout()
                                 Logs.Rows.Clear()
 
@@ -410,10 +411,7 @@ Public Class IgnoredLogsAndSearchResults
                                                  Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
                                              Next
 
-                                             Logs.Invoke(Sub()
-                                                             SortLogsByDateObject(0, SortOrder.Ascending)
-                                                             Logs.ResumeLayout()
-                                                         End Sub)
+                                             Logs.Invoke(Sub() Logs.ResumeLayout())
                                          End Sub)
 
                                 LogsLoadedInLabel.Visible = True
