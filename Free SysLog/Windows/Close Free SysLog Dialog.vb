@@ -19,4 +19,14 @@
         DialogResult = DialogResult.Cancel
         Close()
     End Sub
+
+    Private Sub CloseFreeSysLogDialog_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Y Then
+            BtnYes.PerformClick()
+        ElseIf e.KeyCode = Keys.N Then
+            BtnNo.PerformClick()
+        ElseIf e.KeyCode = Keys.M Then
+            BtnMinimize.PerformClick()
+        End If
+    End Sub
 End Class
