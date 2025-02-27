@@ -22,12 +22,14 @@ Partial Class CloseFreeSysLogDialog
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.BtnNo = New System.Windows.Forms.Button()
         Me.BtnYes = New System.Windows.Forms.Button()
         Me.BtnMinimize = New System.Windows.Forms.Button()
+        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.Panel1.SuspendLayout()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -66,6 +68,7 @@ Partial Class CloseFreeSysLogDialog
         Me.BtnNo.Size = New System.Drawing.Size(75, 23)
         Me.BtnNo.TabIndex = 0
         Me.BtnNo.Text = "&No"
+        Me.ToolTip.SetToolTip(Me.BtnNo, "Can be activated by pressing the N key.")
         Me.BtnNo.UseVisualStyleBackColor = True
         '
         'BtnYes
@@ -75,6 +78,7 @@ Partial Class CloseFreeSysLogDialog
         Me.BtnYes.Size = New System.Drawing.Size(75, 23)
         Me.BtnYes.TabIndex = 2
         Me.BtnYes.Text = "&Yes"
+        Me.ToolTip.SetToolTip(Me.BtnYes, "Can be activated by pressing the Y key.")
         Me.BtnYes.UseVisualStyleBackColor = True
         '
         'BtnMinimize
@@ -84,6 +88,7 @@ Partial Class CloseFreeSysLogDialog
         Me.BtnMinimize.Size = New System.Drawing.Size(75, 23)
         Me.BtnMinimize.TabIndex = 1
         Me.BtnMinimize.Text = "&Minimize"
+        Me.ToolTip.SetToolTip(Me.BtnMinimize, "Can be activated by pressing the M key.")
         Me.BtnMinimize.UseVisualStyleBackColor = True
         '
         'CloseFreeSysLogDialog
@@ -113,4 +118,5 @@ Partial Class CloseFreeSysLogDialog
     Friend WithEvents BtnNo As Button
     Friend WithEvents BtnYes As Button
     Friend WithEvents BtnMinimize As Button
+    Friend WithEvents ToolTip As ToolTip
 End Class
