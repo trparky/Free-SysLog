@@ -30,6 +30,7 @@ Partial Class CloseFreeSysLogDialog
         Me.BtnYes = New System.Windows.Forms.Button()
         Me.BtnMinimize = New System.Windows.Forms.Button()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ChkConfirmClose = New System.Windows.Forms.CheckBox()
         Me.Panel1.SuspendLayout()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -91,11 +92,22 @@ Partial Class CloseFreeSysLogDialog
         Me.ToolTip.SetToolTip(Me.BtnMinimize, "Can be activated by pressing the M key.")
         Me.BtnMinimize.UseVisualStyleBackColor = True
         '
+        'ChkConfirmClose
+        '
+        Me.ChkConfirmClose.AutoSize = True
+        Me.ChkConfirmClose.Location = New System.Drawing.Point(12, 93)
+        Me.ChkConfirmClose.Name = "ChkConfirmClose"
+        Me.ChkConfirmClose.Size = New System.Drawing.Size(90, 17)
+        Me.ChkConfirmClose.TabIndex = 3
+        Me.ChkConfirmClose.Text = "Confirm Close"
+        Me.ChkConfirmClose.UseVisualStyleBackColor = True
+        '
         'CloseFreeSysLogDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(291, 96)
+        Me.ClientSize = New System.Drawing.Size(291, 116)
+        Me.Controls.Add(Me.ChkConfirmClose)
         Me.Controls.Add(Me.BtnMinimize)
         Me.Controls.Add(Me.BtnYes)
         Me.Controls.Add(Me.BtnNo)
@@ -110,6 +122,7 @@ Partial Class CloseFreeSysLogDialog
         Me.Panel1.PerformLayout()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents Panel1 As Panel
@@ -119,4 +132,5 @@ Partial Class CloseFreeSysLogDialog
     Friend WithEvents BtnYes As Button
     Friend WithEvents BtnMinimize As Button
     Friend WithEvents ToolTip As ToolTip
+    Friend WithEvents ChkConfirmClose As CheckBox
 End Class

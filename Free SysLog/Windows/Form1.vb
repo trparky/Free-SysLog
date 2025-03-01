@@ -709,6 +709,8 @@ Public Class Form1
         If e.CloseReason = CloseReason.UserClosing AndAlso My.Settings.boolConfirmClose Then
             Using CloseFreeSysLog As New CloseFreeSysLogDialog()
                 CloseFreeSysLog.StartPosition = FormStartPosition.CenterParent
+                CloseFreeSysLog.MyParentForm = Me
+
                 Dim result As DialogResult = CloseFreeSysLog.ShowDialog(Me)
 
                 If result = DialogResult.No Then
