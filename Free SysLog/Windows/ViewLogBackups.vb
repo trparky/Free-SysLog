@@ -52,8 +52,11 @@ Public Class ViewLogBackups
 
         Array.Sort(rows, Function(row1 As MyDataGridViewFileRow, row2 As MyDataGridViewFileRow) comparer.Compare(row1, row2))
 
+        FileList.SuspendLayout()
         FileList.Rows.Clear()
         FileList.Rows.AddRange(rows)
+        FileList.ResumeLayout()
+
         FileList.Enabled = True
         FileList.AllowUserToOrderColumns = True
     End Sub
@@ -143,8 +146,11 @@ Public Class ViewLogBackups
                        FileList.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
                    End If
 
+                   FileList.SuspendLayout()
                    FileList.Rows.Clear()
                    FileList.Rows.AddRange(listOfDataGridViewRows.ToArray())
+                   FileList.ResumeLayout()
+
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
                    LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
@@ -157,6 +163,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ChkIgnoreSearchResultsLimits.Checked = My.Settings.IgnoreSearchResultLimits
         Dim flags As Reflection.BindingFlags = Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty
         Dim propInfo As Reflection.PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
         propInfo?.SetValue(FileList, True, Nothing)
@@ -272,6 +279,7 @@ Public Class ViewLogBackups
             Exit Sub
         End If
 
+        Dim boolShowSearchResults As Boolean = True
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
@@ -314,7 +322,7 @@ Public Class ViewLogBackups
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                              myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
-                                                                                             If My.Settings.font IsNot Nothing Then myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
+
                                                                                              SyncLock listOfSearchResults ' Ensure thread safety
                                                                                                  listOfSearchResults.Add(myDataGridRow)
                                                                                              End SyncLock
@@ -322,6 +330,10 @@ Public Class ViewLogBackups
                                                                                      Next
                                                                                  End Using
                                                                              End Sub)
+
+                                          For Each item As MyDataGridViewRow In listOfSearchResults
+                                              If My.Settings.font IsNot Nothing Then item.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
+                                          Next
 
                                           For Each item As SavedData In currentLogs
                                               If regexCompiledObject.IsMatch(item.log) Then
@@ -332,6 +344,19 @@ Public Class ViewLogBackups
                                               End If
                                           Next
 
+                                          If listOfSearchResults.Count > 4000 Then
+                                              If Not My.Settings.IgnoreSearchResultLimits Then
+                                                  MsgBox($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information, Text)
+                                                  boolShowSearchResults = False
+                                                  Exit Sub
+                                              Else
+                                                  If MsgBox("There are more than 4000 search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
+                                                      boolShowSearchResults = False
+                                                      Exit Sub
+                                                  End If
+                                              End If
+                                          End If
+
                                           listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(ColumnIndex_LogText).Value.ToString()).ThenBy(Function(row) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
                                       Catch ex As ArgumentException
                                           MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
@@ -339,13 +364,15 @@ Public Class ViewLogBackups
                                   End Sub
 
         AddHandler worker.RunWorkerCompleted, Sub()
-                                                  If listOfSearchResults2.Count > 0 Then
-                                                      searchResultsWindow.LogsToBeDisplayed = listOfSearchResults2
-                                                      searchResultsWindow.ColFileName.Visible = True
-                                                      searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
-                                                      searchResultsWindow.ShowDialog(Me)
-                                                  Else
-                                                      MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                  If boolShowSearchResults Then
+                                                      If listOfSearchResults2.Count > 0 Then
+                                                          searchResultsWindow.LogsToBeDisplayed = listOfSearchResults2
+                                                          searchResultsWindow.ColFileName.Visible = True
+                                                          searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
+                                                          searchResultsWindow.ShowDialog(Me)
+                                                      Else
+                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                      End If
                                                   End If
 
                                                   Invoke(Sub() BtnSearch.Enabled = True)
@@ -477,5 +504,9 @@ Public Class ViewLogBackups
         If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
             FileList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
         End If
+    End Sub
+
+    Private Sub ChkIgnoreSearchResultsLimits_Click(sender As Object, e As EventArgs) Handles ChkIgnoreSearchResultsLimits.Click
+        My.Settings.IgnoreSearchResultLimits = ChkIgnoreSearchResultsLimits.Checked
     End Sub
 End Class

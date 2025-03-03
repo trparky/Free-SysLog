@@ -1,5 +1,4 @@
 ﻿Public Class IntegerInputForm
-    Public boolSuccess As Boolean = False
     Public intResult As Integer
     Private intMin, intMax As Integer
 
@@ -14,7 +13,7 @@
 
     Private Sub BtnSave_Click(sender As Object, e As EventArgs) Handles BtnSave.Click
         If Integer.TryParse(TxtSetting.Text, intResult) Then
-            boolSuccess = True
+            DialogResult = DialogResult.OK
             Close()
         Else
             MsgBox("Invalid user input!", MsgBoxStyle.Critical, Text)
@@ -42,10 +41,14 @@
     End Sub
 
     Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
+        DialogResult = DialogResult.Cancel
         Close()
     End Sub
 
     Private Sub IntegerInputForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyData = Keys.Escape Then Close()
+        If e.KeyData = Keys.Escape Then
+            DialogResult = DialogResult.Cancel
+            Close()
+        End If
     End Sub
 End Class

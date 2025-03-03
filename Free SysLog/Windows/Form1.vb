@@ -415,8 +415,7 @@ Public Class Form1
                                                                            Invoke(Sub() RestoreWindow())
                                                                        ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
                                                                            Try
-                                                                               Dim strDataPacket As String = argsDictionary("datapacket")
-                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(strDataPacket, JSONDecoderSettingsForSettingsFiles)
+                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(argsDictionary("datapacket").ToString, JSONDecoderSettingsForSettingsFiles)
 
                                                                                OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext)
                                                                            Catch ex As Exception
@@ -489,8 +488,10 @@ Public Class Form1
 
                 SyncLock dataGridLockObject
                     Invoke(Sub()
+                               Logs.SuspendLayout()
                                Logs.Rows.Clear()
                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                               Logs.ResumeLayout()
 
                                SelectLatestLogEntry()
 
@@ -519,6 +520,7 @@ Public Class Form1
 
         SyncLock dataGridLockObject
             Invoke(Sub()
+                       Logs.SuspendLayout()
                        Logs.Rows.Clear()
 
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
@@ -528,6 +530,7 @@ Public Class Form1
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                       Logs.ResumeLayout()
                        UpdateLogCount()
                    End Sub)
         End SyncLock
@@ -702,9 +705,22 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If e.CloseReason = CloseReason.UserClosing AndAlso My.Settings.boolConfirmClose AndAlso MsgBox("Are you sure you want to close Free SysLog?", MsgBoxStyle.YesNo + MsgBoxStyle.Question + vbDefaultButton2, Text) = MsgBoxResult.No Then
-            e.Cancel = True
-            Exit Sub
+        If e.CloseReason = CloseReason.UserClosing AndAlso My.Settings.boolConfirmClose Then
+            Using CloseFreeSysLog As New CloseFreeSysLogDialog()
+                CloseFreeSysLog.StartPosition = FormStartPosition.CenterParent
+                CloseFreeSysLog.MyParentForm = Me
+
+                Dim result As DialogResult = CloseFreeSysLog.ShowDialog(Me)
+
+                If result = DialogResult.No Then
+                    e.Cancel = True
+                    Exit Sub
+                ElseIf result = DialogResult.Cancel Then
+                    WindowState = FormWindowState.Minimized
+                    e.Cancel = True
+                    Exit Sub
+                End If
+            End Using
         End If
 
         If e.CloseReason = CloseReason.WindowsShutDown Then
@@ -840,8 +856,10 @@ Public Class Form1
 
         Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
+        Logs.SuspendLayout()
         Logs.Rows.Clear()
         Logs.Rows.AddRange(rows)
+        Logs.ResumeLayout()
 
         Logs.Enabled = True
         Logs.AllowUserToOrderColumns = True
@@ -905,7 +923,7 @@ Public Class Form1
             ClearLogsOlderThanInstance.LblLogCount.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
             ClearLogsOlderThanInstance.ShowDialog(Me)
 
-            If ClearLogsOlderThanInstance.boolSuccess Then
+            If ClearLogsOlderThanInstance.DialogResult = DialogResult.OK Then
                 Try
                     Dim dateChosenDate As Date = ClearLogsOlderThanInstance.dateChosenDate
 
@@ -927,11 +945,14 @@ Public Class Form1
 
                         If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
 
+                        Logs.SuspendLayout()
                         Logs.Rows.Clear()
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                         Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                         Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+
+                        Logs.ResumeLayout()
 
                         SelectLatestLogEntry()
                     End SyncLock
@@ -1036,11 +1057,14 @@ Public Class Form1
                 Logs.Enabled = True
                 Logs.AllowUserToOrderColumns = True
 
+                Logs.SuspendLayout()
                 Logs.Rows.Clear()
                 Logs.Rows.AddRange(newListOfLogs.ToArray)
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+
+                Logs.ResumeLayout()
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -1237,7 +1261,7 @@ Public Class Form1
 
                 IntegerInputForm.ShowDialog(Me)
 
-                If IntegerInputForm.boolSuccess Then
+                If IntegerInputForm.DialogResult = DialogResult.OK Then
                     If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 65535 Then
                         MsgBox("The port number must be in the range of 1 - 65535.", MsgBoxStyle.Critical, Text)
                     Else
@@ -1276,7 +1300,7 @@ Public Class Form1
 
             IntegerInputForm.ShowDialog(Me)
 
-            If IntegerInputForm.boolSuccess Then
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
                 ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({IntegerInputForm.intResult} Minutes)"
                 SaveTimer.Interval = TimeSpan.FromMinutes(IntegerInputForm.intResult).TotalMilliseconds
                 My.Settings.autoSaveMinutes = IntegerInputForm.intResult
@@ -1393,7 +1417,7 @@ Public Class Form1
 
             IntegerInputForm.ShowDialog(Me)
 
-            If IntegerInputForm.boolSuccess Then
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
                 If IntegerInputForm.intResult < 1 Or IntegerInputForm.intResult > 300 Then
                     MsgBox("The time in seconds must be in the range of 1 - 300.", MsgBoxStyle.Critical, Text)
                 Else
@@ -1508,7 +1532,7 @@ Public Class Form1
 
             IntegerInputForm.ShowDialog(Me)
 
-            If IntegerInputForm.boolSuccess Then
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
                 If IntegerInputForm.intResult < 30 Or IntegerInputForm.intResult > 240 Then
                     MsgBox("The time in seconds must be in the range of 30 - 240.", MsgBoxStyle.Critical, Text)
                 Else

@@ -51,7 +51,9 @@ Public Class Alerts_History
                 listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList))
             Next
 
+            AlertHistoryList.SuspendLayout()
             AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
+            AlertHistoryList.ResumeLayout()
         End If
 
         boolDoneLoading = True
@@ -114,8 +116,10 @@ Public Class Alerts_History
                         listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList))
                     Next
 
+                    AlertHistoryList.SuspendLayout()
                     AlertHistoryList.Rows.Clear()
                     AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
+                    AlertHistoryList.ResumeLayout()
                 End If
             End With
         End If

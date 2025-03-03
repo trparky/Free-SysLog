@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
 Imports Free_SysLog.SupportCode
+Imports System.Threading.Tasks
 
 Public Class IgnoredLogsAndSearchResults
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
@@ -18,6 +19,8 @@ Public Class IgnoredLogsAndSearchResults
     Private intColumnNumber As Integer ' Define intColumnNumber at class level
     Private sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Private ReadOnly dataGridLockObject As New Object
+
+    Private Const intBatchSize As Integer = 25
 
     Private Sub OpenLogViewerWindow()
         If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
@@ -68,19 +71,23 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
         SyncLock dataGridLockObject
-            Logs.AllowUserToOrderColumns = False
-            Logs.Enabled = False
+            Logs.Invoke(Sub()
+                            Logs.AllowUserToOrderColumns = False
+                            Logs.Enabled = False
 
-            Dim comparer As New DataGridViewComparer(columnIndex, order)
-            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
+                            Dim comparer As New DataGridViewComparer(columnIndex, order)
+                            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
 
-            Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
+                            Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
 
-            Logs.Rows.Clear()
-            Logs.Rows.AddRange(rows)
+                            Logs.SuspendLayout()
+                            Logs.Rows.Clear()
+                            Logs.Rows.AddRange(rows)
+                            Logs.ResumeLayout()
 
-            Logs.Enabled = True
-            Logs.AllowUserToOrderColumns = True
+                            Logs.Enabled = True
+                            Logs.AllowUserToOrderColumns = True
+                        End Sub)
         End SyncLock
     End Sub
 
@@ -189,8 +196,18 @@ Public Class IgnoredLogsAndSearchResults
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
-            Logs.Rows.AddRange(LogsToBeDisplayed.ToArray())
-            SortLogsByDateObject(0, SortOrder.Ascending)
+            LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+
+            Logs.SuspendLayout()
+
+            Task.Run(Sub()
+                         For index As Integer = 0 To LogsToBeDisplayed.Count - 1 Step intBatchSize
+                             Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
+                             Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                         Next
+
+                         Logs.Invoke(Sub() Logs.ResumeLayout())
+                     End Sub)
 
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
                 LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
@@ -200,14 +217,12 @@ Public Class IgnoredLogsAndSearchResults
         End If
 
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
-            Dim worker As New BackgroundWorker()
-            AddHandler worker.DoWork, Sub() LoadData(strFileToLoad)
-            AddHandler worker.RunWorkerCompleted, Sub()
-                                                      LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
-                                                      boolDoneLoading = True
-                                                      SortLogsByDateObject(0, SortOrder.Ascending)
-                                                  End Sub
-            worker.RunWorkerAsync()
+            Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                       LoadData(strFileToLoad)
+                                                       LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+                                                       boolDoneLoading = True
+                                                       SortLogsByDateObject(0, SortOrder.Ascending)
+                                                   End Sub)
         End If
 
         boolDoneLoading = True
@@ -385,8 +400,20 @@ Public Class IgnoredLogsAndSearchResults
                 Next
 
                 Logs.Invoke(Sub()
+                                listOfLogEntries.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+
+                                Logs.SuspendLayout()
                                 Logs.Rows.Clear()
-                                Logs.Rows.AddRange(listOfLogEntries.ToArray)
+
+                                Task.Run(Sub()
+                                             For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                                                 Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                                 Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                             Next
+
+                                             Logs.Invoke(Sub() Logs.ResumeLayout())
+                                         End Sub)
+
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                             End Sub)
