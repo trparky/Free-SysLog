@@ -2,6 +2,7 @@
 Imports System.Net.Sockets
 Imports System.Text
 Imports System.Net.NetworkInformation
+Imports Microsoft.Toolkit.Uwp.Notifications
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -66,6 +67,35 @@ Namespace SupportCode
                 Return New Specialized.StringCollection
             End Try
         End Function
+
+        Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+            Dim strIconPath As String = Nothing
+            Dim notification As New ToastContentBuilder()
+
+            notification.AddText(tipText)
+            notification.SetToastDuration(If(My.Settings.NotificationLength = 0, ToastDuration.Short, ToastDuration.Long))
+
+            If tipIcon = ToolTipIcon.Error Then
+                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
+            ElseIf tipIcon = ToolTipIcon.Warning Then
+                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
+            ElseIf tipIcon = ToolTipIcon.Info Then
+                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
+            End If
+
+            If My.Settings.IncludeButtonsOnNotifications Then
+                Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText})
+
+                notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("datapacket", strNotificationPacket))
+                notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", strOpenSysLog))
+            Else
+                notification.AddArgument("action", strOpenSysLog)
+            End If
+
+            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
+
+            notification.Show()
+        End Sub
 
         Public Sub LoadColumnOrders(ByRef columns As DataGridViewColumnCollection, ByRef specializedStringCollection As Specialized.StringCollection)
             Try

@@ -145,6 +145,7 @@ Public Class AlertsClass
     Public StrLogText, StrAlertText As String
     Public alertType As AlertType = AlertType.None
     Public BoolEnabled As Boolean = True
+    Public BoolLimited As Boolean = True
 
     Public Function ToListViewItem() As AlertsListViewItem
         Dim listViewItem As New AlertsListViewItem(StrLogText) With {.StrLogText = StrLogText, .StrAlertText = StrAlertText}
@@ -163,12 +164,14 @@ Public Class AlertsClass
                 listViewItem.SubItems.Add("None")
         End Select
 
+        listViewItem.SubItems.Add(If(BoolLimited, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
 
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.AlertType = alertType
         listViewItem.BoolEnabled = BoolEnabled
+        listViewItem.BoolLimited = BoolLimited
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         Return listViewItem
     End Function

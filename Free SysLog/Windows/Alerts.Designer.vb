@@ -31,6 +31,7 @@ Partial Class Alerts
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.AlertTypeColumn = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colLimit = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -56,6 +57,7 @@ Partial Class Alerts
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.BtnCancel = New System.Windows.Forms.Button()
+        Me.ChkLimited = New System.Windows.Forms.CheckBox()
         Me.ListViewMenu.SuspendLayout()
         CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -76,7 +78,7 @@ Partial Class Alerts
         Me.AlertsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.AlertsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.AlertLogText, Me.AlertText, Me.Regex, Me.CaseSensitive, Me.AlertTypeColumn, Me.ColEnabled})
+        Me.AlertsListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.AlertLogText, Me.AlertText, Me.Regex, Me.CaseSensitive, Me.AlertTypeColumn, Me.colLimit, Me.ColEnabled})
         Me.AlertsListView.ContextMenuStrip = Me.ListViewMenu
         Me.AlertsListView.FullRowSelect = True
         Me.AlertsListView.HideSelection = False
@@ -111,8 +113,14 @@ Partial Class Alerts
         Me.AlertTypeColumn.Text = "Alert Type"
         Me.AlertTypeColumn.Width = 90
         '
+        'colLimit
+        '
+        Me.colLimit.DisplayIndex = 6
+        Me.colLimit.Text = "Limited"
+        '
         'ColEnabled
         '
+        Me.ColEnabled.DisplayIndex = 5
         Me.ColEnabled.Text = "Enabled"
         '
         'ListViewMenu
@@ -235,7 +243,7 @@ Partial Class Alerts
         Me.ChkEnabled.AutoSize = True
         Me.ChkEnabled.Checked = True
         Me.ChkEnabled.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ChkEnabled.Location = New System.Drawing.Point(717, 401)
+        Me.ChkEnabled.Location = New System.Drawing.Point(678, 401)
         Me.ChkEnabled.Name = "ChkEnabled"
         Me.ChkEnabled.Size = New System.Drawing.Size(71, 17)
         Me.ChkEnabled.TabIndex = 36
@@ -294,7 +302,7 @@ Partial Class Alerts
         '
         Me.ChkCaseSensitive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkCaseSensitive.AutoSize = True
-        Me.ChkCaseSensitive.Location = New System.Drawing.Point(542, 401)
+        Me.ChkCaseSensitive.Location = New System.Drawing.Point(499, 401)
         Me.ChkCaseSensitive.Name = "ChkCaseSensitive"
         Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
         Me.ChkCaseSensitive.TabIndex = 30
@@ -353,11 +361,23 @@ Partial Class Alerts
         Me.BtnCancel.Text = "Cancel"
         Me.BtnCancel.UseVisualStyleBackColor = True
         '
+        'ChkLimited
+        '
+        Me.ChkLimited.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkLimited.AutoSize = True
+        Me.ChkLimited.Location = New System.Drawing.Point(607, 401)
+        Me.ChkLimited.Name = "ChkLimited"
+        Me.ChkLimited.Size = New System.Drawing.Size(65, 17)
+        Me.ChkLimited.TabIndex = 40
+        Me.ChkLimited.Text = "Limited?"
+        Me.ChkLimited.UseVisualStyleBackColor = True
+        '
         'Alerts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(987, 458)
+        Me.Controls.Add(Me.ChkLimited)
         Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.lblRegExBackReferences)
@@ -425,4 +445,6 @@ Partial Class Alerts
     Friend WithEvents Label1 As Label
     Friend WithEvents Label4 As Label
     Friend WithEvents BtnCancel As Button
+    Friend WithEvents colLimit As ColumnHeader
+    Friend WithEvents ChkLimited As CheckBox
 End Class
