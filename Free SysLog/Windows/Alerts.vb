@@ -153,6 +153,7 @@ Public Class Alerts
                 With selectedItemObject
                     .StrLogText = TxtLogText.Text
                     .StrAlertText = TxtAlertText.Text
+                    .SubItems(0).Text = TxtLogText.Text
                     .SubItems(1).Text = If(String.IsNullOrWhiteSpace(TxtAlertText.Text), "(Shows Log Text)", TxtAlertText.Text)
                     .SubItems(2).Text = If(ChkRegex.Checked, "Yes", "No")
                     .SubItems(3).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
