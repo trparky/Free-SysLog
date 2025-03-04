@@ -58,6 +58,7 @@ Partial Class Alerts
         Me.Label4 = New System.Windows.Forms.Label()
         Me.BtnCancel = New System.Windows.Forms.Button()
         Me.ChkLimited = New System.Windows.Forms.CheckBox()
+        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ListViewMenu.SuspendLayout()
         CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -370,6 +371,8 @@ Partial Class Alerts
         Me.ChkLimited.Size = New System.Drawing.Size(65, 17)
         Me.ChkLimited.TabIndex = 40
         Me.ChkLimited.Text = "Limited?"
+        Me.ToolTip.SetToolTip(Me.ChkLimited, "Tells the program if this alert type should be limited by the notification limite" &
+        "r.")
         Me.ChkLimited.UseVisualStyleBackColor = True
         '
         'Alerts
@@ -447,4 +450,5 @@ Partial Class Alerts
     Friend WithEvents BtnCancel As Button
     Friend WithEvents colLimit As ColumnHeader
     Friend WithEvents ChkLimited As CheckBox
+    Friend WithEvents ToolTip As ToolTip
 End Class
