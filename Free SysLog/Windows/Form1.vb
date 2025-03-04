@@ -1596,7 +1596,7 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_Scroll(sender As Object, e As ScrollEventArgs) Handles Logs.Scroll
-        If Not boolIsProgrammaticScroll And ChkEnableAutoScroll.Checked And ChkDisableAutoScrollUponScrolling.Checked Then
+        If Not boolIsProgrammaticScroll And ChkEnableAutoScroll.Checked And ChkDisableAutoScrollUponScrolling.Checked And e.NewValue < e.OldValue Then
             My.Settings.autoScroll = False
             ChkEnableAutoScroll.Checked = False
         End If
