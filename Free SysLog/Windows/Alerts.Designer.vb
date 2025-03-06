@@ -40,7 +40,7 @@ Partial Class Alerts
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
-        Me.btnDeleteAll = New System.Windows.Forms.Button()
+        Me.BtnDeleteAll = New System.Windows.Forms.Button()
         Me.BtnDown = New System.Windows.Forms.Button()
         Me.BtnUp = New System.Windows.Forms.Button()
         Me.SeparatingLine = New System.Windows.Forms.Label()
@@ -188,15 +188,15 @@ Partial Class Alerts
         Me.BtnImport.Text = "Import"
         Me.BtnImport.UseVisualStyleBackColor = True
         '
-        'btnDeleteAll
+        'BtnDeleteAll
         '
-        Me.btnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDeleteAll.Location = New System.Drawing.Point(245, 248)
-        Me.btnDeleteAll.Name = "btnDeleteAll"
-        Me.btnDeleteAll.Size = New System.Drawing.Size(75, 23)
-        Me.btnDeleteAll.TabIndex = 16
-        Me.btnDeleteAll.Text = "Delete All"
-        Me.btnDeleteAll.UseVisualStyleBackColor = True
+        Me.BtnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnDeleteAll.Location = New System.Drawing.Point(245, 248)
+        Me.BtnDeleteAll.Name = "btnDeleteAll"
+        Me.BtnDeleteAll.Size = New System.Drawing.Size(75, 23)
+        Me.BtnDeleteAll.TabIndex = 16
+        Me.BtnDeleteAll.Text = "Delete All"
+        Me.BtnDeleteAll.UseVisualStyleBackColor = True
         '
         'BtnDown
         '
@@ -397,7 +397,7 @@ Partial Class Alerts
         Me.Controls.Add(Me.SeparatingLine)
         Me.Controls.Add(Me.BtnDown)
         Me.Controls.Add(Me.BtnUp)
-        Me.Controls.Add(Me.btnDeleteAll)
+        Me.Controls.Add(Me.BtnDeleteAll)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
         Me.Controls.Add(Me.BtnEnableDisable)
@@ -431,7 +431,7 @@ Partial Class Alerts
     Friend WithEvents BtnEnableDisable As Button
     Friend WithEvents BtnExport As Button
     Friend WithEvents BtnImport As Button
-    Friend WithEvents btnDeleteAll As Button
+    Friend WithEvents BtnDeleteAll As Button
     Friend WithEvents BtnDown As Button
     Friend WithEvents BtnUp As Button
     Friend WithEvents SeparatingLine As Label
