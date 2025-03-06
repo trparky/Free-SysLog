@@ -115,6 +115,7 @@ Public Class Alerts
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkRegex.Checked = selectedItemObject.BoolRegex
+            ChkLimited.Checked = selectedItemObject.BoolLimited
 
             If selectedItemObject.AlertType = AlertType.Warning Then
                 IconPictureBox.Image = SystemIcons.Warning.ToBitmap()
@@ -153,6 +154,7 @@ Public Class Alerts
                 With selectedItemObject
                     .StrLogText = TxtLogText.Text
                     .StrAlertText = TxtAlertText.Text
+                    .SubItems(0).Text = TxtLogText.Text
                     .SubItems(1).Text = If(String.IsNullOrWhiteSpace(TxtAlertText.Text), "(Shows Log Text)", TxtAlertText.Text)
                     .SubItems(2).Text = If(ChkRegex.Checked, "Yes", "No")
                     .SubItems(3).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
@@ -173,11 +175,13 @@ Public Class Alerts
                         .SubItems(4).Text = "None"
                     End If
 
-                    .SubItems(5).Text = If(ChkEnabled.Checked, "Yes", "No")
+                    .SubItems(5).Text = If(ChkLimited.Checked, "Yes", "No")
+                    .SubItems(6).Text = If(ChkEnabled.Checked, "Yes", "No")
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .AlertType = AlertType
                     .BoolEnabled = ChkEnabled.Checked
+                    .BoolLimited = ChkLimited.Checked
                 End With
 
                 AlertsListView.Enabled = True
@@ -207,11 +211,13 @@ Public Class Alerts
                         .SubItems.Add("None")
                     End If
 
+                    .SubItems.Add(If(ChkLimited.Checked, "Yes", "No"))
                     .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .AlertType = AlertType
                     .BoolEnabled = ChkEnabled.Checked
+                    .BoolLimited = ChkLimited.Checked
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
@@ -227,6 +233,7 @@ Public Class Alerts
             ChkCaseSensitive.Checked = False
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
+            ChkLimited.Checked = True
         Else
             MsgBox("You need to fill in the appropriate information to create an alert.", MsgBoxStyle.Critical, Text)
         End If
@@ -240,7 +247,7 @@ Public Class Alerts
             Dim tempAlerts As New Specialized.StringCollection()
 
             For Each item As AlertsListViewItem In AlertsListView.Items
-                AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled}
+                AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled, .boolLimited = item.BoolLimited}
                 If AlertsClass.BoolEnabled Then alertsList.Add(AlertsClass)
                 tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
             Next
@@ -310,7 +317,7 @@ Public Class Alerts
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As AlertsListViewItem In AlertsListView.Items
-                listOfAlertsClass.Add(New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled})
+                listOfAlertsClass.Add(New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled, .BoolLimited = item.BoolLimited})
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfAlertsClass, Newtonsoft.Json.Formatting.Indented))
@@ -353,7 +360,7 @@ Public Class Alerts
         If e.KeyCode = Keys.Escape Then Close()
     End Sub
 
-    Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
+    Private Sub BtnDeleteAll_Click(sender As Object, e As EventArgs) Handles BtnDeleteAll.Click
         If MsgBox("Are you sure you want to delete all of the configured alerts?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
             AlertsListView.Items.Clear()
             boolChanged = True

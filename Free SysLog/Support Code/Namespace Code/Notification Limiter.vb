@@ -1,7 +1,4 @@
-﻿Imports System.IO
-Imports Microsoft.Toolkit.Uwp.Notifications
-
-Namespace NotificationLimiter
+﻿Namespace NotificationLimiter
     Public Module NotificationLimiterModule
         Public lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
     End Module
@@ -31,32 +28,7 @@ Namespace NotificationLimiter
                 lastNotificationTime(tipText) = currentTime
             End SyncLock
 
-            Dim strIconPath As String = Nothing
-            Dim notification As New ToastContentBuilder()
-
-            notification.AddText(tipText)
-            notification.SetToastDuration(If(My.Settings.NotificationLength = 0, ToastDuration.Short, ToastDuration.Long))
-
-            If tipIcon = ToolTipIcon.Error Then
-                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
-            ElseIf tipIcon = ToolTipIcon.Warning Then
-                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
-            ElseIf tipIcon = ToolTipIcon.Info Then
-                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
-            End If
-
-            If My.Settings.IncludeButtonsOnNotifications Then
-                Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText})
-
-                notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", SupportCode.strViewLog).AddArgument("datapacket", strNotificationPacket))
-                notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", SupportCode.strOpenSysLog))
-            Else
-                notification.AddArgument("action", SupportCode.strOpenSysLog)
-            End If
-
-            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
-
-            notification.Show()
+            SupportCode.ShowToastNotification(tipText, tipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
         End Sub
 
         ' Function to clean up old notification entries

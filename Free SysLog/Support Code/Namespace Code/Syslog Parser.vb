@@ -425,7 +425,7 @@ Namespace SyslogParser
             Return ParentForm.regexCache(pattern)
         End Function
 
-        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogData As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
+        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
             Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
             Dim RegExObject As Regex
             Dim strAlertText As String
@@ -462,7 +462,12 @@ Namespace SyslogParser
                         End If
                     End If
 
-                    NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogData, strSourceIP, strRawLogText)
+                    If alert.BoolLimited Then
+                        NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
+                    Else
+                        ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
+                    End If
+
                     strOutgoingAlertText = strAlertText
                     Return True
                 End If

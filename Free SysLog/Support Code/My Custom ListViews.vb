@@ -33,6 +33,7 @@ Public Class AlertsListViewItem
     Public Property StrAlertText As String
     Public Property AlertType As AlertType
     Public Property BoolEnabled As Boolean
+    Public Property BoolLimited As Boolean
 
     Public Sub New(strInput As String)
         Me.Text = strInput
