@@ -49,6 +49,7 @@ Partial Class ViewLogBackups
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkIgnoreSearchResultsLimits = New System.Windows.Forms.CheckBox()
+        Me.ChkLogFileDeletions = New System.Windows.Forms.CheckBox()
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblTotalNumberOfHiddenLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
@@ -109,30 +110,30 @@ Partial Class ViewLogBackups
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.UnhideToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(181, 114)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(147, 92)
         '
         'DeleteToolStripMenuItem
         '
         Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
-        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
         Me.DeleteToolStripMenuItem.Text = "&Delete"
         '
         'ViewToolStripMenuItem
         '
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
-        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
         Me.ViewToolStripMenuItem.Text = "&View"
         '
         'HideToolStripMenuItem
         '
         Me.HideToolStripMenuItem.Name = "HideToolStripMenuItem"
-        Me.HideToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.HideToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
         Me.HideToolStripMenuItem.Text = "Hide"
         '
         'UnhideToolStripMenuItem
         '
         Me.UnhideToolStripMenuItem.Name = "UnhideToolStripMenuItem"
-        Me.UnhideToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.UnhideToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
         Me.UnhideToolStripMenuItem.Text = "Unhide/Show"
         '
         'BtnView
@@ -172,7 +173,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(584, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(954, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -305,6 +306,17 @@ Partial Class ViewLogBackups
         Me.ToolTip.SetToolTip(Me.ChkIgnoreSearchResultsLimits, "Warning: Enabling this could cause performance issues.")
         Me.ChkIgnoreSearchResultsLimits.UseVisualStyleBackColor = True
         '
+        'ChkLogFileDeletions
+        '
+        Me.ChkLogFileDeletions.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkLogFileDeletions.AutoSize = True
+        Me.ChkLogFileDeletions.Location = New System.Drawing.Point(556, 294)
+        Me.ChkLogFileDeletions.Name = "ChkLogFileDeletions"
+        Me.ChkLogFileDeletions.Size = New System.Drawing.Size(127, 17)
+        Me.ChkLogFileDeletions.TabIndex = 38
+        Me.ChkLogFileDeletions.Text = "Log Deletions of Files"
+        Me.ChkLogFileDeletions.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -323,6 +335,7 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnView)
         Me.Controls.Add(Me.FileList)
+        Me.Controls.Add(Me.ChkLogFileDeletions)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -367,4 +380,5 @@ Partial Class ViewLogBackups
     Friend WithEvents colEntryCount As DataGridViewTextBoxColumn
     Friend WithEvents ToolTip As ToolTip
     Friend WithEvents ChkIgnoreSearchResultsLimits As CheckBox
+    Friend WithEvents ChkLogFileDeletions As CheckBox
 End Class
