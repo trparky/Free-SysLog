@@ -186,6 +186,7 @@ Public Class ViewLogBackups
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
         ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
+        ChkLogFileDeletions.Checked = My.Settings.LogFileDeletions
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
         ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
@@ -225,7 +226,9 @@ Public Class ViewLogBackups
 
                 If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedRows(0).Cells(0).Value}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     File.Delete(fileName)
-                    SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
+
+                    If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
+
                     ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
             Else
@@ -249,7 +252,7 @@ Public Class ViewLogBackups
 
                     strDeletedFilesLog &= vbCrLf & listOfFilesThatAreToBeDeletedInHumanReadableFormat
 
-                    SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, strDeletedFilesLog.ToString)
+                    If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, strDeletedFilesLog.ToString)
 
                     ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
@@ -508,5 +511,9 @@ Public Class ViewLogBackups
 
     Private Sub ChkIgnoreSearchResultsLimits_Click(sender As Object, e As EventArgs) Handles ChkIgnoreSearchResultsLimits.Click
         My.Settings.IgnoreSearchResultLimits = ChkIgnoreSearchResultsLimits.Checked
+    End Sub
+
+    Private Sub ChkLogFileDeletions_Click(sender As Object, e As EventArgs) Handles ChkLogFileDeletions.Click
+        My.Settings.LogFileDeletions = ChkLogFileDeletions.Checked
     End Sub
 End Class
