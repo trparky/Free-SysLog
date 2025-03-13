@@ -1439,6 +1439,25 @@ Public Class Form1
                     StartUpDelay.Text = $"        Startup Delay ({IntegerInputForm.intResult} {If(IntegerInputForm.intResult = 1, "Second", "Seconds")})"
                     MsgBox("Done.", MsgBoxStyle.Information, Text)
                 End If
+            ElseIf IntegerInputForm.DialogResult = DialogResult.Cancel Then
+                Using taskService As New TaskScheduler.TaskService
+                    Dim task As TaskScheduler.Task = Nothing
+
+                    If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                        If task.Definition.Triggers.Count > 0 Then
+                            Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
+
+                            If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
+                                DirectCast(trigger, TaskScheduler.LogonTrigger).Delay = Nothing
+                                task.RegisterChanges()
+                            End If
+                        End If
+                    End If
+                End Using
+
+                StartUpDelay.Checked = False
+                StartUpDelay.Text = $"        Startup Delay"
+                MsgBox("Done.", MsgBoxStyle.Information, Text)
             End If
         End Using
     End Sub
