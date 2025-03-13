@@ -268,10 +268,14 @@ Namespace SupportCode
         End Sub
 
         Public Function SanitizeForCSV(input As String) As String
-            If input.Contains(strQuote) Then input = input.Replace(strQuote, strQuote & strQuote)
-            If input.Contains(",") Then input = $"{strQuote}{input}{strQuote}"
-            input = input.Replace(vbCrLf, "\n")
-            Return input
+            If String.IsNullOrWhiteSpace(input) Then
+                Return ""
+            Else
+                If input.Contains(strQuote) Then input = input.Replace(strQuote, strQuote & strQuote)
+                If input.Contains(",") Then input = $"{strQuote}{input}{strQuote}"
+                input = input.Replace(vbCrLf, "\n")
+                Return input
+            End If
         End Function
 
         Public Function VerifyWindowLocation(point As Point, ByRef window As Form) As Point
