@@ -32,7 +32,7 @@ Namespace TaskHandling
                         task.RegisterChanges()
                     End If
 
-                    If task.Definition.Triggers.Count > 0 Then
+                    If task.Definition.Triggers.Any() Then
                         Dim trigger As Trigger = task.Definition.Triggers(0)
 
                         If trigger.TriggerType = TaskTriggerType.Logon Then
@@ -46,7 +46,7 @@ Namespace TaskHandling
                     End If
 
                     If Not Debugger.IsAttached Then
-                        If task.Definition.Actions.Count > 0 Then
+                        If task.Definition.Actions.Any() Then
                             Dim action As Action = task.Definition.Actions(0)
 
                             If action.ActionType = TaskActionType.Execute Then

@@ -43,7 +43,7 @@ Public Class Alerts_History
 
         SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
 
-        If DataToLoad IsNot Nothing AndAlso DataToLoad.Count > 0 Then
+        If DataToLoad IsNot Nothing AndAlso DataToLoad.Any() Then
             lblNumberOfAlerts.Text = $"Number of Alerts: {DataToLoad.Count:N0}"
             Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
@@ -108,7 +108,7 @@ Public Class Alerts_History
                     Next
                 End SyncLock
 
-                If data.Count > 0 Then
+                If data.Any() Then
                     lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
                     Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 

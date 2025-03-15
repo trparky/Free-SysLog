@@ -468,7 +468,7 @@ Public Class Form1
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
                 Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
-                If collectionOfSavedData.Count > 0 Then
+                If collectionOfSavedData.Any() Then
                     Dim intProgress As Integer = 0
 
                     Invoke(Sub() LoadingProgressBar.Visible = True)
@@ -791,7 +791,7 @@ Public Class Form1
                                   End Sub
 
         AddHandler worker.RunWorkerCompleted, Sub()
-                                                  If listOfSearchResults.Count > 0 Then
+                                                  If listOfSearchResults.Any() Then
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                       searchResultsWindow.LogsLoadedInLabel.Visible = True
                                                       searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
@@ -1404,7 +1404,7 @@ Public Class Form1
             Dim task As TaskScheduler.Task = Nothing
 
             If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
-                If task.Definition.Triggers.Count > 0 Then
+                If task.Definition.Triggers.Any() Then
                     Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
                     If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, TaskScheduler.LogonTrigger).Delay.TotalSeconds
                 End If
@@ -1425,7 +1425,7 @@ Public Class Form1
                         Dim task As TaskScheduler.Task = Nothing
 
                         If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
-                            If task.Definition.Triggers.Count > 0 Then
+                            If task.Definition.Triggers.Any() Then
                                 Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
                                 If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
@@ -1444,7 +1444,7 @@ Public Class Form1
                     Dim task As TaskScheduler.Task = Nothing
 
                     If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
-                        If task.Definition.Triggers.Count > 0 Then
+                        If task.Definition.Triggers.Any() Then
                             Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
                             If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
@@ -1626,7 +1626,7 @@ Public Class Form1
     End Sub
 
     Private Sub ClearNotificationLimits_Click(sender As Object, e As EventArgs) Handles ClearNotificationLimits.Click
-        If NotificationLimiter.lastNotificationTime IsNot Nothing AndAlso NotificationLimiter.lastNotificationTime.Count > 0 Then
+        If NotificationLimiter.lastNotificationTime IsNot Nothing AndAlso NotificationLimiter.lastNotificationTime.Any() Then
             NotificationLimiter.lastNotificationTime.Clear()
             MsgBox("Done.", MsgBoxStyle.Information, Text)
         End If
@@ -1682,7 +1682,7 @@ Public Class Form1
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList IsNot Nothing AndAlso serversList.Count > 0 Then
+                        If serversList IsNot Nothing AndAlso serversList.Any() Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
                                                                        Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
