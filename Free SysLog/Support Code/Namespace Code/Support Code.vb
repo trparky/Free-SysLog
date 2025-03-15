@@ -220,13 +220,17 @@ Namespace SupportCode
         End Function
 
         Private Function GetLocalIPAddress() As IPAddress
-            For Each ni As NetworkInterface In NetworkInterface.GetAllNetworkInterfaces()
-                If ni IsNot Nothing AndAlso ni.OperationalStatus = OperationalStatus.Up AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Loopback AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Tunnel Then
-                    For Each ip As UnicastIPAddressInformation In ni.GetIPProperties().UnicastAddresses
-                        If ip.Address.AddressFamily = AddressFamily.InterNetwork Then Return ip.Address
-                    Next
-                End If
-            Next
+            Dim networkInterfaces As NetworkInterface() = NetworkInterface.GetAllNetworkInterfaces()
+
+            If networkInterfaces.Any() Then
+                For Each ni As NetworkInterface In networkInterfaces
+                    If ni IsNot Nothing AndAlso ni.OperationalStatus = OperationalStatus.Up AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Loopback AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Tunnel Then
+                        For Each ip As UnicastIPAddressInformation In ni.GetIPProperties().UnicastAddresses
+                            If ip.Address.AddressFamily = AddressFamily.InterNetwork Then Return ip.Address
+                        Next
+                    End If
+                Next
+            End If
 
             Throw New Exception("No active network adapter with a matching IP address found.")
         End Function
