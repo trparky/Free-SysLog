@@ -260,7 +260,7 @@ Namespace SyslogParser
                 Dim matches As String() = strRawLogText.Split(vbCrLf)
 
                 ' Check to see if we have anything to work with before we go into the loop.
-                If matches.Count > 0 Then
+                If matches.Any() Then
                     ' Now work with each syslog entry.
                     For Each strMatch As String In matches
                         If Not String.IsNullOrWhiteSpace(strMatch) Then
@@ -316,9 +316,9 @@ Namespace SyslogParser
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
-                    If ignoredList IsNot Nothing AndAlso ignoredList.Count > 0 Then boolIgnored = ProcessIgnoredLogPreferences(message)
-                    If replacementsList IsNot Nothing AndAlso replacementsList.Count > 0 Then message = ProcessReplacements(message)
-                    If alertsList IsNot Nothing AndAlso alertsList.Count > 0 Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
+                    If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
+                    If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
                     ' Step 4: Add to log list, separating header and message
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)

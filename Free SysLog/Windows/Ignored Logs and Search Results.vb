@@ -392,7 +392,7 @@ Public Class IgnoredLogsAndSearchResults
                 collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
             End Using
 
-            If collectionOfSavedData.Count > 0 Then
+            If collectionOfSavedData.Any() Then
                 Dim listOfLogEntries As New List(Of MyDataGridViewRow)
 
                 For Each item As SavedData In collectionOfSavedData
@@ -482,7 +482,7 @@ Public Class IgnoredLogsAndSearchResults
                                   End Sub
 
         AddHandler worker.RunWorkerCompleted, Sub()
-                                                  If listOfSearchResults.Count > 0 Then
+                                                  If listOfSearchResults.Any() Then
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                       searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                                                       searchResultsWindow.ShowDialog(Me)
