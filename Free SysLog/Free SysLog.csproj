@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DA34E55A-7F18-0F60-2732-73344C9BD127}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Free_SysLog.My.MyApplication</StartupObject>
+    <RootNamespace>Free_SysLog</RootNamespace>
+    <AssemblyName>Free SysLog</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)**\*.vb</DefaultItemExcludes>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>bin\Debug\Free SysLog.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\Free SysLog.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>bin\Debug\Free SysLog.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\Free SysLog.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>log.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="My Project\MyNamespace.Dynamic.Designer.cs" />
+    <Compile Include="My Project\MyNamespace.Static.1.Designer.cs" />
+    <Compile Include="My Project\MyNamespace.Static.2.Designer.cs" />
+    <Compile Include="My Project\MyNamespace.Static.3.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Support Code\AlertsHistoryDataGridViewRow.cs" />
+    <Compile Include="Support Code\My Custom ListViews.cs" />
+    <Compile Include="Support Code\My Data Classes.cs" />
+    <Compile Include="Support Code\DataGridViewComparer.cs" />
+    <Compile Include="Support Code\MyDataGridViewFileRow.cs" />
+    <Compile Include="Support Code\MyDataGridViewFileRowComparer.cs" />
+    <Compile Include="Support Code\Namespace Code\Data Handling.cs" />
+    <Compile Include="Support Code\Namespace Code\Syslog Parser.cs" />
+    <Compile Include="Support Code\Namespace Code\Task Handling.cs" />
+    <Compile Include="Support Code\Namespace Code\Syslog TCP Server.cs" />
+    <Compile Include="Support Code\Namespace Code\Notification Limiter.cs" />
+    <Compile Include="ApplicationEvents.cs" />
+    <Compile Include="Support Code\Namespace Code\Check for Update.cs" />
+    <Compile Include="Windows\Alerts History.Designer.cs">
+      <DependentUpon>Alerts History.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Alerts History.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Alerts.Designer.cs">
+      <DependentUpon>Alerts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Alerts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Clear logs older than.Designer.cs">
+      <DependentUpon>Clear logs older than.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Clear logs older than.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Close Free SysLog Dialog.Designer.cs">
+      <DependentUpon>Close Free SysLog Dialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Close Free SysLog Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Configure SysLog Mirror Clients.Designer.cs">
+      <DependentUpon>Configure SysLog Mirror Clients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Configure SysLog Mirror Clients.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Date Format Chooser.Designer.cs">
+      <DependentUpon>Date Format Chooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Date Format Chooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Confirm Delete.Designer.cs">
+      <DependentUpon>Confirm Delete.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Confirm Delete.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\HTTPHelper.cs" />
+    <Compile Include="Windows\Hostnames.Designer.cs">
+      <DependentUpon>Hostnames.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Hostnames.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Ignored Logs and Search Results.Designer.cs">
+      <DependentUpon>Ignored Logs and Search Results.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Ignored Logs and Search Results.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Ignored Words and Phrases.Designer.cs">
+      <DependentUpon>Ignored Words and Phrases.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Ignored Words and Phrases.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Integer Input Form.Designer.cs">
+      <DependentUpon>Integer Input Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Integer Input Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Log Viewer.Designer.cs">
+      <DependentUpon>Log Viewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Log Viewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\Application.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Support Code\MyDataGridViewRow.cs" />
+    <Compile Include="Support Code\Namespace Code\NativeMethod.cs" />
+    <Compile Include="Windows\Replacements.Designer.cs">
+      <DependentUpon>Replacements.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Replacements.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Namespace Code\SaveAppSettings.cs" />
+    <Compile Include="Support Code\Namespace Code\ProcessHandling.cs" />
+    <Compile Include="Support Code\StringExtensions.cs" />
+    <Compile Include="Support Code\Namespace Code\Support Code.cs" />
+    <Compile Include="Windows\ViewLogBackups.Designer.cs">
+      <DependentUpon>ViewLogBackups.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ViewLogBackups.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Windows\Alerts History.resx">
+      <DependentUpon>Alerts History.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Alerts.resx">
+      <DependentUpon>Alerts.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Clear logs older than.resx">
+      <DependentUpon>Clear logs older than.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Close Free SysLog Dialog.resx">
+      <DependentUpon>Close Free SysLog Dialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Configure SysLog Mirror Clients.resx">
+      <DependentUpon>Configure SysLog Mirror Clients.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Date Format Chooser.resx">
+      <DependentUpon>Date Format Chooser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Confirm Delete.resx">
+      <DependentUpon>Confirm Delete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Hostnames.resx">
+      <DependentUpon>Hostnames.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Ignored Logs and Search Results.resx">
+      <DependentUpon>Ignored Logs and Search Results.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Ignored Words and Phrases.resx">
+      <DependentUpon>Ignored Words and Phrases.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Integer Input Form.resx">
+      <DependentUpon>Integer Input Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Log Viewer.resx">
+      <DependentUpon>Log Viewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Free_SysLog.My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Replacements.resx">
+      <DependentUpon>Replacements.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ViewLogBackups.resx">
+      <DependentUpon>ViewLogBackups.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="My Project\app.manifest" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>Free_SysLog.My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Resources\iconstoptom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="log.ico" />
+    <None Include="Resources\warning.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\error.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\info.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CrashReporter.NET.Official">
+      <Version>1.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <Version>7.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="TaskScheduler">
+      <Version>2.12.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

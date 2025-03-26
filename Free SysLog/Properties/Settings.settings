@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Free_SysLog.Properties" GeneratedClassName="Settings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="logFileLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="logViewerWindowSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">816, 173</Value>
+    </Setting>
+    <Setting Name="autoScroll" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="mainWindowSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1191, 485</Value>
+    </Setting>
+    <Setting Name="columnTimeSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">196</Value>
+    </Setting>
+    <Setting Name="columnIPSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">102</Value>
+    </Setting>
+    <Setting Name="columnLogSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">670</Value>
+    </Setting>
+    <Setting Name="autoSave" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="autoSaveMinutes" Type="System.Int16" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="sysLogPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">514</Value>
+    </Setting>
+    <Setting Name="ignored" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="searchColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LightBlue</Value>
+    </Setting>
+    <Setting Name="ignoredWindowSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1168, 464</Value>
+    </Setting>
+    <Setting Name="windowLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="ignoredWindowLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="ignoredWordsLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="recordIgnoredLogs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="replacements" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="boolMaximized" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="boolConfirmClose" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ignored2" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="replacementsLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="searchWindowLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="searchWindowSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1168, 464</Value>
+    </Setting>
+    <Setting Name="alerts" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="alertsLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="boolDeselectItemsWhenMinimizing" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="boolShowAlertedColumn" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="colIgnoredReplace" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">345</Value>
+    </Setting>
+    <Setting Name="colIgnoredRegex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colIgnoredCaseSensitive" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">91</Value>
+    </Setting>
+    <Setting Name="colIgnoredEnabled" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colReplacementsReplace" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">345</Value>
+    </Setting>
+    <Setting Name="colReplacementsReplaceWith" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">345</Value>
+    </Setting>
+    <Setting Name="colReplacementsRegex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colReplacementsCaseSensitive" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">91</Value>
+    </Setting>
+    <Setting Name="colReplacementsEnabled" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colAlertsAlertLogText" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">308</Value>
+    </Setting>
+    <Setting Name="colAlertsAlertText" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">257</Value>
+    </Setting>
+    <Setting Name="colAlertsRegex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="colAlertsCaseSensitive" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">91</Value>
+    </Setting>
+    <Setting Name="colAlertsType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
+    <Setting Name="colAlertsEnabled" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="ConfigureIgnoredSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">670, 304</Value>
+    </Setting>
+    <Setting Name="ConfigureReplacementsSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1051, 489</Value>
+    </Setting>
+    <Setting Name="ConfigureAlertsSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1003, 322</Value>
+    </Setting>
+    <Setting Name="ServersToSendTo" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MinimizeToClockTray" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DeleteOldLogsAtMidnight" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="logFileViewerSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1168, 464</Value>
+    </Setting>
+    <Setting Name="logFileViewerLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="BackupOldLogsAfterClearingAtMidnight" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="boolCheckForUpdates" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DateChooserWindowLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="DateFormat" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="CustomDateFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ViewLogBackupsSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">816, 403</Value>
+    </Setting>
+    <Setting Name="EnableTCPServer" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="RemoteProcessHeaderSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="LogTypeWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="HostnameWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="ServerTimeWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="boolShowHostnameColumn" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="boolShowServerTimeColumn" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="boolShowLogTypeColumn" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="RemoveNumbersFromRemoteApp" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IPv6Support" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="boolShowRawLogOnLogViewer" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="hostnames" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="boolShowHiddenFilesOnViewLogBackyupsWindow" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="boolShowHiddenAsGray" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="font" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Microsoft Sans Serif, 8.25pt</Value>
+    </Setting>
+    <Setting Name="ColViewLogBackupsFileSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
+    <Setting Name="ColViewLogBackupsFileDate" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
+    <Setting Name="ColViewLogBackupsFileName" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
+    <Setting Name="TimeBetweenSameNotifications" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="IncludeButtonsOnNotifications" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="NotificationLength" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="AlertHistorySize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">776, 426</Value>
+    </Setting>
+    <Setting Name="AlertHistoryLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="logsColumnOrder" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="fileListColumnOrder" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="alertsHistoryColumnOrder" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="hostnamesLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="syslogProxyLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="viewLogBackupsEntryCountColumnSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">125</Value>
+    </Setting>
+    <Setting Name="colLogAutoFill" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="disableAutoScrollUponScrolling" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="viewLogBackupsHiddenColumnSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="columnAlertedSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="columnFileNameSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="boolDebug" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ConfirmDelete" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="IgnoreSearchResultLimits" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="LogFileDeletions" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ghfghfghbfghf" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

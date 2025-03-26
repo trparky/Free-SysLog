@@ -1,0 +1,1927 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Microsoft.VisualBasic;
+
+namespace Free_SysLog
+{
+
+    public class FormFile
+    {
+
+        /// <summary>This is the name for the form entry.</summary>
+        public string FormName { get; set; }
+
+        /// <summary>This is the content type or MIME type.</summary>
+        public string ContentType { get; set; }
+
+        /// <summary>This is the path to the file to be uploaded on the local file system.</summary>
+        public string LocalFilePath { get; set; }
+
+        /// <summary>This sets the name that the uploaded file will be called on the remote server.</summary>
+        public string RemoteFileName { get; set; }
+    }
+
+    public class NoMimeTypeFoundException : Exception
+    {
+
+        public NoMimeTypeFoundException()
+        {
+        }
+
+        public NoMimeTypeFoundException(string message) : base(message)
+        {
+        }
+
+        public NoMimeTypeFoundException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class LocalFileAlreadyExistsException : Exception
+    {
+
+        public LocalFileAlreadyExistsException()
+        {
+        }
+
+        public LocalFileAlreadyExistsException(string message) : base(message)
+        {
+        }
+
+        public LocalFileAlreadyExistsException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class DataMissingException : Exception
+    {
+
+        public DataMissingException()
+        {
+        }
+
+        public DataMissingException(string message) : base(message)
+        {
+        }
+
+        public DataMissingException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class DataAlreadyExistsException : Exception
+    {
+
+        public DataAlreadyExistsException()
+        {
+        }
+
+        public DataAlreadyExistsException(string message) : base(message)
+        {
+        }
+
+        public DataAlreadyExistsException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class ProxyConfigurationErrorException : Exception
+    {
+
+        public ProxyConfigurationErrorException()
+        {
+        }
+
+        public ProxyConfigurationErrorException(string message) : base(message)
+        {
+        }
+
+        public ProxyConfigurationErrorException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class DnsLookupError : Exception
+    {
+
+        public DnsLookupError()
+        {
+        }
+
+        public DnsLookupError(string message) : base(message)
+        {
+        }
+
+        public DnsLookupError(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class NoHTTPServerResponseHeadersFoundException : Exception
+    {
+
+        public NoHTTPServerResponseHeadersFoundException()
+        {
+        }
+
+        public NoHTTPServerResponseHeadersFoundException(string message) : base(message)
+        {
+        }
+
+        public NoHTTPServerResponseHeadersFoundException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class SslErrorException : Exception
+    {
+
+        public SslErrorException()
+        {
+        }
+
+        public SslErrorException(string message) : base(message)
+        {
+        }
+
+        public SslErrorException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class CredentialsAlreadySet : Exception
+    {
+
+        public CredentialsAlreadySet()
+        {
+        }
+
+        public CredentialsAlreadySet(string message) : base(message)
+        {
+        }
+
+        public CredentialsAlreadySet(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class HttpProtocolException : Exception
+    {
+
+        public HttpProtocolException()
+        {
+        }
+
+        public HttpProtocolException(string message) : base(message)
+        {
+        }
+
+        public HttpProtocolException(string message, Exception inner) : base(message, inner)
+        {
+        }
+
+        public System.Net.HttpStatusCode HttpStatusCode { get; set; } = System.Net.HttpStatusCode.NoContent;
+    }
+
+    public class NoSSLCertificateFoundException : Exception
+    {
+
+        public NoSSLCertificateFoundException()
+        {
+        }
+
+        public NoSSLCertificateFoundException(string message) : base(message)
+        {
+        }
+
+        public NoSSLCertificateFoundException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    class CookieDetails
+    {
+        public string CookieData;
+        public string cookieDomain;
+        public string cookiePath = "/";
+    }
+
+    public class DownloadStatusDetails
+    {
+        public long RemoteFileSize { get; set; }
+        public long LocalFileSize { get; set; }
+        public short PercentageDownloaded { get; set; }
+    }
+
+    class Credentials
+    {
+        public string StrUser { get; set; }
+        public string StrPasswordInput { get; set; }
+    }
+
+    /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
+    public class HttpHelper
+    {
+        private const string classVersion = "1.343";
+
+        private string strUserAgentString = null;
+        private bool boolUseProxy = false;
+        private bool boolUseSystemProxy = true;
+        private System.Net.IWebProxy customProxy = null;
+        private System.Net.WebHeaderCollection httpResponseHeaders = null;
+        private short httpDownloadProgressPercentage = 0;
+        private long remoteFileSizeInput, currentFileSize;
+        private int httpTimeOut = 5000;
+        private bool boolUseHTTPCompression = true;
+        private string lastAccessedURL = null;
+        private Exception lastException = null;
+        private bool boolRunDownloadStatusUpdatePluginInSeparateThread = true;
+        private System.Threading.Thread downloadStatusUpdaterThread = null;
+        private int _intDownloadThreadSleepTime = 1000;
+        private int intDownloadBufferSize = 8191; // The default is 8192 bytes or 8 KBs.
+
+        private readonly Dictionary<string, string> additionalHTTPHeaders = new Dictionary<string, string>();
+        private readonly Dictionary<string, CookieDetails> httpCookies = new Dictionary<string, CookieDetails>();
+        private readonly Dictionary<string, object> postData = new Dictionary<string, object>();
+        private readonly Dictionary<string, string> getData = new Dictionary<string, string>();
+        private DownloadStatusDetails downloadStatusDetails;
+        private Credentials credentials;
+
+        private System.Security.Cryptography.X509Certificates.X509Certificate2 sslCertificate;
+        private Func<string, string> urlPreProcessor;
+        private Delegate customErrorHandler;
+
+        private const string strCRLF = Constants.vbCrLf;
+
+        private Delegate downloadStatusUpdater;
+
+        public struct RemoteFileStats
+        {
+            public long contentLength;
+            public string contentType;
+            public System.Net.WebHeaderCollection headers;
+        }
+
+        /// <summary>Retrieves the downloadStatusDetails data from within the Class instance.</summary>
+    /// <returns>A downloadStatusDetails Object.</returns>
+        public DownloadStatusDetails GetDownloadStatusDetails
+        {
+            get
+            {
+                return downloadStatusDetails;
+            }
+        }
+
+        /// <summary>Sets the size of the download buffer to hold data in memory during the downloading of a file. The default is 8192 bytes or 8 KBs.</summary>
+        public int SetDownloadBufferSize
+        {
+            set
+            {
+                intDownloadBufferSize = value - 1;
+            }
+        }
+
+        /// <summary>This allows you to inject your own error handler for HTTP exceptions into the Class instance.</summary>
+    /// <value>A Lambda</value>
+    /// <example>
+    /// A VB.NET Example...
+    /// httpHelper.setCustomErrorHandler(Function(ByVal ex As Exception, classInstance As httpHelper)
+    /// End Function)
+    /// OR A C# Example...
+    /// httpHelper.setCustomErrorHandler((Exception ex, httpHelper classInstance) => { }
+    /// </example>
+        public Delegate SetCustomErrorHandler
+        {
+            set
+            {
+                customErrorHandler = value;
+            }
+        }
+
+        /// <summary>Adds HTTP Authentication headers to your HTTP Request in this HTTPHelper instance.</summary>
+    /// <param name="strUsernameInput">The username you want to pass to the server.</param>
+    /// <param name="strPassword">The password you want to pass to the server.</param>
+    /// <param name="throwExceptionIfAlreadySet">A Boolean value. This tells the function if it should throw an exception if HTTP Authentication settings have already been set.</param>
+        public void SetHTTPCredentials(string strUsernameInput, string strPassword, bool throwExceptionIfAlreadySet = true)
+        {
+            if (credentials is null)
+            {
+                credentials = new Credentials() { StrUser = strUsernameInput, StrPasswordInput = strPassword };
+            }
+            else if (throwExceptionIfAlreadySet)
+                throw new CredentialsAlreadySet("HTTP Authentication Credentials have already been set for this HTTPHelper Class Instance.");
+        }
+
+        /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
+    /// <param name="strUsername">The username you want to pass to the server.</param>
+    /// <param name="strPassword">The password you want to pass to the server.</param>
+    /// <param name="strServer">The proxy server's address, usually an IP address.</param>
+    /// <param name="intPort">The proxy port.</param>
+    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        public void SetProxy(string strServer, int intPort, string strUsername, string strPassword, bool boolByPassOnLocal = true)
+        {
+            try
+            {
+                customProxy = new System.Net.WebProxy($"{strServer}:{intPort}", boolByPassOnLocal) { Credentials = new System.Net.NetworkCredential(strUsername, strPassword) };
+            }
+            catch (UriFormatException ex)
+            {
+                throw new ProxyConfigurationErrorException("There was an error setting up the proxy for this class instance.", ex);
+            }
+        }
+
+        /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
+    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+    /// <param name="strServer">The proxy server's address, usually an IP address.</param>
+    /// <param name="intPort">The proxy port.</param>
+    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        public void SetProxy(string strServer, int intPort, bool boolByPassOnLocal = true)
+        {
+            try
+            {
+                customProxy = new System.Net.WebProxy($"{strServer}:{intPort}", boolByPassOnLocal);
+            }
+            catch (UriFormatException ex)
+            {
+                throw new ProxyConfigurationErrorException("There was an error setting up the proxy for this class instance.", ex);
+            }
+        }
+
+        /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
+    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+    /// <param name="strServer">The proxy server's address, usually an IP address followed up by a ":" followed up by a port number.</param>
+    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        public void SetProxy(string strServer, bool boolByPassOnLocal = true)
+        {
+            try
+            {
+                customProxy = new System.Net.WebProxy(strServer, boolByPassOnLocal);
+            }
+            catch (UriFormatException ex)
+            {
+                throw new ProxyConfigurationErrorException("There was an error setting up the proxy for this class instance.", ex);
+            }
+        }
+
+        /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
+    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+    /// <param name="strServer">The proxy server's address, usually an IP address followed up by a ":" followed up by a port number.</param>
+    /// <param name="strUsername">The username you want to pass to the server.</param>
+    /// <param name="strPassword">The password you want to pass to the server.</param>
+    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        public void SetProxy(string strServer, string strUsername, string strPassword, bool boolByPassOnLocal = true)
+        {
+            try
+            {
+                customProxy = new System.Net.WebProxy(strServer, boolByPassOnLocal) { Credentials = new System.Net.NetworkCredential(strUsername, strPassword) };
+            }
+            catch (UriFormatException ex)
+            {
+                throw new ProxyConfigurationErrorException("There was an error setting up the proxy for this class instance.", ex);
+            }
+        }
+
+        /// <summary>Returns the last Exception that occurred within this Class instance.</summary>
+    /// <returns>An Exception Object.</returns>
+        public Exception GetLastException
+        {
+            get
+            {
+                return lastException;
+            }
+        }
+
+        /// <summary>This allows you to set up a function to be run while your HTTP download is being processed. This function can be used to update things on the GUI during a download.</summary>
+    /// <value>A Lambda</value>
+    /// <example>
+    /// A VB.NET Example...
+    /// httpHelper.setDownloadStatusUpdateRoutine(Function(ByVal downloadStatusDetails As downloadStatusDetails)
+    /// End Function)
+    /// OR A C# Example...
+    /// httpHelper.setDownloadStatusUpdateRoutine((downloadStatusDetails downloadStatusDetails) => { })
+    /// </example>
+        public Delegate SetDownloadStatusUpdateRoutine
+        {
+            set
+            {
+                downloadStatusUpdater = value;
+            }
+        }
+
+        /// <summary>This allows you to set up a Pre-Processor of sorts for URLs in case you need to add things to the beginning or end of URLs.</summary>
+    /// <value>A Lambda</value>
+    /// <example>
+    /// httpHelper.setURLPreProcessor(Function(ByVal strURLInput As String) As String
+    ///   If strURLInput.ToLower.StartsWith("http://") = False Then
+    ///     strURLInput = "http://" + strURLInput
+    ///   End If
+    ///   Return strURLInput
+    /// End Function)
+    /// </example>
+        public Func<string, string> SetURLPreProcessor
+        {
+            set
+            {
+                urlPreProcessor = value;
+            }
+        }
+
+        /// <summary>This wipes out most of the data in this Class instance. Once you have called this function it's recommended to set the name of your class instance to Nothing. For example... httpHelper = Nothing</summary>
+        public void Dispose()
+        {
+            additionalHTTPHeaders.Clear();
+            httpCookies.Clear();
+            postData.Clear();
+            getData.Clear();
+
+            remoteFileSizeInput = 0L;
+            currentFileSize = 0L;
+
+            sslCertificate = null;
+            urlPreProcessor = null;
+            customErrorHandler = null;
+            downloadStatusUpdater = null;
+            httpResponseHeaders = null;
+        }
+
+        /// <summary>Returns the last accessed URL by this Class instance.</summary>
+    /// <returns>A String.</returns>
+        public string GetLastAccessedURL
+        {
+            get
+            {
+                return lastAccessedURL;
+            }
+        }
+
+        /// <summary>Tells the Class instance if it should use the system proxy.</summary>
+        public bool UseSystemProxy
+        {
+            set
+            {
+                boolUseSystemProxy = value;
+            }
+        }
+
+        /// <summary>This function allows you to get a peek inside the Class object instance. It returns many of the things that make up the Class instance like POST and GET data, cookies, additional HTTP headers, if proxy mode and HTTP compression mode is enabled, the user agent string, etc.</summary>
+    /// <returns>A String.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.AppendLine("--== HTTPHelper Class Object ==--");
+            stringBuilder.AppendLine($"--== Version: {classVersion} ==--");
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine($"Last Accessed URL: {lastAccessedURL}");
+            stringBuilder.AppendLine();
+
+            if (getData.Count != 0)
+            {
+                foreach (var item in getData)
+                    stringBuilder.AppendLine($"GET Data | {item.Key}={item.Value}");
+            }
+
+            if (postData.Count != 0)
+            {
+                foreach (var item in postData)
+                    stringBuilder.AppendLine($"POST Data | {item.Key}={item.Value}");
+            }
+
+            if (httpCookies.Count != 0)
+            {
+                foreach (var item in httpCookies)
+                    stringBuilder.AppendLine($"COOKIES | {item.Key}={item.Value.CookieData}");
+            }
+
+            if (additionalHTTPHeaders.Count != 0)
+            {
+                foreach (var item in additionalHTTPHeaders)
+                    stringBuilder.AppendLine($"Additional HTTP Header | {item.Key}={item.Value}");
+            }
+
+            stringBuilder.AppendLine();
+
+            stringBuilder.AppendLine($"User Agent String: {strUserAgentString}");
+            stringBuilder.AppendLine($"Use HTTP Compression: {boolUseHTTPCompression}");
+            stringBuilder.AppendLine($"HTTP Time Out: {httpTimeOut}");
+            stringBuilder.AppendLine($"Use Proxy: {boolUseProxy}");
+
+            if (credentials is null)
+            {
+                stringBuilder.AppendLine("HTTP Authentication Enabled: False");
+            }
+            else
+            {
+                stringBuilder.AppendLine("HTTP Authentication Enabled: True");
+                stringBuilder.AppendLine($"HTTP Authentication Details: {credentials.StrUser}|{credentials.StrPasswordInput}");
+            }
+
+            if (lastException is not null)
+            {
+                stringBuilder.AppendLine();
+                stringBuilder.AppendLine("--== Raw Exception Data ==--");
+                stringBuilder.AppendLine(lastException.ToString());
+
+                if (lastException is System.Net.WebException)
+                {
+                    stringBuilder.AppendLine($"Raw Exception Status Code: {((System.Net.WebException)lastException).Status}");
+                }
+            }
+
+            return stringBuilder.ToString().Trim();
+        }
+
+        /// <summary>Gets the remote file size.</summary>
+    /// <param name="boolHumanReadable">Optional setting, normally set to True. Tells the function if it should transform the Integer representing the file size into a human readable format.</param>
+    /// <returns>Either a String or a Long containing the remote file size.</returns>
+        public object GetHTTPDownloadRemoteFileSize(bool boolHumanReadable = true)
+        {
+            return boolHumanReadable ? FileSizeToHumanReadableFormat(remoteFileSizeInput) : remoteFileSizeInput;
+        }
+
+        /// <summary>This returns the SSL certificate details for the last HTTP request made by this Class instance.</summary>
+    /// <returns>System.Security.Cryptography.X509Certificates.X509Certificate2</returns>
+    /// <exception cref="NoSSLCertificateFoundException">If this function throws a noSSLCertificateFoundException it means that the Class doesn't have an SSL certificate in the memory space of the Class instance. Perhaps the last HTTP request wasn't an HTTPS request.</exception>
+    /// <param name="boolThrowException">An optional parameter that tells the function if it should throw an exception if an SSL certificate isn't found in the memory space of this Class instance.</param>
+        public System.Security.Cryptography.X509Certificates.X509Certificate2 GetCertificateDetails(bool boolThrowException = true)
+        {
+            if (sslCertificate is null)
+            {
+                if (boolThrowException)
+                {
+                    lastException = new NoSSLCertificateFoundException("No valid SSL certificate found for the last HTTP request. Perhaps the last HTTP request wasn't an HTTPS request.");
+                    throw lastException;
+                }
+                return null;
+            }
+            else
+            {
+                return sslCertificate;
+            }
+        }
+
+        /// <summary>Gets the current local file's size.</summary>
+    /// <param name="boolHumanReadable">Optional setting, normally set to True. Tells the function if it should transform the Integer representing the file size into a human readable format.</param>
+    /// <returns>Either a String or a Long containing the current local file's size.</returns>
+        public object GetHTTPDownloadLocalFileSize(bool boolHumanReadable = true)
+        {
+            if (boolHumanReadable)
+            {
+                return FileSizeToHumanReadableFormat(currentFileSize);
+            }
+            else
+            {
+                return currentFileSize;
+            }
+        }
+
+        /// <summary>Creates a new instance of the HTTPPost Class. You will need to set things up for the Class instance using the setProxyMode() and setUserAgent() routines.</summary>
+    /// <example>Dim httpPostObject As New Tom.HTTPPost()</example>
+        public HttpHelper()
+        {
+        }
+
+        /// <summary>Creates a new instance of the HTTPPost Class with some required parameters.</summary>
+    /// <param name="strUserAgentStringIN">This set the User Agent String for the HTTP Request.</param>
+    /// <example>Dim httpPostObject As New Tom.HTTPPost("Microsoft .NET")</example>
+        public HttpHelper(string strUserAgentStringIN)
+        {
+            strUserAgentString = strUserAgentStringIN;
+        }
+
+        /// <summary>Creates a new instance of the HTTPPost Class with some required parameters.</summary>
+    /// <param name="strUserAgentStringIN">This set the User Agent String for the HTTP Request.</param>
+    /// <param name="boolUseProxyIN">This tells the Class if you're going to be using a Proxy or not.</param>
+    /// <example>Dim httpPostObject As New Tom.HTTPPost("Microsoft .NET", True)</example>
+        public HttpHelper(string strUserAgentStringIN, bool boolUseProxyIN)
+        {
+            strUserAgentString = strUserAgentStringIN;
+            boolUseProxy = boolUseProxyIN;
+        }
+
+        /// <summary>Tells the HTTPPost Class if you want to use a Proxy or not.</summary>
+        public bool SetProxyMode
+        {
+            set
+            {
+                boolUseProxy = value;
+            }
+        }
+
+        /// <summary>Sets a timeout for any HTTP requests in this Class. Normally it's set for 5 seconds. The input is the amount of time in seconds (NOT milliseconds) that you want your HTTP requests to timeout in. The class will translate the seconds to milliseconds for you.</summary>
+    /// <value>The amount of time in seconds (NOT milliseconds) that you want your HTTP requests to timeout in. This function will translate the seconds to milliseconds for you.</value>
+        public short SetHTTPTimeout
+        {
+            set
+            {
+                httpTimeOut = value * 1000;
+            }
+        }
+
+        /// <summary>Tells this Class instance if it should use HTTP compression for transport. Using HTTP Compression can save bandwidth. Normally the Class is setup to use HTTP Compression by default.</summary>
+    /// <value>Boolean value.</value>
+        public bool UseHTTPCompression
+        {
+            set
+            {
+                boolUseHTTPCompression = value;
+            }
+        }
+
+        /// <summary>Sets the User Agent String to be used by the HTTPPost Class.</summary>
+    /// <value>Your User Agent String.</value>
+        public string SetUserAgent
+        {
+            set
+            {
+                strUserAgentString = value;
+            }
+        }
+
+        /// <summary>This adds a String variable to your POST data.</summary>
+    /// <param name="strName">The form name of the data to post.</param>
+    /// <param name="strValue">The value of the data to post.</param>
+    /// <param name="throwExceptionIfDataAlreadyExists">This tells the function if it should throw an exception if the data already exists in the POST data.</param>
+    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
+        public void AddPOSTData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false)
+        {
+            if (string.IsNullOrEmpty(strValue.Trim()))
+            {
+                lastException = new DataMissingException($"Data was missing for the \"{strName}\" POST variable.");
+                throw lastException;
+            }
+
+            if (postData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+            {
+                lastException = new DataAlreadyExistsException($"The POST data key named \"{strName}\" already exists in the POST data.");
+                throw lastException;
+            }
+            else
+            {
+                postData.Remove(strName);
+                postData.Add(strName, strValue);
+            }
+        }
+
+        /// <summary>This adds a String variable to your GET data.</summary>
+    /// <param name="strName">The form name of the data to post.</param>
+    /// <param name="strValue">The value of the data to post.</param>
+    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
+        public void AddGETData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false)
+        {
+            if (string.IsNullOrEmpty(strValue.Trim()))
+            {
+                lastException = new DataMissingException($"Data was missing for the \"{strName}\" GET variable.");
+                throw lastException;
+            }
+
+            if (getData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+            {
+                lastException = new DataAlreadyExistsException($"The GET data key named \"{strName}\" already exists in the GET data.");
+                throw lastException;
+            }
+            else
+            {
+                getData.Remove(strName);
+                getData.Add(strName, strValue);
+            }
+        }
+
+        /// <summary>Allows you to add additional headers to your HTTP Request Headers.</summary>
+    /// <param name="strHeaderName">The name of your new HTTP Request Header.</param>
+    /// <param name="strHeaderContents">The contents of your new HTTP Request Header. Be careful with adding data here, invalid data can cause your HTTP Request to fail thus throwing an httpPostException.</param>
+    /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the HTTP Header Contents before setting it.</param>
+    /// <example>httpPostObject.addHTTPHeader("myheader", "my header value")</example>
+    /// <exception cref="DataAlreadyExistsException">If this function throws an dataAlreadyExistsException, it means that this Class instance already has an Additional HTTP Header of that name in the Class instance.</exception>
+        public void AddHTTPHeader(string strHeaderName, string strHeaderContents, bool urlEncodeHeaderContent = false)
+        {
+            if (!DoesAdditionalHeaderExist(strHeaderName))
+            {
+                additionalHTTPHeaders.Add(strHeaderName.ToLower(), urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strHeaderContents) : strHeaderContents);
+            }
+            else
+            {
+                lastException = new DataAlreadyExistsException($"The additional HTTP Header named \"{strHeaderName}\" already exists in the Additional HTTP Headers settings for this Class instance.");
+                throw lastException;
+            }
+        }
+
+        /// <summary>Allows you to add HTTP cookies to your HTTP Request with a specific path for the cookie.</summary>
+    /// <param name="strCookieName">The name of your cookie.</param>
+    /// <param name="strCookieValue">The value for your cookie.</param>
+    /// <param name="strCookiePath">The path for the cookie.</param>
+    /// <param name="strDomainDomain">The domain for the cookie.</param>
+    /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the cookie contents before setting it.</param>
+    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, it means that the cookie already exists in this Class instance.</exception>
+        public void AddHTTPCookie(string strCookieName, string strCookieValue, string strDomainDomain, string strCookiePath, bool urlEncodeHeaderContent = false)
+        {
+            if (!DoesCookieExist(strCookieName))
+            {
+                var cookieDetails = new CookieDetails()
+                {
+                    cookieDomain = strDomainDomain,
+                    cookiePath = strCookiePath,
+                    CookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue
+                };
+                httpCookies.Add(strCookieName.ToLower(), cookieDetails);
+            }
+            else
+            {
+                lastException = new DataAlreadyExistsException($"The HTTP Cookie named \"{strCookieName}\" already exists in the settings for this Class instance.");
+                throw lastException;
+            }
+        }
+
+        /// <summary>Allows you to add HTTP cookies to your HTTP Request with a default path of "/".</summary>
+    /// <param name="strCookieName">The name of your cookie.</param>
+    /// <param name="strCookieValue">The value for your cookie.</param>
+    /// <param name="strCookieDomain">The domain for the cookie.</param>
+    /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the cookie contents before setting it.</param>
+    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, it means that the cookie already exists in this Class instance.</exception>
+        public void AddHTTPCookie(string strCookieName, string strCookieValue, string strCookieDomain, bool urlEncodeHeaderContent = false)
+        {
+            if (!DoesCookieExist(strCookieName))
+            {
+                var cookieDetails = new CookieDetails()
+                {
+                    cookieDomain = strCookieDomain,
+                    cookiePath = "/",
+                    CookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue
+                };
+                httpCookies.Add(strCookieName.ToLower(), cookieDetails);
+            }
+            else
+            {
+                lastException = new DataAlreadyExistsException($"The HTTP Cookie named \"{strCookieName}\" already exists in the settings for this Class instance.");
+                throw lastException;
+            }
+        }
+
+        /// <summary>Checks to see if the GET data key exists in this GET data.</summary>
+    /// <param name="strName">The name of the GET data variable you are checking the existance of.</param>
+    /// <returns></returns>
+        public bool DoesGETDataExist(string strName)
+        {
+            return getData.MyContainsKey(strName);
+        }
+
+        /// <summary>Checks to see if the POST data key exists in this POST data.</summary>
+    /// <param name="strName">The name of the POST data variable you are checking the existance of.</param>
+    /// <returns></returns>
+        public bool DoesPOSTDataExist(string strName)
+        {
+            return postData.MyContainsKey(strName);
+        }
+
+        /// <summary>Checks to see if an additional HTTP Request Header has been added to the Class.</summary>
+    /// <param name="strHeaderName">The name of the HTTP Request Header to check the existance of.</param>
+    /// <returns>Boolean value; True if found, False if not found.</returns>
+        public bool DoesAdditionalHeaderExist(string strHeaderName)
+        {
+            return additionalHTTPHeaders.MyContainsKey(strHeaderName.ToLower());
+        }
+
+        /// <summary>Checks to see if a cookie has been added to the Class.</summary>
+    /// <param name="strCookieName">The name of the cookie to check the existance of.</param>
+    /// <returns>Boolean value; True if found, False if not found.</returns>
+        public bool DoesCookieExist(string strCookieName)
+        {
+            return httpCookies.MyContainsKey(strCookieName.ToLower());
+        }
+
+        /// <summary>This adds a file to be uploaded to your POST data.</summary>
+    /// <param name="strFormName">The form name of the data to post.</param>
+    /// <param name="strLocalFilePath">The path to the file you want to upload.</param>
+    /// <param name="strRemoteFileName">This is the name that the uploaded file will be called on the remote server. If set to Nothing the program will fill the name in.</param>
+    /// <param name="strContentType">The Content Type of the file you want to upload. You can leave it blank (or set to Nothing) and the program will try and determine what the MIME type of the file you're attaching is.</param>
+    /// <exception cref="FileNotFoundException">If this function throws a FileNotFoundException, the Class wasn't able to find the file that you're trying to attach to the POST data on the local file system.</exception>
+    /// <exception cref="NoMimeTypeFoundException">If this function throws a noMimeTypeFoundException, the Class wasn't able to automatically determine the MIME type of the file you're trying to attach to the POST data.</exception>
+    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", Nothing)</example>
+    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", "text/plain")</example>
+    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, Nothing)</example>
+    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, "text/plain")</example>
+        public void AddFileUpload(string strFormName, string strLocalFilePath, string strRemoteFileName, string strContentType, bool throwExceptionIfItemAlreadyExists = false)
+        {
+            var fileInfo = new FileInfo(strLocalFilePath);
+
+            if (!fileInfo.Exists)
+            {
+                lastException = new FileNotFoundException("Local file not found.", strLocalFilePath);
+                throw lastException;
+            }
+            else if (postData.MyContainsKey(strFormName))
+            {
+                if (throwExceptionIfItemAlreadyExists)
+                {
+                    lastException = new DataAlreadyExistsException($"The POST data key named \"{strFormName}\" already exists in the POST data.");
+                    throw lastException;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                var formFileInstance = new FormFile()
+                {
+                    FormName = strFormName,
+                    LocalFilePath = strLocalFilePath,
+                    RemoteFileName = string.IsNullOrWhiteSpace(strRemoteFileName) ? new FileInfo(strLocalFilePath).Name : strRemoteFileName
+                };
+
+                if (string.IsNullOrEmpty(strContentType))
+                {
+                    object rawRegValue;
+                    var regPath = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileInfo.Extension.ToLower(), false);
+
+                    if (regPath is null)
+                    {
+                        lastException = new NoMimeTypeFoundException($"No MIME Type found for {fileInfo.Extension.ToLower()}");
+                        throw lastException;
+                    }
+                    else
+                    {
+                        rawRegValue = regPath.GetValue("Content Type", null);
+
+                        if (rawRegValue is null)
+                        {
+                            lastException = new NoMimeTypeFoundException($"No MIME Type found for {fileInfo.Extension.ToLower()}");
+                            throw lastException;
+                        }
+                        else
+                        {
+                            formFileInstance.ContentType = rawRegValue.ToString();
+                        }
+                    }
+                }
+                else
+                {
+                    formFileInstance.ContentType = strContentType;
+                }
+
+                postData.Add(strFormName, formFileInstance);
+            }
+        }
+
+        /// <summary>Gets the HTTP Response Headers that were returned by the HTTP Server after the HTTP request.</summary>
+    /// <param name="throwExceptionIfNoHeaders">Optional setting, normally set to False. Tells the function if it should throw an exception if no HTTP Response Headers are contained in this Class instance.</param>
+    /// <returns>A collection of HTTP Response Headers in a Net.WebHeaderCollection object.</returns>
+    /// <exception cref="NoHTTPServerResponseHeadersFoundException">If this function throws a noHTTPServerResponseHeadersFoundException, there are no HTTP Response Headers in this Class instance.</exception>
+        public System.Net.WebHeaderCollection GetHTTPResponseHeaders(bool throwExceptionIfNoHeaders = false)
+        {
+            if (httpResponseHeaders is null)
+            {
+                if (throwExceptionIfNoHeaders)
+                {
+                    lastException = new NoHTTPServerResponseHeadersFoundException("No HTTP Server Response Headers found.");
+                    throw lastException;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return httpResponseHeaders;
+            }
+        }
+
+        /// <summary>Gets the percentage of the file that's being downloaded from the HTTP Server.</summary>
+    /// <returns>Returns a Short Integer value.</returns>
+        public short GetHTTPDownloadProgressPercentage
+        {
+            get
+            {
+                return httpDownloadProgressPercentage;
+            }
+        }
+
+        /// <summary>This tells the current HTTPHelper Class Instance if it should run the download update status routine in a separate thread. By default this is enabled.</summary>
+        public bool EnableMultiThreadedDownloadStatusUpdates
+        {
+            get
+            {
+                return boolRunDownloadStatusUpdatePluginInSeparateThread;
+            }
+            set
+            {
+                boolRunDownloadStatusUpdatePluginInSeparateThread = value;
+            }
+        }
+
+        /// <summary>Sets the amount of time in miliseconds that the download status updating thread sleeps. The default is 1000 ms or 1 second, perfect for calculating the amount of data downloaded per second.</summary>
+        public int IntDownloadThreadSleepTime
+        {
+            set
+            {
+                _intDownloadThreadSleepTime = value;
+            }
+        }
+
+        private void DownloadStatusUpdaterThreadSubroutine()
+        {
+            try
+            {
+            beginAgain:
+                ;
+
+                downloadStatusUpdater.DynamicInvoke(downloadStatusDetails);
+                System.Threading.Thread.Sleep(_intDownloadThreadSleepTime);
+                goto beginAgain;
+            }
+            catch (System.Threading.ThreadAbortException ex)
+            {
+            }
+            // Does nothing
+            catch (System.Reflection.TargetInvocationException ex2)
+            {
+                // Does nothing
+            }
+        }
+
+        /// <summary>This subroutine is used by the downloadFile function to update the download status of the file that's being downloaded by the class instance.</summary>
+        private void DownloadStatusUpdateInvoker()
+        {
+            downloadStatusDetails = new DownloadStatusDetails() { RemoteFileSize = remoteFileSizeInput, PercentageDownloaded = httpDownloadProgressPercentage, LocalFileSize = currentFileSize }; // Update the downloadStatusDetails.
+
+            // Checks to see if we have a status update routine to invoke.
+            if (downloadStatusUpdater is not null)
+            {
+                // We invoke the status update routine if we have one to invoke. This is usually injected
+                // into the class instance by the programmer who's using this class in his/her program.
+                if (boolRunDownloadStatusUpdatePluginInSeparateThread)
+                {
+                    if (downloadStatusUpdaterThread is null)
+                    {
+                        downloadStatusUpdaterThread = new System.Threading.Thread(DownloadStatusUpdaterThreadSubroutine)
+                        {
+                            IsBackground = true,
+                            Priority = System.Threading.ThreadPriority.Lowest,
+                            Name = "HTTPHelper Class Download Status Updating Thread"
+                        };
+                        downloadStatusUpdaterThread.Start();
+                    }
+                }
+                else
+                {
+                    downloadStatusUpdater.DynamicInvoke(downloadStatusDetails);
+                }
+            }
+        }
+
+        private void AbortDownloadStatusUpdaterThread()
+        {
+            try
+            {
+                if (downloadStatusUpdaterThread is not null & boolRunDownloadStatusUpdatePluginInSeparateThread)
+                {
+                    downloadStatusUpdaterThread.Abort();
+                    downloadStatusUpdaterThread = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Does nothing
+            }
+        }
+
+        /// <summary>Gets the file size of a file on a remote HTTP server..</summary>
+    /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to check the size of.</param>
+    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
+    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        public bool GetRemoteFileStats(string fileDownloadURL, ref RemoteFileStats RemoteFileStats, bool throwExceptionIfError = true)
+        {
+            System.Net.HttpWebRequest httpWebRequest = null;
+
+            try
+            {
+                if (urlPreProcessor is not null)
+                    fileDownloadURL = urlPreProcessor(fileDownloadURL);
+                lastAccessedURL = fileDownloadURL;
+
+                httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(fileDownloadURL);
+                httpWebRequest.Method = "HEAD";
+
+                ConfigureProxy(ref httpWebRequest);
+                AddParametersToWebRequest(ref httpWebRequest);
+
+                RemoteFileStats = new RemoteFileStats();
+
+                using (var webResponse = httpWebRequest.GetResponse()) // We now get the web response.
+                {
+                    CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
+
+                    RemoteFileStats.contentLength = webResponse.ContentLength;
+                    RemoteFileStats.contentType = webResponse.ContentType;
+                    RemoteFileStats.headers = webResponse.Headers;
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch (System.Threading.ThreadAbortException ex)
+            {
+                if (httpWebRequest is not null)
+                    httpWebRequest.Abort();
+                return false;
+            }
+            catch (Exception ex)
+            {
+                lastException = ex;
+
+                if (!throwExceptionIfError)
+                    return false;
+
+                if (customErrorHandler is not null)
+                {
+                    customErrorHandler.DynamicInvoke(ex, this);
+                    // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                    return false;
+                }
+
+                if (ex is System.Net.WebException)
+                {
+                    System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                    if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                    {
+                        throw HandleWebExceptionProtocolError(fileDownloadURL, ex2);
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                    {
+                        lastException = new SslErrorException("There was an error establishing an SSL connection.", ex2);
+                        throw lastException;
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                    {
+                        string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                        lastException = new DnsLookupError($"There was an error while looking up the DNS records for the domain name \"{strDomainName}\".", ex2);
+                        throw lastException;
+                    }
+
+                    lastException = new System.Net.WebException(ex.Message, ex2);
+                    throw lastException;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>Downloads a file from a web server while feeding back the status of the download. You can find the percentage of the download in the httpDownloadProgressPercentage variable. This function gives you the programmer more control over how HTTP downloads are done. For instance, if you don't want to write the data directly out to disk until the download is complete, this function gives you that ability whereas the downloadFile() function writes the downloaded data directly to disk bypassing system RAM. This is good for those cases you may be writing the data to an SSD in which you only want to write the data to the SSD until the download is known to be successful.</summary>
+    /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to download.</param>
+    /// <param name="memStream">This is a IO.MemoryStream, it is passed as a ByRef so that the function will be able to act on the IO.MemoryStream() Object you pass to it. At the end of the download, if it is successful, the function will reset the position back to 0 for writing to whatever stream you choose.</param>
+    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
+    /// <exception cref="LocalFileAlreadyExistsException">If this function throws a localFileAlreadyExistsException, the path in the local file system already exists.</exception>
+    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        public bool DownloadFile(string fileDownloadURL, ref MemoryStream memStream, bool throwExceptionIfError = true)
+        {
+            System.Net.HttpWebRequest httpWebRequest = null;
+            currentFileSize = 0L;
+            double amountDownloaded;
+
+            try
+            {
+                if (urlPreProcessor is not null)
+                    fileDownloadURL = urlPreProcessor(fileDownloadURL);
+                lastAccessedURL = fileDownloadURL;
+
+                // We create a new data buffer to hold the stream of data from the web server.
+                byte[] dataBuffer = new byte[intDownloadBufferSize + 1];
+
+                httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(fileDownloadURL);
+
+                ConfigureProxy(ref httpWebRequest);
+                AddParametersToWebRequest(ref httpWebRequest);
+
+                var webResponse = httpWebRequest.GetResponse(); // We now get the web response.
+                CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
+
+                // Gets the size of the remote file on the web server.
+                remoteFileSizeInput = webResponse.ContentLength;
+
+                var responseStream = webResponse.GetResponseStream(); // Gets the response stream.
+
+                long lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length); // Reads some data from the HTTP stream into our data buffer.
+
+                // We keep looping until all of the data has been downloaded.
+                while (lngBytesReadFromInternet != 0L)
+                {
+                    // We calculate the current file size by adding the amount of data that we've so far
+                    // downloaded from the server repeatedly to a variable called "currentFileSize".
+                    currentFileSize += lngBytesReadFromInternet;
+
+                    memStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet); // Writes the data directly to disk.
+
+                    amountDownloaded = currentFileSize / (double)remoteFileSizeInput * 100d;
+                    httpDownloadProgressPercentage = (short)Math.Round(Math.Round(amountDownloaded, 0)); // Update the download percentage value.
+                    DownloadStatusUpdateInvoker();
+
+                    lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length); // Reads more data into our data buffer.
+                }
+
+                // Before we return the MemoryStream to the user we have to reset the position back to the beginning of the Stream. This is so that when the
+                // user processes the IO.MemoryStream that's returned as part of this function the IO.MemoryStream will be ready to write the data out of
+                // memory and into whatever stream the user wants to write the data out to. If this isn't done and the user executes the CopyTo() function
+                // on the IO.MemoryStream Object the user will have nothing written out because the IO.MemoryStream will be at the end of the stream.
+                memStream.Position = 0L;
+
+                AbortDownloadStatusUpdaterThread();
+
+                return true;
+            }
+            catch (System.Threading.ThreadAbortException ex)
+            {
+                AbortDownloadStatusUpdaterThread();
+                if (httpWebRequest is not null)
+                    httpWebRequest.Abort();
+                return false;
+            }
+            catch (Exception ex)
+            {
+                AbortDownloadStatusUpdaterThread();
+
+                lastException = ex;
+
+                if (!throwExceptionIfError)
+                    return false;
+
+                if (customErrorHandler is not null)
+                {
+                    customErrorHandler.DynamicInvoke(ex, this);
+                    // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                    return false;
+                }
+
+                if (ex is System.Net.WebException)
+                {
+                    System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                    if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                    {
+                        throw HandleWebExceptionProtocolError(fileDownloadURL, ex2);
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                    {
+                        lastException = new SslErrorException("There was an error establishing an SSL connection.", ex2);
+                        throw lastException;
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                    {
+                        string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                        lastException = new DnsLookupError($"There was an error while looking up the DNS records for the domain name \"{strDomainName}\".", ex2);
+                        throw lastException;
+                    }
+
+                    lastException = new System.Net.WebException(ex.Message, ex2);
+                    throw lastException;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>Downloads a file from a web server while feeding back the status of the download. You can find the percentage of the download in the httpDownloadProgressPercentage variable.</summary>
+    /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to download.</param>
+    /// <param name="localFileName">The path in the local file system to which you are saving the file that's being downloaded.</param>
+    /// <param name="throwExceptionIfLocalFileExists">This tells the function if it should throw an Exception if the local file already exists. If set the False the function will delete the local file if it exists before the download starts.</param>
+    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
+    /// <exception cref="LocalFileAlreadyExistsException">If this function throws a localFileAlreadyExistsException, the path in the local file system already exists.</exception>
+    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        public bool DownloadFile(string fileDownloadURL, string localFileName, bool throwExceptionIfLocalFileExists, bool throwExceptionIfError = true)
+        {
+            using (var fileWriteStream = new FileStream(localFileName, FileMode.Create))
+            {
+                System.Net.HttpWebRequest httpWebRequest = null;
+                currentFileSize = 0L;
+                double amountDownloaded;
+
+                try
+                {
+                    if (urlPreProcessor is not null)
+                        fileDownloadURL = urlPreProcessor(fileDownloadURL);
+                    lastAccessedURL = fileDownloadURL;
+
+                    if (File.Exists(localFileName))
+                    {
+                        if (throwExceptionIfLocalFileExists)
+                        {
+                            lastException = new LocalFileAlreadyExistsException($"The local file found at \"{localFileName}\" already exists.");
+                            throw lastException;
+                        }
+                        else
+                        {
+                            File.Delete(localFileName);
+                        }
+                    }
+
+                    // We create a new data buffer to hold the stream of data from the web server.
+                    byte[] dataBuffer = new byte[intDownloadBufferSize + 1];
+
+                    httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(fileDownloadURL);
+
+                    ConfigureProxy(ref httpWebRequest);
+                    AddParametersToWebRequest(ref httpWebRequest);
+
+                    var webResponse = httpWebRequest.GetResponse(); // We now get the web response.
+                    CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
+
+                    // Gets the size of the remote file on the web server.
+                    remoteFileSizeInput = webResponse.ContentLength;
+
+                    var responseStream = webResponse.GetResponseStream(); // Gets the response stream.
+                    long lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length); // Reads some data from the HTTP stream into our data buffer.
+
+                    // We keep looping until all of the data has been downloaded.
+                    while (lngBytesReadFromInternet != 0L)
+                    {
+                        // We calculate the current file size by adding the amount of data that we've so far
+                        // downloaded from the server repeatedly to a variable called "currentFileSize".
+                        currentFileSize += lngBytesReadFromInternet;
+
+                        fileWriteStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet); // Writes the data directly to disk.
+
+                        amountDownloaded = currentFileSize / (double)remoteFileSizeInput * 100d;
+                        httpDownloadProgressPercentage = (short)Math.Round(Math.Round(amountDownloaded, 0)); // Update the download percentage value.
+                        DownloadStatusUpdateInvoker();
+
+                        lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length); // Reads more data into our data buffer.
+                    }
+
+                    if (downloadStatusUpdaterThread is not null & boolRunDownloadStatusUpdatePluginInSeparateThread)
+                    {
+                        downloadStatusUpdaterThread.Abort();
+                        downloadStatusUpdaterThread = null;
+                    }
+
+                    AbortDownloadStatusUpdaterThread();
+
+                    return true;
+                }
+                catch (System.Threading.ThreadAbortException ex)
+                {
+                    AbortDownloadStatusUpdaterThread();
+                    httpWebRequest?.Abort();
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    AbortDownloadStatusUpdaterThread();
+
+                    lastException = ex;
+
+                    if (!throwExceptionIfError)
+                        return false;
+
+                    if (customErrorHandler is not null)
+                    {
+                        customErrorHandler.DynamicInvoke(ex, this);
+                        // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                        return false;
+                    }
+
+                    if (ex is System.Net.WebException)
+                    {
+                        System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                        if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                        {
+                            throw HandleWebExceptionProtocolError(fileDownloadURL, ex2);
+                        }
+                        else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                        {
+                            lastException = new SslErrorException("There was an error establishing an SSL connection.", ex2);
+                            throw lastException;
+                        }
+                        else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                        {
+                            string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                            lastException = new DnsLookupError($"There was an error while looking up the DNS records for the domain name \"{strDomainName}\".", ex2);
+                            throw lastException;
+                        }
+
+                        lastException = new System.Net.WebException(ex.Message, ex2);
+                        throw lastException;
+                    }
+
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>Performs an HTTP Request for data from a web server.</summary>
+    /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
+    /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
+    /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
+    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
+    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+    /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
+    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+    /// <param name="shortRangeTo">This controls how much data is downloaded from the server.</param>
+    /// <param name="shortRangeFrom">This controls how much data is downloaded from the server.</param>
+        public bool GetWebData(string url, ref string httpResponseText, short shortRangeFrom, short shortRangeTo, bool throwExceptionIfError = true)
+        {
+            System.Net.HttpWebRequest httpWebRequest = null;
+
+            try
+            {
+                if (urlPreProcessor is not null)
+                    url = urlPreProcessor(url);
+                lastAccessedURL = url;
+
+                if (getData.Count != 0)
+                    url += $"?{GetGETDataString()}";
+
+                httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
+                httpWebRequest.AddRange(shortRangeFrom, shortRangeTo);
+
+                ConfigureProxy(ref httpWebRequest);
+                AddParametersToWebRequest(ref httpWebRequest);
+                AddPostDataToWebRequest(ref httpWebRequest);
+
+                using (var httpWebResponse = httpWebRequest.GetResponse())
+                {
+                    CaptureSSLInfo(url, ref httpWebRequest);
+
+                    using (var httpInStream = new StreamReader(httpWebResponse.GetResponseStream()))
+                    {
+                        string httpTextOutput = httpInStream.ReadToEnd().Trim();
+                        httpResponseHeaders = httpWebResponse.Headers;
+
+                        httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType().Equals(typeof(System.Threading.ThreadAbortException)))
+                {
+                    if (httpWebRequest is not null)
+                        httpWebRequest.Abort();
+                    return false;
+                }
+
+                lastException = ex;
+                if (!throwExceptionIfError)
+                    return false;
+
+                if (customErrorHandler is not null)
+                {
+                    customErrorHandler.DynamicInvoke(ex, this);
+                    // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                    return false;
+                }
+
+                if (ex is System.Net.WebException)
+                {
+                    System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                    if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                    {
+                        throw HandleWebExceptionProtocolError(url, ex2);
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                    {
+                        lastException = new SslErrorException("There was an error establishing an SSL connection.", ex2);
+                        throw lastException;
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                    {
+                        string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                        lastException = new DnsLookupError($"There was an error while looking up the DNS records for the domain name \"{strDomainName}\".", ex2);
+                        throw lastException;
+                    }
+
+                    lastException = new System.Net.WebException(ex.Message, ex2);
+                    throw lastException;
+                }
+
+                lastException = new Exception(ex.Message, ex);
+                throw lastException;
+            }
+        }
+
+        /// <summary>Performs an HTTP Request for data from a web server.</summary>
+    /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
+    /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
+    /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
+    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
+    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+    /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
+    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        public bool GetWebData(string url, ref string httpResponseText, bool throwExceptionIfError = true)
+        {
+            System.Net.HttpWebRequest httpWebRequest = null;
+
+            try
+            {
+                if (urlPreProcessor is not null)
+                    url = urlPreProcessor(url);
+                lastAccessedURL = url;
+
+                if (getData.Count != 0)
+                    url += $"?{GetGETDataString()}";
+
+                httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
+
+                ConfigureProxy(ref httpWebRequest);
+                AddParametersToWebRequest(ref httpWebRequest);
+                AddPostDataToWebRequest(ref httpWebRequest);
+
+                using (var httpWebResponse = httpWebRequest.GetResponse())
+                {
+                    CaptureSSLInfo(url, ref httpWebRequest);
+
+                    using (var httpInStream = new StreamReader(httpWebResponse.GetResponseStream()))
+                    {
+                        string httpTextOutput = httpInStream.ReadToEnd().Trim();
+                        httpResponseHeaders = httpWebResponse.Headers;
+
+                        httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType().Equals(typeof(System.Threading.ThreadAbortException)))
+                {
+                    if (httpWebRequest is not null)
+                        httpWebRequest.Abort();
+                    return false;
+                }
+
+                lastException = ex;
+                if (!throwExceptionIfError)
+                    return false;
+
+                if (customErrorHandler is not null)
+                {
+                    customErrorHandler.DynamicInvoke(ex, this);
+                    // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                    return false;
+                }
+
+                if (ex is System.Net.WebException)
+                {
+                    System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                    if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                    {
+                        throw HandleWebExceptionProtocolError(url, ex2);
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                    {
+                        lastException = new SslErrorException("There was an error establishing an SSL connection.", ex2);
+                        throw lastException;
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                    {
+                        string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                        lastException = new DnsLookupError($"There was an error while looking up the DNS records for the domain name \"{strDomainName}\".", ex2);
+                        throw lastException;
+                    }
+
+                    lastException = new System.Net.WebException(ex.Message, ex2);
+                    throw lastException;
+                }
+
+                lastException = new Exception(ex.Message, ex);
+                throw lastException;
+            }
+        }
+
+        /// <summary>Sends data to a URL of your choosing.</summary>
+    /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
+    /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
+    /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
+    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
+    /// <exception cref="DataMissingException">If this function throws an postDataMissingException, the Class has nothing to upload so why continue?</exception>
+    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+    /// <example>httpPostObject.uploadData("http://www.myserver.com/myscript", httpResponseText)</example>
+    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        public bool UploadData(string url, ref string httpResponseText, bool throwExceptionIfError = false)
+        {
+            System.Net.HttpWebRequest httpWebRequest = null;
+
+            try
+            {
+                if (urlPreProcessor is not null)
+                    url = urlPreProcessor(url);
+                lastAccessedURL = url;
+
+                if (postData.Count == 0)
+                {
+                    lastException = new DataMissingException("Your HTTP Request contains no POST data. Please add some data to POST before calling this function.");
+                    throw lastException;
+                }
+                if (getData.Count != 0)
+                    url += $"?{GetGETDataString()}";
+
+                string boundary = $"---------------------------{DateTime.Now.Ticks:x}";
+                byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes($"{Convert.ToString($"{strCRLF}--")}{boundary}{strCRLF}");
+
+                httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
+
+                ConfigureProxy(ref httpWebRequest);
+                AddParametersToWebRequest(ref httpWebRequest);
+
+                httpWebRequest.KeepAlive = true;
+                httpWebRequest.ContentType = $"multipart/form-data; boundary={boundary}";
+                httpWebRequest.Method = "POST";
+
+                if (postData.Count != 0)
+                {
+                    using (var httpRequestWriter = httpWebRequest.GetRequestStream())
+                    {
+                        string header;
+                        FileInfo fileInfo;
+                        FormFile formFileObjectInstance;
+                        byte[] bytes;
+                        string data;
+
+                        foreach (KeyValuePair<string, object> entry in postData)
+                        {
+                            httpRequestWriter.Write(boundaryBytes, 0, boundaryBytes.Length);
+
+                            if (entry.Value is FormFile)
+                            {
+                                formFileObjectInstance = (FormFile)entry.Value;
+
+                                if (string.IsNullOrEmpty(formFileObjectInstance.RemoteFileName))
+                                {
+                                    fileInfo = new FileInfo(formFileObjectInstance.LocalFilePath);
+
+                                    header = $"Content-Disposition: form-data; name=\"{entry.Key}\"; filename=\"{fileInfo.Name}\"";
+                                    header += $"{Constants.vbCrLf}Content-Type: {formFileObjectInstance.ContentType}{Constants.vbCrLf}{Constants.vbCrLf}";
+                                }
+                                else
+                                {
+                                    header = $"Content-Disposition: form-data; name=\"{entry.Key}\"; filename=\"{formFileObjectInstance.RemoteFileName}\"";
+                                    header += $"{Constants.vbCrLf}Content-Type: {formFileObjectInstance.ContentType}{Constants.vbCrLf}{Constants.vbCrLf}";
+                                }
+
+                                bytes = System.Text.Encoding.UTF8.GetBytes(header);
+                                httpRequestWriter.Write(bytes, 0, bytes.Length);
+
+                                using (var fileStream = new FileStream(formFileObjectInstance.LocalFilePath, FileMode.Open))
+                                {
+                                    fileStream.CopyTo(httpRequestWriter);
+                                }
+                            }
+                            else
+                            {
+                                data = $"Content-Disposition: form-data; name=\"{entry.Key}\"{Constants.vbCrLf}{Constants.vbCrLf}{entry.Value}";
+                                bytes = System.Text.Encoding.UTF8.GetBytes(data);
+                                httpRequestWriter.Write(bytes, 0, bytes.Length);
+                            }
+                        }
+
+                        byte[] trailer = System.Text.Encoding.ASCII.GetBytes($"{Constants.vbCrLf}--{boundary}--{Constants.vbCrLf}");
+                        httpRequestWriter.Write(trailer, 0, trailer.Length);
+                    }
+                }
+
+                using (var httpWebResponse = httpWebRequest.GetResponse())
+                {
+                    CaptureSSLInfo(url, ref httpWebRequest);
+
+                    using (var httpInStream = new StreamReader(httpWebResponse.GetResponseStream()))
+                    {
+                        string httpTextOutput = httpInStream.ReadToEnd().Trim();
+                        httpResponseHeaders = httpWebResponse.Headers;
+
+                        httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType().Equals(typeof(System.Threading.ThreadAbortException)))
+                {
+                    if (httpWebRequest is not null)
+                        httpWebRequest.Abort();
+                }
+
+                lastException = ex;
+                if (!throwExceptionIfError)
+                    return false;
+
+                if (customErrorHandler is not null)
+                {
+                    customErrorHandler.DynamicInvoke(ex, this);
+                    // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                    return false;
+                }
+
+                if (ex is System.Net.WebException)
+                {
+                    System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                    if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                    {
+                        throw HandleWebExceptionProtocolError(url, ex2);
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                    {
+                        lastException = new SslErrorException("There was an error establishing an SSL connection.", ex2);
+                        throw lastException;
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                    {
+                        string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                        lastException = new DnsLookupError($"There was an error while looking up the DNS records for the domain name \"{strDomainName}\".", ex2);
+                        throw lastException;
+                    }
+
+                    lastException = new System.Net.WebException(ex.Message, ex2);
+                    throw lastException;
+                }
+
+                lastException = new Exception(ex.Message, ex);
+                throw lastException;
+            }
+        }
+
+        private void CaptureSSLInfo(string url, ref System.Net.HttpWebRequest httpWebRequest)
+        {
+            sslCertificate = url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ? new System.Security.Cryptography.X509Certificates.X509Certificate2(httpWebRequest.ServicePoint.Certificate) : null;
+        }
+
+        private void AddPostDataToWebRequest(ref System.Net.HttpWebRequest httpWebRequest)
+        {
+            if (postData.Count == 0)
+            {
+                httpWebRequest.Method = "GET";
+            }
+            else
+            {
+                httpWebRequest.Method = "POST";
+                string postDataString = GetPOSTDataString();
+                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                httpWebRequest.ContentLength = postDataString.Length;
+
+                using (var httpRequestWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    httpRequestWriter.Write(postDataString);
+                }
+            }
+        }
+
+        private void AddParametersToWebRequest(ref System.Net.HttpWebRequest httpWebRequest)
+        {
+            if (credentials is not null)
+            {
+                httpWebRequest.PreAuthenticate = true;
+                AddHTTPHeader("Authorization", $"Basic {Convert.ToBase64String(System.Text.Encoding.Default.GetBytes($"{credentials.StrUser}:{credentials.StrPasswordInput}"))}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(strUserAgentString))
+                httpWebRequest.UserAgent = strUserAgentString;
+            if (httpCookies.Count != 0)
+                GetCookies(ref httpWebRequest);
+            if (additionalHTTPHeaders.Count != 0)
+                GetHeaders(ref httpWebRequest);
+
+            if (boolUseHTTPCompression)
+            {
+                // We tell the web server that we can accept a GZIP and Deflate compressed data stream.
+                httpWebRequest.Accept = "gzip, deflate";
+                httpWebRequest.Headers.Add(System.Net.HttpRequestHeader.AcceptEncoding, "gzip, deflate");
+                httpWebRequest.AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate;
+            }
+
+            httpWebRequest.Timeout = httpTimeOut;
+            httpWebRequest.KeepAlive = true;
+        }
+
+        private void GetCookies(ref System.Net.HttpWebRequest httpWebRequest)
+        {
+            var cookieContainer = new System.Net.CookieContainer();
+            foreach (KeyValuePair<string, CookieDetails> entry in httpCookies)
+                cookieContainer.Add(new System.Net.Cookie(entry.Key, entry.Value.CookieData, entry.Value.cookiePath, entry.Value.cookieDomain));
+            httpWebRequest.CookieContainer = cookieContainer;
+        }
+
+        private void GetHeaders(ref System.Net.HttpWebRequest httpWebRequest)
+        {
+            foreach (KeyValuePair<string, string> entry in additionalHTTPHeaders)
+                httpWebRequest.Headers[entry.Key] = entry.Value;
+        }
+
+        private void ConfigureProxy(ref System.Net.HttpWebRequest httpWebRequest)
+        {
+            if (boolUseProxy)
+            {
+                if (boolUseSystemProxy)
+                {
+                    httpWebRequest.Proxy = System.Net.WebRequest.GetSystemWebProxy();
+                }
+                else
+                {
+                    httpWebRequest.Proxy = customProxy ?? System.Net.WebRequest.GetSystemWebProxy();
+                }
+            }
+        }
+
+        private string ConvertLineFeeds(string input)
+        {
+            input = input.Replace(Constants.vbCrLf, Constants.vbLf); // Temporarily replace all CRLF with LF
+            input = input.Replace(Constants.vbCr, Constants.vbLf); // Convert standalone CR to LF
+            input = input.Replace(Constants.vbLf, Constants.vbCrLf); // Finally, replace all LF with CRLF
+            return input;
+        }
+
+        private string GetPOSTDataString()
+        {
+            string postDataString = "";
+            foreach (KeyValuePair<string, object> entry in postData)
+            {
+                if (!entry.Value.GetType().Equals(typeof(FormFile)))
+                {
+                    postDataString += $"{entry.Key.Trim()}={System.Web.HttpUtility.UrlEncode(entry.Value.ToString().Trim())}&";
+                }
+            }
+
+            if (postDataString.EndsWith("&"))
+                postDataString = postDataString.Substring(0, postDataString.Length - 1);
+
+            return postDataString;
+        }
+
+        private string GetGETDataString()
+        {
+            string getDataString = "";
+            foreach (KeyValuePair<string, string> entry in getData)
+                getDataString += $"{entry.Key.Trim()}={System.Web.HttpUtility.UrlEncode(entry.Value.Trim())}&";
+
+            if (getDataString.EndsWith("&"))
+                getDataString = getDataString.Substring(0, getDataString.Length - 1);
+
+            return getDataString;
+        }
+
+        private HttpProtocolException HandleWebExceptionProtocolError(string url, System.Net.WebException ex)
+        {
+            System.Net.HttpWebResponse httpErrorResponse = ex.Response as System.Net.HttpWebResponse;
+
+            if (httpErrorResponse is not null)
+            {
+                if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    lastException = new HttpProtocolException($"HTTP Protocol Error (Server 500 Error) while accessing {url}", ex) { HttpStatusCode = httpErrorResponse.StatusCode };
+                }
+                else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    lastException = new HttpProtocolException($"HTTP Protocol Error (404 File Not Found) while accessing {url}", ex) { HttpStatusCode = httpErrorResponse.StatusCode };
+                }
+                else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    lastException = new HttpProtocolException($"HTTP Protocol Error (401 Unauthorized) while accessing {url}", ex) { HttpStatusCode = httpErrorResponse.StatusCode };
+                }
+                else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    lastException = new HttpProtocolException($"HTTP Protocol Error (503 Service Unavailable) while accessing {url}", ex) { HttpStatusCode = httpErrorResponse.StatusCode };
+                }
+                else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    lastException = new HttpProtocolException($"HTTP Protocol Error (403 Forbidden) while accessing {url}", ex) { HttpStatusCode = httpErrorResponse.StatusCode };
+                }
+                else
+                {
+                    lastException = new HttpProtocolException($"HTTP Protocol Error while accessing {url}", ex) { HttpStatusCode = httpErrorResponse.StatusCode };
+                }
+            }
+            else
+            {
+                lastException = new HttpProtocolException($"HTTP Protocol Error while accessing {url}", ex);
+            }
+
+            return (HttpProtocolException)lastException;
+        }
+
+        public string FileSizeToHumanReadableFormat(long size, bool roundToNearestWholeNumber = false)
+        {
+            string result;
+            short shortRoundNumber = (short)(roundToNearestWholeNumber ? 0 : 2);
+
+            if (size <= Math.Pow(2d, 10d))
+            {
+                result = $"{size} Bytes";
+            }
+            else if (size > Math.Pow(2d, 10d) & size <= Math.Pow(2d, 20d))
+            {
+                result = $"{Math.Round(size / Math.Pow(2d, 10d), shortRoundNumber)} KBs";
+            }
+            else if (size > Math.Pow(2d, 20d) & size <= Math.Pow(2d, 30d))
+            {
+                result = $"{Math.Round(size / Math.Pow(2d, 20d), shortRoundNumber)} MBs";
+            }
+            else if (size > Math.Pow(2d, 30d) & size <= Math.Pow(2d, 40d))
+            {
+                result = $"{Math.Round(size / Math.Pow(2d, 30d), shortRoundNumber)} GBs";
+            }
+            else if (size > Math.Pow(2d, 40d) & size <= Math.Pow(2d, 50d))
+            {
+                result = $"{Math.Round(size / Math.Pow(2d, 40d), shortRoundNumber)} TBs";
+            }
+            else if (size > Math.Pow(2d, 50d) & size <= Math.Pow(2d, 60d))
+            {
+                result = $"{Math.Round(size / Math.Pow(2d, 50d), shortRoundNumber)} PBs";
+            }
+            else
+            {
+                result = "(None)";
+            }
+
+            return result;
+        }
+    }
+
+    static class DictionaryExtensions
+    {
+        /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
+    /// <param name="haystack">The dictionary that's being searched.</param>
+    /// <param name="needle">The key that you're looking for.</param>
+    /// <return>Returns a String value.</return>
+        public static bool MyContainsKey(this Dictionary<string, string> haystack, string needle)
+        {
+            if (string.IsNullOrEmpty(needle))
+            {
+                throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
+            }
+            if (haystack is null)
+            {
+                throw new ArgumentNullException(nameof(haystack));
+            }
+
+            return haystack.Keys.Any((key) => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
+    /// <param name="haystack">The dictionary that's being searched.</param>
+    /// <param name="needle">The key that you're looking for.</param>
+    /// <return>Returns a String value.</return>
+        public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
+        {
+            if (string.IsNullOrEmpty(needle))
+            {
+                throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
+            }
+            if (haystack is null)
+            {
+                throw new ArgumentNullException(nameof(haystack));
+            }
+
+            return haystack.Keys.Any((key) => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
+    /// <param name="haystack">The dictionary that's being searched.</param>
+    /// <param name="needle">The key that you're looking for.</param>
+    /// <return>Returns a String value.</return>
+        public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
+        {
+            if (string.IsNullOrEmpty(needle))
+            {
+                throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
+            }
+            if (haystack is null)
+            {
+                throw new ArgumentNullException(nameof(haystack));
+            }
+
+            return haystack.Keys.Any((key) => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+}
