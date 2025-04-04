@@ -48,10 +48,10 @@
     Private Sub IntegerInputForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyData = Keys.Escape Then
             DialogResult = DialogResult.Cancel
+            Close()
         ElseIf e.KeyData = Keys.Enter Then
             DialogResult = DialogResult.OK
+            Close()
         End If
-
-        Close()
     End Sub
 End Class
