@@ -89,7 +89,7 @@ namespace Free_SysLog.checkForUpdates
                 remoteVersion = xmlNode.SelectSingleNode("version").InnerText.Trim();
                 remoteBuild = xmlNode.SelectSingleNode("build").InnerText.Trim();
 
-                long longInternalVersionFromXML = 0L;
+                long longInternalVersionFromXML = 0;
                 if (xmlNode.SelectSingleNode("internalversion") is not null)
                 {
                     if (long.TryParse(xmlNode.SelectSingleNode("internalversion").InnerText.Trim(), out longInternalVersionFromXML))
@@ -181,7 +181,7 @@ namespace Free_SysLog.checkForUpdates
         private bool VerifyChecksum(string urlOfChecksumFile, ref MemoryStream memStream, ref HttpHelper httpHelper, bool boolGiveUserAnErrorMessage)
         {
             string checksumFromWeb = null;
-            memStream.Position = 0L;
+            memStream.Position = 0;
 
             try
             {
@@ -297,7 +297,7 @@ namespace Free_SysLog.checkForUpdates
                         return;
                     }
 
-                    memoryStream.Position = 0L;
+                    memoryStream.Position = 0;
 
                     using (var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SupportCode.SupportCode.strUpdaterEXE), FileMode.OpenOrCreate))
                     {

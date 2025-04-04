@@ -26,7 +26,7 @@ namespace Free_SysLog
     {
         private bool boolMaximizedBeforeMinimize;
         private bool boolDoneLoading = false;
-        public long longNumberOfIgnoredLogs = 0L;
+        public long longNumberOfIgnoredLogs = 0;
         public List<MyDataGridViewRow> IgnoredLogs = new List<MyDataGridViewRow>();
         public Dictionary<string, Regex> regexCache = new Dictionary<string, Regex>();
         public int intSortColumnIndex = 0; // Define intColumnNumber at class level
@@ -1094,7 +1094,7 @@ namespace Free_SysLog
             lock (IgnoredLogsLockObject)
             {
                 IgnoredLogs.Clear();
-                longNumberOfIgnoredLogs = 0L;
+                longNumberOfIgnoredLogs = 0;
                 ClearIgnoredLogsToolStripMenuItem.Enabled = false;
                 LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}";
             }
@@ -1188,7 +1188,7 @@ namespace Free_SysLog
 
         private void ZerooutIgnoredLogsCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            longNumberOfIgnoredLogs = 0L;
+            longNumberOfIgnoredLogs = 0;
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}";
             ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = false;
         }
@@ -1743,7 +1743,7 @@ namespace Free_SysLog
 
         private void StartUpDelay_Click(object sender, EventArgs e)
         {
-            double dblSeconds = 0d;
+            double dblSeconds = 0;
 
             using (var taskService = new Microsoft.Win32.TaskScheduler.TaskService())
             {

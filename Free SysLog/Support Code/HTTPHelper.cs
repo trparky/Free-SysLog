@@ -232,7 +232,7 @@ namespace Free_SysLog
         private System.Net.IWebProxy customProxy = null;
         private System.Net.WebHeaderCollection httpResponseHeaders = null;
         private short httpDownloadProgressPercentage = 0;
-        private long remoteFileSizeInput, currentFileSize;
+        private long remoteFileSize, currentFileSize;
         private int httpTimeOut = 5000;
         private bool boolUseHTTPCompression = true;
         private string lastAccessedURL = null;
@@ -437,8 +437,8 @@ namespace Free_SysLog
             postData.Clear();
             getData.Clear();
 
-            remoteFileSizeInput = 0L;
-            currentFileSize = 0L;
+            remoteFileSize = 0;
+            currentFileSize = 0;
 
             sslCertificate = null;
             urlPreProcessor = null;
@@ -538,7 +538,7 @@ namespace Free_SysLog
     /// <returns>Either a String or a Long containing the remote file size.</returns>
         public object GetHTTPDownloadRemoteFileSize(bool boolHumanReadable = true)
         {
-            return boolHumanReadable ? FileSizeToHumanReadableFormat(remoteFileSizeInput) : remoteFileSizeInput;
+            return boolHumanReadable ? FileSizeToHumanReadableFormat(remoteFileSize) : remoteFileSize;
         }
 
         /// <summary>This returns the SSL certificate details for the last HTTP request made by this Class instance.</summary>
@@ -946,7 +946,7 @@ namespace Free_SysLog
         /// <summary>This subroutine is used by the downloadFile function to update the download status of the file that's being downloaded by the class instance.</summary>
         private void DownloadStatusUpdateInvoker()
         {
-            downloadStatusDetails = new DownloadStatusDetails() { RemoteFileSize = remoteFileSizeInput, PercentageDownloaded = httpDownloadProgressPercentage, LocalFileSize = currentFileSize }; // Update the downloadStatusDetails.
+            downloadStatusDetails = new DownloadStatusDetails() { RemoteFileSize = remoteFileSize, PercentageDownloaded = httpDownloadProgressPercentage, LocalFileSize = currentFileSize }; // Update the downloadStatusDetails.
 
             // Checks to see if we have a status update routine to invoke.
             if (downloadStatusUpdater is not null)
@@ -1089,7 +1089,7 @@ namespace Free_SysLog
         public bool DownloadFile(string fileDownloadURL, ref MemoryStream memStream, bool throwExceptionIfError = true)
         {
             System.Net.HttpWebRequest httpWebRequest = null;
-            currentFileSize = 0L;
+            currentFileSize = 0;
             double amountDownloaded;
 
             try
@@ -1110,7 +1110,7 @@ namespace Free_SysLog
                 CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
 
                 // Gets the size of the remote file on the web server.
-                remoteFileSizeInput = webResponse.ContentLength;
+                remoteFileSize = webResponse.ContentLength;
 
                 var responseStream = webResponse.GetResponseStream(); // Gets the response stream.
 
@@ -1125,7 +1125,7 @@ namespace Free_SysLog
 
                     memStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet); // Writes the data directly to disk.
 
-                    amountDownloaded = currentFileSize / (double)remoteFileSizeInput * 100d;
+                    amountDownloaded = currentFileSize / remoteFileSize * 100;
                     httpDownloadProgressPercentage = (short)Math.Round(Math.Round(amountDownloaded, 0)); // Update the download percentage value.
                     DownloadStatusUpdateInvoker();
 
@@ -1136,7 +1136,7 @@ namespace Free_SysLog
                 // user processes the IO.MemoryStream that's returned as part of this function the IO.MemoryStream will be ready to write the data out of
                 // memory and into whatever stream the user wants to write the data out to. If this isn't done and the user executes the CopyTo() function
                 // on the IO.MemoryStream Object the user will have nothing written out because the IO.MemoryStream will be at the end of the stream.
-                memStream.Position = 0L;
+                memStream.Position = 0;
 
                 AbortDownloadStatusUpdaterThread();
 
@@ -1209,7 +1209,7 @@ namespace Free_SysLog
             using (var fileWriteStream = new FileStream(localFileName, FileMode.Create))
             {
                 System.Net.HttpWebRequest httpWebRequest = null;
-                currentFileSize = 0L;
+                currentFileSize = 0;
                 double amountDownloaded;
 
                 try
@@ -1243,7 +1243,7 @@ namespace Free_SysLog
                     CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
 
                     // Gets the size of the remote file on the web server.
-                    remoteFileSizeInput = webResponse.ContentLength;
+                    remoteFileSize = webResponse.ContentLength;
 
                     var responseStream = webResponse.GetResponseStream(); // Gets the response stream.
                     long lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length); // Reads some data from the HTTP stream into our data buffer.
@@ -1257,7 +1257,7 @@ namespace Free_SysLog
 
                         fileWriteStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet); // Writes the data directly to disk.
 
-                        amountDownloaded = currentFileSize / (double)remoteFileSizeInput * 100d;
+                        amountDownloaded = currentFileSize / remoteFileSize * 100;
                         httpDownloadProgressPercentage = (short)Math.Round(Math.Round(amountDownloaded, 0)); // Update the download percentage value.
                         DownloadStatusUpdateInvoker();
 
