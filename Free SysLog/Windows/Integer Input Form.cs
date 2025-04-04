@@ -69,13 +69,13 @@ namespace Free_SysLog
             if (e.KeyData == Keys.Escape)
             {
                 DialogResult = DialogResult.Cancel;
+                Close();
             }
             else if (e.KeyData == Keys.Enter)
             {
                 DialogResult = DialogResult.OK;
+                Close();
             }
-
-            Close();
         }
     }
 }
