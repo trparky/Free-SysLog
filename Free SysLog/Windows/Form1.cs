@@ -967,7 +967,42 @@ namespace Free_SysLog
 
             var worker = new BackgroundWorker();
 
-            worker.DoWork += (a, b) => { try { RegexOptions regExOptions = (RegexOptions)(ChkCaseInsensitiveSearch.Checked ? (int)RegexOptions.Compiled + (int)RegexOptions.IgnoreCase : (int)RegexOptions.Compiled); if (ChkRegExSearch.Checked) { regexCompiledObject = new Regex(TxtSearchTerms.Text, regExOptions); } else { regexCompiledObject = new Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions); } lock (dataGridLockObject) { foreach (DataGridViewRow item in Logs.Rows) { MyDataGridRowItem = item as MyDataGridViewRow; if (MyDataGridRowItem is not null) { strLogText = Conversions.ToString(MyDataGridRowItem.Cells[SupportCode.SupportCode.ColumnIndex_LogText].Value); if (!string.IsNullOrWhiteSpace(strLogText) && regexCompiledObject.IsMatch(strLogText)) { listOfSearchResults.Add((MyDataGridViewRow)MyDataGridRowItem.Clone()); } } } } } catch (ArgumentException) { Interaction.MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text); } };
+            worker.DoWork += (a, b) => {
+                try {
+                    RegexOptions regExOptions = ChkCaseInsensitiveSearch.Checked ? RegexOptions.Compiled & RegexOptions.IgnoreCase : RegexOptions.Compiled;
+
+                    if (ChkRegExSearch.Checked)
+                    {
+                        regexCompiledObject = new Regex(TxtSearchTerms.Text, regExOptions);
+                    }
+                    else
+                    {
+                        regexCompiledObject = new Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions);
+                    }
+
+                    lock (dataGridLockObject)
+                    {
+                        foreach (DataGridViewRow item in Logs.Rows)
+                        {
+                            MyDataGridRowItem = item as MyDataGridViewRow;
+
+                            if (MyDataGridRowItem is not null)
+                            {
+                                strLogText = Conversions.ToString(MyDataGridRowItem.Cells[SupportCode.SupportCode.ColumnIndex_LogText].Value);
+                                
+                                if (!string.IsNullOrWhiteSpace(strLogText) && regexCompiledObject.IsMatch(strLogText))
+                                {
+                                    listOfSearchResults.Add((MyDataGridViewRow)MyDataGridRowItem.Clone());
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    Interaction.MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text);
+                }
+            };
 
             worker.RunWorkerCompleted += (a, b) =>
                 {
