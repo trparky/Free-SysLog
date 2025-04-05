@@ -265,7 +265,7 @@ namespace Free_SysLog
         }
 
         /// <summary>Retrieves the downloadStatusDetails data from within the Class instance.</summary>
-    /// <returns>A downloadStatusDetails Object.</returns>
+        /// <returns>A downloadStatusDetails Object.</returns>
         public DownloadStatusDetails GetDownloadStatusDetails
         {
             get
@@ -284,14 +284,14 @@ namespace Free_SysLog
         }
 
         /// <summary>This allows you to inject your own error handler for HTTP exceptions into the Class instance.</summary>
-    /// <value>A Lambda</value>
-    /// <example>
-    /// A VB.NET Example...
-    /// httpHelper.setCustomErrorHandler(Function(ByVal ex As Exception, classInstance As httpHelper)
-    /// End Function)
-    /// OR A C# Example...
-    /// httpHelper.setCustomErrorHandler((Exception ex, httpHelper classInstance) => { }
-    /// </example>
+        /// <value>A Lambda</value>
+        /// <example>
+        /// A VB.NET Example...
+        /// httpHelper.setCustomErrorHandler(Function(ByVal ex As Exception, classInstance As httpHelper)
+        /// End Function)
+        /// OR A C# Example...
+        /// httpHelper.setCustomErrorHandler((Exception ex, httpHelper classInstance) => { }
+        /// </example>
         public Delegate SetCustomErrorHandler
         {
             set
@@ -301,9 +301,9 @@ namespace Free_SysLog
         }
 
         /// <summary>Adds HTTP Authentication headers to your HTTP Request in this HTTPHelper instance.</summary>
-    /// <param name="strUsernameInput">The username you want to pass to the server.</param>
-    /// <param name="strPassword">The password you want to pass to the server.</param>
-    /// <param name="throwExceptionIfAlreadySet">A Boolean value. This tells the function if it should throw an exception if HTTP Authentication settings have already been set.</param>
+        /// <param name="strUsernameInput">The username you want to pass to the server.</param>
+        /// <param name="strPassword">The password you want to pass to the server.</param>
+        /// <param name="throwExceptionIfAlreadySet">A Boolean value. This tells the function if it should throw an exception if HTTP Authentication settings have already been set.</param>
         public void SetHTTPCredentials(string strUsernameInput, string strPassword, bool throwExceptionIfAlreadySet = true)
         {
             if (credentials is null)
@@ -315,12 +315,12 @@ namespace Free_SysLog
         }
 
         /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
-    /// <param name="strUsername">The username you want to pass to the server.</param>
-    /// <param name="strPassword">The password you want to pass to the server.</param>
-    /// <param name="strServer">The proxy server's address, usually an IP address.</param>
-    /// <param name="intPort">The proxy port.</param>
-    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
-    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        /// <param name="strUsername">The username you want to pass to the server.</param>
+        /// <param name="strPassword">The password you want to pass to the server.</param>
+        /// <param name="strServer">The proxy server's address, usually an IP address.</param>
+        /// <param name="intPort">The proxy port.</param>
+        /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+        /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
         public void SetProxy(string strServer, int intPort, string strUsername, string strPassword, bool boolByPassOnLocal = true)
         {
             try
@@ -334,10 +334,10 @@ namespace Free_SysLog
         }
 
         /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
-    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
-    /// <param name="strServer">The proxy server's address, usually an IP address.</param>
-    /// <param name="intPort">The proxy port.</param>
-    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+        /// <param name="strServer">The proxy server's address, usually an IP address.</param>
+        /// <param name="intPort">The proxy port.</param>
+        /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
         public void SetProxy(string strServer, int intPort, bool boolByPassOnLocal = true)
         {
             try
@@ -351,9 +351,9 @@ namespace Free_SysLog
         }
 
         /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
-    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
-    /// <param name="strServer">The proxy server's address, usually an IP address followed up by a ":" followed up by a port number.</param>
-    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+        /// <param name="strServer">The proxy server's address, usually an IP address followed up by a ":" followed up by a port number.</param>
+        /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
         public void SetProxy(string strServer, bool boolByPassOnLocal = true)
         {
             try
@@ -367,11 +367,11 @@ namespace Free_SysLog
         }
 
         /// <summary>Sets up a custom proxy configuration for this class instance.</summary>
-    /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
-    /// <param name="strServer">The proxy server's address, usually an IP address followed up by a ":" followed up by a port number.</param>
-    /// <param name="strUsername">The username you want to pass to the server.</param>
-    /// <param name="strPassword">The password you want to pass to the server.</param>
-    /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
+        /// <param name="boolByPassOnLocal">This tells the class instance if it should bypass the proxy for local servers. This is an optional value, by default it is True.</param>
+        /// <param name="strServer">The proxy server's address, usually an IP address followed up by a ":" followed up by a port number.</param>
+        /// <param name="strUsername">The username you want to pass to the server.</param>
+        /// <param name="strPassword">The password you want to pass to the server.</param>
+        /// <exception cref="ProxyConfigurationErrorException">If this function throws a proxyConfigurationError, it means that something went wrong while setting up the proxy configuration for this class instance.</exception>
         public void SetProxy(string strServer, string strUsername, string strPassword, bool boolByPassOnLocal = true)
         {
             try
@@ -385,7 +385,7 @@ namespace Free_SysLog
         }
 
         /// <summary>Returns the last Exception that occurred within this Class instance.</summary>
-    /// <returns>An Exception Object.</returns>
+        /// <returns>An Exception Object.</returns>
         public Exception GetLastException
         {
             get
@@ -395,14 +395,14 @@ namespace Free_SysLog
         }
 
         /// <summary>This allows you to set up a function to be run while your HTTP download is being processed. This function can be used to update things on the GUI during a download.</summary>
-    /// <value>A Lambda</value>
-    /// <example>
-    /// A VB.NET Example...
-    /// httpHelper.setDownloadStatusUpdateRoutine(Function(ByVal downloadStatusDetails As downloadStatusDetails)
-    /// End Function)
-    /// OR A C# Example...
-    /// httpHelper.setDownloadStatusUpdateRoutine((downloadStatusDetails downloadStatusDetails) => { })
-    /// </example>
+        /// <value>A Lambda</value>
+        /// <example>
+        /// A VB.NET Example...
+        /// httpHelper.setDownloadStatusUpdateRoutine(Function(ByVal downloadStatusDetails As downloadStatusDetails)
+        /// End Function)
+        /// OR A C# Example...
+        /// httpHelper.setDownloadStatusUpdateRoutine((downloadStatusDetails downloadStatusDetails) => { })
+        /// </example>
         public Delegate SetDownloadStatusUpdateRoutine
         {
             set
@@ -412,15 +412,15 @@ namespace Free_SysLog
         }
 
         /// <summary>This allows you to set up a Pre-Processor of sorts for URLs in case you need to add things to the beginning or end of URLs.</summary>
-    /// <value>A Lambda</value>
-    /// <example>
-    /// httpHelper.setURLPreProcessor(Function(ByVal strURLInput As String) As String
-    ///   If strURLInput.ToLower.StartsWith("http://") = False Then
-    ///     strURLInput = "http://" + strURLInput
-    ///   End If
-    ///   Return strURLInput
-    /// End Function)
-    /// </example>
+        /// <value>A Lambda</value>
+        /// <example>
+        /// httpHelper.setURLPreProcessor(Function(ByVal strURLInput As String) As String
+        ///   If strURLInput.ToLower.StartsWith("http://") = False Then
+        ///     strURLInput = "http://" + strURLInput
+        ///   End If
+        ///   Return strURLInput
+        /// End Function)
+        /// </example>
         public Func<string, string> SetURLPreProcessor
         {
             set
@@ -448,7 +448,7 @@ namespace Free_SysLog
         }
 
         /// <summary>Returns the last accessed URL by this Class instance.</summary>
-    /// <returns>A String.</returns>
+        /// <returns>A String.</returns>
         public string GetLastAccessedURL
         {
             get
@@ -467,7 +467,7 @@ namespace Free_SysLog
         }
 
         /// <summary>This function allows you to get a peek inside the Class object instance. It returns many of the things that make up the Class instance like POST and GET data, cookies, additional HTTP headers, if proxy mode and HTTP compression mode is enabled, the user agent string, etc.</summary>
-    /// <returns>A String.</returns>
+        /// <returns>A String.</returns>
         public override string ToString()
         {
             var stringBuilder = new System.Text.StringBuilder();
@@ -534,17 +534,17 @@ namespace Free_SysLog
         }
 
         /// <summary>Gets the remote file size.</summary>
-    /// <param name="boolHumanReadable">Optional setting, normally set to True. Tells the function if it should transform the Integer representing the file size into a human readable format.</param>
-    /// <returns>Either a String or a Long containing the remote file size.</returns>
+        /// <param name="boolHumanReadable">Optional setting, normally set to True. Tells the function if it should transform the Integer representing the file size into a human readable format.</param>
+        /// <returns>Either a String or a Long containing the remote file size.</returns>
         public object GetHTTPDownloadRemoteFileSize(bool boolHumanReadable = true)
         {
             return boolHumanReadable ? FileSizeToHumanReadableFormat(remoteFileSize) : remoteFileSize;
         }
 
         /// <summary>This returns the SSL certificate details for the last HTTP request made by this Class instance.</summary>
-    /// <returns>System.Security.Cryptography.X509Certificates.X509Certificate2</returns>
-    /// <exception cref="NoSSLCertificateFoundException">If this function throws a noSSLCertificateFoundException it means that the Class doesn't have an SSL certificate in the memory space of the Class instance. Perhaps the last HTTP request wasn't an HTTPS request.</exception>
-    /// <param name="boolThrowException">An optional parameter that tells the function if it should throw an exception if an SSL certificate isn't found in the memory space of this Class instance.</param>
+        /// <returns>System.Security.Cryptography.X509Certificates.X509Certificate2</returns>
+        /// <exception cref="NoSSLCertificateFoundException">If this function throws a noSSLCertificateFoundException it means that the Class doesn't have an SSL certificate in the memory space of the Class instance. Perhaps the last HTTP request wasn't an HTTPS request.</exception>
+        /// <param name="boolThrowException">An optional parameter that tells the function if it should throw an exception if an SSL certificate isn't found in the memory space of this Class instance.</param>
         public System.Security.Cryptography.X509Certificates.X509Certificate2 GetCertificateDetails(bool boolThrowException = true)
         {
             if (sslCertificate is null)
@@ -563,8 +563,8 @@ namespace Free_SysLog
         }
 
         /// <summary>Gets the current local file's size.</summary>
-    /// <param name="boolHumanReadable">Optional setting, normally set to True. Tells the function if it should transform the Integer representing the file size into a human readable format.</param>
-    /// <returns>Either a String or a Long containing the current local file's size.</returns>
+        /// <param name="boolHumanReadable">Optional setting, normally set to True. Tells the function if it should transform the Integer representing the file size into a human readable format.</param>
+        /// <returns>Either a String or a Long containing the current local file's size.</returns>
         public object GetHTTPDownloadLocalFileSize(bool boolHumanReadable = true)
         {
             if (boolHumanReadable)
@@ -578,23 +578,23 @@ namespace Free_SysLog
         }
 
         /// <summary>Creates a new instance of the HTTPPost Class. You will need to set things up for the Class instance using the setProxyMode() and setUserAgent() routines.</summary>
-    /// <example>Dim httpPostObject As New Tom.HTTPPost()</example>
+        /// <example>Dim httpPostObject As New Tom.HTTPPost()</example>
         public HttpHelper()
         {
         }
 
         /// <summary>Creates a new instance of the HTTPPost Class with some required parameters.</summary>
-    /// <param name="strUserAgentStringIN">This set the User Agent String for the HTTP Request.</param>
-    /// <example>Dim httpPostObject As New Tom.HTTPPost("Microsoft .NET")</example>
+        /// <param name="strUserAgentStringIN">This set the User Agent String for the HTTP Request.</param>
+        /// <example>Dim httpPostObject As New Tom.HTTPPost("Microsoft .NET")</example>
         public HttpHelper(string strUserAgentStringIN)
         {
             strUserAgentString = strUserAgentStringIN;
         }
 
         /// <summary>Creates a new instance of the HTTPPost Class with some required parameters.</summary>
-    /// <param name="strUserAgentStringIN">This set the User Agent String for the HTTP Request.</param>
-    /// <param name="boolUseProxyIN">This tells the Class if you're going to be using a Proxy or not.</param>
-    /// <example>Dim httpPostObject As New Tom.HTTPPost("Microsoft .NET", True)</example>
+        /// <param name="strUserAgentStringIN">This set the User Agent String for the HTTP Request.</param>
+        /// <param name="boolUseProxyIN">This tells the Class if you're going to be using a Proxy or not.</param>
+        /// <example>Dim httpPostObject As New Tom.HTTPPost("Microsoft .NET", True)</example>
         public HttpHelper(string strUserAgentStringIN, bool boolUseProxyIN)
         {
             strUserAgentString = strUserAgentStringIN;
@@ -611,7 +611,7 @@ namespace Free_SysLog
         }
 
         /// <summary>Sets a timeout for any HTTP requests in this Class. Normally it's set for 5 seconds. The input is the amount of time in seconds (NOT milliseconds) that you want your HTTP requests to timeout in. The class will translate the seconds to milliseconds for you.</summary>
-    /// <value>The amount of time in seconds (NOT milliseconds) that you want your HTTP requests to timeout in. This function will translate the seconds to milliseconds for you.</value>
+        /// <value>The amount of time in seconds (NOT milliseconds) that you want your HTTP requests to timeout in. This function will translate the seconds to milliseconds for you.</value>
         public short SetHTTPTimeout
         {
             set
@@ -621,7 +621,7 @@ namespace Free_SysLog
         }
 
         /// <summary>Tells this Class instance if it should use HTTP compression for transport. Using HTTP Compression can save bandwidth. Normally the Class is setup to use HTTP Compression by default.</summary>
-    /// <value>Boolean value.</value>
+        /// <value>Boolean value.</value>
         public bool UseHTTPCompression
         {
             set
@@ -631,7 +631,7 @@ namespace Free_SysLog
         }
 
         /// <summary>Sets the User Agent String to be used by the HTTPPost Class.</summary>
-    /// <value>Your User Agent String.</value>
+        /// <value>Your User Agent String.</value>
         public string SetUserAgent
         {
             set
@@ -641,10 +641,10 @@ namespace Free_SysLog
         }
 
         /// <summary>This adds a String variable to your POST data.</summary>
-    /// <param name="strName">The form name of the data to post.</param>
-    /// <param name="strValue">The value of the data to post.</param>
-    /// <param name="throwExceptionIfDataAlreadyExists">This tells the function if it should throw an exception if the data already exists in the POST data.</param>
-    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
+        /// <param name="strName">The form name of the data to post.</param>
+        /// <param name="strValue">The value of the data to post.</param>
+        /// <param name="throwExceptionIfDataAlreadyExists">This tells the function if it should throw an exception if the data already exists in the POST data.</param>
+        /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
         public void AddPOSTData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false)
         {
             if (string.IsNullOrEmpty(strValue.Trim()))
@@ -666,9 +666,9 @@ namespace Free_SysLog
         }
 
         /// <summary>This adds a String variable to your GET data.</summary>
-    /// <param name="strName">The form name of the data to post.</param>
-    /// <param name="strValue">The value of the data to post.</param>
-    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
+        /// <param name="strName">The form name of the data to post.</param>
+        /// <param name="strValue">The value of the data to post.</param>
+        /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
         public void AddGETData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false)
         {
             if (string.IsNullOrEmpty(strValue.Trim()))
@@ -690,11 +690,11 @@ namespace Free_SysLog
         }
 
         /// <summary>Allows you to add additional headers to your HTTP Request Headers.</summary>
-    /// <param name="strHeaderName">The name of your new HTTP Request Header.</param>
-    /// <param name="strHeaderContents">The contents of your new HTTP Request Header. Be careful with adding data here, invalid data can cause your HTTP Request to fail thus throwing an httpPostException.</param>
-    /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the HTTP Header Contents before setting it.</param>
-    /// <example>httpPostObject.addHTTPHeader("myheader", "my header value")</example>
-    /// <exception cref="DataAlreadyExistsException">If this function throws an dataAlreadyExistsException, it means that this Class instance already has an Additional HTTP Header of that name in the Class instance.</exception>
+        /// <param name="strHeaderName">The name of your new HTTP Request Header.</param>
+        /// <param name="strHeaderContents">The contents of your new HTTP Request Header. Be careful with adding data here, invalid data can cause your HTTP Request to fail thus throwing an httpPostException.</param>
+        /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the HTTP Header Contents before setting it.</param>
+        /// <example>httpPostObject.addHTTPHeader("myheader", "my header value")</example>
+        /// <exception cref="DataAlreadyExistsException">If this function throws an dataAlreadyExistsException, it means that this Class instance already has an Additional HTTP Header of that name in the Class instance.</exception>
         public void AddHTTPHeader(string strHeaderName, string strHeaderContents, bool urlEncodeHeaderContent = false)
         {
             if (!DoesAdditionalHeaderExist(strHeaderName))
@@ -709,12 +709,12 @@ namespace Free_SysLog
         }
 
         /// <summary>Allows you to add HTTP cookies to your HTTP Request with a specific path for the cookie.</summary>
-    /// <param name="strCookieName">The name of your cookie.</param>
-    /// <param name="strCookieValue">The value for your cookie.</param>
-    /// <param name="strCookiePath">The path for the cookie.</param>
-    /// <param name="strDomainDomain">The domain for the cookie.</param>
-    /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the cookie contents before setting it.</param>
-    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, it means that the cookie already exists in this Class instance.</exception>
+        /// <param name="strCookieName">The name of your cookie.</param>
+        /// <param name="strCookieValue">The value for your cookie.</param>
+        /// <param name="strCookiePath">The path for the cookie.</param>
+        /// <param name="strDomainDomain">The domain for the cookie.</param>
+        /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the cookie contents before setting it.</param>
+        /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, it means that the cookie already exists in this Class instance.</exception>
         public void AddHTTPCookie(string strCookieName, string strCookieValue, string strDomainDomain, string strCookiePath, bool urlEncodeHeaderContent = false)
         {
             if (!DoesCookieExist(strCookieName))
@@ -735,11 +735,11 @@ namespace Free_SysLog
         }
 
         /// <summary>Allows you to add HTTP cookies to your HTTP Request with a default path of "/".</summary>
-    /// <param name="strCookieName">The name of your cookie.</param>
-    /// <param name="strCookieValue">The value for your cookie.</param>
-    /// <param name="strCookieDomain">The domain for the cookie.</param>
-    /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the cookie contents before setting it.</param>
-    /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, it means that the cookie already exists in this Class instance.</exception>
+        /// <param name="strCookieName">The name of your cookie.</param>
+        /// <param name="strCookieValue">The value for your cookie.</param>
+        /// <param name="strCookieDomain">The domain for the cookie.</param>
+        /// <param name="urlEncodeHeaderContent">Optional setting, normally set to False. Tells the function if it should URLEncode the cookie contents before setting it.</param>
+        /// <exception cref="DataAlreadyExistsException">If this function throws a dataAlreadyExistsException, it means that the cookie already exists in this Class instance.</exception>
         public void AddHTTPCookie(string strCookieName, string strCookieValue, string strCookieDomain, bool urlEncodeHeaderContent = false)
         {
             if (!DoesCookieExist(strCookieName))
@@ -760,48 +760,48 @@ namespace Free_SysLog
         }
 
         /// <summary>Checks to see if the GET data key exists in this GET data.</summary>
-    /// <param name="strName">The name of the GET data variable you are checking the existance of.</param>
-    /// <returns></returns>
+        /// <param name="strName">The name of the GET data variable you are checking the existance of.</param>
+        /// <returns></returns>
         public bool DoesGETDataExist(string strName)
         {
             return getData.MyContainsKey(strName);
         }
 
         /// <summary>Checks to see if the POST data key exists in this POST data.</summary>
-    /// <param name="strName">The name of the POST data variable you are checking the existance of.</param>
-    /// <returns></returns>
+        /// <param name="strName">The name of the POST data variable you are checking the existance of.</param>
+        /// <returns></returns>
         public bool DoesPOSTDataExist(string strName)
         {
             return postData.MyContainsKey(strName);
         }
 
         /// <summary>Checks to see if an additional HTTP Request Header has been added to the Class.</summary>
-    /// <param name="strHeaderName">The name of the HTTP Request Header to check the existance of.</param>
-    /// <returns>Boolean value; True if found, False if not found.</returns>
+        /// <param name="strHeaderName">The name of the HTTP Request Header to check the existance of.</param>
+        /// <returns>Boolean value; True if found, False if not found.</returns>
         public bool DoesAdditionalHeaderExist(string strHeaderName)
         {
             return additionalHTTPHeaders.MyContainsKey(strHeaderName.ToLower());
         }
 
         /// <summary>Checks to see if a cookie has been added to the Class.</summary>
-    /// <param name="strCookieName">The name of the cookie to check the existance of.</param>
-    /// <returns>Boolean value; True if found, False if not found.</returns>
+        /// <param name="strCookieName">The name of the cookie to check the existance of.</param>
+        /// <returns>Boolean value; True if found, False if not found.</returns>
         public bool DoesCookieExist(string strCookieName)
         {
             return httpCookies.MyContainsKey(strCookieName.ToLower());
         }
 
         /// <summary>This adds a file to be uploaded to your POST data.</summary>
-    /// <param name="strFormName">The form name of the data to post.</param>
-    /// <param name="strLocalFilePath">The path to the file you want to upload.</param>
-    /// <param name="strRemoteFileName">This is the name that the uploaded file will be called on the remote server. If set to Nothing the program will fill the name in.</param>
-    /// <param name="strContentType">The Content Type of the file you want to upload. You can leave it blank (or set to Nothing) and the program will try and determine what the MIME type of the file you're attaching is.</param>
-    /// <exception cref="FileNotFoundException">If this function throws a FileNotFoundException, the Class wasn't able to find the file that you're trying to attach to the POST data on the local file system.</exception>
-    /// <exception cref="NoMimeTypeFoundException">If this function throws a noMimeTypeFoundException, the Class wasn't able to automatically determine the MIME type of the file you're trying to attach to the POST data.</exception>
-    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", Nothing)</example>
-    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", "text/plain")</example>
-    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, Nothing)</example>
-    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, "text/plain")</example>
+        /// <param name="strFormName">The form name of the data to post.</param>
+        /// <param name="strLocalFilePath">The path to the file you want to upload.</param>
+        /// <param name="strRemoteFileName">This is the name that the uploaded file will be called on the remote server. If set to Nothing the program will fill the name in.</param>
+        /// <param name="strContentType">The Content Type of the file you want to upload. You can leave it blank (or set to Nothing) and the program will try and determine what the MIME type of the file you're attaching is.</param>
+        /// <exception cref="FileNotFoundException">If this function throws a FileNotFoundException, the Class wasn't able to find the file that you're trying to attach to the POST data on the local file system.</exception>
+        /// <exception cref="NoMimeTypeFoundException">If this function throws a noMimeTypeFoundException, the Class wasn't able to automatically determine the MIME type of the file you're trying to attach to the POST data.</exception>
+        /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", Nothing)</example>
+        /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", "text/plain")</example>
+        /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, Nothing)</example>
+        /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, "text/plain")</example>
         public void AddFileUpload(string strFormName, string strLocalFilePath, string strRemoteFileName, string strContentType, bool throwExceptionIfItemAlreadyExists = false)
         {
             var fileInfo = new FileInfo(strLocalFilePath);
@@ -867,9 +867,9 @@ namespace Free_SysLog
         }
 
         /// <summary>Gets the HTTP Response Headers that were returned by the HTTP Server after the HTTP request.</summary>
-    /// <param name="throwExceptionIfNoHeaders">Optional setting, normally set to False. Tells the function if it should throw an exception if no HTTP Response Headers are contained in this Class instance.</param>
-    /// <returns>A collection of HTTP Response Headers in a Net.WebHeaderCollection object.</returns>
-    /// <exception cref="NoHTTPServerResponseHeadersFoundException">If this function throws a noHTTPServerResponseHeadersFoundException, there are no HTTP Response Headers in this Class instance.</exception>
+        /// <param name="throwExceptionIfNoHeaders">Optional setting, normally set to False. Tells the function if it should throw an exception if no HTTP Response Headers are contained in this Class instance.</param>
+        /// <returns>A collection of HTTP Response Headers in a Net.WebHeaderCollection object.</returns>
+        /// <exception cref="NoHTTPServerResponseHeadersFoundException">If this function throws a noHTTPServerResponseHeadersFoundException, there are no HTTP Response Headers in this Class instance.</exception>
         public System.Net.WebHeaderCollection GetHTTPResponseHeaders(bool throwExceptionIfNoHeaders = false)
         {
             if (httpResponseHeaders is null)
@@ -891,7 +891,7 @@ namespace Free_SysLog
         }
 
         /// <summary>Gets the percentage of the file that's being downloaded from the HTTP Server.</summary>
-    /// <returns>Returns a Short Integer value.</returns>
+        /// <returns>Returns a Short Integer value.</returns>
         public short GetHTTPDownloadProgressPercentage
         {
             get
@@ -933,11 +933,11 @@ namespace Free_SysLog
                 System.Threading.Thread.Sleep(_intDownloadThreadSleepTime);
                 goto beginAgain;
             }
-            catch (System.Threading.ThreadAbortException ex)
+            catch (System.Threading.ThreadAbortException)
             {
             }
             // Does nothing
-            catch (System.Reflection.TargetInvocationException ex2)
+            catch (System.Reflection.TargetInvocationException)
             {
                 // Does nothing
             }
@@ -983,20 +983,20 @@ namespace Free_SysLog
                     downloadStatusUpdaterThread = null;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Does nothing
             }
         }
 
         /// <summary>Gets the file size of a file on a remote HTTP server..</summary>
-    /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to check the size of.</param>
-    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
-    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
-    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
-    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
-    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
-    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to check the size of.</param>
+        /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        /// <exception cref="System.Net.WebException">If this function throws a System.Net.WebException then something failed during the HTTP request.</exception>
+        /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+        /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+        /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+        /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
         public bool GetRemoteFileStats(string fileDownloadURL, ref RemoteFileStats RemoteFileStats, bool throwExceptionIfError = true)
         {
             System.Net.HttpWebRequest httpWebRequest = null;
@@ -1028,7 +1028,7 @@ namespace Free_SysLog
 
                 return false;
             }
-            catch (System.Threading.ThreadAbortException ex)
+            catch (System.Threading.ThreadAbortException)
             {
                 if (httpWebRequest is not null)
                     httpWebRequest.Abort();
@@ -1077,15 +1077,15 @@ namespace Free_SysLog
         }
 
         /// <summary>Downloads a file from a web server while feeding back the status of the download. You can find the percentage of the download in the httpDownloadProgressPercentage variable. This function gives you the programmer more control over how HTTP downloads are done. For instance, if you don't want to write the data directly out to disk until the download is complete, this function gives you that ability whereas the downloadFile() function writes the downloaded data directly to disk bypassing system RAM. This is good for those cases you may be writing the data to an SSD in which you only want to write the data to the SSD until the download is known to be successful.</summary>
-    /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to download.</param>
-    /// <param name="memStream">This is a IO.MemoryStream, it is passed as a ByRef so that the function will be able to act on the IO.MemoryStream() Object you pass to it. At the end of the download, if it is successful, the function will reset the position back to 0 for writing to whatever stream you choose.</param>
-    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
-    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
-    /// <exception cref="LocalFileAlreadyExistsException">If this function throws a localFileAlreadyExistsException, the path in the local file system already exists.</exception>
-    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
-    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
-    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
-    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to download.</param>
+        /// <param name="memStream">This is a IO.MemoryStream, it is passed as a ByRef so that the function will be able to act on the IO.MemoryStream() Object you pass to it. At the end of the download, if it is successful, the function will reset the position back to 0 for writing to whatever stream you choose.</param>
+        /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        /// <exception cref="System.Net.WebException">If this function throws a System.Net.WebException then something failed during the HTTP request.</exception>
+        /// <exception cref="LocalFileAlreadyExistsException">If this function throws a localFileAlreadyExistsException, the path in the local file system already exists.</exception>
+        /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+        /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+        /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+        /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
         public bool DownloadFile(string fileDownloadURL, ref MemoryStream memStream, bool throwExceptionIfError = true)
         {
             System.Net.HttpWebRequest httpWebRequest = null;
@@ -1142,7 +1142,7 @@ namespace Free_SysLog
 
                 return true;
             }
-            catch (System.Threading.ThreadAbortException ex)
+            catch (System.Threading.ThreadAbortException)
             {
                 AbortDownloadStatusUpdaterThread();
                 if (httpWebRequest is not null)
@@ -1194,16 +1194,16 @@ namespace Free_SysLog
         }
 
         /// <summary>Downloads a file from a web server while feeding back the status of the download. You can find the percentage of the download in the httpDownloadProgressPercentage variable.</summary>
-    /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to download.</param>
-    /// <param name="localFileName">The path in the local file system to which you are saving the file that's being downloaded.</param>
-    /// <param name="throwExceptionIfLocalFileExists">This tells the function if it should throw an Exception if the local file already exists. If set the False the function will delete the local file if it exists before the download starts.</param>
-    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
-    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
-    /// <exception cref="LocalFileAlreadyExistsException">If this function throws a localFileAlreadyExistsException, the path in the local file system already exists.</exception>
-    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
-    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
-    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
-    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to download.</param>
+        /// <param name="localFileName">The path in the local file system to which you are saving the file that's being downloaded.</param>
+        /// <param name="throwExceptionIfLocalFileExists">This tells the function if it should throw an Exception if the local file already exists. If set the False the function will delete the local file if it exists before the download starts.</param>
+        /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        /// <exception cref="System.Net.WebException">If this function throws a System.Net.WebException then something failed during the HTTP request.</exception>
+        /// <exception cref="LocalFileAlreadyExistsException">If this function throws a localFileAlreadyExistsException, the path in the local file system already exists.</exception>
+        /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+        /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+        /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+        /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
         public bool DownloadFile(string fileDownloadURL, string localFileName, bool throwExceptionIfLocalFileExists, bool throwExceptionIfError = true)
         {
             using (var fileWriteStream = new FileStream(localFileName, FileMode.Create))
@@ -1274,7 +1274,7 @@ namespace Free_SysLog
 
                     return true;
                 }
-                catch (System.Threading.ThreadAbortException ex)
+                catch (System.Threading.ThreadAbortException)
                 {
                     AbortDownloadStatusUpdaterThread();
                     httpWebRequest?.Abort();
@@ -1326,18 +1326,18 @@ namespace Free_SysLog
         }
 
         /// <summary>Performs an HTTP Request for data from a web server.</summary>
-    /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
-    /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
-    /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
-    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
-    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
-    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
-    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
-    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
-    /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
-    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
-    /// <param name="shortRangeTo">This controls how much data is downloaded from the server.</param>
-    /// <param name="shortRangeFrom">This controls how much data is downloaded from the server.</param>
+        /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
+        /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
+        /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
+        /// <exception cref="System.Net.WebException">If this function throws a System.Net.WebException then something failed during the HTTP request.</exception>
+        /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+        /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+        /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+        /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
+        /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        /// <param name="shortRangeTo">This controls how much data is downloaded from the server.</param>
+        /// <param name="shortRangeFrom">This controls how much data is downloaded from the server.</param>
         public bool GetWebData(string url, ref string httpResponseText, short shortRangeFrom, short shortRangeTo, bool throwExceptionIfError = true)
         {
             System.Net.HttpWebRequest httpWebRequest = null;
@@ -1423,16 +1423,16 @@ namespace Free_SysLog
         }
 
         /// <summary>Performs an HTTP Request for data from a web server.</summary>
-    /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
-    /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
-    /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
-    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
-    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
-    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
-    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
-    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
-    /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
-    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
+        /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
+        /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
+        /// <exception cref="System.Net.WebException">If this function throws a System.Net.WebException then something failed during the HTTP request.</exception>
+        /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+        /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+        /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+        /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
+        /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
         public bool GetWebData(string url, ref string httpResponseText, bool throwExceptionIfError = true)
         {
             System.Net.HttpWebRequest httpWebRequest = null;
@@ -1517,17 +1517,17 @@ namespace Free_SysLog
         }
 
         /// <summary>Sends data to a URL of your choosing.</summary>
-    /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
-    /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
-    /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
-    /// <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
-    /// <exception cref="DataMissingException">If this function throws an postDataMissingException, the Class has nothing to upload so why continue?</exception>
-    /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
-    /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
-    /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
-    /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
-    /// <example>httpPostObject.uploadData("http://www.myserver.com/myscript", httpResponseText)</example>
-    /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+        /// <param name="url">This is the URL that the program will send to the web server in the HTTP request. Do not include any GET variables in the URL, use the addGETData() function before calling this function.</param>
+        /// <param name="httpResponseText">This is a ByRef variable so declare it before passing it to this function, think of this as a pointer. The HTML/text content that the web server on the other end responds with is put into this variable and passed back in a ByRef function.</param>
+        /// <returns>A Boolean value. If the HTTP operation was successful it returns a TRUE value, if not FALSE.</returns>
+        /// <exception cref="System.Net.WebException">If this function throws a System.Net.WebException then something failed during the HTTP request.</exception>
+        /// <exception cref="DataMissingException">If this function throws an postDataMissingException, the Class has nothing to upload so why continue?</exception>
+        /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+        /// <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+        /// <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+        /// <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+        /// <example>httpPostObject.uploadData("http://www.myserver.com/myscript", httpResponseText)</example>
+        /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
         public bool UploadData(string url, ref string httpResponseText, bool throwExceptionIfError = false)
         {
             System.Net.HttpWebRequest httpWebRequest = null;
@@ -1871,9 +1871,9 @@ namespace Free_SysLog
     static class DictionaryExtensions
     {
         /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
-    /// <param name="haystack">The dictionary that's being searched.</param>
-    /// <param name="needle">The key that you're looking for.</param>
-    /// <return>Returns a String value.</return>
+        /// <param name="haystack">The dictionary that's being searched.</param>
+        /// <param name="needle">The key that you're looking for.</param>
+        /// <return>Returns a String value.</return>
         public static bool MyContainsKey(this Dictionary<string, string> haystack, string needle)
         {
             if (string.IsNullOrEmpty(needle))
@@ -1889,9 +1889,9 @@ namespace Free_SysLog
         }
 
         /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
-    /// <param name="haystack">The dictionary that's being searched.</param>
-    /// <param name="needle">The key that you're looking for.</param>
-    /// <return>Returns a String value.</return>
+        /// <param name="haystack">The dictionary that's being searched.</param>
+        /// <param name="needle">The key that you're looking for.</param>
+        /// <return>Returns a String value.</return>
         public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
         {
             if (string.IsNullOrEmpty(needle))
@@ -1907,9 +1907,9 @@ namespace Free_SysLog
         }
 
         /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
-    /// <param name="haystack">The dictionary that's being searched.</param>
-    /// <param name="needle">The key that you're looking for.</param>
-    /// <return>Returns a String value.</return>
+        /// <param name="haystack">The dictionary that's being searched.</param>
+        /// <param name="needle">The key that you're looking for.</param>
+        /// <return>Returns a String value.</return>
         public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
         {
             if (string.IsNullOrEmpty(needle))
