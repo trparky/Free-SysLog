@@ -242,10 +242,10 @@ namespace Free_SysLog
         private int _intDownloadThreadSleepTime = 1000;
         private int intDownloadBufferSize = 8191; // The default is 8192 bytes or 8 KBs.
 
-        private readonly Dictionary<string, string> additionalHTTPHeaders = new Dictionary<string, string>();
-        private readonly Dictionary<string, CookieDetails> httpCookies = new Dictionary<string, CookieDetails>();
-        private readonly Dictionary<string, object> postData = new Dictionary<string, object>();
-        private readonly Dictionary<string, string> getData = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> additionalHTTPHeaders = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, CookieDetails> httpCookies = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, object> postData = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, string> getData = new(StringComparer.OrdinalIgnoreCase);
         private DownloadStatusDetails downloadStatusDetails;
         private Credentials credentials;
 
