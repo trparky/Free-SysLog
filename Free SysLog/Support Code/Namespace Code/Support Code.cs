@@ -58,17 +58,12 @@ namespace Free_SysLog.SupportCode
         public const string strUpdaterEXE = "updater.exe";
         public const string strUpdaterPDB = "updater.pdb";
 
-        /* TODO ERROR: Skipped IfDirectiveTrivia
-        #If DEBUG Then
-        */
+#if DEBUG
         public const bool boolDebugBuild = true;
-        /* TODO ERROR: Skipped ElseDirectiveTrivia
-        #Else
-        *//* TODO ERROR: Skipped DisabledTextTrivia
-                Public Const boolDebugBuild As Boolean = False
-        *//* TODO ERROR: Skipped EndIfDirectiveTrivia
-        #End If
-        */
+#else
+        public const bool boolDebugBuild = false;
+#endif
+
         public static System.Collections.Specialized.StringCollection SaveColumnOrders(DataGridViewColumnCollection columns)
         {
             try
