@@ -16,7 +16,7 @@ namespace Free_SysLog.ProcessHandling
                 processObject = Process.GetProcessById(PID);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -39,7 +39,7 @@ namespace Free_SysLog.ProcessHandling
                 {
                     processObject.Kill();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Wow, it seems that even with double-checking if a process exists by it's PID number things can still go wrong.
                     // So this Try-Catch block is here to trap any possible errors when trying to kill a process by it's PID number.
@@ -63,7 +63,7 @@ namespace Free_SysLog.ProcessHandling
                         if (strFileName.Equals(processExecutablePath, StringComparison.OrdinalIgnoreCase))
                             KillProcess(process.Id);
                     }
-                    catch (ArgumentException ex)
+                    catch (ArgumentException)
                     {
                     }
                 }
@@ -94,7 +94,7 @@ namespace Free_SysLog.ProcessHandling
                 NativeMethod.NativeMethods.CloseHandle(processHandle);
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

@@ -60,7 +60,7 @@ namespace Free_SysLog.checkForUpdates
                 }
                 return false; // Something went wrong, return False.
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false; // Something went wrong, return False.
             }
@@ -117,7 +117,7 @@ namespace Free_SysLog.checkForUpdates
                     return ProcessUpdateXMLResponse.exceptionError;
                 } // Something really went wrong, so we return a exceptionError value.
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Something went wrong so we return an exceptionError value.
                 return ProcessUpdateXMLResponse.exceptionError;
@@ -149,7 +149,7 @@ namespace Free_SysLog.checkForUpdates
 
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -234,7 +234,7 @@ namespace Free_SysLog.checkForUpdates
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (boolGiveUserAnErrorMessage)
                 {
@@ -392,13 +392,13 @@ namespace Free_SysLog.checkForUpdates
 
                 return $"{strOSName} {(Environment.Is64BitOperatingSystem ? "64" : "32")}-bit (Microsoft .NET {dblDOTNETVersion})";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 try
                 {
                     return $"Unknown Windows Operating System ({Environment.OSVersion.VersionString})";
                 }
-                catch (Exception ex2)
+                catch (Exception)
                 {
                     return "Unknown Windows Operating System";
                 }

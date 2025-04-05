@@ -442,7 +442,7 @@ namespace Free_SysLog
                     Interaction.MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text);
                     boolChanged = true;
                 }
-                catch (Newtonsoft.Json.JsonSerializationException ex)
+                catch (Newtonsoft.Json.JsonSerializationException)
                 {
                     Interaction.MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text);
                 }

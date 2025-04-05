@@ -75,7 +75,7 @@ namespace Free_SysLog.SupportCode
 
                 return SpecializedStringCollection;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new System.Collections.Specialized.StringCollection();
             }
@@ -137,13 +137,13 @@ namespace Free_SysLog.SupportCode
                             columns[columnOrder.ColumnName].DisplayIndex = columnOrder.ColumnIndex;
                         }
                     }
-                    catch (Newtonsoft.Json.JsonSerializationException ex)
+                    catch (Newtonsoft.Json.JsonSerializationException)
                     {
                         specializedStringCollection = null;
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -183,7 +183,7 @@ namespace Free_SysLog.SupportCode
                 Clipboard.SetDataObject(strTextToBeCopiedToClipboard, true, 5, 200);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Interaction.MsgBox("Unable to open Windows Clipboard to copy text to it.", MsgBoxStyle.Critical, strErrorMessageTitle);
                 return false;
@@ -286,7 +286,7 @@ namespace Free_SysLog.SupportCode
                 var regex = new System.Text.RegularExpressions.Regex(pattern);
                 return true;
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 return false;
             }
@@ -327,7 +327,7 @@ namespace Free_SysLog.SupportCode
                     udpClient.Send(data, data.Length);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -347,7 +347,7 @@ namespace Free_SysLog.SupportCode
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -363,7 +363,7 @@ namespace Free_SysLog.SupportCode
                     udpClient.Send(data, data.Length);
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
             }
         }

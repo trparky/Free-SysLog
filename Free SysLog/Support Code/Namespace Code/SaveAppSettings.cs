@@ -91,7 +91,7 @@ namespace Free_SysLog.SaveAppSettings
                     return new Font("Microsoft Sans Serif", 9.75f);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new Font("Microsoft Sans Serif", 9.75f);
             }
@@ -204,7 +204,7 @@ namespace Free_SysLog.SaveAppSettings
                     stringCollection.Add(item);
                 return stringCollection;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new System.Collections.Specialized.StringCollection();
             }

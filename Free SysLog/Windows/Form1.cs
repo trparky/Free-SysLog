@@ -529,7 +529,7 @@ namespace Free_SysLog
 
                                 OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext);
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                             }
                         }
@@ -942,7 +942,7 @@ namespace Free_SysLog
             {
                 SupportCode.SupportCode.mutex.ReleaseMutex();
             }
-            catch (ApplicationException ex)
+            catch (ApplicationException)
             {
             }
 
@@ -967,7 +967,7 @@ namespace Free_SysLog
 
             var worker = new BackgroundWorker();
 
-            worker.DoWork += (a, b) => { try { RegexOptions regExOptions = (RegexOptions)(ChkCaseInsensitiveSearch.Checked ? (int)RegexOptions.Compiled + (int)RegexOptions.IgnoreCase : (int)RegexOptions.Compiled); if (ChkRegExSearch.Checked) { regexCompiledObject = new Regex(TxtSearchTerms.Text, regExOptions); } else { regexCompiledObject = new Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions); } lock (dataGridLockObject) { foreach (DataGridViewRow item in Logs.Rows) { MyDataGridRowItem = item as MyDataGridViewRow; if (MyDataGridRowItem is not null) { strLogText = Conversions.ToString(MyDataGridRowItem.Cells[SupportCode.SupportCode.ColumnIndex_LogText].Value); if (!string.IsNullOrWhiteSpace(strLogText) && regexCompiledObject.IsMatch(strLogText)) { listOfSearchResults.Add((MyDataGridViewRow)MyDataGridRowItem.Clone()); } } } } } catch (ArgumentException ex) { Interaction.MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text); } };
+            worker.DoWork += (a, b) => { try { RegexOptions regExOptions = (RegexOptions)(ChkCaseInsensitiveSearch.Checked ? (int)RegexOptions.Compiled + (int)RegexOptions.IgnoreCase : (int)RegexOptions.Compiled); if (ChkRegExSearch.Checked) { regexCompiledObject = new Regex(TxtSearchTerms.Text, regExOptions); } else { regexCompiledObject = new Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions); } lock (dataGridLockObject) { foreach (DataGridViewRow item in Logs.Rows) { MyDataGridRowItem = item as MyDataGridViewRow; if (MyDataGridRowItem is not null) { strLogText = Conversions.ToString(MyDataGridRowItem.Cells[SupportCode.SupportCode.ColumnIndex_LogText].Value); if (!string.IsNullOrWhiteSpace(strLogText) && regexCompiledObject.IsMatch(strLogText)) { listOfSearchResults.Add((MyDataGridViewRow)MyDataGridRowItem.Clone()); } } } } } catch (ArgumentException) { Interaction.MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text); } };
 
             worker.RunWorkerCompleted += (a, b) =>
                 {
@@ -1179,7 +1179,7 @@ namespace Free_SysLog
                         UpdateLogCount();
                         SaveLogsToDiskSub();
                     }
-                    catch (ArgumentOutOfRangeException ex)
+                    catch (ArgumentOutOfRangeException)
                     {
                     }
                 }
@@ -1241,7 +1241,7 @@ namespace Free_SysLog
                         if (Interaction.MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", (MsgBoxStyle)((int)MsgBoxStyle.Question + (int)MsgBoxStyle.YesNo + (int)MsgBoxStyle.DefaultButton2), Text) == MsgBoxResult.Yes)
                             SupportCode.SupportCode.SelectFileInWindowsExplorer(SaveFileDialog.FileName);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         Interaction.MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text);
                     }
@@ -1269,7 +1269,7 @@ namespace Free_SysLog
                     {
                         SupportCode.SupportCode.mutex.ReleaseMutex();
                     }
-                    catch (ApplicationException ex)
+                    catch (ApplicationException)
                     {
                     }
 
@@ -1322,7 +1322,7 @@ namespace Free_SysLog
                 UpdateLogCount();
                 SaveLogsToDiskSub();
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (ArgumentOutOfRangeException)
             {
                 // Handle exception if necessary
             }
@@ -2101,7 +2101,7 @@ namespace Free_SysLog
                                 ProxiedSysLogData = Newtonsoft.Json.JsonConvert.DeserializeObject<ProxiedSysLogData>(strReceivedData, SupportCode.SupportCode.JSONDecoderSettingsForLogFiles);
                                 SyslogParser.SyslogParser.ProcessIncomingLog(ProxiedSysLogData.log, ProxiedSysLogData.ip);
                             }
-                            catch (Newtonsoft.Json.JsonSerializationException ex)
+                            catch (Newtonsoft.Json.JsonSerializationException)
                             {
                             }
                         }
@@ -2130,7 +2130,7 @@ namespace Free_SysLog
                     }
                 }
             }
-            catch (System.Threading.ThreadAbortException ex)
+            catch (System.Threading.ThreadAbortException)
             {
             }
             // Does nothing

@@ -232,7 +232,7 @@ namespace Free_SysLog.DataHandling
                     File.Delete(SupportCode.SupportCode.strPathToDataFile);
                     File.Move(SupportCode.SupportCode.strPathToDataFile + ".new", SupportCode.SupportCode.strPathToDataFile);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Interaction.MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption.", MsgBoxStyle.Critical, ParentForm.Text);
                     Process.GetCurrentProcess().Kill();

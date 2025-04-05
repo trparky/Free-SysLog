@@ -98,7 +98,7 @@ namespace Free_SysLog.SyslogParser
                 {
                     serverDate = ParseTimestamp(strTimeStampFromServer);
                 }
-                catch (FormatException ex)
+                catch (FormatException)
                 {
                     serverDate = currentDate;
                     AddToLogList(null, "local", $"Unable to parse timestamp {SupportCode.SupportCode.strQuote}{strTimeStampFromServer.Trim()}{SupportCode.SupportCode.strQuote}.");
@@ -427,7 +427,7 @@ namespace Free_SysLog.SyslogParser
                 {
                     serverDate = ParseTimestamp(strTimeStampFromServer);
                 }
-                catch (FormatException ex)
+                catch (FormatException)
                 {
                     serverDate = currentDate;
                     AddToLogList(null, "local", $"Unable to parse timestamp {SupportCode.SupportCode.strQuote}{strTimeStampFromServer.Trim()}{SupportCode.SupportCode.strQuote}.");
@@ -476,7 +476,7 @@ namespace Free_SysLog.SyslogParser
                 {
                     input = GetCachedRegex(item.BoolRegex ? item.StrReplace : Regex.Escape(item.StrReplace), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }

@@ -83,7 +83,7 @@ namespace Free_SysLog.SyslogTcpServer
                         }
                         while (intBytesRead != 0);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                     }
                 }

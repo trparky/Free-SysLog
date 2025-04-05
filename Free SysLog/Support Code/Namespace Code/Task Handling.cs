@@ -26,7 +26,7 @@ namespace Free_SysLog.TaskHandling
                 taskObject = taskServiceObject.GetTask($@"\{nameOfTask}");
                 return taskObject is not null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
