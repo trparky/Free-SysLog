@@ -1219,17 +1219,11 @@ namespace Free_SysLog
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /* TODO ERROR: Skipped IfDirectiveTrivia
-            #If DEBUG Then
-            */
+#if DEBUG
             Interaction.MsgBox($"Free SysLog.{Constants.vbCrLf}{Constants.vbCrLf}Version {checkForUpdates.checkForUpdatesModule.versionString} (Debug Build){Constants.vbCrLf}{Constants.vbCrLf}Copyright Thomas Parkison © 2023-2025", MsgBoxStyle.Information, Text);
-            /* TODO ERROR: Skipped ElseDirectiveTrivia
-            #Else
-            *//* TODO ERROR: Skipped DisabledTextTrivia
-                    MsgBox($"Free SysLog.{vbCrLf}{vbCrLf}Version {checkForUpdates.versionString}{vbcrlf}{vbcrlf}Copyright Thomas Parkison © 2023-2025", MsgBoxStyle.Information, Text)
-            *//* TODO ERROR: Skipped EndIfDirectiveTrivia
-            #End If
-            */
+#else
+            Interaction.MsgBox($"Free SysLog.{Constants.vbCrLf}{Constants.vbCrLf}Version {checkForUpdates.checkForUpdatesModule.versionString}{Constants.vbCrLf}{Constants.vbCrLf}Copyright Thomas Parkison © 2023-2025", MsgBoxStyle.Information, Text);
+#endif
         }
 
         private void ExportToolStripMenuItem_Click(object sender, EventArgs e)
