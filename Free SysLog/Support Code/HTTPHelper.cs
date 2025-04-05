@@ -1030,8 +1030,7 @@ namespace Free_SysLog
             }
             catch (System.Threading.ThreadAbortException)
             {
-                if (httpWebRequest is not null)
-                    httpWebRequest.Abort();
+                httpWebRequest?.Abort();
                 return false;
             }
             catch (Exception ex)
@@ -1145,8 +1144,7 @@ namespace Free_SysLog
             catch (System.Threading.ThreadAbortException)
             {
                 AbortDownloadStatusUpdaterThread();
-                if (httpWebRequest is not null)
-                    httpWebRequest.Abort();
+                httpWebRequest?.Abort();
                 return false;
             }
             catch (Exception ex)
@@ -1377,8 +1375,7 @@ namespace Free_SysLog
             {
                 if (ex.GetType().Equals(typeof(System.Threading.ThreadAbortException)))
                 {
-                    if (httpWebRequest is not null)
-                        httpWebRequest.Abort();
+                    httpWebRequest?.Abort();
                     return false;
                 }
 
@@ -1471,8 +1468,7 @@ namespace Free_SysLog
             {
                 if (ex.GetType().Equals(typeof(System.Threading.ThreadAbortException)))
                 {
-                    if (httpWebRequest is not null)
-                        httpWebRequest.Abort();
+                    httpWebRequest?.Abort();
                     return false;
                 }
 
@@ -1629,8 +1625,7 @@ namespace Free_SysLog
             {
                 if (ex.GetType().Equals(typeof(System.Threading.ThreadAbortException)))
                 {
-                    if (httpWebRequest is not null)
-                        httpWebRequest.Abort();
+                    httpWebRequest?.Abort();
                 }
 
                 lastException = ex;
