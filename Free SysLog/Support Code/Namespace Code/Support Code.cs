@@ -332,7 +332,7 @@ namespace Free_SysLog.SupportCode
                     udpClient.Send(data, data.Length);
                 }
             }
-            catch (SocketException ex)
+            catch (Exception ex)
             {
             }
         }
@@ -352,7 +352,7 @@ namespace Free_SysLog.SupportCode
                     }
                 }
             }
-            catch (SocketException ex)
+            catch (Exception ex)
             {
             }
         }
