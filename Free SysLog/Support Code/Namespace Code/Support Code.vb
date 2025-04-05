@@ -244,7 +244,7 @@ Namespace SupportCode
                     Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
                     udpClient.Send(data, data.Length)
                 End Using
-            Catch ex As SocketException
+            Catch ex As Exception
             End Try
         End Sub
 
@@ -258,7 +258,7 @@ Namespace SupportCode
                         networkStream.Write(data, 0, data.Length)
                     End Using
                 End Using
-            Catch ex As SocketException
+            Catch ex As Exception
             End Try
         End Sub
 
