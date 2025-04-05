@@ -653,7 +653,7 @@ namespace Free_SysLog
                 throw lastException;
             }
 
-            if (postData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+            if (postData.ContainsKey(strName) & throwExceptionIfDataAlreadyExists)
             {
                 lastException = new DataAlreadyExistsException($"The POST data key named \"{strName}\" already exists in the POST data.");
                 throw lastException;
@@ -677,7 +677,7 @@ namespace Free_SysLog
                 throw lastException;
             }
 
-            if (getData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+            if (getData.ContainsKey(strName) & throwExceptionIfDataAlreadyExists)
             {
                 lastException = new DataAlreadyExistsException($"The GET data key named \"{strName}\" already exists in the GET data.");
                 throw lastException;
@@ -764,7 +764,7 @@ namespace Free_SysLog
         /// <returns></returns>
         public bool DoesGETDataExist(string strName)
         {
-            return getData.MyContainsKey(strName);
+            return getData.ContainsKey(strName);
         }
 
         /// <summary>Checks to see if the POST data key exists in this POST data.</summary>
@@ -772,7 +772,7 @@ namespace Free_SysLog
         /// <returns></returns>
         public bool DoesPOSTDataExist(string strName)
         {
-            return postData.MyContainsKey(strName);
+            return postData.ContainsKey(strName);
         }
 
         /// <summary>Checks to see if an additional HTTP Request Header has been added to the Class.</summary>
@@ -780,7 +780,7 @@ namespace Free_SysLog
         /// <returns>Boolean value; True if found, False if not found.</returns>
         public bool DoesAdditionalHeaderExist(string strHeaderName)
         {
-            return additionalHTTPHeaders.MyContainsKey(strHeaderName.ToLower());
+            return additionalHTTPHeaders.ContainsKey(strHeaderName.ToLower());
         }
 
         /// <summary>Checks to see if a cookie has been added to the Class.</summary>
@@ -788,7 +788,7 @@ namespace Free_SysLog
         /// <returns>Boolean value; True if found, False if not found.</returns>
         public bool DoesCookieExist(string strCookieName)
         {
-            return httpCookies.MyContainsKey(strCookieName.ToLower());
+            return httpCookies.ContainsKey(strCookieName.ToLower());
         }
 
         /// <summary>This adds a file to be uploaded to your POST data.</summary>
@@ -811,7 +811,7 @@ namespace Free_SysLog
                 lastException = new FileNotFoundException("Local file not found.", strLocalFilePath);
                 throw lastException;
             }
-            else if (postData.MyContainsKey(strFormName))
+            else if (postData.ContainsKey(strFormName))
             {
                 if (throwExceptionIfItemAlreadyExists)
                 {
@@ -1860,63 +1860,6 @@ namespace Free_SysLog
             }
 
             return result;
-        }
-    }
-
-    static class DictionaryExtensions
-    {
-        /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
-        /// <param name="haystack">The dictionary that's being searched.</param>
-        /// <param name="needle">The key that you're looking for.</param>
-        /// <return>Returns a String value.</return>
-        public static bool MyContainsKey(this Dictionary<string, string> haystack, string needle)
-        {
-            if (string.IsNullOrEmpty(needle))
-            {
-                throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
-            }
-            if (haystack is null)
-            {
-                throw new ArgumentNullException(nameof(haystack));
-            }
-
-            return haystack.Keys.Any((key) => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
-        /// <param name="haystack">The dictionary that's being searched.</param>
-        /// <param name="needle">The key that you're looking for.</param>
-        /// <return>Returns a String value.</return>
-        public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
-        {
-            if (string.IsNullOrEmpty(needle))
-            {
-                throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
-            }
-            if (haystack is null)
-            {
-                throw new ArgumentNullException(nameof(haystack));
-            }
-
-            return haystack.Keys.Any((key) => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE.</summary>
-        /// <param name="haystack">The dictionary that's being searched.</param>
-        /// <param name="needle">The key that you're looking for.</param>
-        /// <return>Returns a String value.</return>
-        public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
-        {
-            if (string.IsNullOrEmpty(needle))
-            {
-                throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
-            }
-            if (haystack is null)
-            {
-                throw new ArgumentNullException(nameof(haystack));
-            }
-
-            return haystack.Keys.Any((key) => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
