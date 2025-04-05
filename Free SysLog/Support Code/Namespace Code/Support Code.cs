@@ -301,16 +301,18 @@ namespace Free_SysLog.SupportCode
         {
             NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
 
-            if (networkInterfaces.Any())
+            if (networkInterfaces is not null && networkInterfaces.Any())
             {
                 foreach (NetworkInterface ni in networkInterfaces)
                 {
                     if (ni is not null && ni.OperationalStatus == OperationalStatus.Up && ni.NetworkInterfaceType != NetworkInterfaceType.Loopback && ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
                     {
-                        foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
-                        {
-                            if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
-                                return ip.Address;
+                        if (ni.GetIPProperties().UnicastAddresses.Any()) {
+                            foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
+                            {
+                                if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                                    return ip.Address;
+                            }
                         }
                     }
                 }
