@@ -86,6 +86,7 @@ namespace Free_SysLog
             MenuStrip = new MenuStrip();
             MainMenuToolStripMenuItem = new ToolStripMenuItem();
             LogFunctionsToolStripMenuItem = new ToolStripMenuItem();
+            LogFunctionsToolStripMenuItem.DropDownOpening += new EventHandler(LogFunctionsToolStripMenuItem_DropDownOpening);
             IgnoredLogsToolStripMenuItem = new ToolStripMenuItem();
             ClearIgnoredLogsToolStripMenuItem = new ToolStripMenuItem();
             ClearIgnoredLogsToolStripMenuItem.Click += new EventHandler(ClearIgnoredLogsToolStripMenuItem_Click);

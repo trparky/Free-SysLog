@@ -949,6 +949,11 @@ namespace Free_SysLog
             Process.GetCurrentProcess().Kill();
         }
 
+        private void LogFunctionsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            AlertsHistory.Enabled = Logs.Rows.Cast<MyDataGridViewRow>().Any(row => !string.IsNullOrWhiteSpace(row.AlertText));
+        }
+
         private void BtnSearch_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtSearchTerms.Text))
