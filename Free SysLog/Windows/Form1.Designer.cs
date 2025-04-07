@@ -276,7 +276,6 @@ namespace Free_SysLog
             // 
             // AlertsHistory
             // 
-            AlertsHistory.DropDownItems.AddRange(new ToolStripItem[] { BtnClearAllLogs, LogsOlderThanToolStripMenuItem });
             AlertsHistory.Enabled = true;
             AlertsHistory.Name = "AlertsHistory";
             AlertsHistory.Size = new Size(239, 22);
