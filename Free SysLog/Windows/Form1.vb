@@ -1644,6 +1644,12 @@ Public Class Form1
         My.Settings.ConfirmDelete = ConfirmDelete.Checked
     End Sub
 
+    Private Sub LogFunctionsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles LogFunctionsToolStripMenuItem.DropDownOpening
+        SyncLock dataGridLockObject
+            AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
+        End SyncLock
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
