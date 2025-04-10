@@ -82,7 +82,7 @@ Namespace SyslogParser
             End Using
         End Function
 
-        Public Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strLogText As String)
+        Public Sub AddToLogList(strTimeStampFromServer As String, strLogText As String)
             If strLogText.CaseInsensitiveContains(strNewLine) Then strLogText = strLogText.Replace(strNewLine, vbCrLf).Trim
 
             Dim currentDate As Date = Now.ToLocalTime
@@ -95,7 +95,7 @@ Namespace SyslogParser
                     serverDate = ParseTimestamp(strTimeStampFromServer)
                 Catch ex As FormatException
                     serverDate = currentDate
-                    AddToLogList(Nothing, "local", $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
+                    AddToLogList(Nothing, $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
                 End Try
             End If
 
@@ -269,7 +269,7 @@ Namespace SyslogParser
                     Next
                 Else
                     ' Nope, log it as unable to be parsed.
-                    AddToLogList(Nothing, "local", $"Unable to parse log {strQuote}{strRawLogText}{strQuote}.")
+                    AddToLogList(Nothing, $"Unable to parse log {strQuote}{strRawLogText}{strQuote}.")
                 End If
             End If
         End Sub
@@ -324,7 +324,7 @@ Namespace SyslogParser
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)
                 End If
             Catch ex As Exception
-                AddToLogList(Nothing, "local", $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
+                AddToLogList(Nothing, $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
         End Sub
 
@@ -356,7 +356,7 @@ Namespace SyslogParser
                     serverDate = ParseTimestamp(strTimeStampFromServer)
                 Catch ex As FormatException
                     serverDate = currentDate
-                    AddToLogList(Nothing, "local", $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
+                    AddToLogList(Nothing, $"Unable to parse timestamp {strQuote}{strTimeStampFromServer.Trim}{strQuote}.")
                 End Try
             End If
 
