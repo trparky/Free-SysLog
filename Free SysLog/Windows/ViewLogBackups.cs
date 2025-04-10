@@ -284,7 +284,7 @@ namespace Free_SysLog
                         File.Delete(fileName);
 
                         if (ChkLogFileDeletions.Checked)
-                            SyslogParser.SyslogParser.AddToLogList(null, System.Net.IPAddress.Loopback.ToString(), $"The user deleted \"{FileList.SelectedRows[0].Cells[0].Value}\" from the log backups folder.");
+                            SyslogParser.SyslogParser.AddToLogList(null, $"The user deleted \"{FileList.SelectedRows[0].Cells[0].Value}\" from the log backups folder.");
 
                         ThreadPool.QueueUserWorkItem((_) => LoadFileList());
                     }
@@ -311,7 +311,7 @@ namespace Free_SysLog
                         strDeletedFilesLog += Constants.vbCrLf + listOfFilesThatAreToBeDeletedInHumanReadableFormat;
 
                         if (ChkLogFileDeletions.Checked)
-                            SyslogParser.SyslogParser.AddToLogList(null, System.Net.IPAddress.Loopback.ToString(), strDeletedFilesLog.ToString());
+                            SyslogParser.SyslogParser.AddToLogList(null, strDeletedFilesLog.ToString());
 
                         ThreadPool.QueueUserWorkItem((_) => LoadFileList());
                     }

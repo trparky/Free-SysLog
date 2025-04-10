@@ -543,12 +543,12 @@ namespace Free_SysLog
             }
             catch (Newtonsoft.Json.JsonSerializationException ex)
             {
-                SyslogParser.SyslogParser.AddToLogList(null, System.Net.IPAddress.Loopback.ToString(), $"Exception Type: {ex.GetType()}{Constants.vbCrLf}Exception Message: {ex.Message}{Constants.vbCrLf}{Constants.vbCrLf}Exception Stack Trace{Constants.vbCrLf}{ex.StackTrace}");
+                SyslogParser.SyslogParser.AddToLogList(null, $"Exception Type: {ex.GetType()}{Constants.vbCrLf}Exception Message: {ex.Message}{Constants.vbCrLf}{Constants.vbCrLf}Exception Stack Trace{Constants.vbCrLf}{ex.StackTrace}");
                 Interaction.MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text);
             }
             catch (Newtonsoft.Json.JsonReaderException ex)
             {
-                SyslogParser.SyslogParser.AddToLogList(null, System.Net.IPAddress.Loopback.ToString(), $"Exception Type: {ex.GetType()}{Constants.vbCrLf}Exception Message: {ex.Message}{Constants.vbCrLf}{Constants.vbCrLf}Exception Stack Trace{Constants.vbCrLf}{ex.StackTrace}");
+                SyslogParser.SyslogParser.AddToLogList(null, $"Exception Type: {ex.GetType()}{Constants.vbCrLf}Exception Message: {ex.Message}{Constants.vbCrLf}{Constants.vbCrLf}Exception Stack Trace{Constants.vbCrLf}{ex.StackTrace}");
                 Interaction.MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text);
             }
         }

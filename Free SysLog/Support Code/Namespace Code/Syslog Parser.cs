@@ -80,7 +80,7 @@ namespace Free_SysLog.SyslogParser
             }
         }
 
-        public static void AddToLogList(string strTimeStampFromServer, string strSourceIP, string strLogText)
+        public static void AddToLogList(string strTimeStampFromServer, string strLogText)
         {
             if (strLogText.CaseInsensitiveContains(strNewLine))
                 strLogText = strLogText.Replace(strNewLine, Constants.vbCrLf).Trim();
@@ -101,7 +101,7 @@ namespace Free_SysLog.SyslogParser
                 catch (FormatException)
                 {
                     serverDate = currentDate;
-                    AddToLogList(null, "local", $"Unable to parse timestamp {SupportCode.SupportCode.strQuote}{strTimeStampFromServer.Trim()}{SupportCode.SupportCode.strQuote}.");
+                    AddToLogList(null, $"Unable to parse timestamp {SupportCode.SupportCode.strQuote}{strTimeStampFromServer.Trim()}{SupportCode.SupportCode.strQuote}.");
                 }
             }
 
@@ -317,7 +317,7 @@ namespace Free_SysLog.SyslogParser
                 else
                 {
                     // Nope, log it as unable to be parsed.
-                    AddToLogList(null, "local", $"Unable to parse log {SupportCode.SupportCode.strQuote}{strRawLogText}{SupportCode.SupportCode.strQuote}.");
+                    AddToLogList(null, $"Unable to parse log {SupportCode.SupportCode.strQuote}{strRawLogText}{SupportCode.SupportCode.strQuote}.");
                 }
             }
         }
@@ -386,7 +386,7 @@ namespace Free_SysLog.SyslogParser
             }
             catch (Exception ex)
             {
-                AddToLogList(null, "local", $"{ex.Message} -- {ex.StackTrace}{Constants.vbCrLf}Data from Server: {strRawLogText}");
+                AddToLogList(null, $"{ex.Message} -- {ex.StackTrace}{Constants.vbCrLf}Data from Server: {strRawLogText}");
             }
         }
 
@@ -430,7 +430,7 @@ namespace Free_SysLog.SyslogParser
                 catch (FormatException)
                 {
                     serverDate = currentDate;
-                    AddToLogList(null, "local", $"Unable to parse timestamp {SupportCode.SupportCode.strQuote}{strTimeStampFromServer.Trim()}{SupportCode.SupportCode.strQuote}.");
+                    AddToLogList(null, $"Unable to parse timestamp {SupportCode.SupportCode.strQuote}{strTimeStampFromServer.Trim()}{SupportCode.SupportCode.strQuote}.");
                 }
             }
 
