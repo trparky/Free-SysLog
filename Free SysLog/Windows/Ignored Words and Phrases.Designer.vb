@@ -26,7 +26,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.BtnAdd = New System.Windows.Forms.Button()
         Me.BtnDelete = New System.Windows.Forms.Button()
         Me.IgnoredListView = New System.Windows.Forms.ListView()
-        Me.Replace = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Ignored = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -76,7 +76,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Replace, Me.Regex, Me.CaseSensitive, Me.ColEnabled})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -87,10 +87,10 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.UseCompatibleStateImageBehavior = False
         Me.IgnoredListView.View = System.Windows.Forms.View.Details
         '
-        'Replace
+        'Ignored
         '
-        Me.Replace.Text = "Replace"
-        Me.Replace.Width = 345
+        Me.Ignored.Text = "Ignored Word and/or Phrase"
+        Me.Ignored.Width = 345
         '
         'Regex
         '
@@ -310,7 +310,7 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents BtnAdd As Button
     Friend WithEvents BtnDelete As Button
     Friend WithEvents IgnoredListView As ListView
-    Friend WithEvents Replace As ColumnHeader
+    Friend WithEvents Ignored As ColumnHeader
     Friend WithEvents Regex As ColumnHeader
     Friend WithEvents CaseSensitive As ColumnHeader
     Friend WithEvents BtnEdit As Button
