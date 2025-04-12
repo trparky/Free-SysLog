@@ -23,6 +23,9 @@ Public Class IgnoredWordsAndPhrases
 
                 With selectedItemObject
                     .SubItems(0).Text = TxtIgnored.Text
+                    .SubItems(1).Text = If(ChkRegex.Checked, "Yes", "No")
+                    .SubItems(2).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
+                    .SubItems(3).Text = If(ChkEnabled.Checked, "Yes", "No")
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
@@ -87,7 +90,7 @@ Public Class IgnoredWordsAndPhrases
 
         IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
 
-        Replace.Width = My.Settings.colIgnoredReplace
+        Ignored.Width = My.Settings.colIgnoredReplace
         Regex.Width = My.Settings.colIgnoredRegex
         CaseSensitive.Width = My.Settings.colIgnoredCaseSensitive
         ColEnabled.Width = My.Settings.colIgnoredEnabled
@@ -208,7 +211,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredListView_ColumnWidthChanged(sender As Object, e As ColumnWidthChangedEventArgs) Handles IgnoredListView.ColumnWidthChanged
         If boolDoneLoading Then
-            My.Settings.colIgnoredReplace = Replace.Width
+            My.Settings.colIgnoredReplace = Ignored.Width
             My.Settings.colIgnoredRegex = Regex.Width
             My.Settings.colIgnoredCaseSensitive = CaseSensitive.Width
             My.Settings.colIgnoredEnabled = ColEnabled.Width
