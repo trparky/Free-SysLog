@@ -1098,6 +1098,13 @@ Public Class Form1
     End Sub
 
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            e.Cancel = True
+            Exit Sub
+        End If
+
         If Logs.SelectedRows.Count = 0 Then
             DeleteLogsToolStripMenuItem.Visible = False
             ExportsLogsToolStripMenuItem.Visible = False

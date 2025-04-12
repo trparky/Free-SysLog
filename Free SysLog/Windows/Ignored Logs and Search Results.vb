@@ -350,6 +350,13 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub LogsContextMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsContextMenu.Opening
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            e.Cancel = True
+            Exit Sub
+        End If
+
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
             ExportSelectedLogsToolStripMenuItem.Visible = True
             CopyLogTextToolStripMenuItem.Visible = False
