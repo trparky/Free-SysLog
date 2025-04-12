@@ -39,6 +39,9 @@ namespace Free_SysLog
                     MyIgnoredListViewItem selectedItemObject = (MyIgnoredListViewItem)IgnoredListView.SelectedItems[0];
 
                     selectedItemObject.SubItems[0].Text = TxtIgnored.Text;
+                    selectedItemObject.SubItems[1].Text = ChkRegex.Checked ? "Yes" : "No";
+                    selectedItemObject.SubItems[2].Text = ChkCaseSensitive.Checked ? "Yes" : "No";
+                    selectedItemObject.SubItems[3].Text = ChkEnabled.Checked ? "Yes" : "No";
                     selectedItemObject.BoolCaseSensitive = ChkCaseSensitive.Checked;
                     selectedItemObject.BoolEnabled = ChkEnabled.Checked;
                     selectedItemObject.BoolRegex = ChkRegex.Checked;
