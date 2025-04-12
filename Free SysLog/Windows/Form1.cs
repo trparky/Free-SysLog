@@ -1396,6 +1396,14 @@ namespace Free_SysLog
 
         private void LogsMenu_Opening(object sender, CancelEventArgs e)
         {
+            DataGridView.HitTestInfo hitTest = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y);
+
+            if (hitTest.Type == DataGridViewHitTestType.ColumnHeader)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             if (Logs.SelectedRows.Count == 0)
             {
                 DeleteLogsToolStripMenuItem.Visible = false;

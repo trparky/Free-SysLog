@@ -453,6 +453,14 @@ namespace Free_SysLog
 
         private void LogsContextMenu_Opening(object sender, CancelEventArgs e)
         {
+            DataGridView.HitTestInfo hitTest = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y);
+
+            if (hitTest.Type == DataGridViewHitTestType.ColumnHeader)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             if (_WindowDisplayMode == IgnoreOrSearchWindowDisplayMode.viewer && boolLoadExternalData && !string.IsNullOrEmpty(strFileToLoad))
             {
                 ExportSelectedLogsToolStripMenuItem.Visible = true;
