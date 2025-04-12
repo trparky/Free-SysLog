@@ -112,7 +112,7 @@ namespace Free_SysLog
 
             IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray());
 
-            Replace.Width = My.MySettingsProperty.Settings.colIgnoredReplace;
+            Ignored.Width = My.MySettingsProperty.Settings.colIgnoredReplace;
             Regex.Width = My.MySettingsProperty.Settings.colIgnoredRegex;
             CaseSensitive.Width = My.MySettingsProperty.Settings.colIgnoredCaseSensitive;
             ColEnabled.Width = My.MySettingsProperty.Settings.colIgnoredEnabled;
@@ -261,7 +261,7 @@ namespace Free_SysLog
         {
             if (boolDoneLoading)
             {
-                My.MySettingsProperty.Settings.colIgnoredReplace = Replace.Width;
+                My.MySettingsProperty.Settings.colIgnoredReplace = Ignored.Width;
                 My.MySettingsProperty.Settings.colIgnoredRegex = Regex.Width;
                 My.MySettingsProperty.Settings.colIgnoredCaseSensitive = CaseSensitive.Width;
                 My.MySettingsProperty.Settings.colIgnoredEnabled = ColEnabled.Width;

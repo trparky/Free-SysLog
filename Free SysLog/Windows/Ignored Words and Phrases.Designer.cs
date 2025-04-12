@@ -45,7 +45,7 @@ namespace Free_SysLog
             IgnoredListView.Click += new EventHandler(IgnoredListView_Click);
             IgnoredListView.DoubleClick += new EventHandler(IgnoredListView_DoubleClick);
             IgnoredListView.ColumnWidthChanged += new ColumnWidthChangedEventHandler(IgnoredListView_ColumnWidthChanged);
-            Replace = new ColumnHeader();
+            Ignored = new ColumnHeader();
             Regex = new ColumnHeader();
             CaseSensitive = new ColumnHeader();
             ColEnabled = new ColumnHeader();
@@ -104,7 +104,7 @@ namespace Free_SysLog
             // 
             IgnoredListView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
-            IgnoredListView.Columns.AddRange(new ColumnHeader[] { Replace, Regex, CaseSensitive, ColEnabled });
+            IgnoredListView.Columns.AddRange(new ColumnHeader[] { Ignored, Regex, CaseSensitive, ColEnabled });
             IgnoredListView.ContextMenuStrip = ListViewMenu;
             IgnoredListView.FullRowSelect = true;
             IgnoredListView.HideSelection = false;
@@ -115,10 +115,10 @@ namespace Free_SysLog
             IgnoredListView.UseCompatibleStateImageBehavior = false;
             IgnoredListView.View = View.Details;
             // 
-            // Replace
+            // Ignored
             // 
-            Replace.Text = "Replace";
-            Replace.Width = 345;
+            Ignored.Text = "Ignored Word and/or Phrase";
+            Ignored.Width = 345;
             // 
             // Regex
             // 
@@ -339,7 +339,7 @@ namespace Free_SysLog
         internal Button BtnAdd;
         internal Button BtnDelete;
         internal ListView IgnoredListView;
-        internal ColumnHeader Replace;
+        internal ColumnHeader Ignored;
         internal ColumnHeader Regex;
         internal ColumnHeader CaseSensitive;
         internal Button BtnEdit;
