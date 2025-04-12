@@ -121,7 +121,8 @@ namespace Free_SysLog
 
         private void Logs_DoubleClick(object sender, EventArgs e)
         {
-            OpenLogViewerWindow();
+            DataGridView.HitTestInfo hitTest = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y);
+            if (hitTest.Type == DataGridViewHitTestType.Cell && hitTest.RowIndex != -1) { OpenLogViewerWindow(); }
         }
 
         private void Ignored_Logs_and_Search_Results_ResizeBegin(object sender, EventArgs e)
