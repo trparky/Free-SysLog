@@ -595,7 +595,8 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles Logs.DoubleClick
-        OpenLogViewerWindow()
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 Then OpenLogViewerWindow()
     End Sub
 
     Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles Logs.KeyUp

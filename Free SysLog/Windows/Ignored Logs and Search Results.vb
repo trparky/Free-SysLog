@@ -92,7 +92,8 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles Logs.DoubleClick
-        OpenLogViewerWindow()
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 Then OpenLogViewerWindow()
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_ResizeBegin(sender As Object, e As EventArgs) Handles Me.ResizeBegin
