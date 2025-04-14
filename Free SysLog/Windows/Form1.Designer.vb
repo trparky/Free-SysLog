@@ -178,7 +178,6 @@ Partial Class Form1
         '
         'AlertsHistory
         '
-        Me.AlertsHistory.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BtnClearAllLogs, Me.LogsOlderThanToolStripMenuItem})
         Me.AlertsHistory.Enabled = True
         Me.AlertsHistory.Name = "AlertsHistory"
         Me.AlertsHistory.Size = New System.Drawing.Size(239, 22)

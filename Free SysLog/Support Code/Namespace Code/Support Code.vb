@@ -222,12 +222,14 @@ Namespace SupportCode
         Private Function GetLocalIPAddress() As IPAddress
             Dim networkInterfaces As NetworkInterface() = NetworkInterface.GetAllNetworkInterfaces()
 
-            If networkInterfaces.Any() Then
+            If networkInterfaces IsNot Nothing AndAlso networkInterfaces.Any() Then
                 For Each ni As NetworkInterface In networkInterfaces
                     If ni IsNot Nothing AndAlso ni.OperationalStatus = OperationalStatus.Up AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Loopback AndAlso ni.NetworkInterfaceType <> NetworkInterfaceType.Tunnel Then
-                        For Each ip As UnicastIPAddressInformation In ni.GetIPProperties().UnicastAddresses
-                            If ip.Address.AddressFamily = AddressFamily.InterNetwork Then Return ip.Address
-                        Next
+                        If ni.GetIPProperties().UnicastAddresses.Any() Then
+                            For Each ip As UnicastIPAddressInformation In ni.GetIPProperties().UnicastAddresses
+                                If ip.Address.AddressFamily = AddressFamily.InterNetwork Then Return ip.Address
+                            Next
+                        End If
                     End If
                 Next
             End If
@@ -242,7 +244,7 @@ Namespace SupportCode
                     Dim data As Byte() = Encoding.UTF8.GetBytes(strMessage)
                     udpClient.Send(data, data.Length)
                 End Using
-            Catch ex As SocketException
+            Catch ex As Exception
             End Try
         End Sub
 
@@ -256,7 +258,7 @@ Namespace SupportCode
                         networkStream.Write(data, 0, data.Length)
                     End Using
                 End Using
-            Catch ex As SocketException
+            Catch ex As Exception
             End Try
         End Sub
 

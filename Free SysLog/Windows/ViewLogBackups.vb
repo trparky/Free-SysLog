@@ -227,7 +227,7 @@ Public Class ViewLogBackups
                 If MsgBox($"Are you sure you want to delete the file named ""{FileList.SelectedRows(0).Cells(0).Value}""?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then
                     File.Delete(fileName)
 
-                    If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
+                    If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
 
                     ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If
@@ -252,7 +252,7 @@ Public Class ViewLogBackups
 
                     strDeletedFilesLog &= vbCrLf & listOfFilesThatAreToBeDeletedInHumanReadableFormat
 
-                    If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, strDeletedFilesLog.ToString)
+                    If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, strDeletedFilesLog.ToString)
 
                     ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
                 End If

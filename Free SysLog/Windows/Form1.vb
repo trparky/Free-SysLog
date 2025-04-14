@@ -595,7 +595,8 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles Logs.DoubleClick
-        OpenLogViewerWindow()
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 Then OpenLogViewerWindow()
     End Sub
 
     Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles Logs.KeyUp
@@ -1097,6 +1098,13 @@ Public Class Form1
     End Sub
 
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            e.Cancel = True
+            Exit Sub
+        End If
+
         If Logs.SelectedRows.Count = 0 Then
             DeleteLogsToolStripMenuItem.Visible = False
             ExportsLogsToolStripMenuItem.Visible = False
@@ -1642,6 +1650,12 @@ Public Class Form1
 
     Private Sub ConfirmDelete_Click(sender As Object, e As EventArgs) Handles ConfirmDelete.Click
         My.Settings.ConfirmDelete = ConfirmDelete.Checked
+    End Sub
+
+    Private Sub LogFunctionsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles LogFunctionsToolStripMenuItem.DropDownOpening
+        SyncLock dataGridLockObject
+            AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
+        End SyncLock
     End Sub
 
 #Region "-- SysLog Server Code --"

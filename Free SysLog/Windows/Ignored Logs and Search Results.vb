@@ -92,7 +92,8 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles Logs.DoubleClick
-        OpenLogViewerWindow()
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 Then OpenLogViewerWindow()
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_ResizeBegin(sender As Object, e As EventArgs) Handles Me.ResizeBegin
@@ -349,6 +350,13 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub LogsContextMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsContextMenu.Opening
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            e.Cancel = True
+            Exit Sub
+        End If
+
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
             ExportSelectedLogsToolStripMenuItem.Visible = True
             CopyLogTextToolStripMenuItem.Visible = False
@@ -419,10 +427,10 @@ Public Class IgnoredLogsAndSearchResults
                             End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
-            SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
+            SyslogParser.AddToLogList(Nothing, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         Catch ex As Newtonsoft.Json.JsonReaderException
-            SyslogParser.AddToLogList(Nothing, Net.IPAddress.Loopback.ToString, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
+            SyslogParser.AddToLogList(Nothing, $"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
             MsgBox("There was an error decoding JSON data.", MsgBoxStyle.Critical, Text)
         End Try
     End Sub
