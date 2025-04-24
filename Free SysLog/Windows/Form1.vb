@@ -490,14 +490,35 @@ Public Class Form1
                     Invoke(Sub()
                                Logs.SuspendLayout()
                                Logs.Rows.Clear()
-                               Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                               Logs.ResumeLayout()
 
-                               SelectLatestLogEntry()
+                               If listOfLogEntries.Count > 2000 Then
+                                   Dim intBatchSize As Integer = 250
 
-                               Logs.SelectedRows(0).Selected = False
-                               UpdateLogCount()
-                               Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                                   Threading.Tasks.Task.Run(Sub()
+                                                                For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                                                                    Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                                                    Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                                                Next
+
+                                                                Invoke(Sub()
+                                                                           SelectLatestLogEntry()
+
+                                                                           Logs.SelectedRows(0).Selected = False
+                                                                           UpdateLogCount()
+                                                                           Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                                                                           Logs.ResumeLayout()
+                                                                       End Sub)
+                                                            End Sub)
+                               Else
+                                   Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                                   Logs.ResumeLayout()
+
+                                   SelectLatestLogEntry()
+
+                                   Logs.SelectedRows(0).Selected = False
+                                   UpdateLogCount()
+                                   Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                               End If
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
