@@ -1129,9 +1129,11 @@ Public Class Form1
         If Logs.SelectedRows.Count = 0 Then
             DeleteLogsToolStripMenuItem.Visible = False
             ExportsLogsToolStripMenuItem.Visible = False
+            DeleteSimilarLogsToolStripMenuItem.Visible = False
         Else
             DeleteLogsToolStripMenuItem.Visible = True
             ExportsLogsToolStripMenuItem.Visible = True
+            DeleteSimilarLogsToolStripMenuItem.Visible = True
         End If
 
         If Logs.SelectedRows.Count = 1 Then
@@ -1140,12 +1142,14 @@ Public Class Form1
             CreateAlertToolStripMenuItem.Visible = True
             CreateReplacementToolStripMenuItem.Visible = True
             CreateIgnoredLogToolStripMenuItem.Visible = True
+            DeleteSimilarLogsToolStripMenuItem.Visible = True
         Else
             CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
             CreateAlertToolStripMenuItem.Visible = False
             CreateReplacementToolStripMenuItem.Visible = False
             CreateIgnoredLogToolStripMenuItem.Visible = False
+            DeleteSimilarLogsToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1677,6 +1681,42 @@ Public Class Form1
         SyncLock dataGridLockObject
             AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
         End SyncLock
+    End Sub
+
+    Private Sub DeleteSimilarLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteSimilarLogsToolStripMenuItem.Click
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 And Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
+            Dim strCellValue As String
+            Dim item As MyDataGridViewRow
+
+            ' Create a list to store rows that need to be removed
+            Dim rowsToDelete As New List(Of MyDataGridViewRow)
+
+            ' Synchronize both the iteration and the removal
+            SyncLock dataGridLockObject
+                ' Loop through the rows in reverse order to avoid index shifting
+                For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
+                    item = Logs.Rows(i)
+                    strCellValue = item.Cells(ColumnIndex_LogText).Value
+
+                    If Not String.IsNullOrWhiteSpace(strCellValue) AndAlso strCellValue.Equals(strLogText, StringComparison.OrdinalIgnoreCase) Then
+                        rowsToDelete.Add(item)
+                    End If
+                Next
+
+                ' Remove the rows outside the loop
+                For Each row As MyDataGridViewRow In rowsToDelete
+                    Logs.Rows.Remove(row)
+                Next
+            End SyncLock
+
+            ' Update log count and save changes to disk
+            UpdateLogCount()
+            SaveLogsToDiskSub()
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"
