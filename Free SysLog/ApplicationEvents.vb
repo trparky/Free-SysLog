@@ -54,7 +54,42 @@ Namespace My
                 e.Cancel = True
                 Exit Sub
             End If
+
+            uniqueObjects = LoadUniqueLogTypesAndProcesses()
         End Sub
+
+        Private Function LoadUniqueLogTypesAndProcesses() As (HashSet(Of String), HashSet(Of String))
+            Dim filesInDirectory As IO.FileInfo() = New IO.DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+            Dim collectionOfSavedData As List(Of SavedData)
+            Dim uniqueLogTypes As New HashSet(Of String)
+            Dim uniqueProcess As New HashSet(Of String)
+
+            Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
+                                                                   Using fileStream As New IO.StreamReader(file.FullName)
+                                                                       collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+
+                                                                       Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
+                                                                                                                                   SyncLock uniqueLogTypes
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.logType) Then uniqueLogTypes.Add(savedData.logType)
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName)
+                                                                                                                                   End SyncLock
+                                                                                                                               End Sub)
+                                                                   End Using
+                                                               End Sub)
+
+            Using fileStream As New IO.StreamReader(strPathToDataFile)
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+
+                Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
+                                                                            SyncLock uniqueLogTypes
+                                                                                If Not String.IsNullOrWhiteSpace(savedData.logType) Then uniqueLogTypes.Add(savedData.logType)
+                                                                                If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName) Else
+                                                                            End SyncLock
+                                                                        End Sub)
+            End Using
+
+            Return (uniqueLogTypes, uniqueProcess)
+        End Function
 
         Public Sub SendReport(exception As Exception, Optional developerMessage As String = "")
             _reportCrash.DeveloperMessage = developerMessage

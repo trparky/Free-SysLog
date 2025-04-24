@@ -282,7 +282,10 @@ Public Class ViewLogBackups
             Exit Sub
         End If
 
+        Dim strLimitBy As String = boxLimitBy.Text
+        Dim strLimiter As String = boxLimiter.Text
         Dim boolShowSearchResults As Boolean = True
+        Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
@@ -321,7 +324,15 @@ Public Class ViewLogBackups
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
                                                                                      For Each item As SavedData In dataFromFile
-                                                                                         If regexCompiledObject.IsMatch(item.log) Then
+                                                                                         If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                         ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                         Else
+                                                                                             boolDoesLogMatchLimitedSearch = True
+                                                                                         End If
+
+                                                                                         If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                              myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
@@ -339,7 +350,15 @@ Public Class ViewLogBackups
                                           Next
 
                                           For Each item As SavedData In currentLogs
-                                              If regexCompiledObject.IsMatch(item.log) Then
+                                              If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              Else
+                                                  boolDoesLogMatchLimitedSearch = True
+                                              End If
+
+                                              If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
@@ -515,5 +534,23 @@ Public Class ViewLogBackups
 
     Private Sub ChkLogFileDeletions_Click(sender As Object, e As EventArgs) Handles ChkLogFileDeletions.Click
         My.Settings.LogFileDeletions = ChkLogFileDeletions.Checked
+    End Sub
+
+    Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
+        boxLimiter.Items.Clear()
+
+        Dim sortedList As List(Of String)
+
+        If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.uniqueLogTypes.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.uniqueProcess.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        End If
     End Sub
 End Class
