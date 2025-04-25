@@ -346,7 +346,7 @@ Partial Class ViewLogBackups
         Me.boxLimiter.FormattingEnabled = True
         Me.boxLimiter.Location = New System.Drawing.Point(184, 318)
         Me.boxLimiter.Name = "boxLimiter"
-        Me.boxLimiter.Size = New System.Drawing.Size(189, 21)
+        Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
         Me.boxLimiter.TabIndex = 41
         '
         'ViewLogBackups

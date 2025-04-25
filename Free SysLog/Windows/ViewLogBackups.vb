@@ -537,6 +537,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
+        boxLimiter.Text = Nothing
         boxLimiter.Items.Clear()
 
         Dim sortedList As List(Of String)
