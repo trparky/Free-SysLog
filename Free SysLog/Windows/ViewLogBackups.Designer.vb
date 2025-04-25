@@ -334,10 +334,11 @@ Partial Class ViewLogBackups
         '
         Me.boxLimitBy.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.boxLimitBy.FormattingEnabled = True
-        Me.boxLimitBy.Items.AddRange(New Object() {"Log Type", "Program Name"})
+        Me.boxLimitBy.Items.AddRange(New Object() {"Not Specified", "Log Type", "Program Name"})
         Me.boxLimitBy.Location = New System.Drawing.Point(57, 318)
         Me.boxLimitBy.Name = "boxLimitBy"
         Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)
+        Me.boxLimitBy.Text = "(Not Specified)"
         Me.boxLimitBy.TabIndex = 40
         '
         'boxLimiter
@@ -347,6 +348,7 @@ Partial Class ViewLogBackups
         Me.boxLimiter.Location = New System.Drawing.Point(184, 318)
         Me.boxLimiter.Name = "boxLimiter"
         Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
+        Me.boxLimiter.Text = "(Not Specified)"
         Me.boxLimiter.TabIndex = 41
         '
         'ViewLogBackups

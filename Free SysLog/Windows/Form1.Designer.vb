@@ -898,15 +898,17 @@ Partial Class Form1
         Me.boxLimiter.Location = New System.Drawing.Point(646, 29)
         Me.boxLimiter.Name = "boxLimiter"
         Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
+        Me.boxLimiter.Text = "(Not Specified)"
         Me.boxLimiter.TabIndex = 44
         '
         'boxLimitBy
         '
         Me.boxLimitBy.FormattingEnabled = True
-        Me.boxLimitBy.Items.AddRange(New Object() {"Log Type", "Program Name"})
+        Me.boxLimitBy.Items.AddRange(New Object() {"(Not Specified)", "Log Type", "Program Name"})
         Me.boxLimitBy.Location = New System.Drawing.Point(519, 29)
         Me.boxLimitBy.Name = "boxLimitBy"
         Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)
+        Me.boxLimitBy.Text = "(Not Specified)"
         Me.boxLimitBy.TabIndex = 43
         '
         'Form1

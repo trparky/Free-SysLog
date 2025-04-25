@@ -539,6 +539,7 @@ Public Class ViewLogBackups
     Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
         boxLimiter.Text = Nothing
         boxLimiter.Items.Clear()
+        boxLimiter.Text = "(Not Specified)"
 
         Dim sortedList As List(Of String)
 
@@ -552,6 +553,8 @@ Public Class ViewLogBackups
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
+        Else
+            boxLimiter.Text = "(Not Specified)"
         End If
     End Sub
 End Class
