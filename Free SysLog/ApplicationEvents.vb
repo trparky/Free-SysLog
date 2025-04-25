@@ -83,7 +83,7 @@ Namespace My
                 Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
                                                                             SyncLock uniqueLogTypes
                                                                                 If Not String.IsNullOrWhiteSpace(savedData.logType) Then uniqueLogTypes.Add(savedData.logType)
-                                                                                If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName) Else
+                                                                                If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName)
                                                                             End SyncLock
                                                                         End Sub)
             End Using
