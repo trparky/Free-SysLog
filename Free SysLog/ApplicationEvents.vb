@@ -58,24 +58,25 @@ Namespace My
             uniqueObjects = LoadUniqueLogTypesAndProcesses()
         End Sub
 
-        Private Function LoadUniqueLogTypesAndProcesses() As (HashSet(Of String), HashSet(Of String), HashSet(Of String), HashSet(Of String))
+        Private Function LoadUniqueLogTypesAndProcesses() As uniqueObjectsClass
             Dim filesInDirectory As IO.FileInfo() = New IO.DirectoryInfo(strPathToDataBackupFolder).GetFiles()
             Dim collectionOfSavedData As List(Of SavedData)
-            Dim uniqueLogTypes As New HashSet(Of String)
-            Dim uniqueProcess As New HashSet(Of String)
-            Dim uniqueHostnames As New HashSet(Of String)
-            Dim uniqueIPAddresses As New HashSet(Of String)
+            Dim lockObject As New Object
+
+            Dim uniqueObjects As New uniqueObjectsClass
 
             Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
                                                                    Using fileStream As New IO.StreamReader(file.FullName)
                                                                        collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
                                                                        Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
-                                                                                                                                   SyncLock uniqueLogTypes
-                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.logType) Then uniqueLogTypes.Add(savedData.logType)
-                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName)
-                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.hostname) Then uniqueHostnames.Add(savedData.hostname)
-                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.ip) Then uniqueIPAddresses.Add(savedData.ip)
+                                                                                                                                   SyncLock lockObject
+                                                                                                                                       With uniqueObjects
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                                                                       End With
                                                                                                                                    End SyncLock
                                                                                                                                End Sub)
                                                                    End Using
@@ -85,16 +86,18 @@ Namespace My
                 collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
                 Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
-                                                                            SyncLock uniqueLogTypes
-                                                                                If Not String.IsNullOrWhiteSpace(savedData.logType) Then uniqueLogTypes.Add(savedData.logType)
-                                                                                If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName)
-                                                                                If Not String.IsNullOrWhiteSpace(savedData.hostname) Then uniqueHostnames.Add(savedData.hostname)
-                                                                                If Not String.IsNullOrWhiteSpace(savedData.ip) Then uniqueIPAddresses.Add(savedData.ip)
+                                                                            SyncLock lockObject
+                                                                                With uniqueObjects
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                End With
                                                                             End SyncLock
                                                                         End Sub)
             End Using
 
-            Return (uniqueLogTypes, uniqueProcess, uniqueHostnames, uniqueIPAddresses)
+            Return uniqueObjects
         End Function
 
         Public Sub SendReport(exception As Exception, Optional developerMessage As String = "")

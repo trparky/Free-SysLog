@@ -335,12 +335,12 @@ Public Class Form1
         ', "Hostnames", "IP Address"
 
         If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = uniqueObjects.uniqueLogTypes.ToList()
+            sortedList = uniqueObjects.logTypes.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = uniqueObjects.uniqueProcess.ToList()
+            sortedList = uniqueObjects.processes.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)

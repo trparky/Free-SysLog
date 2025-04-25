@@ -320,10 +320,12 @@ Namespace SyslogParser
                     If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
-                    uniqueObjects.uniqueLogTypes.Add($"{priorityObject.Severity}, {priorityObject.Facility}")
-                    uniqueObjects.uniqueProcess.Add(appName)
-                    uniqueObjects.hostNames.Add(hostname)
-                    uniqueObjects.ipAddresses.Add(strSourceIP)
+                    With uniqueObjects
+                        .logTypes.Add($"{priorityObject.Severity}, {priorityObject.Facility}")
+                        .processes.Add(appName)
+                        .hostNames.Add(hostname)
+                        .ipAddresses.Add(strSourceIP)
+                    End With
 
                     ' Step 4: Add to log list, separating header and message
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)
