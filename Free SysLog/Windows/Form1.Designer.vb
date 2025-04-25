@@ -131,6 +131,9 @@ Partial Class Form1
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.IconMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ReOpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.boxLimiter = New System.Windows.Forms.ComboBox()
+        Me.boxLimitBy = New System.Windows.Forms.ComboBox()
+        Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -149,20 +152,20 @@ Partial Class Form1
         '
         Me.NotificationLengthLong.CheckOnClick = True
         Me.NotificationLengthLong.Name = "NotificationLengthLong"
-        Me.NotificationLengthLong.Size = New System.Drawing.Size(50, 22)
+        Me.NotificationLengthLong.Size = New System.Drawing.Size(102, 22)
         Me.NotificationLengthLong.Text = "Long"
         '
         'NotificationLengthShort
         '
         Me.NotificationLengthShort.CheckOnClick = True
         Me.NotificationLengthShort.Name = "NotificationLengthShort"
-        Me.NotificationLengthShort.Size = New System.Drawing.Size(50, 22)
+        Me.NotificationLengthShort.Size = New System.Drawing.Size(102, 22)
         Me.NotificationLengthShort.Text = "Short"
         '
         'CreateAlertToolStripMenuItem
         '
         Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
-        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
         'BtnOpenLogLocation
@@ -270,7 +273,7 @@ Partial Class Form1
         Me.ChkEnableAutoScroll.Size = New System.Drawing.Size(339, 22)
         Me.ChkEnableAutoScroll.Text = "Enable Auto Scroll"
         '
-        'ToolStripMenuItem
+        'ChkDisableAutoScrollUponScrolling
         '
         Me.ChkDisableAutoScrollUponScrolling.CheckOnClick = True
         Me.ChkDisableAutoScrollUponScrolling.Name = "ChkDisableAutoScrollUponScrolling"
@@ -390,7 +393,7 @@ Partial Class Form1
         'ToolStripMenuSeparator
         '
         Me.ToolStripMenuSeparator.Name = "ToolStripMenuSeparator"
-        Me.ToolStripMenuSeparator.Size = New System.Drawing.Size(177, 6)
+        Me.ToolStripMenuSeparator.Size = New System.Drawing.Size(168, 6)
         '
         'CloseMe
         '
@@ -672,7 +675,7 @@ Partial Class Form1
         'IncludeButtonsOnNotifications
         '
         Me.IncludeButtonsOnNotifications.CheckOnClick = True
-        Me.IncludeButtonsOnNotifications.Name = "ImportExportSIncludeButtonsOnNotificationsettingsToolStripMenuItem"
+        Me.IncludeButtonsOnNotifications.Name = "IncludeButtonsOnNotifications"
         Me.IncludeButtonsOnNotifications.Size = New System.Drawing.Size(339, 22)
         Me.IncludeButtonsOnNotifications.Text = "Include Buttons on Notifications"
         '
@@ -736,42 +739,42 @@ Partial Class Form1
         '
         Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
-        Me.LogsMenu.Size = New System.Drawing.Size(189, 158)
+        Me.LogsMenu.Size = New System.Drawing.Size(184, 180)
         '
         'CopyLogTextToolStripMenuItem
         '
         Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
-        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
         '
         'OpenLogViewerToolStripMenuItem
         '
         Me.OpenLogViewerToolStripMenuItem.Name = "OpenLogViewerToolStripMenuItem"
-        Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.OpenLogViewerToolStripMenuItem.Text = "Open Log Viewer"
         '
         'DeleteSimilarLogsToolStripMenuItem
         '
         Me.DeleteSimilarLogsToolStripMenuItem.Name = "DeleteSimilarLogsToolStripMenuItem"
-        Me.DeleteSimilarLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.DeleteSimilarLogsToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.DeleteSimilarLogsToolStripMenuItem.Text = "Delete Similar Logs"
         '
         'DeleteLogsToolStripMenuItem
         '
         Me.DeleteLogsToolStripMenuItem.Name = "DeleteLogsToolStripMenuItem"
-        Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.DeleteLogsToolStripMenuItem.Text = "Delete Selected Logs"
         '
         'ExportAllLogsToolStripMenuItem
         '
         Me.ExportAllLogsToolStripMenuItem.Name = "ExportAllLogsToolStripMenuItem"
-        Me.ExportAllLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.ExportAllLogsToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
         Me.ExportAllLogsToolStripMenuItem.Text = "Export All Logs"
         '
         'ExportsLogsToolStripMenuItem
         '
         Me.ExportsLogsToolStripMenuItem.Name = "ExportsLogsToolStripMenuItem"
-        Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.ExportsLogsToolStripMenuItem.Text = "Export Selected Logs"
         '
         'DonationStripMenuItem
@@ -808,63 +811,63 @@ Partial Class Form1
         '
         Me.ChkShowLogTypeColumn.CheckOnClick = True
         Me.ChkShowLogTypeColumn.Name = "ChkShowLogTypeColumn"
-        Me.ChkShowLogTypeColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowLogTypeColumn.Size = New System.Drawing.Size(213, 22)
         Me.ChkShowLogTypeColumn.Text = "Show Log Type Column"
         '
         'ChkShowServerTimeColumn
         '
         Me.ChkShowServerTimeColumn.CheckOnClick = True
         Me.ChkShowServerTimeColumn.Name = "ChkShowServerTimeColumn"
-        Me.ChkShowServerTimeColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowServerTimeColumn.Size = New System.Drawing.Size(213, 22)
         Me.ChkShowServerTimeColumn.Text = "Show Server Time Column"
         '
         'ChkShowHostnameColumn
         '
         Me.ChkShowHostnameColumn.CheckOnClick = True
         Me.ChkShowHostnameColumn.Name = "ChkShowHostnameColumn"
-        Me.ChkShowHostnameColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowHostnameColumn.Size = New System.Drawing.Size(213, 22)
         Me.ChkShowHostnameColumn.Text = "Show Hostname Column"
         '
         'ChkShowAlertedColumn
         '
         Me.ChkShowAlertedColumn.CheckOnClick = True
         Me.ChkShowAlertedColumn.Name = "ChkShowAlertedColumn"
-        Me.ChkShowAlertedColumn.Size = New System.Drawing.Size(339, 22)
+        Me.ChkShowAlertedColumn.Size = New System.Drawing.Size(213, 22)
         Me.ChkShowAlertedColumn.Text = "Show Alerted Column"
         '
         'RemoveNumbersFromRemoteApp
         '
         Me.RemoveNumbersFromRemoteApp.CheckOnClick = True
         Me.RemoveNumbersFromRemoteApp.Name = "RemoveNumbersFromRemoteApp"
-        Me.RemoveNumbersFromRemoteApp.Size = New System.Drawing.Size(188, 22)
+        Me.RemoveNumbersFromRemoteApp.Size = New System.Drawing.Size(339, 22)
         Me.RemoveNumbersFromRemoteApp.Text = "Remove Numbers From Remote App"
         '
         'ShowRawLogOnLogViewer
         '
         Me.ShowRawLogOnLogViewer.CheckOnClick = True
         Me.ShowRawLogOnLogViewer.Name = "ShowRawLogOnLogViewer"
-        Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(188, 22)
+        Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(339, 22)
         Me.ShowRawLogOnLogViewer.Text = "Show Raw Log on Log Viewer Window"
         '
         'CreateIgnoredLogToolStripMenuItem
         '
         Me.CreateIgnoredLogToolStripMenuItem.Name = "CreateIgnoredLogToolStripMenuItem"
-        Me.CreateIgnoredLogToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.CreateIgnoredLogToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.CreateIgnoredLogToolStripMenuItem.Text = "Create Ignored Log"
         '
         'CreateReplacementToolStripMenuItem
         '
         Me.CreateReplacementToolStripMenuItem.Name = "CreateReplacementToolStripMenuItem"
-        Me.CreateReplacementToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.CreateReplacementToolStripMenuItem.Size = New System.Drawing.Size(183, 22)
         Me.CreateReplacementToolStripMenuItem.Text = "Create Replacement"
         '
         'LoadingProgressBar
         '
         Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LoadingProgressBar.Location = New System.Drawing.Point(474, 27)
+        Me.LoadingProgressBar.Location = New System.Drawing.Point(902, 27)
         Me.LoadingProgressBar.Name = "LoadingProgressBar"
-        Me.LoadingProgressBar.Size = New System.Drawing.Size(689, 23)
+        Me.LoadingProgressBar.Size = New System.Drawing.Size(261, 23)
         Me.LoadingProgressBar.TabIndex = 19
         Me.LoadingProgressBar.Visible = False
         '
@@ -872,13 +875,39 @@ Partial Class Form1
         '
         Me.IconMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ReOpenToolStripMenuItem})
         Me.IconMenu.Name = "IconMenu"
-        Me.IconMenu.Size = New System.Drawing.Size(181, 48)
+        Me.IconMenu.Size = New System.Drawing.Size(122, 26)
         '
         'ReOpenToolStripMenuItem
         '
         Me.ReOpenToolStripMenuItem.Name = "ReOpenToolStripMenuItem"
-        Me.ReOpenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ReOpenToolStripMenuItem.Size = New System.Drawing.Size(121, 22)
         Me.ReOpenToolStripMenuItem.Text = "Re-Open"
+        '
+        'lblLimitBy
+        '
+        Me.lblLimitBy.AutoSize = True
+        Me.lblLimitBy.Location = New System.Drawing.Point(474, 32)
+        Me.lblLimitBy.Name = "lblLimitBy"
+        Me.lblLimitBy.Size = New System.Drawing.Size(46, 13)
+        Me.lblLimitBy.TabIndex = 42
+        Me.lblLimitBy.Text = "Limit By:"
+        '
+        'boxLimiter
+        '
+        Me.boxLimiter.FormattingEnabled = True
+        Me.boxLimiter.Location = New System.Drawing.Point(646, 29)
+        Me.boxLimiter.Name = "boxLimiter"
+        Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
+        Me.boxLimiter.TabIndex = 44
+        '
+        'boxLimitBy
+        '
+        Me.boxLimitBy.FormattingEnabled = True
+        Me.boxLimitBy.Items.AddRange(New Object() {"Log Type", "Program Name"})
+        Me.boxLimitBy.Location = New System.Drawing.Point(519, 29)
+        Me.boxLimitBy.Name = "boxLimitBy"
+        Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)
+        Me.boxLimitBy.TabIndex = 43
         '
         'Form1
         '
@@ -894,6 +923,9 @@ Partial Class Form1
         Me.Controls.Add(Me.LblSearchLabel)
         Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.MenuStrip)
+        Me.Controls.Add(Me.boxLimiter)
+        Me.Controls.Add(Me.boxLimitBy)
+        Me.Controls.Add(Me.lblLimitBy)
         Me.MainMenuStrip = Me.MenuStrip
         Me.MinimumSize = New System.Drawing.Size(1191, 485)
         Me.Name = "Form1"
@@ -1018,4 +1050,7 @@ Partial Class Form1
     Friend WithEvents NotificationLengthShort As ToolStripMenuItem
     Friend WithEvents IconMenu As ContextMenuStrip
     Friend WithEvents ReOpenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents boxLimiter As ComboBox
+    Friend WithEvents boxLimitBy As ComboBox
+    Friend WithEvents lblLimitBy As Label
 End Class

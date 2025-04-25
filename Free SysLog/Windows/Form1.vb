@@ -325,6 +325,25 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
+        boxLimiter.Text = Nothing
+        boxLimiter.Items.Clear()
+
+        Dim sortedList As List(Of String)
+
+        If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.uniqueLogTypes.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.uniqueProcess.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        End If
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SyslogParser.SetParentForm = Me
         DataHandling.SetParentForm = Me
@@ -774,6 +793,9 @@ Public Class Form1
             Exit Sub
         End If
 
+        Dim strLimitBy As String = boxLimitBy.Text
+        Dim strLimiter As String = boxLimiter.Text
+        Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim strLogText As String
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
@@ -801,7 +823,15 @@ Public Class Form1
                                                   If MyDataGridRowItem IsNot Nothing Then
                                                       strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
-                                                      If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
+                                                      If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      Else
+                                                          boolDoesLogMatchLimitedSearch = True
+                                                      End If
+
+                                                      If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) AndAlso boolDoesLogMatchLimitedSearch Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
                                                       End If
                                                   End If
