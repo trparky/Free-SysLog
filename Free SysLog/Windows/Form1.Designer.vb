@@ -904,7 +904,7 @@ Partial Class Form1
         'boxLimitBy
         '
         Me.boxLimitBy.FormattingEnabled = True
-        Me.boxLimitBy.Items.AddRange(New Object() {"(Not Specified)", "Log Type", "Program Name"})
+        Me.boxLimitBy.Items.AddRange(New Object() {"(Not Specified)", "Log Type", "Program Name", "Source Hostname", "Source IP Address"})
         Me.boxLimitBy.Location = New System.Drawing.Point(519, 29)
         Me.boxLimitBy.Name = "boxLimitBy"
         Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)

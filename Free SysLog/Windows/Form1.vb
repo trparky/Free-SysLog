@@ -332,6 +332,8 @@ Public Class Form1
 
         Dim sortedList As List(Of String)
 
+        ', "Hostnames", "IP Address"
+
         If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
             sortedList = uniqueObjects.uniqueLogTypes.ToList()
             sortedList.Sort()
@@ -339,6 +341,16 @@ Public Class Form1
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
             sortedList = uniqueObjects.uniqueProcess.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.hostNames.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.ipAddresses.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
@@ -830,6 +842,10 @@ Public Class Form1
                                                           boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                       ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
                                                           boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                       Else
                                                           boolDoesLogMatchLimitedSearch = True
                                                       End If

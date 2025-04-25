@@ -322,6 +322,8 @@ Namespace SyslogParser
 
                     uniqueObjects.uniqueLogTypes.Add($"{priorityObject.Severity}, {priorityObject.Facility}")
                     uniqueObjects.uniqueProcess.Add(appName)
+                    uniqueObjects.hostNames.Add(hostname)
+                    uniqueObjects.ipAddresses.Add(strSourceIP)
 
                     ' Step 4: Add to log list, separating header and message
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)

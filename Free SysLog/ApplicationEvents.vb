@@ -58,11 +58,13 @@ Namespace My
             uniqueObjects = LoadUniqueLogTypesAndProcesses()
         End Sub
 
-        Private Function LoadUniqueLogTypesAndProcesses() As (HashSet(Of String), HashSet(Of String))
+        Private Function LoadUniqueLogTypesAndProcesses() As (HashSet(Of String), HashSet(Of String), HashSet(Of String), HashSet(Of String))
             Dim filesInDirectory As IO.FileInfo() = New IO.DirectoryInfo(strPathToDataBackupFolder).GetFiles()
             Dim collectionOfSavedData As List(Of SavedData)
             Dim uniqueLogTypes As New HashSet(Of String)
             Dim uniqueProcess As New HashSet(Of String)
+            Dim uniqueHostnames As New HashSet(Of String)
+            Dim uniqueIPAddresses As New HashSet(Of String)
 
             Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
                                                                    Using fileStream As New IO.StreamReader(file.FullName)
@@ -72,6 +74,8 @@ Namespace My
                                                                                                                                    SyncLock uniqueLogTypes
                                                                                                                                        If Not String.IsNullOrWhiteSpace(savedData.logType) Then uniqueLogTypes.Add(savedData.logType)
                                                                                                                                        If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName)
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.hostname) Then uniqueHostnames.Add(savedData.hostname)
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.ip) Then uniqueIPAddresses.Add(savedData.ip)
                                                                                                                                    End SyncLock
                                                                                                                                End Sub)
                                                                    End Using
@@ -84,11 +88,13 @@ Namespace My
                                                                             SyncLock uniqueLogTypes
                                                                                 If Not String.IsNullOrWhiteSpace(savedData.logType) Then uniqueLogTypes.Add(savedData.logType)
                                                                                 If Not String.IsNullOrWhiteSpace(savedData.appName) Then uniqueProcess.Add(savedData.appName)
+                                                                                If Not String.IsNullOrWhiteSpace(savedData.hostname) Then uniqueHostnames.Add(savedData.hostname)
+                                                                                If Not String.IsNullOrWhiteSpace(savedData.ip) Then uniqueIPAddresses.Add(savedData.ip)
                                                                             End SyncLock
                                                                         End Sub)
             End Using
 
-            Return (uniqueLogTypes, uniqueProcess)
+            Return (uniqueLogTypes, uniqueProcess, uniqueHostnames, uniqueIPAddresses)
         End Function
 
         Public Sub SendReport(exception As Exception, Optional developerMessage As String = "")

@@ -48,7 +48,7 @@ Namespace SupportCode
         Public Const strUpdaterEXE As String = "updater.exe"
         Public Const strUpdaterPDB As String = "updater.pdb"
 
-        Public uniqueObjects As (uniqueLogTypes As HashSet(Of String), uniqueProcess As HashSet(Of String))
+        Public uniqueObjects As (uniqueLogTypes As HashSet(Of String), uniqueProcess As HashSet(Of String), hostNames As HashSet(Of String), ipAddresses As HashSet(Of String))
 
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True

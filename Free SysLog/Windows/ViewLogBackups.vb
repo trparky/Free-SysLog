@@ -354,6 +354,10 @@ Public Class ViewLogBackups
                                                   boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
                                               ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
                                                   boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
                                               Else
                                                   boolDoesLogMatchLimitedSearch = True
                                               End If
@@ -550,6 +554,16 @@ Public Class ViewLogBackups
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
             sortedList = uniqueObjects.uniqueProcess.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.hostNames.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.ipAddresses.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
