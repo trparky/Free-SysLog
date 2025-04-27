@@ -531,7 +531,7 @@ Partial Class Form1
         'BtnSearch
         '
         Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnSearch.Location = New System.Drawing.Point(416, 27)
+        Me.BtnSearch.Location = New System.Drawing.Point(851, 27)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
         Me.BtnSearch.TabIndex = 15
@@ -865,9 +865,9 @@ Partial Class Form1
         '
         Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LoadingProgressBar.Location = New System.Drawing.Point(902, 27)
+        Me.LoadingProgressBar.Location = New System.Drawing.Point(909, 28)
         Me.LoadingProgressBar.Name = "LoadingProgressBar"
-        Me.LoadingProgressBar.Size = New System.Drawing.Size(261, 23)
+        Me.LoadingProgressBar.Size = New System.Drawing.Size(254, 23)
         Me.LoadingProgressBar.TabIndex = 19
         Me.LoadingProgressBar.Visible = False
         '
@@ -886,7 +886,7 @@ Partial Class Form1
         'lblLimitBy
         '
         Me.lblLimitBy.AutoSize = True
-        Me.lblLimitBy.Location = New System.Drawing.Point(474, 32)
+        Me.lblLimitBy.Location = New System.Drawing.Point(423, 32)
         Me.lblLimitBy.Name = "lblLimitBy"
         Me.lblLimitBy.Size = New System.Drawing.Size(46, 13)
         Me.lblLimitBy.TabIndex = 42
@@ -895,7 +895,7 @@ Partial Class Form1
         'boxLimiter
         '
         Me.boxLimiter.FormattingEnabled = True
-        Me.boxLimiter.Location = New System.Drawing.Point(646, 29)
+        Me.boxLimiter.Location = New System.Drawing.Point(595, 29)
         Me.boxLimiter.Name = "boxLimiter"
         Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
         Me.boxLimiter.Text = "(Not Specified)"
@@ -905,7 +905,7 @@ Partial Class Form1
         '
         Me.boxLimitBy.FormattingEnabled = True
         Me.boxLimitBy.Items.AddRange(New Object() {"(Not Specified)", "Log Type", "Program Name", "Source Hostname", "Source IP Address"})
-        Me.boxLimitBy.Location = New System.Drawing.Point(519, 29)
+        Me.boxLimitBy.Location = New System.Drawing.Point(468, 29)
         Me.boxLimitBy.Name = "boxLimitBy"
         Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)
         Me.boxLimitBy.Text = "(Not Specified)"
