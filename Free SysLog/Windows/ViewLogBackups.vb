@@ -5,6 +5,7 @@ Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 Imports System.Threading
 Imports Microsoft.VisualBasic.Logging
+Imports Windows.Media.AppBroadcasting
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -362,7 +363,7 @@ Public Class ViewLogBackups
                                                   boolDoesLogMatchLimitedSearch = True
                                               End If
 
-                                              If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
+                                              If Not String.IsNullOrWhiteSpace(item.log) AndAlso regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
