@@ -15,7 +15,7 @@ Public Class SavedData
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
-                .Cells(ColumnIndex_ComputedTime).Value = time
+                .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(time)
                 .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(logType), "", logType)
                 .Cells(ColumnIndex_IPAddress).Value = ip

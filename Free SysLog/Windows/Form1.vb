@@ -908,32 +908,20 @@ Public Class Form1
 
             Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
-            SortLogsByDateObject(column.Index, sortOrder)
+            SortLogsByDateObject(column.Index, If(sortOrder = SortOrder.Ascending, ListSortDirection.Ascending, ListSortDirection.Descending))
         End If
     End Sub
 
-    Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
+    Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
         SyncLock dataGridLockObject
             SortLogsByDateObjectNoLocking(columnIndex, order)
         End SyncLock
     End Sub
 
-    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
-        Logs.AllowUserToOrderColumns = False
-        Logs.Enabled = False
-
-        Dim comparer As New DataGridViewComparer(columnIndex, order)
-        Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
-
-        Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
-
+    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As ListSortDirection)
         Logs.SuspendLayout()
-        Logs.Rows.Clear()
-        Logs.Rows.AddRange(rows)
+        Logs.Sort(Logs.Columns(columnIndex), order)
         Logs.ResumeLayout()
-
-        Logs.Enabled = True
-        Logs.AllowUserToOrderColumns = True
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click

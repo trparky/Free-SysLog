@@ -1,6 +1,7 @@
 ﻿Imports System.Net
 Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
+Imports System.ComponentModel
 
 Namespace SyslogParser
     Public Module SyslogParser
@@ -46,7 +47,7 @@ Namespace SyslogParser
             Using MyDataGridViewRow As New MyDataGridViewRow
                 With MyDataGridViewRow
                     .CreateCells(dataGrid)
-                    .Cells(ColumnIndex_ComputedTime).Value = strTime
+                    .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(strTime)
                     .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                     .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "", strLogType)
                     .Cells(ColumnIndex_IPAddress).Value = strSourceAddress
@@ -105,7 +106,7 @@ Namespace SyslogParser
                                       ParentForm.UpdateLogCount()
                                       ParentForm.SelectLatestLogEntry()
                                       ParentForm.BtnSaveLogsToDisk.Enabled = True
-                                      If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
+                                      If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
                                   End SyncLock
 
                                   ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -384,7 +385,7 @@ Namespace SyslogParser
                                                                                    AlertType:=alertType,
                                                                                    dataGrid:=ParentForm.Logs)
                                                                                   )
-                                          If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
+                                          If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
                                       End SyncLock
 
                                       ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."

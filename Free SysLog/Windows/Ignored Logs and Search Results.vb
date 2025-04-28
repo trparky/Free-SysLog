@@ -72,21 +72,9 @@ Public Class IgnoredLogsAndSearchResults
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
         SyncLock dataGridLockObject
             Logs.Invoke(Sub()
-                            Logs.AllowUserToOrderColumns = False
-                            Logs.Enabled = False
-
-                            Dim comparer As New DataGridViewComparer(columnIndex, order)
-                            Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
-
-                            Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
-
                             Logs.SuspendLayout()
-                            Logs.Rows.Clear()
-                            Logs.Rows.AddRange(rows)
+                            Logs.Sort(Logs.Columns(columnIndex), If(order = SortOrder.Ascending, ListSortDirection.Ascending, ListSortDirection.Descending))
                             Logs.ResumeLayout()
-
-                            Logs.Enabled = True
-                            Logs.AllowUserToOrderColumns = True
                         End Sub)
         End SyncLock
     End Sub
@@ -379,7 +367,7 @@ Public Class IgnoredLogsAndSearchResults
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
-                .Cells(ColumnIndex_ComputedTime).Value = Now.ToString
+                .Cells(ColumnIndex_ComputedTime).Value = Now
                 .Cells(ColumnIndex_LogText).Value = strLog
                 .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
             End With
