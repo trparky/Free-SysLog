@@ -850,7 +850,7 @@ Public Class Form1
                                                           boolDoesLogMatchLimitedSearch = True
                                                       End If
 
-                                                      If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) AndAlso boolDoesLogMatchLimitedSearch Then
+                                                      If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
                                                       End If
                                                   End If

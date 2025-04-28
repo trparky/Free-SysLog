@@ -363,7 +363,7 @@ Public Class ViewLogBackups
                                                   boolDoesLogMatchLimitedSearch = True
                                               End If
 
-                                              If Not String.IsNullOrWhiteSpace(item.log) AndAlso regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
+                                              If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(item.log) AndAlso regexCompiledObject.IsMatch(item.log) Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
