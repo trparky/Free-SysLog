@@ -678,8 +678,8 @@ Public Class Form1
                     End If
                 End If
 
-                For Each item As DataGridViewRow In Logs.SelectedRows
-                    Logs.Rows.Remove(item)
+                For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
+                    Logs.Rows.Remove(Logs.SelectedRows(i))
                 Next
 
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
@@ -1265,8 +1265,8 @@ Public Class Form1
                 MakeLogBackup()
             End If
 
-            For Each item As DataGridViewRow In Logs.SelectedRows
-                Logs.Rows.Remove(item)
+            For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
+                Logs.Rows.Remove(Logs.SelectedRows(i))
             Next
 
             Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
