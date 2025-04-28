@@ -327,7 +327,7 @@ Public Class ViewLogBackups
                                                                                      For Each item As SavedData In dataFromFile
                                                                                          If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
                                                                                              boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                         ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
                                                                                              boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                                                          Else
                                                                                              boolDoesLogMatchLimitedSearch = True
@@ -353,7 +353,7 @@ Public Class ViewLogBackups
                                           For Each item As SavedData In currentLogs
                                               If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
                                                   boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                              ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+                                              ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
                                                   boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
                                               ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
                                                   boolDoesLogMatchLimitedSearch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
@@ -553,7 +553,7 @@ Public Class ViewLogBackups
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+        ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
             sortedList = uniqueObjects.processes.ToList()
             sortedList.Sort()
 

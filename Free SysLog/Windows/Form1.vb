@@ -339,7 +339,7 @@ Public Class Form1
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+        ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
             sortedList = uniqueObjects.processes.ToList()
             sortedList.Sort()
 
@@ -840,7 +840,7 @@ Public Class Form1
 
                                                       If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
                                                           boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                      ElseIf strLimitBy.Equals("Program Name", StringComparison.OrdinalIgnoreCase) Then
+                                                      ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
                                                           boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                       ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
                                                           boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
