@@ -671,7 +671,7 @@ Public Class Form1
                     End Using
 
                     If choice = Confirm_Delete.UserChoice.NoDelete Then
-                        MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
+                        MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
                         Exit Sub
                     ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
                         MakeLogBackup()
@@ -1259,7 +1259,7 @@ Public Class Form1
             End Using
 
             If choice = Confirm_Delete.UserChoice.NoDelete Then
-                MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
+                MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
                 Exit Sub
             ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
                 MakeLogBackup()
