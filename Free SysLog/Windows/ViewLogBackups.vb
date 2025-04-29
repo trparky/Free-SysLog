@@ -4,8 +4,6 @@ Imports System.ComponentModel
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 Imports System.Threading
-Imports Microsoft.VisualBasic.Logging
-Imports Windows.Media.AppBroadcasting
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
