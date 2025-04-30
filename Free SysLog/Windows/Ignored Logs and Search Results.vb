@@ -206,12 +206,7 @@ Public Class IgnoredLogsAndSearchResults
         End If
 
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
-            Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                       LoadData(strFileToLoad)
-                                                       LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
-                                                       boolDoneLoading = True
-                                                       SortLogsByDateObject(0, SortOrder.Ascending)
-                                                   End Sub)
+            Threading.ThreadPool.QueueUserWorkItem(Sub() LoadData(strFileToLoad))
         End If
 
         boolDoneLoading = True
@@ -401,17 +396,47 @@ Public Class IgnoredLogsAndSearchResults
                                 Logs.SuspendLayout()
                                 Logs.Rows.Clear()
 
-                                Task.Run(Sub()
-                                             For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
-                                                 Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
-                                                 Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
-                                             Next
+                                If listOfLogEntries.Count > 1000 Then
+                                    LoadingProgressBar.Minimum = 0
+                                    LoadingProgressBar.Value = 0 ' Start progress at 0
+                                    LoadingProgressBar.Visible = True
+                                End If
 
-                                             Logs.Invoke(Sub() Logs.ResumeLayout())
-                                         End Sub)
+                                Dim BackgroundWorker As New BackgroundWorker()
 
-                                LogsLoadedInLabel.Visible = True
-                                LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                AddHandler BackgroundWorker.RunWorkerCompleted, Sub()
+                                                                                    If listOfLogEntries.Count > 1000 Then
+                                                                                        Dim index, progress As Integer
+
+                                                                                        For index = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                                                                                            Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                                                                            Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+
+                                                                                            LoadingProgressBar.Invoke(Sub()
+                                                                                                                          progress = (index + intBatchSize) / listOfLogEntries.Count * 100
+                                                                                                                          ' Update the progress bar value, ensuring it's within the valid range
+                                                                                                                          LoadingProgressBar.Value = Math.Min(progress, LoadingProgressBar.Maximum)
+                                                                                                                      End Sub)
+                                                                                        Next
+                                                                                    Else
+                                                                                        Logs.Invoke(Sub() Logs.Rows.AddRange(listOfLogEntries.ToArray)) ' Invoke needed for UI updates
+                                                                                    End If
+                                                                                End Sub
+
+                                AddHandler BackgroundWorker.RunWorkerCompleted, Sub()
+                                                                                    Logs.Invoke(Sub()
+                                                                                                    Logs.ResumeLayout()
+                                                                                                    LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+                                                                                                    SortLogsByDateObject(0, SortOrder.Ascending)
+                                                                                                    LogsLoadedInLabel.Visible = True
+                                                                                                    LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                                                                                    LoadingProgressBar.Visible = False
+                                                                                                    boolDoneLoading = True
+                                                                                                End Sub)
+                                                                                End Sub
+
+                                ' Start the background work
+                                BackgroundWorker.RunWorkerAsync()
                             End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException

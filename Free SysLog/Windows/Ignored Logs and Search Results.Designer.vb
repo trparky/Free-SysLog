@@ -59,6 +59,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ExportSelectedLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -86,7 +87,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount, Me.LogsLoadedInLabel})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 403)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1152, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(1563, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -110,7 +111,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Logs.ReadOnly = True
         Me.Logs.RowHeadersVisible = False
         Me.Logs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.Logs.Size = New System.Drawing.Size(1128, 359)
+        Me.Logs.Size = New System.Drawing.Size(1539, 359)
         Me.Logs.TabIndex = 19
         '
         'colServerTime
@@ -179,7 +180,7 @@ Partial Class IgnoredLogsAndSearchResults
         'BtnExport
         '
         Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnExport.Location = New System.Drawing.Point(1065, 377)
+        Me.BtnExport.Location = New System.Drawing.Point(1476, 377)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
         Me.BtnExport.TabIndex = 20
@@ -189,7 +190,7 @@ Partial Class IgnoredLogsAndSearchResults
         'BtnClearIgnoredLogs
         '
         Me.BtnClearIgnoredLogs.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClearIgnoredLogs.Location = New System.Drawing.Point(923, 377)
+        Me.BtnClearIgnoredLogs.Location = New System.Drawing.Point(1334, 377)
         Me.BtnClearIgnoredLogs.Name = "BtnClearIgnoredLogs"
         Me.BtnClearIgnoredLogs.Size = New System.Drawing.Size(136, 23)
         Me.BtnClearIgnoredLogs.TabIndex = 21
@@ -316,11 +317,22 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LogsLoadedInLabel.Text = "Logs Loaded In:"
         Me.LogsLoadedInLabel.Visible = False
         '
+        'LoadingProgressBar
+        '
+        Me.LoadingProgressBar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LoadingProgressBar.Location = New System.Drawing.Point(727, 376)
+        Me.LoadingProgressBar.Maximum = 100
+        Me.LoadingProgressBar.Name = "LoadingProgressBar"
+        Me.LoadingProgressBar.Size = New System.Drawing.Size(601, 23)
+        Me.LoadingProgressBar.TabIndex = 30
+        Me.LoadingProgressBar.Visible = False
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1152, 425)
+        Me.ClientSize = New System.Drawing.Size(1563, 425)
+        Me.Controls.Add(Me.LoadingProgressBar)
         Me.Controls.Add(Me.ChkColLogsAutoFill)
         Me.Controls.Add(Me.BtnViewMainWindow)
         Me.Controls.Add(Me.BtnExport)
@@ -333,7 +345,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Controls.Add(Me.TxtSearchTerms)
         Me.Controls.Add(Me.LblSearchLabel)
         Me.MaximizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(1168, 464)
+        Me.MinimumSize = New System.Drawing.Size(1579, 464)
         Me.Name = "IgnoredLogsAndSearchResults"
         Me.Text = "Ignored Logs"
         Me.StatusStrip1.ResumeLayout(False)
@@ -372,4 +384,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents ExportSelectedLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LogsLoadedInLabel As ToolStripStatusLabel
     Friend WithEvents ChkColLogsAutoFill As CheckBox
+    Friend WithEvents LoadingProgressBar As ProgressBar
 End Class
