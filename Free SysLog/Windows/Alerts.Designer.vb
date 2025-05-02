@@ -192,7 +192,7 @@ Partial Class Alerts
         '
         Me.BtnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDeleteAll.Location = New System.Drawing.Point(245, 248)
-        Me.BtnDeleteAll.Name = "btnDeleteAll"
+        Me.BtnDeleteAll.Name = "BtnDeleteAll"
         Me.BtnDeleteAll.Size = New System.Drawing.Size(75, 23)
         Me.BtnDeleteAll.TabIndex = 16
         Me.BtnDeleteAll.Text = "Delete All"
