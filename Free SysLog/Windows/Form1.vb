@@ -359,6 +359,25 @@ Public Class Form1
         End If
     End Sub
 
+    Private Function FormatSecondsToReadableTime(input As Integer) As String
+        If input < 0 Then Return "0 seconds"
+
+        Dim minutes As Integer = input \ 60
+        Dim seconds As Integer = input Mod 60
+
+        Dim parts As New List(Of String)
+
+        If minutes > 0 Then
+            parts.Add($"{minutes} minute{If(minutes > 1, "s", "")}")
+        End If
+
+        If seconds > 0 OrElse minutes = 0 Then
+            parts.Add($"{seconds} second{If(seconds <> 1, "s", "")}")
+        End If
+
+        Return String.Join(" and ", parts)
+    End Function
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SyslogParser.SetParentForm = Me
         DataHandling.SetParentForm = Me
@@ -370,7 +389,7 @@ Public Class Form1
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
-        ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds)"
+        ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds or {FormatSecondsToReadableTime(My.Settings.TimeBetweenSameNotifications)})"
 
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
@@ -1625,7 +1644,7 @@ Public Class Form1
                 If IntegerInputForm.intResult < 30 Or IntegerInputForm.intResult > 240 Then
                     MsgBox("The time in seconds must be in the range of 30 - 240.", MsgBoxStyle.Critical, Text)
                 Else
-                    ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({IntegerInputForm.intResult} Seconds)"
+                    ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({IntegerInputForm.intResult} Seconds or {FormatSecondsToReadableTime(IntegerInputForm.intResult)})"
 
                     My.Settings.TimeBetweenSameNotifications = IntegerInputForm.intResult
                     My.Settings.Save()
