@@ -317,8 +317,14 @@ Namespace SyslogParser
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
-                    If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
-                    If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                    If My.Settings.ProcessReplacementsInSyslogDataFirst Then
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
+                    Else
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                    End If
+
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
                     With uniqueObjects

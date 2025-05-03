@@ -262,6 +262,7 @@ Public Class Form1
         ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
         ChkDebug.Checked = My.Settings.boolDebug
         ConfirmDelete.Checked = My.Settings.ConfirmDelete
+        ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -1450,6 +1451,10 @@ Public Class Form1
 
     Private Sub AutomaticallyCheckForUpdates_Click(sender As Object, e As EventArgs) Handles AutomaticallyCheckForUpdates.Click
         My.Settings.boolCheckForUpdates = AutomaticallyCheckForUpdates.Checked
+    End Sub
+
+    Private Sub ReplaceStringsInSysLogDataBeforeProcessingIgnoredRules_Click(sender As Object, e As EventArgs) Handles ProcessReplacementsInSyslogDataFirst.Click
+        My.Settings.ProcessReplacementsInSyslogDataFirst = ProcessReplacementsInSyslogDataFirst.Checked
     End Sub
 
     Private Sub BackupFileNameDateFormatChooser_Click(sender As Object, e As EventArgs) Handles BackupFileNameDateFormatChooser.Click

@@ -106,6 +106,7 @@ Partial Class Form1
         Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowAlertedColumn = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ProcessReplacementsInSyslogDataFirst = New System.Windows.Forms.ToolStripMenuItem()
         Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
@@ -445,7 +446,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.ImportExportSettingsToolStripMenuItem, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OpenWindowsExplorerToAppConfigFile, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -842,6 +843,13 @@ Partial Class Form1
         Me.RemoveNumbersFromRemoteApp.Size = New System.Drawing.Size(339, 22)
         Me.RemoveNumbersFromRemoteApp.Text = "Remove Numbers From Remote App"
         '
+        'ProcessStringReplacementsBeforeProcessingIgnoredRules
+        '
+        Me.ProcessReplacementsInSyslogDataFirst.CheckOnClick = True
+        Me.ProcessReplacementsInSyslogDataFirst.Name = "ProcessReplacementsInSyslogDataFirst"
+        Me.ProcessReplacementsInSyslogDataFirst.Size = New System.Drawing.Size(339, 22)
+        Me.ProcessReplacementsInSyslogDataFirst.Text = "Process Replacements in Syslog Data First"
+        '
         'ShowRawLogOnLogViewer
         '
         Me.ShowRawLogOnLogViewer.CheckOnClick = True
@@ -1036,6 +1044,7 @@ Partial Class Form1
     Friend WithEvents ChkDeselectItemAfterMinimizingWindow As ToolStripMenuItem
     Friend WithEvents ChkDebug As ToolStripMenuItem
     Friend WithEvents ChkShowAlertedColumn As ToolStripMenuItem
+    Friend WithEvents ProcessReplacementsInSyslogDataFirst As ToolStripMenuItem
     Friend WithEvents RemoveNumbersFromRemoteApp As ToolStripMenuItem
     Friend WithEvents ShowRawLogOnLogViewer As ToolStripMenuItem
     Friend WithEvents ChkShowLogTypeColumn As ToolStripMenuItem
