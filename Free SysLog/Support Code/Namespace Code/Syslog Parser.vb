@@ -467,11 +467,13 @@ Namespace SyslogParser
 
                         If regExGroupCollection.Count > 0 Then
                             For index As Integer = 0 To regExGroupCollection.Count - 1
+                                ' Handle the indexed group
                                 strAlertText = GetCachedRegex(Regex.Escape($"${index}"), False).Replace(strAlertText, regExGroupCollection(index).Value)
-                            Next
 
-                            For Each item As Group In regExGroupCollection
-                                strAlertText = GetCachedRegex(Regex.Escape($"$({item.Name})"), True).Replace(strAlertText, regExGroupCollection(item.Name).Value)
+                                ' Handle the named group
+                                If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
+                                    strAlertText = GetCachedRegex(Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strAlertText, regExGroupCollection(regExGroupCollection(index).Name).Value)
+                                End If
                             Next
                         End If
                     End If
