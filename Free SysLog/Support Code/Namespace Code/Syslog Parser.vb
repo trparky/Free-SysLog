@@ -1,6 +1,7 @@
 ﻿Imports System.Net
 Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
+Imports System.ComponentModel
 
 Namespace SyslogParser
     Public Module SyslogParser
@@ -46,7 +47,7 @@ Namespace SyslogParser
             Using MyDataGridViewRow As New MyDataGridViewRow
                 With MyDataGridViewRow
                     .CreateCells(dataGrid)
-                    .Cells(ColumnIndex_ComputedTime).Value = strTime
+                    .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(strTime)
                     .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                     .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "", strLogType)
                     .Cells(ColumnIndex_IPAddress).Value = strSourceAddress
@@ -105,7 +106,7 @@ Namespace SyslogParser
                                       ParentForm.UpdateLogCount()
                                       ParentForm.SelectLatestLogEntry()
                                       ParentForm.BtnSaveLogsToDisk.Enabled = True
-                                      If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
+                                      If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
                                   End SyncLock
 
                                   ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -316,9 +317,22 @@ Namespace SyslogParser
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
-                    If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
-                    If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                    If My.Settings.ProcessReplacementsInSyslogDataFirst Then
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
+                    Else
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                    End If
+
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
+
+                    With uniqueObjects
+                        .logTypes.Add($"{priorityObject.Severity}, {priorityObject.Facility}")
+                        .processes.Add(appName)
+                        .hostNames.Add(hostname)
+                        .ipAddresses.Add(strSourceIP)
+                    End With
 
                     ' Step 4: Add to log list, separating header and message
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)
@@ -377,7 +391,7 @@ Namespace SyslogParser
                                                                                    AlertType:=alertType,
                                                                                    dataGrid:=ParentForm.Logs)
                                                                                   )
-                                          If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, SortOrder.Descending)
+                                          If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
                                       End SyncLock
 
                                       ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -453,11 +467,13 @@ Namespace SyslogParser
 
                         If regExGroupCollection.Count > 0 Then
                             For index As Integer = 0 To regExGroupCollection.Count - 1
+                                ' Handle the indexed group
                                 strAlertText = GetCachedRegex(Regex.Escape($"${index}"), False).Replace(strAlertText, regExGroupCollection(index).Value)
-                            Next
 
-                            For Each item As Group In regExGroupCollection
-                                strAlertText = GetCachedRegex(Regex.Escape($"$({item.Name})"), True).Replace(strAlertText, regExGroupCollection(item.Name).Value)
+                                ' Handle the named group
+                                If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
+                                    strAlertText = GetCachedRegex(Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strAlertText, regExGroupCollection(regExGroupCollection(index).Name).Value)
+                                End If
                             Next
                         End If
                     End If

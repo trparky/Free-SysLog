@@ -11,6 +11,20 @@ Namespace SupportCode
         viewer
     End Enum
 
+    Public Class uniqueObjectsClass
+        Public logTypes As HashSet(Of String)
+        Public processes As HashSet(Of String)
+        Public hostNames As HashSet(Of String)
+        Public ipAddresses As HashSet(Of String)
+
+        Public Sub New()
+            logTypes = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            processes = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            hostNames = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            ipAddresses = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+        End Sub
+    End Class
+
     Module SupportCode
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
@@ -47,6 +61,8 @@ Namespace SupportCode
 
         Public Const strUpdaterEXE As String = "updater.exe"
         Public Const strUpdaterPDB As String = "updater.pdb"
+
+        Public uniqueObjects As uniqueObjectsClass
 
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True

@@ -128,15 +128,25 @@ Namespace SaveAppSettings
         End Function
 
         Private Function ConvertArrayListToSpecializedStringCollection(input As Newtonsoft.Json.Linq.JArray) As Specialized.StringCollection
-            Try
-                Dim stringCollection As New Specialized.StringCollection
-                For Each item As String In input
-                    stringCollection.Add(item)
-                Next
-                Return stringCollection
-            Catch ex As Exception
-                Return New Specialized.StringCollection
-            End Try
+            If input Is Nothing Then Return New Specialized.StringCollection
+
+            Dim item As String
+            Dim stringCollection As New Specialized.StringCollection
+
+            For Each token As Newtonsoft.Json.Linq.JToken In input
+                item = token?.ToString()
+
+                If Not String.IsNullOrEmpty(item) Then
+                    Try
+                        Newtonsoft.Json.JsonConvert.DeserializeObject(item) ' Validate the JSON.
+                        stringCollection.Add(item) ' Good, it passed the decoding so we add it to the collection.
+                    Catch ex As Newtonsoft.Json.JsonException
+                        ' Something happened while validating the JSON, so we skip the entry.
+                    End Try
+                End If
+            Next
+
+            Return stringCollection
         End Function
 
         ''' <summary>This function operates a lot like ContainsKey() but is case-InSeNsItIvE and it returns the value of the key/value pair if the function returns True.</summary>

@@ -54,7 +54,51 @@ Namespace My
                 e.Cancel = True
                 Exit Sub
             End If
+
+            uniqueObjects = LoadUniqueLogTypesAndProcesses()
         End Sub
+
+        Private Function LoadUniqueLogTypesAndProcesses() As uniqueObjectsClass
+            Dim filesInDirectory As IO.FileInfo() = New IO.DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+            Dim collectionOfSavedData As List(Of SavedData)
+            Dim lockObject As New Object
+
+            Dim uniqueObjects As New uniqueObjectsClass
+
+            Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
+                                                                   Using fileStream As New IO.StreamReader(file.FullName)
+                                                                       collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+
+                                                                       Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
+                                                                                                                                   SyncLock lockObject
+                                                                                                                                       With uniqueObjects
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                                                                       End With
+                                                                                                                                   End SyncLock
+                                                                                                                               End Sub)
+                                                                   End Using
+                                                               End Sub)
+
+            Using fileStream As New IO.StreamReader(strPathToDataFile)
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+
+                Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
+                                                                            SyncLock lockObject
+                                                                                With uniqueObjects
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                End With
+                                                                            End SyncLock
+                                                                        End Sub)
+            End Using
+
+            Return uniqueObjects
+        End Function
 
         Public Sub SendReport(exception As Exception, Optional developerMessage As String = "")
             _reportCrash.DeveloperMessage = developerMessage

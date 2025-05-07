@@ -53,6 +53,9 @@ Partial Class ViewLogBackups
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblTotalNumberOfHiddenLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblLimitBy = New System.Windows.Forms.Label()
+        Me.boxLimitBy = New System.Windows.Forms.ComboBox()
+        Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.FileList, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -75,7 +78,7 @@ Partial Class ViewLogBackups
         Me.FileList.ReadOnly = True
         Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.FileList.Size = New System.Drawing.Size(929, 272)
+        Me.FileList.Size = New System.Drawing.Size(929, 243)
         Me.FileList.TabIndex = 36
         '
         'ColFileName
@@ -140,7 +143,7 @@ Partial Class ViewLogBackups
         '
         Me.BtnView.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnView.Enabled = False
-        Me.BtnView.Location = New System.Drawing.Point(14, 290)
+        Me.BtnView.Location = New System.Drawing.Point(12, 261)
         Me.BtnView.Name = "BtnView"
         Me.BtnView.Size = New System.Drawing.Size(75, 23)
         Me.BtnView.TabIndex = 2
@@ -151,7 +154,7 @@ Partial Class ViewLogBackups
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
-        Me.BtnDelete.Location = New System.Drawing.Point(95, 290)
+        Me.BtnDelete.Location = New System.Drawing.Point(93, 261)
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(75, 23)
         Me.BtnDelete.TabIndex = 3
@@ -161,7 +164,7 @@ Partial Class ViewLogBackups
         'BtnRefresh
         '
         Me.BtnRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnRefresh.Location = New System.Drawing.Point(176, 290)
+        Me.BtnRefresh.Location = New System.Drawing.Point(174, 261)
         Me.BtnRefresh.Name = "BtnRefresh"
         Me.BtnRefresh.Size = New System.Drawing.Size(95, 23)
         Me.BtnRefresh.TabIndex = 4
@@ -189,7 +192,7 @@ Partial Class ViewLogBackups
         Me.ChkCaseInsensitiveSearch.AutoSize = True
         Me.ChkCaseInsensitiveSearch.Checked = True
         Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(390, 321)
+        Me.ChkCaseInsensitiveSearch.Location = New System.Drawing.Point(388, 319)
         Me.ChkCaseInsensitiveSearch.Name = "ChkCaseInsensitiveSearch"
         Me.ChkCaseInsensitiveSearch.Size = New System.Drawing.Size(109, 17)
         Me.ChkCaseInsensitiveSearch.TabIndex = 33
@@ -200,7 +203,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRegExSearch.AutoSize = True
-        Me.ChkRegExSearch.Location = New System.Drawing.Point(321, 321)
+        Me.ChkRegExSearch.Location = New System.Drawing.Point(319, 319)
         Me.ChkRegExSearch.Name = "ChkRegExSearch"
         Me.ChkRegExSearch.Size = New System.Drawing.Size(63, 17)
         Me.ChkRegExSearch.TabIndex = 32
@@ -210,7 +213,7 @@ Partial Class ViewLogBackups
         'BtnSearch
         '
         Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnSearch.Location = New System.Drawing.Point(498, 317)
+        Me.BtnSearch.Location = New System.Drawing.Point(496, 315)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
         Me.BtnSearch.TabIndex = 31
@@ -220,7 +223,7 @@ Partial Class ViewLogBackups
         'TxtSearchTerms
         '
         Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.TxtSearchTerms.Location = New System.Drawing.Point(95, 319)
+        Me.TxtSearchTerms.Location = New System.Drawing.Point(93, 317)
         Me.TxtSearchTerms.Name = "TxtSearchTerms"
         Me.TxtSearchTerms.Size = New System.Drawing.Size(220, 20)
         Me.TxtSearchTerms.TabIndex = 30
@@ -229,7 +232,7 @@ Partial Class ViewLogBackups
         '
         Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LblSearchLabel.AutoSize = True
-        Me.LblSearchLabel.Location = New System.Drawing.Point(8, 322)
+        Me.LblSearchLabel.Location = New System.Drawing.Point(10, 320)
         Me.LblSearchLabel.Name = "LblSearchLabel"
         Me.LblSearchLabel.Size = New System.Drawing.Size(81, 13)
         Me.LblSearchLabel.TabIndex = 29
@@ -246,7 +249,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowHidden.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHidden.AutoSize = True
-        Me.ChkShowHidden.Location = New System.Drawing.Point(277, 294)
+        Me.ChkShowHidden.Location = New System.Drawing.Point(275, 265)
         Me.ChkShowHidden.Name = "ChkShowHidden"
         Me.ChkShowHidden.Size = New System.Drawing.Size(114, 17)
         Me.ChkShowHidden.TabIndex = 34
@@ -264,7 +267,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHiddenAsGray.AutoSize = True
-        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(397, 294)
+        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(395, 265)
         Me.ChkShowHiddenAsGray.Name = "ChkShowHiddenAsGray"
         Me.ChkShowHiddenAsGray.Size = New System.Drawing.Size(153, 17)
         Me.ChkShowHiddenAsGray.TabIndex = 35
@@ -298,7 +301,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkIgnoreSearchResultsLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkIgnoreSearchResultsLimits.AutoSize = True
-        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(556, 321)
+        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(554, 292)
         Me.ChkIgnoreSearchResultsLimits.Name = "ChkIgnoreSearchResultsLimits"
         Me.ChkIgnoreSearchResultsLimits.Size = New System.Drawing.Size(160, 17)
         Me.ChkIgnoreSearchResultsLimits.TabIndex = 37
@@ -310,18 +313,52 @@ Partial Class ViewLogBackups
         '
         Me.ChkLogFileDeletions.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkLogFileDeletions.AutoSize = True
-        Me.ChkLogFileDeletions.Location = New System.Drawing.Point(556, 294)
+        Me.ChkLogFileDeletions.Location = New System.Drawing.Point(554, 265)
         Me.ChkLogFileDeletions.Name = "ChkLogFileDeletions"
         Me.ChkLogFileDeletions.Size = New System.Drawing.Size(127, 17)
         Me.ChkLogFileDeletions.TabIndex = 38
         Me.ChkLogFileDeletions.Text = "Log Deletions of Files"
         Me.ChkLogFileDeletions.UseVisualStyleBackColor = True
         '
+        'lblLimitBy
+        '
+        Me.lblLimitBy.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblLimitBy.AutoSize = True
+        Me.lblLimitBy.Location = New System.Drawing.Point(10, 293)
+        Me.lblLimitBy.Name = "lblLimitBy"
+        Me.lblLimitBy.Size = New System.Drawing.Size(46, 13)
+        Me.lblLimitBy.TabIndex = 39
+        Me.lblLimitBy.Text = "Limit By:"
+        '
+        'boxLimitBy
+        '
+        Me.boxLimitBy.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.boxLimitBy.FormattingEnabled = True
+        Me.boxLimitBy.Items.AddRange(New Object() {"Not Specified", "Log Type", "Remote Process", "Source Hostname", "Source IP Address"})
+        Me.boxLimitBy.Location = New System.Drawing.Point(55, 290)
+        Me.boxLimitBy.Name = "boxLimitBy"
+        Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)
+        Me.boxLimitBy.Text = "(Not Specified)"
+        Me.boxLimitBy.TabIndex = 40
+        '
+        'boxLimiter
+        '
+        Me.boxLimiter.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.boxLimiter.FormattingEnabled = True
+        Me.boxLimiter.Location = New System.Drawing.Point(182, 290)
+        Me.boxLimiter.Name = "boxLimiter"
+        Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
+        Me.boxLimiter.Text = "(Not Specified)"
+        Me.boxLimiter.TabIndex = 41
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(954, 364)
+        Me.Controls.Add(Me.boxLimiter)
+        Me.Controls.Add(Me.boxLimitBy)
+        Me.Controls.Add(Me.lblLimitBy)
         Me.Controls.Add(Me.ChkIgnoreSearchResultsLimits)
         Me.Controls.Add(Me.ChkShowHiddenAsGray)
         Me.Controls.Add(Me.ChkShowHidden)
@@ -381,4 +418,7 @@ Partial Class ViewLogBackups
     Friend WithEvents ToolTip As ToolTip
     Friend WithEvents ChkIgnoreSearchResultsLimits As CheckBox
     Friend WithEvents ChkLogFileDeletions As CheckBox
+    Friend WithEvents lblLimitBy As Label
+    Friend WithEvents boxLimitBy As ComboBox
+    Friend WithEvents boxLimiter As ComboBox
 End Class

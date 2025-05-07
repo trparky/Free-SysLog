@@ -192,7 +192,7 @@ Partial Class Alerts
         '
         Me.BtnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDeleteAll.Location = New System.Drawing.Point(245, 248)
-        Me.BtnDeleteAll.Name = "btnDeleteAll"
+        Me.BtnDeleteAll.Name = "BtnDeleteAll"
         Me.BtnDeleteAll.Size = New System.Drawing.Size(75, 23)
         Me.BtnDeleteAll.TabIndex = 16
         Me.BtnDeleteAll.Text = "Delete All"
@@ -348,9 +348,10 @@ Partial Class Alerts
         Me.Label4.AutoSize = True
         Me.Label4.Location = New System.Drawing.Point(12, 291)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(50, 13)
+        Me.Label4.Size = New System.Drawing.Size(435, 13)
         Me.Label4.TabIndex = 38
-        Me.Label4.Text = "Add Alert"
+        Me.Label4.Text = "Add Alert        Note: All alerts are based upon the text of the log AFTER data r" &
+    "eplacements."
         '
         'BtnCancel
         '

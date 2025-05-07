@@ -4,7 +4,6 @@ Imports System.ComponentModel
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 Imports System.Threading
-Imports Microsoft.VisualBasic.Logging
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -282,7 +281,10 @@ Public Class ViewLogBackups
             Exit Sub
         End If
 
+        Dim strLimitBy As String = boxLimitBy.Text
+        Dim strLimiter As String = boxLimiter.Text
         Dim boolShowSearchResults As Boolean = True
+        Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
@@ -321,7 +323,15 @@ Public Class ViewLogBackups
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
                                                                                      For Each item As SavedData In dataFromFile
-                                                                                         If regexCompiledObject.IsMatch(item.log) Then
+                                                                                         If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                         ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                         Else
+                                                                                             boolDoesLogMatchLimitedSearch = True
+                                                                                         End If
+
+                                                                                         If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
                                                                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                              myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
@@ -339,7 +349,19 @@ Public Class ViewLogBackups
                                           Next
 
                                           For Each item As SavedData In currentLogs
-                                              If regexCompiledObject.IsMatch(item.log) Then
+                                              If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              Else
+                                                  boolDoesLogMatchLimitedSearch = True
+                                              End If
+
+                                              If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(item.log) AndAlso regexCompiledObject.IsMatch(item.log) Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
@@ -515,5 +537,37 @@ Public Class ViewLogBackups
 
     Private Sub ChkLogFileDeletions_Click(sender As Object, e As EventArgs) Handles ChkLogFileDeletions.Click
         My.Settings.LogFileDeletions = ChkLogFileDeletions.Checked
+    End Sub
+
+    Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
+        boxLimiter.Text = Nothing
+        boxLimiter.Items.Clear()
+        boxLimiter.Text = "(Not Specified)"
+
+        Dim sortedList As List(Of String)
+
+        If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.logTypes.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.processes.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.hostNames.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.ipAddresses.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        Else
+            boxLimiter.Text = "(Not Specified)"
+        End If
     End Sub
 End Class

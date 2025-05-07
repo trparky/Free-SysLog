@@ -262,6 +262,7 @@ Public Class Form1
         ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
         ChkDebug.Checked = My.Settings.boolDebug
         ConfirmDelete.Checked = My.Settings.ConfirmDelete
+        ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -325,6 +326,59 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
+        boxLimiter.Text = Nothing
+        boxLimiter.Items.Clear()
+        boxLimiter.Text = "(Not Specified)"
+
+        Dim sortedList As List(Of String)
+
+        ', "Hostnames", "IP Address"
+
+        If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.logTypes.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.processes.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.hostNames.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+            sortedList = uniqueObjects.ipAddresses.ToList()
+            sortedList.Sort()
+
+            boxLimiter.Items.AddRange(sortedList.ToArray)
+        Else
+            boxLimiter.Text = "(Not Specified)"
+        End If
+    End Sub
+
+    Private Function FormatSecondsToReadableTime(input As Integer) As String
+        If input < 0 Then Return "0 seconds"
+
+        Dim minutes As Integer = input \ 60
+        Dim seconds As Integer = input Mod 60
+
+        Dim parts As New List(Of String)
+
+        If minutes > 0 Then
+            parts.Add($"{minutes} minute{If(minutes > 1, "s", "")}")
+        End If
+
+        If seconds > 0 OrElse minutes = 0 Then
+            parts.Add($"{seconds} second{If(seconds <> 1, "s", "")}")
+        End If
+
+        Return String.Join(" and ", parts)
+    End Function
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SyslogParser.SetParentForm = Me
         DataHandling.SetParentForm = Me
@@ -336,7 +390,7 @@ Public Class Form1
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
-        ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds)"
+        ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds or {FormatSecondsToReadableTime(My.Settings.TimeBetweenSameNotifications)})"
 
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
@@ -490,14 +544,35 @@ Public Class Form1
                     Invoke(Sub()
                                Logs.SuspendLayout()
                                Logs.Rows.Clear()
-                               Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                               Logs.ResumeLayout()
 
-                               SelectLatestLogEntry()
+                               If listOfLogEntries.Count > 2000 Then
+                                   Dim intBatchSize As Integer = 250
 
-                               Logs.SelectedRows(0).Selected = False
-                               UpdateLogCount()
-                               Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                                   Threading.Tasks.Task.Run(Sub()
+                                                                For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                                                                    Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                                                    Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                                                Next
+
+                                                                Invoke(Sub()
+                                                                           SelectLatestLogEntry()
+
+                                                                           Logs.SelectedRows(0).Selected = False
+                                                                           UpdateLogCount()
+                                                                           Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                                                                           Logs.ResumeLayout()
+                                                                       End Sub)
+                                                            End Sub)
+                               Else
+                                   Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                                   Logs.ResumeLayout()
+
+                                   SelectLatestLogEntry()
+
+                                   Logs.SelectedRows(0).Selected = False
+                                   UpdateLogCount()
+                                   Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                               End If
                            End Sub)
                 End SyncLock
             Catch ex As Newtonsoft.Json.JsonSerializationException
@@ -616,15 +691,15 @@ Public Class Form1
                     End Using
 
                     If choice = Confirm_Delete.UserChoice.NoDelete Then
-                        MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
+                        MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
                         Exit Sub
                     ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
                         MakeLogBackup()
                     End If
                 End If
 
-                For Each item As DataGridViewRow In Logs.SelectedRows
-                    Logs.Rows.Remove(item)
+                For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
+                    Logs.Rows.Remove(Logs.SelectedRows(i))
                 Next
 
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
@@ -753,6 +828,9 @@ Public Class Form1
             Exit Sub
         End If
 
+        Dim strLimitBy As String = boxLimitBy.Text
+        Dim strLimiter As String = boxLimiter.Text
+        Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim strLogText As String
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
         Dim regexCompiledObject As Regex = Nothing
@@ -780,7 +858,19 @@ Public Class Form1
                                                   If MyDataGridRowItem IsNot Nothing Then
                                                       strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
-                                                      If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
+                                                      If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                          boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                      Else
+                                                          boolDoesLogMatchLimitedSearch = True
+                                                      End If
+
+                                                      If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())
                                                       End If
                                                   End If
@@ -838,32 +928,20 @@ Public Class Form1
 
             Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
-            SortLogsByDateObject(column.Index, sortOrder)
+            SortLogsByDateObject(column.Index, If(sortOrder = SortOrder.Ascending, ListSortDirection.Ascending, ListSortDirection.Descending))
         End If
     End Sub
 
-    Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
+    Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
         SyncLock dataGridLockObject
             SortLogsByDateObjectNoLocking(columnIndex, order)
         End SyncLock
     End Sub
 
-    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
-        Logs.AllowUserToOrderColumns = False
-        Logs.Enabled = False
-
-        Dim comparer As New DataGridViewComparer(columnIndex, order)
-        Dim rows As MyDataGridViewRow() = Logs.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewRow)().ToArray()
-
-        Array.Sort(rows, Function(row1 As MyDataGridViewRow, row2 As MyDataGridViewRow) comparer.Compare(row1, row2))
-
+    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As ListSortDirection)
         Logs.SuspendLayout()
-        Logs.Rows.Clear()
-        Logs.Rows.AddRange(rows)
+        Logs.Sort(Logs.Columns(columnIndex), order)
         Logs.ResumeLayout()
-
-        Logs.Enabled = True
-        Logs.AllowUserToOrderColumns = True
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
@@ -1108,9 +1186,11 @@ Public Class Form1
         If Logs.SelectedRows.Count = 0 Then
             DeleteLogsToolStripMenuItem.Visible = False
             ExportsLogsToolStripMenuItem.Visible = False
+            DeleteSimilarLogsToolStripMenuItem.Visible = False
         Else
             DeleteLogsToolStripMenuItem.Visible = True
             ExportsLogsToolStripMenuItem.Visible = True
+            DeleteSimilarLogsToolStripMenuItem.Visible = True
         End If
 
         If Logs.SelectedRows.Count = 1 Then
@@ -1119,12 +1199,14 @@ Public Class Form1
             CreateAlertToolStripMenuItem.Visible = True
             CreateReplacementToolStripMenuItem.Visible = True
             CreateIgnoredLogToolStripMenuItem.Visible = True
+            DeleteSimilarLogsToolStripMenuItem.Visible = True
         Else
             CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
             CreateAlertToolStripMenuItem.Visible = False
             CreateReplacementToolStripMenuItem.Visible = False
             CreateIgnoredLogToolStripMenuItem.Visible = False
+            DeleteSimilarLogsToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1185,14 +1267,14 @@ Public Class Form1
             End Using
 
             If choice = Confirm_Delete.UserChoice.NoDelete Then
-                MsgBox("Logs not deleted.", MsgBoxStyle.Information, Text)
+                MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
                 Exit Sub
             ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
                 MakeLogBackup()
             End If
 
-            For Each item As DataGridViewRow In Logs.SelectedRows
-                Logs.Rows.Remove(item)
+            For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
+                Logs.Rows.Remove(Logs.SelectedRows(i))
             Next
 
             Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
@@ -1369,6 +1451,10 @@ Public Class Form1
 
     Private Sub AutomaticallyCheckForUpdates_Click(sender As Object, e As EventArgs) Handles AutomaticallyCheckForUpdates.Click
         My.Settings.boolCheckForUpdates = AutomaticallyCheckForUpdates.Checked
+    End Sub
+
+    Private Sub ReplaceStringsInSysLogDataBeforeProcessingIgnoredRules_Click(sender As Object, e As EventArgs) Handles ProcessReplacementsInSyslogDataFirst.Click
+        My.Settings.ProcessReplacementsInSyslogDataFirst = ProcessReplacementsInSyslogDataFirst.Checked
     End Sub
 
     Private Sub BackupFileNameDateFormatChooser_Click(sender As Object, e As EventArgs) Handles BackupFileNameDateFormatChooser.Click
@@ -1563,7 +1649,7 @@ Public Class Form1
                 If IntegerInputForm.intResult < 30 Or IntegerInputForm.intResult > 240 Then
                     MsgBox("The time in seconds must be in the range of 30 - 240.", MsgBoxStyle.Critical, Text)
                 Else
-                    ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({IntegerInputForm.intResult} Seconds)"
+                    ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({IntegerInputForm.intResult} Seconds or {FormatSecondsToReadableTime(IntegerInputForm.intResult)})"
 
                     My.Settings.TimeBetweenSameNotifications = IntegerInputForm.intResult
                     My.Settings.Save()
@@ -1656,6 +1742,42 @@ Public Class Form1
         SyncLock dataGridLockObject
             AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
         End SyncLock
+    End Sub
+
+    Private Sub DeleteSimilarLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteSimilarLogsToolStripMenuItem.Click
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 And Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
+            Dim strCellValue As String
+            Dim item As MyDataGridViewRow
+
+            ' Create a list to store rows that need to be removed
+            Dim rowsToDelete As New List(Of MyDataGridViewRow)
+
+            ' Synchronize both the iteration and the removal
+            SyncLock dataGridLockObject
+                ' Loop through the rows in reverse order to avoid index shifting
+                For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
+                    item = Logs.Rows(i)
+                    strCellValue = item.Cells(ColumnIndex_LogText).Value
+
+                    If Not String.IsNullOrWhiteSpace(strCellValue) AndAlso strCellValue.Equals(strLogText, StringComparison.OrdinalIgnoreCase) Then
+                        rowsToDelete.Add(item)
+                    End If
+                Next
+
+                ' Remove the rows outside the loop
+                For Each row As MyDataGridViewRow In rowsToDelete
+                    Logs.Rows.Remove(row)
+                Next
+            End SyncLock
+
+            ' Update log count and save changes to disk
+            UpdateLogCount()
+            SaveLogsToDiskSub()
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"
