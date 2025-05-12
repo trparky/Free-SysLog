@@ -343,18 +343,20 @@ Namespace SyslogParser
         End Sub
 
         Private Function ProcessIgnoredLogPreferences(message As String) As Boolean
-            For Each ignoredClassInstance As IgnoredClass In ignoredList
-                If GetCachedRegex(If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
-                    ParentForm.Invoke(Sub()
-                                          ParentForm.longNumberOfIgnoredLogs += 1
-                                          If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
-                                              ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                                          End If
-                                          ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
-                                      End Sub)
-                    Return True
-                End If
-            Next
+            SyncLock IgnoredRegexCache
+                For Each ignoredClassInstance As IgnoredClass In ignoredList
+                    If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
+                        ParentForm.Invoke(Sub()
+                                              ParentForm.longNumberOfIgnoredLogs += 1
+                                              If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
+                                                  ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                                              End If
+                                              ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+                                          End Sub)
+                        Return True
+                    End If
+                Next
+            End SyncLock
 
             Return False
         End Function
@@ -424,19 +426,21 @@ Namespace SyslogParser
         End Sub
 
         Private Function ProcessReplacements(input As String) As String
-            For Each item As ReplacementsClass In replacementsList
-                Try
-                    input = GetCachedRegex(If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
-                Catch ex As Exception
-                End Try
-            Next
+            SyncLock ReplacementsRegexCache
+                For Each item As ReplacementsClass In replacementsList
+                    Try
+                        input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+                    Catch ex As Exception
+                    End Try
+                Next
+            End SyncLock
 
             Return input
         End Function
 
-        Private Function GetCachedRegex(pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
-            If Not ParentForm.regexCache.ContainsKey(pattern) Then ParentForm.regexCache(pattern) = New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
-            Return ParentForm.regexCache(pattern)
+        Private Function GetCachedRegex(ByRef regexCache As Dictionary(Of String, Regex), pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
+            If Not regexCache.ContainsKey(pattern) Then regexCache(pattern) = New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
+            Return regexCache(pattern)
         End Function
 
         Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
@@ -445,49 +449,51 @@ Namespace SyslogParser
             Dim strAlertText As String
             Dim regExGroupCollection As GroupCollection
 
-            For Each alert As AlertsClass In alertsList
-                RegExObject = GetCachedRegex(If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
+            SyncLock AlertsRegexCache
+                For Each alert As AlertsClass In alertsList
+                    RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
 
-                If RegExObject.IsMatch(strLogText) Then
-                    If alert.alertType = AlertType.Warning Then
-                        ToolTipIcon = ToolTipIcon.Warning
-                        alertTypeAsAlertType = AlertType.Warning
-                    ElseIf alert.alertType = AlertType.ErrorMsg Then
-                        ToolTipIcon = ToolTipIcon.Error
-                        alertTypeAsAlertType = AlertType.ErrorMsg
-                    ElseIf alert.alertType = AlertType.Info Then
-                        ToolTipIcon = ToolTipIcon.Info
-                        alertTypeAsAlertType = AlertType.Info
-                    End If
-
-                    strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
-
-                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
-                        regExGroupCollection = RegExObject.Match(strLogText).Groups
-
-                        If regExGroupCollection.Count > 0 Then
-                            For index As Integer = 0 To regExGroupCollection.Count - 1
-                                ' Handle the indexed group
-                                strAlertText = GetCachedRegex(Regex.Escape($"${index}"), False).Replace(strAlertText, regExGroupCollection(index).Value)
-
-                                ' Handle the named group
-                                If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
-                                    strAlertText = GetCachedRegex(Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strAlertText, regExGroupCollection(regExGroupCollection(index).Name).Value)
-                                End If
-                            Next
+                    If RegExObject.IsMatch(strLogText) Then
+                        If alert.alertType = AlertType.Warning Then
+                            ToolTipIcon = ToolTipIcon.Warning
+                            alertTypeAsAlertType = AlertType.Warning
+                        ElseIf alert.alertType = AlertType.ErrorMsg Then
+                            ToolTipIcon = ToolTipIcon.Error
+                            alertTypeAsAlertType = AlertType.ErrorMsg
+                        ElseIf alert.alertType = AlertType.Info Then
+                            ToolTipIcon = ToolTipIcon.Info
+                            alertTypeAsAlertType = AlertType.Info
                         End If
-                    End If
 
-                    If alert.BoolLimited Then
-                        NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
-                    Else
-                        ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
-                    End If
+                        strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
 
-                    strOutgoingAlertText = strAlertText
-                    Return True
-                End If
-            Next
+                        If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                            regExGroupCollection = RegExObject.Match(strLogText).Groups
+
+                            If regExGroupCollection.Count > 0 Then
+                                For index As Integer = 0 To regExGroupCollection.Count - 1
+                                    ' Handle the indexed group
+                                    strAlertText = GetCachedRegex(AlertsRegexCache, Regex.Escape($"${index}"), False).Replace(strAlertText, regExGroupCollection(index).Value)
+
+                                    ' Handle the named group
+                                    If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
+                                        strAlertText = GetCachedRegex(AlertsRegexCache, Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strAlertText, regExGroupCollection(regExGroupCollection(index).Name).Value)
+                                    End If
+                                Next
+                            End If
+                        End If
+
+                        If alert.BoolLimited Then
+                            NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
+                        Else
+                            ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
+                        End If
+
+                        strOutgoingAlertText = strAlertText
+                        Return True
+                    End If
+                Next
+            End SyncLock
 
             Return False
         End Function
