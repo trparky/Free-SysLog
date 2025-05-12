@@ -26,6 +26,10 @@ Namespace SupportCode
     End Class
 
     Module SupportCode
+        Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
         Public replacementsList As New List(Of ReplacementsClass)

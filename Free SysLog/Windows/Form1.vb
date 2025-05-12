@@ -15,7 +15,6 @@ Public Class Form1
     Private boolDoneLoading As Boolean = False
     Public longNumberOfIgnoredLogs As Long = 0
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
-    Public regexCache As New Dictionary(Of String, Regex)
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
@@ -947,7 +946,12 @@ Public Class Form1
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
         Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
-            If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then regexCache.Clear()
+
+            If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
+                SyncLock IgnoredRegexCache
+                    IgnoredRegexCache.Clear()
+                End SyncLock
+            End If
         End Using
     End Sub
 
@@ -1053,7 +1057,12 @@ Public Class Form1
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
         Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsInstance.ShowDialog(Me)
-            If ReplacementsInstance.boolChanged Then regexCache.Clear()
+
+            SyncLock ReplacementsRegexCache
+                If ReplacementsInstance.boolChanged Then
+                    ReplacementsRegexCache.Clear()
+                End If
+            End SyncLock
         End Using
     End Sub
 
@@ -1327,7 +1336,12 @@ Public Class Form1
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
         Using Alerts As New Alerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             Alerts.ShowDialog(Me)
-            If Alerts.boolChanged Then regexCache.Clear()
+
+            If Alerts.boolChanged Then
+                SyncLock AlertsRegexCache
+                    AlertsRegexCache.Clear()
+                End SyncLock
+            End If
         End Using
     End Sub
 
