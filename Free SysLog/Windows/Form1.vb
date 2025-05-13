@@ -1786,6 +1786,8 @@ Public Class Form1
                 For Each row As MyDataGridViewRow In rowsToDelete
                     Logs.Rows.Remove(row)
                 Next
+
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The program deleted {rowsToDelete.Count:N0} similar log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
             End SyncLock
 
             ' Update log count and save changes to disk
