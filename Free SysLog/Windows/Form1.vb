@@ -697,11 +697,20 @@ Public Class Form1
                     End If
                 End If
 
+                ' Create a list to store rows that need to be removed
+                Dim rowsToDelete As New List(Of MyDataGridViewRow)
+
+                ' Loop through the rows in reverse order to avoid index shifting
                 For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
-                    Logs.Rows.Remove(Logs.SelectedRows(i))
+                    rowsToDelete.Add(Logs.SelectedRows(i))
                 Next
 
-                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+                ' Remove the rows outside the loop
+                For Each row As MyDataGridViewRow In rowsToDelete
+                    Logs.Rows.Remove(row)
+                Next
+
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {rowsToDelete.Count:N0} log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -1282,11 +1291,20 @@ Public Class Form1
                 MakeLogBackup()
             End If
 
+            ' Create a list to store rows that need to be removed
+            Dim rowsToDelete As New List(Of MyDataGridViewRow)
+
+            ' Loop through the rows in reverse order to avoid index shifting
             For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
-                Logs.Rows.Remove(Logs.SelectedRows(i))
+                rowsToDelete.Add(Logs.SelectedRows(i))
             Next
 
-            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+            ' Remove the rows outside the loop
+            For Each row As MyDataGridViewRow In rowsToDelete
+                Logs.Rows.Remove(row)
+            Next
+
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {rowsToDelete.Count:N0} log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
 
             SelectLatestLogEntry()
         End SyncLock
