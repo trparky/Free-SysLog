@@ -332,8 +332,6 @@ Public Class Form1
 
         Dim sortedList As List(Of String)
 
-        ', "Hostnames", "IP Address"
-
         If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
             sortedList = uniqueObjects.logTypes.ToList()
             sortedList.Sort()
