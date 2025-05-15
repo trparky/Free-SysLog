@@ -329,6 +329,7 @@ Public Class Form1
         boxLimiter.Text = Nothing
         boxLimiter.Items.Clear()
         boxLimiter.Text = "(Not Specified)"
+        boxLimiter.Enabled = True
 
         Dim sortedList As List(Of String)
 
@@ -354,6 +355,7 @@ Public Class Form1
             boxLimiter.Items.AddRange(sortedList.ToArray)
         Else
             boxLimiter.Text = "(Not Specified)"
+            boxLimiter.Enabled = False
         End If
     End Sub
 

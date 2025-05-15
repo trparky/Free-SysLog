@@ -343,6 +343,7 @@ Partial Class ViewLogBackups
         '
         'boxLimiter
         '
+        Me.boxLimiter.Enabled = False
         Me.boxLimiter.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.boxLimiter.FormattingEnabled = True
         Me.boxLimiter.Location = New System.Drawing.Point(182, 290)

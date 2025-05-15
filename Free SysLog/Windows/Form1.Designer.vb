@@ -902,6 +902,7 @@ Partial Class Form1
         '
         'boxLimiter
         '
+        Me.boxLimiter.Enabled = False
         Me.boxLimiter.FormattingEnabled = True
         Me.boxLimiter.Location = New System.Drawing.Point(595, 29)
         Me.boxLimiter.Name = "boxLimiter"
