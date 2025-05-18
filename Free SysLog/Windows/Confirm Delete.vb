@@ -1,6 +1,6 @@
 ﻿Public Class Confirm_Delete
     Private intNumberOfLogsToBeDeleted As Integer
-    Public choice As UserChoice
+    Public choice As UserChoice = UserChoice.NoDelete
 
     Public Enum UserChoice As Integer
         YesDeleteNoBackup
