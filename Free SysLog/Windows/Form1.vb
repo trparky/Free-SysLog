@@ -15,7 +15,6 @@ Public Class Form1
     Private boolDoneLoading As Boolean = False
     Public longNumberOfIgnoredLogs As Long = 0
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
-    Public regexCache As New Dictionary(Of String, Regex)
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
@@ -330,10 +329,9 @@ Public Class Form1
         boxLimiter.Text = Nothing
         boxLimiter.Items.Clear()
         boxLimiter.Text = "(Not Specified)"
+        boxLimiter.Enabled = True
 
         Dim sortedList As List(Of String)
-
-        ', "Hostnames", "IP Address"
 
         If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
             sortedList = uniqueObjects.logTypes.ToList()
@@ -357,6 +355,7 @@ Public Class Form1
             boxLimiter.Items.AddRange(sortedList.ToArray)
         Else
             boxLimiter.Text = "(Not Specified)"
+            boxLimiter.Enabled = False
         End If
     End Sub
 
@@ -698,11 +697,20 @@ Public Class Form1
                     End If
                 End If
 
+                ' Create a list to store rows that need to be removed
+                Dim rowsToDelete As New List(Of MyDataGridViewRow)
+
+                ' Loop through the rows in reverse order to avoid index shifting
                 For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
-                    Logs.Rows.Remove(Logs.SelectedRows(i))
+                    rowsToDelete.Add(Logs.SelectedRows(i))
                 Next
 
-                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+                ' Remove the rows outside the loop
+                For Each row As MyDataGridViewRow In rowsToDelete
+                    Logs.Rows.Remove(row)
+                Next
+
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {rowsToDelete.Count:N0} log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -947,7 +955,12 @@ Public Class Form1
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
         Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
-            If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then regexCache.Clear()
+
+            If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
+                SyncLock IgnoredRegexCache
+                    IgnoredRegexCache.Clear()
+                End SyncLock
+            End If
         End Using
     End Sub
 
@@ -1053,7 +1066,12 @@ Public Class Form1
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
         Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsInstance.ShowDialog(Me)
-            If ReplacementsInstance.boolChanged Then regexCache.Clear()
+
+            SyncLock ReplacementsRegexCache
+                If ReplacementsInstance.boolChanged Then
+                    ReplacementsRegexCache.Clear()
+                End If
+            End SyncLock
         End Using
     End Sub
 
@@ -1273,11 +1291,20 @@ Public Class Form1
                 MakeLogBackup()
             End If
 
+            ' Create a list to store rows that need to be removed
+            Dim rowsToDelete As New List(Of MyDataGridViewRow)
+
+            ' Loop through the rows in reverse order to avoid index shifting
             For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
-                Logs.Rows.Remove(Logs.SelectedRows(i))
+                rowsToDelete.Add(Logs.SelectedRows(i))
             Next
 
-            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intNumberOfLogsDeleted:N0} log {If(intNumberOfLogsDeleted = 1, "entry", "entries")}.", Logs))
+            ' Remove the rows outside the loop
+            For Each row As MyDataGridViewRow In rowsToDelete
+                Logs.Rows.Remove(row)
+            Next
+
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {rowsToDelete.Count:N0} log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
 
             SelectLatestLogEntry()
         End SyncLock
@@ -1327,7 +1354,12 @@ Public Class Form1
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
         Using Alerts As New Alerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             Alerts.ShowDialog(Me)
-            If Alerts.boolChanged Then regexCache.Clear()
+
+            If Alerts.boolChanged Then
+                SyncLock AlertsRegexCache
+                    AlertsRegexCache.Clear()
+                End SyncLock
+            End If
         End Using
     End Sub
 
@@ -1772,6 +1804,8 @@ Public Class Form1
                 For Each row As MyDataGridViewRow In rowsToDelete
                     Logs.Rows.Remove(row)
                 Next
+
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The program deleted {rowsToDelete.Count:N0} similar log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
             End SyncLock
 
             ' Update log count and save changes to disk
