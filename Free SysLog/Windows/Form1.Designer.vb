@@ -902,6 +902,7 @@ Partial Class Form1
         '
         'boxLimiter
         '
+        Me.boxLimiter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.boxLimiter.Enabled = False
         Me.boxLimiter.FormattingEnabled = True
         Me.boxLimiter.Location = New System.Drawing.Point(595, 29)
@@ -912,6 +913,7 @@ Partial Class Form1
         '
         'boxLimitBy
         '
+        Me.boxLimitBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.boxLimitBy.FormattingEnabled = True
         Me.boxLimitBy.Items.AddRange(New Object() {"(Not Specified)", "Log Type", "Remote Process", "Source Hostname", "Source IP Address"})
         Me.boxLimitBy.Location = New System.Drawing.Point(468, 29)
