@@ -18,7 +18,7 @@ Public Class Alerts_History
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
             LogViewerInstance.TopMost = True
-            LogViewerInstance.lblAlertText.Text = $"Alert Text: {strAlertText}"
+            LogViewerInstance.txtAlertText.Text = strAlertText
 
             LogViewerInstance.ShowDialog()
         End Using

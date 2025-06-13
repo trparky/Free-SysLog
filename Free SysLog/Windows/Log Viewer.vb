@@ -9,6 +9,8 @@
         Size = My.Settings.logViewerWindowSize
         LogText.Text = If(ChkShowRawLog.Checked, strRawLogText, strLogText)
         LogText.Select(0, 0)
+
+        If String.IsNullOrWhiteSpace(txtAlertText.Text) Then txtAlertText.Text = "(This log entry has no alert text associated with it)"
     End Sub
 
     Private Sub Log_Viewer_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
