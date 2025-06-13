@@ -146,7 +146,7 @@ Partial Class LogViewer
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(816, 173)
+        Me.MinimumSize = New System.Drawing.Size(816, 505)
         Me.Name = "LogViewer"
         Me.Text = "Log Viewer"
         Me.StatusStrip1.ResumeLayout(False)
