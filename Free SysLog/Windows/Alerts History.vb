@@ -1,5 +1,4 @@
 ﻿Imports System.Reflection
-Imports Microsoft.VisualBasic.Logging
 
 Public Class Alerts_History
     Public Property DataToLoad As List(Of AlertsHistory)

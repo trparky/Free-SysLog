@@ -1,6 +1,4 @@
-﻿Imports Microsoft.VisualBasic.Logging
-
-Public Class LogViewer
+﻿Public Class LogViewer
     Public strLogText, strRawLogText As String
     Public MyParentForm As Form1
 
