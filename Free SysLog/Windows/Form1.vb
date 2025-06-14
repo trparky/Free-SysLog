@@ -9,6 +9,7 @@ Imports System.Reflection
 Imports System.Configuration
 Imports Free_SysLog.SupportCode
 Imports Microsoft.Toolkit.Uwp.Notifications
+Imports Free_SysLog.SyslogTcpServer.SyslogTcpServer
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
@@ -479,7 +480,11 @@ Public Class Form1
     End Sub
 
     Private Async Sub StartTCPServer()
-        SyslogTcpServer = New SyslogTcpServer.SyslogTcpServer(Sub(strReceivedData As String, strSourceIP As String) SyslogParser.ProcessIncomingLog(strReceivedData, strSourceIP), My.Settings.sysLogPort)
+        Dim subRoutine As New SyslogMessageHandlerDelegate(Sub(strReceivedData As String, strSourceIP As String)
+                                                               SyslogParser.ProcessIncomingLog(strReceivedData, strSourceIP)
+                                                           End Sub)
+
+        SyslogTcpServer = New SyslogTcpServer.SyslogTcpServer(subRoutine, My.Settings.sysLogPort)
         Await SyslogTcpServer.StartAsync()
     End Sub
 

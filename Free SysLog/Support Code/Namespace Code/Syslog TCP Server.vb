@@ -7,11 +7,14 @@ Imports Free_SysLog.SupportCode
 Namespace SyslogTcpServer
     Public Class SyslogTcpServer
         Private ReadOnly _port As Integer
-        Private ReadOnly _syslogMessageHandler As [Delegate]
+        Private ReadOnly _syslogMessageHandler As SyslogMessageHandlerDelegate
         Private TCPListener As TcpListener
         Private boolLoopControl As Boolean = True
 
-        Public Sub New(syslogMessageHandler As [Delegate], Optional port As Integer = 514)
+        ' Strongly typed delegate
+        Public Delegate Sub SyslogMessageHandlerDelegate(strReceivedData As String, strSourceIP As String)
+
+        Public Sub New(syslogMessageHandler As SyslogMessageHandlerDelegate, Optional port As Integer = 514)
             _port = port
             _syslogMessageHandler = syslogMessageHandler
         End Sub
@@ -32,7 +35,7 @@ Namespace SyslogTcpServer
                     Await HandleClientAsync(tcpClient)
                 End While
             Catch ex As Exception
-                _syslogMessageHandler.DynamicInvoke($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
+                _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
             End Try
         End Function
 
@@ -57,7 +60,7 @@ Namespace SyslogTcpServer
                                     boolLoopControl = False
                                     Exit Do
                                 Else
-                                    _syslogMessageHandler.DynamicInvoke(strMessage, GetIPv4Address(remoteIPEndPoint.Address).ToString)
+                                    _syslogMessageHandler(strMessage, IPAddress.Loopback.ToString)
                                 End If
                             End If
                         Loop While intBytesRead <> 0
