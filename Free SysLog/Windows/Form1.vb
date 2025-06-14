@@ -1849,6 +1849,7 @@ Public Class Form1
             Next
 
             btnShowLimit.Text = "View All"
+            SelectLatestLogEntry()
         Else
             For Each item As DataGridViewRow In Logs.Rows
                 item.Visible = True
