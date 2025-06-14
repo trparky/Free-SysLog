@@ -1817,6 +1817,47 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub btnShowLimit_Click(sender As Object, e As EventArgs) Handles btnShowLimit.Click
+        If btnShowLimit.Text.Equals("Limit", StringComparison.OrdinalIgnoreCase) Then
+            For Each item As DataGridViewRow In Logs.Rows
+                item.Visible = True
+            Next
+
+            Dim MyDataGridRowItem As MyDataGridViewRow
+            Dim strLimitBy As String = boxLimitBy.Text
+            Dim strLimiter As String = boxLimiter.Text
+            Dim boolDoesLogMatchLimitedSearch As Boolean = True
+
+            For Each item As DataGridViewRow In Logs.Rows
+                MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+
+                If MyDataGridRowItem IsNot Nothing Then
+                    If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                    ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                    ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                    ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                    Else
+                        boolDoesLogMatchLimitedSearch = True
+                    End If
+
+                    item.Visible = boolDoesLogMatchLimitedSearch
+                End If
+            Next
+
+            btnShowLimit.Text = "View All"
+        Else
+            For Each item As DataGridViewRow In Logs.Rows
+                item.Visible = True
+            Next
+
+            btnShowLimit.Text = "Limit"
+        End If
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
