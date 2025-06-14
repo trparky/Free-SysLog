@@ -641,7 +641,7 @@ Public Class Form1
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
             LogViewerInstance.TopMost = True
-            LogViewerInstance.lblAlertText.Text = $"Alert Text: {strAlertText}"
+            LogViewerInstance.txtAlertText.Text = strAlertText
 
             LogViewerInstance.ShowDialog()
         End Using
@@ -658,9 +658,7 @@ Public Class Form1
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
 
                 If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
-                    LogViewerInstance.lblAlertText.Text = $"Alert Text: {selectedRow.AlertText}"
-                Else
-                    LogViewerInstance.lblAlertText.Visible = False
+                    LogViewerInstance.txtAlertText.Text = selectedRow.AlertText
                 End If
 
                 LogViewerInstance.ShowDialog(Me)
