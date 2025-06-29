@@ -147,7 +147,30 @@ Public Class Form1
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
             boolIsProgrammaticScroll = True
             Logs.BeginInvoke(Sub()
-                                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                                 Dim targetRowIndex As Integer = -1
+
+                                 If sortOrder = SortOrder.Ascending Then
+                                     ' Scroll to the last visible row
+                                     For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
+                                         If Logs.Rows(i).Visible Then
+                                             targetRowIndex = i
+                                             Exit For
+                                         End If
+                                     Next
+                                 Else
+                                     ' Scroll to the first visible row
+                                     For i As Integer = 0 To Logs.Rows.Count - 1
+                                         If Logs.Rows(i).Visible Then
+                                             targetRowIndex = i
+                                             Exit For
+                                         End If
+                                     Next
+                                 End If
+
+                                 If targetRowIndex <> -1 Then
+                                     Logs.FirstDisplayedScrollingRowIndex = targetRowIndex
+                                 End If
+
                                  boolIsProgrammaticScroll = False
                              End Sub)
         End If
