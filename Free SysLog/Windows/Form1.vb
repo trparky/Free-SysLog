@@ -1885,6 +1885,7 @@ Public Class Form1
             Next
 
             btnShowLimit.Text = "Limit"
+            SelectLatestLogEntry()
         End If
     End Sub
 
