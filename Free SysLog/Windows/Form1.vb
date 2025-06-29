@@ -1819,6 +1819,9 @@ Public Class Form1
 
     Private Sub btnShowLimit_Click(sender As Object, e As EventArgs) Handles btnShowLimit.Click
         If btnShowLimit.Text.Equals("Limit", StringComparison.OrdinalIgnoreCase) Then
+            Dim oldAlternatingColor As Color = Logs.AlternatingRowsDefaultCellStyle.BackColor
+            Dim oldDefaultColor As Color = Logs.DefaultCellStyle.BackColor
+
             For Each item As DataGridViewRow In Logs.Rows
                 item.Visible = True
             Next
@@ -1848,11 +1851,37 @@ Public Class Form1
                 End If
             Next
 
+            Dim useAltColor As Boolean = False
+
+            For Each item As DataGridViewRow In Logs.Rows
+                If item.Visible Then
+                    If useAltColor Then
+                        item.DefaultCellStyle.BackColor = oldAlternatingColor
+                    Else
+                        item.DefaultCellStyle.BackColor = oldDefaultColor
+                    End If
+
+                    useAltColor = Not useAltColor
+                End If
+            Next
+
             btnShowLimit.Text = "View All"
             SelectLatestLogEntry()
         Else
             For Each item As DataGridViewRow In Logs.Rows
                 item.Visible = True
+            Next
+
+            Dim useAltColor As Boolean = False
+
+            For Each item As DataGridViewRow In Logs.Rows
+                If useAltColor Then
+                    item.DefaultCellStyle.BackColor = Logs.AlternatingRowsDefaultCellStyle.BackColor
+                Else
+                    item.DefaultCellStyle.BackColor = Logs.DefaultCellStyle.BackColor
+                End If
+
+                useAltColor = Not useAltColor
             Next
 
             btnShowLimit.Text = "Limit"
