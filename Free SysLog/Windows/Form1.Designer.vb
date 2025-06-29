@@ -907,7 +907,7 @@ Partial Class Form1
         Me.btnShowLimit.Name = "btnShowLimit"
         Me.btnShowLimit.Size = New System.Drawing.Size(62, 23)
         Me.btnShowLimit.TabIndex = 45
-        Me.btnShowLimit.Text = "Limit Logs"
+        Me.btnShowLimit.Text = "Limit"
         Me.btnShowLimit.UseVisualStyleBackColor = True
         '
         'boxLimiter
