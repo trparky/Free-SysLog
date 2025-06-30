@@ -24,7 +24,10 @@
     End Sub
 
     Private Sub Log_Viewer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If My.Settings.font IsNot Nothing Then LogText.Font = My.Settings.font
+        If My.Settings.font IsNot Nothing Then
+            LogText.Font = My.Settings.font
+            txtAlertText.Font = My.Settings.font
+        End If
 
         ChkShowRawLog.Checked = My.Settings.boolShowRawLogOnLogViewer
         Size = My.Settings.logViewerWindowSize
