@@ -147,30 +147,7 @@ Public Class Form1
         If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
             boolIsProgrammaticScroll = True
             Logs.BeginInvoke(Sub()
-                                 Dim targetRowIndex As Integer = -1
-
-                                 If sortOrder = SortOrder.Ascending Then
-                                     ' Scroll to the last visible row
-                                     For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
-                                         If Logs.Rows(i).Visible Then
-                                             targetRowIndex = i
-                                             Exit For
-                                         End If
-                                     Next
-                                 Else
-                                     ' Scroll to the first visible row
-                                     For i As Integer = 0 To Logs.Rows.Count - 1
-                                         If Logs.Rows(i).Visible Then
-                                             targetRowIndex = i
-                                             Exit For
-                                         End If
-                                     Next
-                                 End If
-
-                                 If targetRowIndex <> -1 Then
-                                     Logs.FirstDisplayedScrollingRowIndex = targetRowIndex
-                                 End If
-
+                                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
                                  boolIsProgrammaticScroll = False
                              End Sub)
         End If
@@ -1841,93 +1818,51 @@ Public Class Form1
     End Sub
 
     Private Sub btnShowLimit_Click(sender As Object, e As EventArgs) Handles btnShowLimit.Click
-        If btnShowLimit.Text.Equals("Limit", StringComparison.OrdinalIgnoreCase) Then
-            Dim oldAlternatingColor As Color = Logs.AlternatingRowsDefaultCellStyle.BackColor
-            Dim oldDefaultColor As Color = Logs.DefaultCellStyle.BackColor
+        Dim strLimitBy As String = boxLimitBy.Text
+        Dim strLimiter As String = boxLimiter.Text
+        Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+        Dim stopWatch As Stopwatch = Stopwatch.StartNew
+        Dim worker As New BackgroundWorker()
 
-            For Each item As DataGridViewRow In Logs.Rows
-                item.Visible = True
-            Next
+        AddHandler worker.DoWork, Sub()
+                                      Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
+                                                                                                                 If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 End If
+                                                                                                             End Sub)
+                                  End Sub
 
-            Dim MyDataGridRowItem As MyDataGridViewRow
-            Dim strLimitBy As String = boxLimitBy.Text
-            Dim strLimiter As String = boxLimiter.Text
-            Dim boolDoesLogMatchLimitedSearch As Boolean = True
-            Dim longNumberOfLogs As Long = 0
 
-            Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
-                                                                                       If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
-                                                                                       ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
-                                                                                       ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
-                                                                                       ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
-                                                                                       End If
-                                                                                   End Sub)
 
-            If longNumberOfLogs = 0 Then
-                MsgBox("No logs match the limit you set, aborting log limiting.", MsgBoxStyle.Information, Text)
-                Exit Sub
-            End If
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  If listOfSearchResults.Any() Then
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
+                                                      searchResultsWindow.LogsLoadedInLabel.Visible = True
+                                                      searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                                      searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+                                                      searchResultsWindow.ShowDialog(Me)
+                                                  Else
+                                                      MsgBox("No logs match the limit you set.", MsgBoxStyle.Information, Text)
+                                                  End If
 
-            For Each item As DataGridViewRow In Logs.Rows
-                MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                              End Sub
 
-                If MyDataGridRowItem IsNot Nothing Then
-                    If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                    ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                    ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                    ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-                        boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                    Else
-                        boolDoesLogMatchLimitedSearch = True
-                    End If
-
-                    item.Visible = boolDoesLogMatchLimitedSearch
-                End If
-            Next
-
-            Dim useAltColor As Boolean = False
-
-            For Each item As DataGridViewRow In Logs.Rows
-                If item.Visible Then
-                    If useAltColor Then
-                        item.DefaultCellStyle.BackColor = oldAlternatingColor
-                    Else
-                        item.DefaultCellStyle.BackColor = oldDefaultColor
-                    End If
-
-                    useAltColor = Not useAltColor
-                End If
-            Next
-
-            btnShowLimit.Text = "View All"
-            SelectLatestLogEntry()
-        Else
-            For Each item As DataGridViewRow In Logs.Rows
-                item.Visible = True
-            Next
-
-            Dim useAltColor As Boolean = False
-
-            For Each item As DataGridViewRow In Logs.Rows
-                If useAltColor Then
-                    item.DefaultCellStyle.BackColor = Logs.AlternatingRowsDefaultCellStyle.BackColor
-                Else
-                    item.DefaultCellStyle.BackColor = Logs.DefaultCellStyle.BackColor
-                End If
-
-                useAltColor = Not useAltColor
-            Next
-
-            btnShowLimit.Text = "Limit"
-            SelectLatestLogEntry()
-        End If
+        worker.RunWorkerAsync()
     End Sub
 
 #Region "-- SysLog Server Code --"
