@@ -826,7 +826,7 @@ Public Class Form1
         End If
 
         Try
-            mutex.ReleaseMutex()
+            Mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
 
@@ -1127,7 +1127,7 @@ Public Class Form1
                 Process.Start(strEXEPath)
 
                 Try
-                    mutex.ReleaseMutex()
+                    Mutex.ReleaseMutex()
                 Catch ex As ApplicationException
                 End Try
 
@@ -1815,6 +1815,54 @@ Public Class Form1
             UpdateLogCount()
             SaveLogsToDiskSub()
         End If
+    End Sub
+
+    Private Sub btnShowLimit_Click(sender As Object, e As EventArgs) Handles btnShowLimit.Click
+        Dim strLimitBy As String = boxLimitBy.Text
+        Dim strLimiter As String = boxLimiter.Text
+        Dim listOfSearchResults As New List(Of MyDataGridViewRow)
+        Dim stopWatch As Stopwatch = Stopwatch.StartNew
+        Dim worker As New BackgroundWorker()
+
+        AddHandler worker.DoWork, Sub()
+                                      Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
+                                                                                                                 If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                     SyncLock listOfSearchResults
+                                                                                                                         listOfSearchResults.Add(item.Clone)
+                                                                                                                     End SyncLock
+                                                                                                                 End If
+                                                                                                             End Sub)
+                                  End Sub
+
+
+
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  If listOfSearchResults.Any() Then
+                                                      Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
+                                                      searchResultsWindow.LogsLoadedInLabel.Visible = True
+                                                      searchResultsWindow.LogsLoadedInLabel.Text = $"Search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                                      searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+                                                      searchResultsWindow.ShowDialog(Me)
+                                                  Else
+                                                      MsgBox("No logs match the limit you set.", MsgBoxStyle.Information, Text)
+                                                  End If
+
+                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                              End Sub
+
+        worker.RunWorkerAsync()
     End Sub
 
 #Region "-- SysLog Server Code --"
