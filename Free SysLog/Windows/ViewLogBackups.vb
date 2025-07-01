@@ -548,22 +548,22 @@ Public Class ViewLogBackups
         Dim sortedList As List(Of String)
 
         If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = uniqueObjects.logTypes.ToList()
+            sortedList = allUniqueObjects.logTypes.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = uniqueObjects.processes.ToList()
+            sortedList = allUniqueObjects.processes.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = uniqueObjects.hostNames.ToList()
+            sortedList = allUniqueObjects.hostNames.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = uniqueObjects.ipAddresses.ToList()
+            sortedList = allUniqueObjects.ipAddresses.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)

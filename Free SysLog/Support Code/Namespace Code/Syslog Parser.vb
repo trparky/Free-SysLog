@@ -327,7 +327,7 @@ Namespace SyslogParser
 
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
-                    With uniqueObjects
+                    With recentUniqueObjects
                         .logTypes.Add($"{priorityObject.Severity}, {priorityObject.Facility}")
                         .processes.Add(appName)
                         .hostNames.Add(hostname)
