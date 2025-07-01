@@ -849,7 +849,7 @@ Public Class Form1
         End If
 
         Try
-            mutex.ReleaseMutex()
+            Mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
 
@@ -1150,7 +1150,7 @@ Public Class Form1
                 Process.Start(strEXEPath)
 
                 Try
-                    mutex.ReleaseMutex()
+                    Mutex.ReleaseMutex()
                 Catch ex As ApplicationException
                 End Try
 
@@ -1853,6 +1853,24 @@ Public Class Form1
             Dim strLimitBy As String = boxLimitBy.Text
             Dim strLimiter As String = boxLimiter.Text
             Dim boolDoesLogMatchLimitedSearch As Boolean = True
+            Dim longNumberOfLogs As Long = 0
+
+            Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
+                                                                                       If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
+                                                                                       ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
+                                                                                       ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
+                                                                                       ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                           Threading.Interlocked.Increment(longNumberOfLogs)
+                                                                                       End If
+                                                                                   End Sub)
+
+            If longNumberOfLogs = 0 Then
+                MsgBox("No logs match the limit you set, aborting log limiting.", MsgBoxStyle.Information, Text)
+                Exit Sub
+            End If
 
             For Each item As DataGridViewRow In Logs.Rows
                 MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
