@@ -66,7 +66,8 @@ Namespace SupportCode
         Public Const strUpdaterEXE As String = "updater.exe"
         Public Const strUpdaterPDB As String = "updater.pdb"
 
-        Public uniqueObjects As uniqueObjectsClass
+        Public allUniqueObjects As uniqueObjectsClass
+        Public recentUniqueObjects As uniqueObjectsClass
 
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True
