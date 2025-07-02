@@ -546,24 +546,28 @@ Public Class ViewLogBackups
         boxLimiter.Enabled = True
 
         Dim sortedList As List(Of String)
+        Dim combinedUniqueObjects As New uniqueObjectsClass
+
+        combinedUniqueObjects.Merge(allUniqueObjects)
+        combinedUniqueObjects.Merge(recentUniqueObjects)
 
         If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = allUniqueObjects.logTypes.ToList()
+            sortedList = combinedUniqueObjects.logTypes.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = allUniqueObjects.processes.ToList()
+            sortedList = combinedUniqueObjects.processes.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = allUniqueObjects.hostNames.ToList()
+            sortedList = combinedUniqueObjects.hostNames.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)
         ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = allUniqueObjects.ipAddresses.ToList()
+            sortedList = combinedUniqueObjects.ipAddresses.ToList()
             sortedList.Sort()
 
             boxLimiter.Items.AddRange(sortedList.ToArray)

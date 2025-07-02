@@ -30,6 +30,15 @@ Namespace SupportCode
             hostNames.Clear()
             ipAddresses.Clear()
         End Sub
+
+        Public Sub Merge(other As uniqueObjectsClass)
+            If other Is Nothing Then Exit Sub
+
+            logTypes.UnionWith(other.logTypes)
+            processes.UnionWith(other.processes)
+            hostNames.UnionWith(other.hostNames)
+            ipAddresses.UnionWith(other.ipAddresses)
+        End Sub
     End Class
 
     Module SupportCode
