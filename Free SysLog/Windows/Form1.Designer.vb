@@ -874,9 +874,9 @@ Partial Class Form1
         '
         Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LoadingProgressBar.Location = New System.Drawing.Point(977, 28)
+        Me.LoadingProgressBar.Location = New System.Drawing.Point(954, 28)
         Me.LoadingProgressBar.Name = "LoadingProgressBar"
-        Me.LoadingProgressBar.Size = New System.Drawing.Size(186, 23)
+        Me.LoadingProgressBar.Size = New System.Drawing.Size(209, 23)
         Me.LoadingProgressBar.TabIndex = 19
         Me.LoadingProgressBar.Visible = False
         '
@@ -905,7 +905,7 @@ Partial Class Form1
         '
         Me.btnShowLimit.Location = New System.Drawing.Point(909, 27)
         Me.btnShowLimit.Name = "btnShowLimit"
-        Me.btnShowLimit.Size = New System.Drawing.Size(62, 23)
+        Me.btnShowLimit.Size = New System.Drawing.Size(39, 23)
         Me.btnShowLimit.TabIndex = 45
         Me.btnShowLimit.Text = "Limit"
         Me.btnShowLimit.UseVisualStyleBackColor = True
