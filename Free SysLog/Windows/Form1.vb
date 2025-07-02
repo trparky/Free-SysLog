@@ -70,6 +70,7 @@ Public Class Form1
             UpdateLogCount()
             SelectLatestLogEntry()
             BtnSaveLogsToDisk.Enabled = True
+            recentUniqueObjects.Clear()
 
             NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
         End SyncLock

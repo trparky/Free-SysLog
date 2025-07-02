@@ -23,6 +23,13 @@ Namespace SupportCode
             hostNames = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
             ipAddresses = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
         End Sub
+
+        Public Sub Clear()
+            logTypes.Clear()
+            processes.Clear()
+            hostNames.Clear()
+            ipAddresses.Clear()
+        End Sub
     End Class
 
     Module SupportCode
