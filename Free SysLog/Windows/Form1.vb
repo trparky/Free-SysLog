@@ -509,7 +509,19 @@ Public Class Form1
 
             boolServerRunning = True
         Else
-            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
+
+            If process Is Nothing Then
+                MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            Else
+                Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+
+                SyncLock dataGridLockObject
+                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                End SyncLock
+
+                MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            End If
         End If
     End Sub
 
@@ -1932,13 +1944,22 @@ Public Class Form1
             ' Does nothing
         Catch e As Exception
             Invoke(Sub()
-                       SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
-                           SelectLatestLogEntry()
-                           UpdateLogCount()
-                       End SyncLock
+                       Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
 
-                       MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       If process Is Nothing Then
+                           MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       Else
+                           Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+
+                           SyncLock dataGridLockObject
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                               SelectLatestLogEntry()
+                               UpdateLogCount()
+                           End SyncLock
+
+                           MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       End If
                    End Sub)
         End Try
     End Sub
