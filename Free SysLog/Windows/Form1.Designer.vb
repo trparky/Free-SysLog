@@ -918,7 +918,7 @@ Partial Class Form1
         Me.boxLimiter.Location = New System.Drawing.Point(595, 29)
         Me.boxLimiter.Name = "boxLimiter"
         Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
-        Me.boxLimiter.Text = "(Not Specified)"
+        Me.boxLimiter.Sorted = True
         Me.boxLimiter.TabIndex = 44
         '
         'boxLimitBy
