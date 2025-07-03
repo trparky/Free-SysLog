@@ -7,7 +7,7 @@ Namespace NativeMethod
         End Sub
 
         ' Sets the specified window to the foreground
-        <DllImport("User32.dll", EntryPoint:="SetForegroundWindow", SetLastError:=True)>
+        <DllImport("User32.dll", SetLastError:=True)>
         Public Shared Function SetForegroundWindow(hWnd As IntPtr) As Boolean
         End Function
 
@@ -59,4 +59,5 @@ Namespace NativeMethod
         QueryLimitedInformation = &H1000
         Synchronize = &H100000
     End Enum
+
 End Namespace
