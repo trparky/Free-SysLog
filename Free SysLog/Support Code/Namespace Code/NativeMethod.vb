@@ -6,6 +6,11 @@ Namespace NativeMethod
             ' Prevent instantiation
         End Sub
 
+        ' Retrieves the last Win32 error message
+        Public Function GetLastWin32ErrorMessage() As String
+            Return New ComponentModel.Win32Exception(Marshal.GetLastWin32Error()).Message
+        End Function
+
         ' Sets the specified window to the foreground
         <DllImport("User32.dll", SetLastError:=True)>
         Public Shared Function SetForegroundWindow(hWnd As IntPtr) As Boolean
