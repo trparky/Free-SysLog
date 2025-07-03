@@ -4,14 +4,6 @@ Imports Free_SysLog.SupportCode
 
 Namespace DataHandling
     Public Module DataHandling
-        Private ParentForm As Form1
-
-        Public WriteOnly Property SetParentForm As Form1
-            Set(value As Form1)
-                ParentForm = value
-            End Set
-        End Property
-
         Public Sub ExportSelectedLogs(selectedRows As DataGridViewSelectedRowCollection)
             SyncLock ParentForm.dataGridLockObject
                 Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}

@@ -5,14 +5,6 @@ Imports Free_SysLog.SupportCode
 
 Namespace TaskHandling
     Module TaskHandling
-        Private ParentForm As Form1
-
-        Public WriteOnly Property SetParentForm As Form1
-            Set(value As Form1)
-                ParentForm = value
-            End Set
-        End Property
-
         Public Function GetTaskObject(ByRef taskServiceObject As TaskService, nameOfTask As String, ByRef taskObject As Task) As Boolean
             Try
                 taskObject = taskServiceObject.GetTask($"\{nameOfTask}")

@@ -386,9 +386,7 @@ Public Class Form1
     End Function
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        SyslogParser.SetParentForm = Me
-        DataHandling.SetParentForm = Me
-        TaskHandling.SetParentForm = Me
+        SupportCode.ParentForm = Me
 
         TaskHandling.ConvertRegistryRunCommandToTask()
 

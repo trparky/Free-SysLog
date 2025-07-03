@@ -42,6 +42,8 @@ Namespace SupportCode
     End Class
 
     Module SupportCode
+        Public ParentForm As Form1
+
         Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
         Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
         Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
