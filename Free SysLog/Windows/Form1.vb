@@ -71,7 +71,7 @@ Public Class Form1
             SelectLatestLogEntry()
             BtnSaveLogsToDisk.Enabled = True
 
-            SyncLock recentUniqueObjects
+            SyncLock recentUniqueObjectsLock
                 recentUniqueObjects.Clear()
             End SyncLock
 
@@ -338,7 +338,7 @@ Public Class Form1
 
         Dim sortedList As List(Of String)
 
-        SyncLock recentUniqueObjects
+        SyncLock recentUniqueObjectsLock
             If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
                 sortedList = recentUniqueObjects.logTypes.ToList()
                 sortedList.Sort()

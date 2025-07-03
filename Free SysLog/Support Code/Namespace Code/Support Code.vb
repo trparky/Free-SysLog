@@ -84,6 +84,7 @@ Namespace SupportCode
 
         Public allUniqueObjects As uniqueObjectsClass
         Public recentUniqueObjects As uniqueObjectsClass
+        Public ReadOnly recentUniqueObjectsLock As New Object()
 
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True

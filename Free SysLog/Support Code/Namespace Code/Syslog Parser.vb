@@ -331,7 +331,7 @@ Namespace SyslogParser
                         Dim strLimitBy As String = ParentForm.boxLimitBy.Text
                         Dim logType As String = $"{priorityObject.Severity}, {priorityObject.Facility}"
 
-                        SyncLock recentUniqueObjects
+                        SyncLock recentUniqueObjectsLock
                             With recentUniqueObjects
                                 If .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
                                     ParentForm.boxLimiter.Items.Add(logType)
