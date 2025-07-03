@@ -2,11 +2,11 @@
 
 Namespace NativeMethod
     Friend Class NativeMethods
-        <DllImport("User32.dll", EntryPoint:="SetForegroundWindow")>
+        <DllImport("User32.dll", EntryPoint:="SetForegroundWindow", SetLastError:=True)>
         Public Shared Function SetForegroundWindow(hWnd As IntPtr) As Integer
         End Function
 
-        <DllImport("kernel32.dll")>
+        <DllImport("kernel32.dll", SetLastError:=True)>
         Friend Shared Function OpenProcess(dwDesiredAccess As ProcessAccessFlags, bInheritHandle As Boolean, dwProcessId As Integer) As IntPtr
         End Function
 
@@ -14,19 +14,19 @@ Namespace NativeMethod
         Friend Shared Function CloseHandle(hHandle As IntPtr) As Boolean
         End Function
 
-        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode)>
+        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode, SetLastError:=True)>
         Friend Shared Function QueryFullProcessImageName(hprocess As IntPtr, dwFlags As Integer, lpExeName As Text.StringBuilder, ByRef size As Integer) As Boolean
         End Function
 
-        <DllImport("shell32.dll", CharSet:=CharSet.Unicode, ExactSpelling:=True)>
+        <DllImport("shell32.dll", CharSet:=CharSet.Unicode, ExactSpelling:=True, SetLastError:=True)>
         Public Shared Function ILCreateFromPathW(pszPath As String) As IntPtr
         End Function
 
-        <DllImport("shell32.dll", ExactSpelling:=True)>
+        <DllImport("shell32.dll", ExactSpelling:=True, SetLastError:=True)>
         Public Shared Function SHOpenFolderAndSelectItems(pidlList As IntPtr, cild As UInteger, children As IntPtr, dwFlags As UInteger) As Integer
         End Function
 
-        <DllImport("shell32.dll", ExactSpelling:=True)>
+        <DllImport("shell32.dll", ExactSpelling:=True, SetLastError:=True)>
         Public Shared Sub ILFree(pidlList As IntPtr)
         End Sub
     End Class
