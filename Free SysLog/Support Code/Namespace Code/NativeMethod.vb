@@ -1,7 +1,7 @@
 ﻿Imports System.Runtime.InteropServices
 
 Namespace NativeMethod
-    Friend Class NativeMethods
+    Friend NotInheritable Class NativeMethods
         Private Sub New()
             ' Prevent instantiation
         End Sub
