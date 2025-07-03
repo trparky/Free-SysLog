@@ -2,6 +2,10 @@
 
 Namespace NativeMethod
     Friend Class NativeMethods
+        Private Sub New()
+            ' Prevent instantiation
+        End Sub
+
         <DllImport("User32.dll", EntryPoint:="SetForegroundWindow", SetLastError:=True)>
         Public Shared Function SetForegroundWindow(hWnd As IntPtr) As Integer
         End Function
