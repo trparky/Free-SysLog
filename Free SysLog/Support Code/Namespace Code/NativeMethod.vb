@@ -3,7 +3,7 @@
 Namespace NativeMethod
     Friend Class NativeMethods
         <DllImport("User32.dll", EntryPoint:="SetForegroundWindow")>
-        Public Shared Function SetForegroundWindow(hWnd As Integer) As Integer
+        Public Shared Function SetForegroundWindow(hWnd As IntPtr) As Integer
         End Function
 
         <DllImport("kernel32.dll")>
@@ -21,6 +21,7 @@ Namespace NativeMethod
         <DllImport("shell32.dll", CharSet:=CharSet.Unicode, ExactSpelling:=True)>
         Public Shared Function ILCreateFromPathW(pszPath As String) As IntPtr
         End Function
+
         <DllImport("shell32.dll", ExactSpelling:=True)>
         Public Shared Function SHOpenFolderAndSelectItems(pidlList As IntPtr, cild As UInteger, children As IntPtr, dwFlags As UInteger) As Integer
         End Function
