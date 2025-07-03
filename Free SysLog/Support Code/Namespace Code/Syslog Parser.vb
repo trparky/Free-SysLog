@@ -327,11 +327,25 @@ Namespace SyslogParser
 
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
+                    Dim strLimitBy As String = ParentForm.boxLimitBy.Text
+                    Dim logType As String = $"{priorityObject.Severity}, {priorityObject.Facility}"
+
                     With recentUniqueObjects
-                        .logTypes.Add($"{priorityObject.Severity}, {priorityObject.Facility}")
-                        .processes.Add(appName)
-                        .hostNames.Add(hostname)
-                        .ipAddresses.Add(strSourceIP)
+                        If .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                            ParentForm.boxLimiter.Items.Add(logType)
+                        End If
+
+                        If .processes.Add(appName) AndAlso strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                            ParentForm.boxLimiter.Items.Add(appName)
+                        End If
+
+                        If .hostNames.Add(hostname) AndAlso strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                            ParentForm.boxLimiter.Items.Add(hostname)
+                        End If
+
+                        If .ipAddresses.Add(strSourceIP) AndAlso strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                            ParentForm.boxLimiter.Items.Add(strSourceIP)
+                        End If
                     End With
 
                     ' Step 4: Add to log list, separating header and message
