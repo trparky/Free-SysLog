@@ -70,7 +70,10 @@ Public Class Form1
             UpdateLogCount()
             SelectLatestLogEntry()
             BtnSaveLogsToDisk.Enabled = True
-            recentUniqueObjects.Clear()
+
+            SyncLock recentUniqueObjects
+                recentUniqueObjects.Clear()
+            End SyncLock
 
             NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
         End SyncLock
@@ -335,30 +338,32 @@ Public Class Form1
 
         Dim sortedList As List(Of String)
 
-        If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.logTypes.ToList()
-            sortedList.Sort()
+        SyncLock recentUniqueObjects
+            If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.logTypes.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.processes.ToList()
-            sortedList.Sort()
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.processes.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.hostNames.ToList()
-            sortedList.Sort()
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.hostNames.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.ipAddresses.ToList()
-            sortedList.Sort()
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.ipAddresses.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        Else
-            boxLimiter.Text = "(Not Specified)"
-            boxLimiter.Enabled = False
-        End If
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            Else
+                boxLimiter.Text = "(Not Specified)"
+                boxLimiter.Enabled = False
+            End If
+        End SyncLock
     End Sub
 
     Private Function FormatSecondsToReadableTime(input As Integer) As String

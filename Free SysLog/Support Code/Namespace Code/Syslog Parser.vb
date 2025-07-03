@@ -330,23 +330,25 @@ Namespace SyslogParser
                     Dim strLimitBy As String = ParentForm.boxLimitBy.Text
                     Dim logType As String = $"{priorityObject.Severity}, {priorityObject.Facility}"
 
-                    With recentUniqueObjects
-                        If .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                            ParentForm.boxLimiter.Items.Add(logType)
-                        End If
+                    SyncLock recentUniqueObjects
+                        With recentUniqueObjects
+                            If .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(logType)
+                            End If
 
-                        If .processes.Add(appName) AndAlso strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                            ParentForm.boxLimiter.Items.Add(appName)
-                        End If
+                            If .processes.Add(appName) AndAlso strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(appName)
+                            End If
 
-                        If .hostNames.Add(hostname) AndAlso strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-                            ParentForm.boxLimiter.Items.Add(hostname)
-                        End If
+                            If .hostNames.Add(hostname) AndAlso strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(hostname)
+                            End If
 
-                        If .ipAddresses.Add(strSourceIP) AndAlso strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-                            ParentForm.boxLimiter.Items.Add(strSourceIP)
-                        End If
-                    End With
+                            If .ipAddresses.Add(strSourceIP) AndAlso strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(strSourceIP)
+                            End If
+                        End With
+                    End SyncLock
 
                     ' Step 4: Add to log list, separating header and message
                     AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)
