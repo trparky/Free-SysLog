@@ -7,7 +7,7 @@ Namespace NativeMethod
         End Sub
 
         <DllImport("User32.dll", EntryPoint:="SetForegroundWindow", SetLastError:=True)>
-        Public Shared Function SetForegroundWindow(hWnd As IntPtr) As Integer
+        Public Shared Function SetForegroundWindow(hWnd As IntPtr) As Boolean
         End Function
 
         <DllImport("kernel32.dll", SetLastError:=True)>
