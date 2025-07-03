@@ -35,23 +35,21 @@ Namespace NativeMethod
         End Sub
     End Class
 
-    Module APIs
-        <Flags>
-        Public Enum ProcessAccessFlags As UInteger
-            PROCESS_QUERY_LIMITED_INFORMATION = &H1000
-            All = &H1F0FFF
-            Terminate = &H1
-            CreateThread = &H2
-            VirtualMemoryOperation = &H8
-            VirtualMemoryRead = &H10
-            VirtualMemoryWrite = &H20
-            DuplicateHandle = &H40
-            CreateProcess = &H80
-            SetQuota = &H100
-            SetInformation = &H200
-            QueryInformation = &H400
-            QueryLimitedInformation = &H1000
-            Synchronize = &H100000
-        End Enum
-    End Module
+    <Flags>
+    Public Enum ProcessAccessFlags As UInteger
+        PROCESS_QUERY_LIMITED_INFORMATION = &H1000
+        All = &H1F0FFF
+        Terminate = &H1
+        CreateThread = &H2
+        VirtualMemoryOperation = &H8
+        VirtualMemoryRead = &H10
+        VirtualMemoryWrite = &H20
+        DuplicateHandle = &H40
+        CreateProcess = &H80
+        SetQuota = &H100
+        SetInformation = &H200
+        QueryInformation = &H400
+        QueryLimitedInformation = &H1000
+        Synchronize = &H100000
+    End Enum
 End Namespace
