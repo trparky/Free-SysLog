@@ -68,8 +68,10 @@ Namespace checkForUpdates
                 xmlDocument.Load(New StringReader(xmlData)) ' Now we try and parse the XML data.
                 Dim xmlNode As XmlNode = xmlDocument.SelectSingleNode("/xmlroot")
 
-                remoteVersion = xmlNode.SelectSingleNode("version").InnerText.Trim
-                remoteBuild = xmlNode.SelectSingleNode("build").InnerText.Trim
+                If xmlNode Is Nothing Then Return ProcessUpdateXMLResponse.parseError ' Something went wrong, so we return a parseError value.
+
+                remoteVersion = xmlNode.SelectSingleNode("version")?.InnerText?.Trim()
+                remoteBuild = xmlNode.SelectSingleNode("build")?.InnerText?.Trim()
 
                 Dim longInternalVersionFromXML As Long = 0
                 If xmlNode.SelectSingleNode("internalversion") IsNot Nothing Then
