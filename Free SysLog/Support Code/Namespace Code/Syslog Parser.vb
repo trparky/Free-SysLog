@@ -14,8 +14,6 @@ Namespace SyslogParser
 
         Private Const strNewLine As String = "{newline}"
 
-        Private NotificationLimiter As NotificationLimiter.NotificationLimiter
-
         Public Function MakeLocalDataGridRowEntry(strLogText As String, ByRef dataGrid As DataGridView, Optional strLogType As String = "Informational, Local") As MyDataGridViewRow
             Dim MyDataGridViewRow As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=Now,
                                    dateObject:=Now,

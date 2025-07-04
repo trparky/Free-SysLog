@@ -1,9 +1,7 @@
 ﻿Namespace NotificationLimiter
-    Public Module NotificationLimiterModule
+    Public Module NotificationLimiter
         Public lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
-    End Module
 
-    Public Class NotificationLimiter
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
 
@@ -39,5 +37,5 @@
                 lastNotificationTime.Remove(key)
             Next
         End Sub
-    End Class
+    End Module
 End Namespace
