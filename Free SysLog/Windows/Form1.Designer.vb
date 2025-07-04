@@ -903,6 +903,7 @@ Partial Class Form1
         '
         'btnShowLimit
         '
+        Me.btnShowLimit.Enabled = False
         Me.btnShowLimit.Location = New System.Drawing.Point(909, 27)
         Me.btnShowLimit.Name = "btnShowLimit"
         Me.btnShowLimit.Size = New System.Drawing.Size(39, 23)

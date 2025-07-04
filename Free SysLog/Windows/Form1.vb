@@ -330,6 +330,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub boxLimiter_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimiter.SelectedValueChanged
+        btnShowLimit.Enabled = Not String.IsNullOrWhiteSpace(boxLimiter.Text)
+    End Sub
+
     Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
         boxLimiter.Text = Nothing
         boxLimiter.Items.Clear()
