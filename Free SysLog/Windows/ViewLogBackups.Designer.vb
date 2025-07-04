@@ -335,7 +335,7 @@ Partial Class ViewLogBackups
         Me.boxLimitBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.boxLimitBy.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.boxLimitBy.FormattingEnabled = True
-        Me.boxLimitBy.Items.AddRange(New Object() {"Not Specified", "Log Type", "Remote Process", "Source Hostname", "Source IP Address"})
+        Me.boxLimitBy.Items.AddRange(New Object() {"(Not Specified)", "Log Type", "Remote Process", "Source Hostname", "Source IP Address"})
         Me.boxLimitBy.Location = New System.Drawing.Point(55, 290)
         Me.boxLimitBy.Name = "boxLimitBy"
         Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)
