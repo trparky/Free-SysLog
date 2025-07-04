@@ -21,7 +21,7 @@
                     Dim timeSinceLastNotification As TimeSpan = currentTime - lastTime
 
                     ' If the message was shown within the time limit, do not show it again
-                    If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Return
+                    If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Exit Sub
                 End If
 
                 ' Update the last shown time for this message
