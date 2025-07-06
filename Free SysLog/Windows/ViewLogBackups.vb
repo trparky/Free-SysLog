@@ -576,4 +576,123 @@ Public Class ViewLogBackups
             boxLimiter.Enabled = False
         End If
     End Sub
+
+    Private Sub btnViewLogsWithLimits_Click(sender As Object, e As EventArgs) Handles btnViewLogsWithLimits.Click
+        Dim strLimitBy As String = boxLimitBy.Text
+        Dim strLimiter As String = boxLimiter.Text
+        Dim boolShowSearchResults As Boolean = True
+        Dim listOfSearchResults As New List(Of MyDataGridViewRow)()
+        Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
+        Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results"}
+        searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+
+        If My.Settings.font IsNot Nothing Then searchResultsWindow.Logs.DefaultCellStyle.Font = My.Settings.font
+
+        BtnSearch.Enabled = False
+
+        Dim worker As New BackgroundWorker()
+
+        AddHandler worker.DoWork, Sub()
+                                      Dim filesInDirectory As FileInfo()
+
+                                      If ChkShowHidden.Checked Then
+                                          filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
+                                      Else
+                                          filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
+                                      End If
+
+                                      Dim dataFromFile As List(Of SavedData)
+                                      Dim myDataGridRow As MyDataGridViewRow
+                                      Dim boolDidWeHaveAMatch As Boolean = False
+
+                                      Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                             Using fileStream As New StreamReader(file.FullName)
+                                                                                 dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+
+                                                                                 For Each item As SavedData In dataFromFile
+                                                                                     If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     End If
+
+                                                                                     If boolDidWeHaveAMatch Then
+                                                                                         myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
+                                                                                         myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                         myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+
+                                                                                         SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                             listOfSearchResults.Add(myDataGridRow)
+                                                                                         End SyncLock
+                                                                                     End If
+
+                                                                                     boolDidWeHaveAMatch = False
+                                                                                 Next
+                                                                             End Using
+                                                                         End Sub)
+
+                                      For Each item As MyDataGridViewRow In listOfSearchResults
+                                          If My.Settings.font IsNot Nothing Then item.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
+                                      Next
+
+                                      listOfSearchResults.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+
+                                      For Each item As SavedData In currentLogs
+                                          If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                              boolDidWeHaveAMatch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                          ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                              boolDidWeHaveAMatch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                          ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                              boolDidWeHaveAMatch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                          ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                              boolDidWeHaveAMatch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                          End If
+
+                                          If boolDidWeHaveAMatch AndAlso Not String.IsNullOrWhiteSpace(item.log) Then
+                                              myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
+                                              myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
+                                              listOfSearchResults.Add(myDataGridRow)
+                                              myDataGridRow = Nothing
+                                          End If
+
+                                          boolDidWeHaveAMatch = False
+                                      Next
+
+                                      If listOfSearchResults.Count > 4000 Then
+                                          If Not My.Settings.IgnoreSearchResultLimits Then
+                                              MsgBox($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information, Text)
+                                              boolShowSearchResults = False
+                                              Exit Sub
+                                          Else
+                                              If MsgBox("There are more than 4000 search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
+                                                  boolShowSearchResults = False
+                                                  Exit Sub
+                                              End If
+                                          End If
+                                      End If
+
+                                      listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(ColumnIndex_LogText).Value.ToString()).ThenBy(Function(row) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
+                                  End Sub
+
+        AddHandler worker.RunWorkerCompleted, Sub()
+                                                  If boolShowSearchResults Then
+                                                      If listOfSearchResults2.Count > 0 Then
+                                                          searchResultsWindow.LogsToBeDisplayed = listOfSearchResults2
+                                                          searchResultsWindow.ColFileName.Visible = True
+                                                          searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
+                                                          searchResultsWindow.ShowDialog(Me)
+                                                      Else
+                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                      End If
+                                                  End If
+
+                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                              End Sub
+
+        worker.RunWorkerAsync()
+    End Sub
 End Class

@@ -56,6 +56,7 @@ Partial Class ViewLogBackups
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
+        Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.FileList, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -354,11 +355,22 @@ Partial Class ViewLogBackups
         Me.boxLimiter.Text = "(Not Specified)"
         Me.boxLimiter.TabIndex = 41
         '
+        'btnViewLogsWithLimits
+        '
+        Me.btnViewLogsWithLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnViewLogsWithLimits.Location = New System.Drawing.Point(438, 288)
+        Me.btnViewLogsWithLimits.Name = "btnViewLogsWithLimits"
+        Me.btnViewLogsWithLimits.Size = New System.Drawing.Size(110, 23)
+        Me.btnViewLogsWithLimits.TabIndex = 42
+        Me.btnViewLogsWithLimits.Text = "View All with Limits"
+        Me.btnViewLogsWithLimits.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(954, 364)
+        Me.Controls.Add(Me.btnViewLogsWithLimits)
         Me.Controls.Add(Me.boxLimiter)
         Me.Controls.Add(Me.boxLimitBy)
         Me.Controls.Add(Me.lblLimitBy)
@@ -424,4 +436,5 @@ Partial Class ViewLogBackups
     Friend WithEvents lblLimitBy As Label
     Friend WithEvents boxLimitBy As ComboBox
     Friend WithEvents boxLimiter As ComboBox
+    Friend WithEvents btnViewLogsWithLimits As Button
 End Class
