@@ -2,6 +2,7 @@
 Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
 Imports System.ComponentModel
+Imports System.Threading
 
 Namespace SyslogParser
     Public Module SyslogParser
@@ -355,7 +356,7 @@ Namespace SyslogParser
                 For Each ignoredClassInstance As IgnoredClass In ignoredList
                     If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
                         ParentForm.Invoke(Sub()
-                                              ParentForm.longNumberOfIgnoredLogs += 1
+                                              Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs)
                                               If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
                                                   ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
                                               End If
