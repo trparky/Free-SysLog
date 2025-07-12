@@ -846,7 +846,7 @@ Public Class Form1
         End If
 
         Try
-            Mutex.ReleaseMutex()
+            mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
 
@@ -1147,7 +1147,7 @@ Public Class Form1
                 Process.Start(strEXEPath)
 
                 Try
-                    Mutex.ReleaseMutex()
+                    mutex.ReleaseMutex()
                 Catch ex As ApplicationException
                 End Try
 

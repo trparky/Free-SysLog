@@ -142,7 +142,7 @@ Public Class Hostnames
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(My.Settings.hostnames, Newtonsoft.Json.Formatting.Indented))
 
-            MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
+            If MsgBox($"Data exported successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SupportCode.SelectFileInWindowsExplorer(saveFileDialog.FileName)
         End If
     End Sub
 
