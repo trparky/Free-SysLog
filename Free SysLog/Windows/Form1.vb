@@ -1119,7 +1119,7 @@ Public Class Form1
 
     Private Sub ExportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportToolStripMenuItem.Click
         Using SaveFileDialog As New SaveFileDialog()
-            SaveFileDialog.Title = "Safe Program Settings..."
+            SaveFileDialog.Title = "Save Program Settings..."
             SaveFileDialog.Filter = "JSON File|*.json"
 
             If SaveFileDialog.ShowDialog() = DialogResult.OK Then
