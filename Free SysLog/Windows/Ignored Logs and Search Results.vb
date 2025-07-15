@@ -143,6 +143,7 @@ Public Class IgnoredLogsAndSearchResults
             ChkRegExSearch.Visible = True
             ChkCaseInsensitiveSearch.Visible = True
             BtnSearch.Visible = True
+            ViewIgnoredLogPatternToolStripMenuItem.Visible = False
         End If
 
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
@@ -347,7 +348,7 @@ Public Class IgnoredLogsAndSearchResults
             ExportSelectedLogsToolStripMenuItem.Visible = False
             CopyLogTextToolStripMenuItem.Visible = True
             CreateAlertToolStripMenuItem.Visible = True
-            OpenLogFileForViewingToolStripMenuItem.Visible = _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.ignored
+            OpenLogFileForViewingToolStripMenuItem.Visible = True
         End If
     End Sub
 
@@ -516,9 +517,22 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
-        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.viewer) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_FileName).Value), .boolLoadExternalData = True}
-        logFileViewer.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
-        logFileViewer.Show(Me)
+        If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
+            Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
+
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
+
+                If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
+                    LogViewerInstance.txtAlertText.Text = selectedRow.AlertText
+                End If
+
+                LogViewerInstance.ShowDialog(Me)
+            End Using
+        End If
     End Sub
 
     Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearchTerms.KeyDown
@@ -530,6 +544,24 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub ExportSelectedLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportSelectedLogsToolStripMenuItem.Click
         DataHandling.ExportSelectedLogs(Logs.SelectedRows)
+    End Sub
+
+    Private Sub ViewIgnoredLogPatternToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogPatternToolStripMenuItem.Click
+        If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strIgnoredPattern As String = selectedRow.IgnoredPattern
+
+            Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                IgnoredWordsAndPhrasesOrAlertsInstance.strIgnoredPattern = strIgnoredPattern
+                IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
+
+                If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
+                    SyncLock IgnoredRegexCache
+                        IgnoredRegexCache.Clear()
+                    End SyncLock
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub ChkColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ChkColLogsAutoFill.Click

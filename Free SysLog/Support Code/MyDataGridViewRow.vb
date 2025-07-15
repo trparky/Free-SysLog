@@ -7,6 +7,7 @@
     Public Property RawLogData As String
     Public Property AlertText As String
     Public Property alertType As AlertType
+    Public Property IgnoredPattern As String
 
     Public Overrides Function Clone()
         Dim newDataGridRow As New MyDataGridViewRow()
@@ -16,6 +17,7 @@
         newDataGridRow.AlertText = Me.AlertText
         newDataGridRow.RawLogData = Me.RawLogData
         newDataGridRow.alertType = Me.alertType
+        newDataGridRow.IgnoredPattern = Me.IgnoredPattern
 
         For index As Short = 0 To Me.Cells.Count - 1
             With newDataGridRow

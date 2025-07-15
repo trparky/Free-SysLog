@@ -4,6 +4,7 @@ Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
+    Public strIgnoredPattern As String = Nothing
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Any(Function(item As MyIgnoredListViewItem)
@@ -98,6 +99,17 @@ Public Class IgnoredWordsAndPhrases
         Size = My.Settings.ConfigureIgnoredSize
 
         boolDoneLoading = True
+
+        If Not String.IsNullOrWhiteSpace(strIgnoredPattern) AndAlso CheckForExistingItem(strIgnoredPattern) Then
+            For Each item As ListViewItem In IgnoredListView.Items
+                If item.SubItems(0).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
+                    item.Selected = True
+                    'IgnoredListView_Click(Nothing, Nothing)
+                    EditItem()
+                    Exit For
+                End If
+            Next
+        End If
     End Sub
 
     Private Sub IgnoredListView_KeyUp(sender As Object, e As KeyEventArgs) Handles IgnoredListView.KeyUp

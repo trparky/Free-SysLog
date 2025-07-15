@@ -280,6 +280,7 @@ Namespace SyslogParser
                     Dim appName As String = Nothing
                     Dim strAlertText As String = Nothing
                     Dim AlertType As AlertType = AlertType.None
+                    Dim strIgnoredPattern As String = Nothing
 
                     ' Step 1: Use Regex to extract the RFC 5424 header and the message
                     Dim match As Match = Nothing
@@ -310,9 +311,9 @@ Namespace SyslogParser
                     ' Step 3: Handle the ignored logs and alerts
                     If My.Settings.ProcessReplacementsInSyslogDataFirst Then
                         If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message, strIgnoredPattern)
                     Else
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message, strIgnoredPattern)
                         If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
                     End If
 
@@ -344,17 +345,18 @@ Namespace SyslogParser
                     End If
 
                     ' Step 4: Add to log list, separating header and message
-                    AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType)
+                    AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern)
                 End If
             Catch ex As Exception
                 AddToLogList(Nothing, $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
         End Sub
 
-        Private Function ProcessIgnoredLogPreferences(message As String) As Boolean
+        Private Function ProcessIgnoredLogPreferences(message As String, ByRef strIgnoredPattern As String) As Boolean
             SyncLock IgnoredRegexCache
                 For Each ignoredClassInstance As IgnoredClass In ignoredList
                     If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
+                        strIgnoredPattern = ignoredClassInstance.StrIgnore
                         ParentForm.Invoke(Sub()
                                               Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs)
                                               If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
@@ -370,7 +372,7 @@ Namespace SyslogParser
             Return False
         End Function
 
-        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType)
+        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
@@ -427,6 +429,7 @@ Namespace SyslogParser
                                                                               AlertType:=alertType,
                                                                               dataGrid:=ParentForm.Logs
                                                                              )
+                    NewIgnoredItem.IgnoredPattern = strIgnoredPattern
                     ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                     If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)
                     ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)

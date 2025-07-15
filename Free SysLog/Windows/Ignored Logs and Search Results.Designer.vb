@@ -60,6 +60,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
+        Me.ViewIgnoredLogPatternToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -200,9 +201,9 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LogsContextMenu
         '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem})
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
         Me.LogsContextMenu.Name = "LogsContextMenu"
-        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 92)
+        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 136)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -327,6 +328,12 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LoadingProgressBar.TabIndex = 30
         Me.LoadingProgressBar.Visible = False
         '
+        'ViewIgnoredLogPatternToolStripMenuItem
+        '
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Name = "ViewIgnoredLogPatternToolStripMenuItem"
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Text = "View Ignored Log Pattern"
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -385,4 +392,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents LogsLoadedInLabel As ToolStripStatusLabel
     Friend WithEvents ChkColLogsAutoFill As CheckBox
     Friend WithEvents LoadingProgressBar As ProgressBar
+    Friend WithEvents ViewIgnoredLogPatternToolStripMenuItem As ToolStripMenuItem
 End Class
