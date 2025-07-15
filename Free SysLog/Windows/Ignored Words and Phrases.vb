@@ -104,6 +104,7 @@ Public Class IgnoredWordsAndPhrases
             For Each item As ListViewItem In IgnoredListView.Items
                 If item.SubItems(0).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
                     item.Selected = True
+                    IgnoredListView.Refresh()
                     'IgnoredListView_Click(Nothing, Nothing)
                     EditItem()
                     Exit For
