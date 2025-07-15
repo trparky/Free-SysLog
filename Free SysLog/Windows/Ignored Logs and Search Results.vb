@@ -347,7 +347,7 @@ Public Class IgnoredLogsAndSearchResults
             ExportSelectedLogsToolStripMenuItem.Visible = False
             CopyLogTextToolStripMenuItem.Visible = True
             CreateAlertToolStripMenuItem.Visible = True
-            OpenLogFileForViewingToolStripMenuItem.Visible = True
+            OpenLogFileForViewingToolStripMenuItem.Visible = _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.ignored
         End If
     End Sub
 
