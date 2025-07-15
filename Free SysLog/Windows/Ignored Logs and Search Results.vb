@@ -564,6 +564,10 @@ Public Class IgnoredLogsAndSearchResults
         End If
     End Sub
 
+    Private Sub OpenLogForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogForViewingToolStripMenuItem.Click
+        OpenLogViewerWindow()
+    End Sub
+
     Private Sub ChkColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ChkColLogsAutoFill.Click
         My.Settings.colLogAutoFill = ChkColLogsAutoFill.Checked
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)

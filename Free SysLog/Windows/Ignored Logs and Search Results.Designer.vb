@@ -62,6 +62,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.ViewIgnoredLogPatternToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenLogForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
@@ -201,9 +202,9 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LogsContextMenu
         '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.OpenLogForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
         Me.LogsContextMenu.Name = "LogsContextMenu"
-        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 136)
+        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 158)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -334,6 +335,12 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ViewIgnoredLogPatternToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
         Me.ViewIgnoredLogPatternToolStripMenuItem.Text = "View Ignored Log Pattern"
         '
+        'OpenLogForViewingToolStripMenuItem
+        '
+        Me.OpenLogForViewingToolStripMenuItem.Name = "OpenLogForViewingToolStripMenuItem"
+        Me.OpenLogForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.OpenLogForViewingToolStripMenuItem.Text = "Open Log for Viewing"
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -393,4 +400,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents ChkColLogsAutoFill As CheckBox
     Friend WithEvents LoadingProgressBar As ProgressBar
     Friend WithEvents ViewIgnoredLogPatternToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OpenLogForViewingToolStripMenuItem As ToolStripMenuItem
 End Class
