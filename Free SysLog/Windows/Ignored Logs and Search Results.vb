@@ -134,6 +134,7 @@ Public Class IgnoredLogsAndSearchResults
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             BtnClearIgnoredLogs.Visible = True
             BtnViewMainWindow.Visible = True
+            ChkColLogsAutoFill.Location = New Point(135, 382)
         ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
             BtnExport.Visible = False
             BtnViewMainWindow.Visible = True
