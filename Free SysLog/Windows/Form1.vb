@@ -1026,6 +1026,7 @@ Public Class Form1
         My.Settings.recordIgnoredLogs = ChkEnableRecordingOfIgnoredLogs.Checked
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
+        longNumberOfIgnoredLogs = 0
 
         If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
             IgnoredLogs.Clear()
