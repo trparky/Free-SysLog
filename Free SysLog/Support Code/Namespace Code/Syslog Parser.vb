@@ -320,7 +320,10 @@ Namespace SyslogParser
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
                     If Not boolIgnored Then
-                        Dim strLimitBy As String = ParentForm.boxLimitBy.Text
+                        Dim strLimitBy As String = Nothing
+
+                        ParentForm.boxLimitBy.Invoke(Sub() strLimitBy = ParentForm.boxLimitBy.Text)
+
                         Dim logType As String = $"{priorityObject.Severity}, {priorityObject.Facility}"
 
                         SyncLock recentUniqueObjectsLock
