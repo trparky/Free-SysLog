@@ -10,6 +10,7 @@ Public Class ConfigureSysLogMirrorClients
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         BtnCancel.Visible = False
         Location = SupportCode.VerifyWindowLocation(My.Settings.syslogProxyLocation, Me)
+        Location = VerifyWindowLocation(My.Settings.syslogProxyLocation, Me)
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             Dim SysLogProxyServer As SysLogProxyServer
 
