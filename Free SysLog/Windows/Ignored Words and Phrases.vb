@@ -80,6 +80,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
         BtnCancel.Visible = False
+        btnDeleteDuringEditing.Visible = False
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
 
@@ -104,6 +105,7 @@ Public Class IgnoredWordsAndPhrases
             For Each item As ListViewItem In IgnoredListView.Items
                 If item.SubItems(0).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
                     item.Selected = True
+                    btnDeleteDuringEditing.Visible = True
                     IgnoredListView.Refresh()
                     'IgnoredListView_Click(Nothing, Nothing)
                     EditItem()
@@ -341,5 +343,18 @@ Public Class IgnoredWordsAndPhrases
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
+    End Sub
+
+    Private Sub btnDeleteDuringEditing_Click(sender As Object, e As EventArgs) Handles btnDeleteDuringEditing.Click
+        IgnoredListView.SelectedItems(0).Remove()
+        IgnoredListView.Enabled = True
+        BtnAdd.Text = "Add"
+        Label4.Text = "Add Ignored Words and Phrases"
+        boolEditMode = False
+        boolChanged = True
+        TxtIgnored.Text = Nothing
+        ChkCaseSensitive.Checked = False
+        ChkRegex.Checked = False
+        ChkEnabled.Checked = True
     End Sub
 End Class
