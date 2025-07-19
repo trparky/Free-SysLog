@@ -176,6 +176,7 @@ Partial Class Form1
         Me.LimitNumberOfIgnoredLogs.Name = "LimitNumberOfIgnoredLogs"
         Me.LimitNumberOfIgnoredLogs.Size = New System.Drawing.Size(239, 22)
         Me.LimitNumberOfIgnoredLogs.Text = "Limit Number of Ignored Logs"
+        Me.LimitNumberOfIgnoredLogs.ToolTipText = "Limits the number of ignored logs that stored in system RAM by the program."
         '
         'BtnOpenLogLocation
         '
