@@ -216,9 +216,12 @@ Public Class IgnoredLogsAndSearchResults
 
     Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
         Invoke(Sub()
-                   Logs.Rows.Add(ItemToAdd)
-                   If BoolAutoScroll Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
-                   LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+                   Try
+                       Logs.Rows.Add(ItemToAdd)
+                       If BoolAutoScroll Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                       LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+                   Catch ex As Exception
+                   End Try
                End Sub)
     End Sub
 
