@@ -184,7 +184,10 @@ Public Class Form1
                 My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
             End If
 
-            If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
+            SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+                If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
+            End SyncLock
+
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
 
             Logs.Invalidate()
@@ -988,14 +991,16 @@ Public Class Form1
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
-        If IgnoredLogsAndSearchResultsInstance Is Nothing Then
-            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
-            IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
-            IgnoredLogsAndSearchResultsInstance.Show()
-        Else
-            IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
-            IgnoredLogsAndSearchResultsInstance.BringToFront()
-        End If
+        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+            If IgnoredLogsAndSearchResultsInstance Is Nothing Then
+                IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
+                IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+                IgnoredLogsAndSearchResultsInstance.Show()
+            Else
+                IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
+                IgnoredLogsAndSearchResultsInstance.BringToFront()
+            End If
+        End SyncLock
     End Sub
 
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click

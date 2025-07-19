@@ -434,7 +434,11 @@ Namespace SyslogParser
                                                                              )
                     NewIgnoredItem.IgnoredPattern = strIgnoredPattern
                     ParentForm.IgnoredLogs.Add(NewIgnoredItem)
-                    If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)
+
+                    SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+                        If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)
+                    End SyncLock
+
                     ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
                 End SyncLock
             End If

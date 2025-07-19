@@ -185,27 +185,29 @@ Public Class IgnoredLogsAndSearchResults
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
-            LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
-
             Logs.SuspendLayout()
 
-            Task.Run(Sub()
-                         For index As Integer = 0 To LogsToBeDisplayed.Count - 1 Step intBatchSize
-                             Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
-                             Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
-                         Next
+            Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                       SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+                                                           LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
 
-                         Logs.Invoke(Sub() Logs.ResumeLayout())
-                     End Sub)
+                                                           For index As Integer = 0 To LogsToBeDisplayed.Count - 1 Step intBatchSize
+                                                               Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
+                                                               Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                                           Next
 
-            If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
-                LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
-            Else
-                LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
-            End If
-        End If
+                                                           Invoke(Sub()
+                                                                      Logs.ResumeLayout()
 
-        If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
+                                                                      If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+                                                                          LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+                                                                      Else
+                                                                          LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
+                                                                      End If
+                                                                  End Sub)
+                                                       End SyncLock
+                                                   End Sub)
+        ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
             Threading.ThreadPool.QueueUserWorkItem(Sub() LoadData(strFileToLoad))
         End If
 
@@ -456,7 +458,9 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        IgnoredLogsAndSearchResultsInstance = Nothing
+        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+            IgnoredLogsAndSearchResultsInstance = Nothing
+        End SyncLock
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
