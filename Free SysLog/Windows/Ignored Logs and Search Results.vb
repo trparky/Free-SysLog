@@ -187,6 +187,12 @@ Public Class IgnoredLogsAndSearchResults
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
             Logs.SuspendLayout()
 
+            If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+                LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+            Else
+                LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
+            End If
+
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
                                                            LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
@@ -196,15 +202,7 @@ Public Class IgnoredLogsAndSearchResults
                                                                Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
                                                            Next
 
-                                                           Invoke(Sub()
-                                                                      Logs.ResumeLayout()
-
-                                                                      If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
-                                                                          LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
-                                                                      Else
-                                                                          LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
-                                                                      End If
-                                                                  End Sub)
+                                                           Invoke(Sub() Logs.ResumeLayout())
                                                        End SyncLock
                                                    End Sub)
         ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
