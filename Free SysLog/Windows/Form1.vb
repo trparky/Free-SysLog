@@ -241,6 +241,7 @@ Public Class Form1
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
+        LimitNumberOfIgnoredLogs.Visible = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
         ChkEnableAutoScroll.Checked = My.Settings.autoScroll
@@ -1041,6 +1042,7 @@ Public Class Form1
 
     Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles ChkEnableRecordingOfIgnoredLogs.Click
         My.Settings.recordIgnoredLogs = ChkEnableRecordingOfIgnoredLogs.Checked
+        LimitNumberOfIgnoredLogs.Visible = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
         longNumberOfIgnoredLogs = 0
