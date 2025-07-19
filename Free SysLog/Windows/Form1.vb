@@ -1018,7 +1018,12 @@ Public Class Form1
 
                 longNumberOfIgnoredLogs = 0
                 ClearIgnoredLogsToolStripMenuItem.Enabled = False
-                LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+
+                If My.Settings.recordIgnoredLogs Then
+                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {IgnoredLogs.Count:N0}"
+                Else
+                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                End If
             End SyncLock
         End If
     End Sub
