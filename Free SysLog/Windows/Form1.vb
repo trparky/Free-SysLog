@@ -402,6 +402,7 @@ Public Class Form1
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
         ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds or {FormatSecondsToReadableTime(My.Settings.TimeBetweenSameNotifications)})"
+        LimitNumberOfIgnoredLogs.Text = $"Limit Number of Ignored Logs ({My.Settings.LimitNumberOfIgnoredLogs:N0})"
 
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
@@ -1895,6 +1896,22 @@ Public Class Form1
                                               End Sub
 
         worker.RunWorkerAsync()
+    End Sub
+
+    Private Sub LimitNumberOfIgnoredLogs_Click(sender As Object, e As EventArgs) Handles LimitNumberOfIgnoredLogs.Click
+        Using IntegerInputForm As New IntegerInputForm(1, 2000) With {.Icon = Icon, .Text = "Limit Number of Ignored Logs", .StartPosition = FormStartPosition.CenterParent}
+            IntegerInputForm.lblSetting.Text = "Limit Number of Ignored Logs"
+            IntegerInputForm.TxtSetting.Text = My.Settings.LimitNumberOfIgnoredLogs
+
+            IntegerInputForm.ShowDialog(Me)
+
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
+                My.Settings.LimitNumberOfIgnoredLogs = IntegerInputForm.intResult
+                LimitNumberOfIgnoredLogs.Text = $"Limit Number of Ignored Logs ({My.Settings.LimitNumberOfIgnoredLogs:N0})"
+
+                MsgBox("Done.", MsgBoxStyle.Information, Text)
+            End If
+        End Using
     End Sub
 
 #Region "-- SysLog Server Code --"

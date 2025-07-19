@@ -433,7 +433,13 @@ Namespace SyslogParser
                                                                               dataGrid:=ParentForm.Logs
                                                                              )
                     NewIgnoredItem.IgnoredPattern = strIgnoredPattern
-                    ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+
+                    If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                        ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                    Else
+                        ParentForm.IgnoredLogs.RemoveAt(0)
+                        ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                    End If
 
                     SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
                         If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)
