@@ -12,6 +12,7 @@ Public Class IgnoredLogsAndSearchResults
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
     Public MainProgramForm As Form1
+    Private logsLockObject As New Object
 
     Public boolLoadExternalData As Boolean = False
     Public strFileToLoad As String
@@ -215,15 +216,17 @@ Public Class IgnoredLogsAndSearchResults
     Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
         Invoke(Sub()
                    Try
-                       If parentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
-                           Logs.Rows.Add(ItemToAdd)
-                       Else
-                           While parentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                               Logs.Rows.RemoveAt(0)
-                           End While
+                       SyncLock logsLockObject
+                           If parentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                               Logs.Rows.Add(ItemToAdd)
+                           Else
+                               While parentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                                   Logs.Rows.RemoveAt(0)
+                               End While
 
-                           Logs.Rows.Add(ItemToAdd)
-                       End If
+                               Logs.Rows.Add(ItemToAdd)
+                           End If
+                       End SyncLock
 
                        If BoolAutoScroll Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                        LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
