@@ -219,10 +219,10 @@ Public Class IgnoredLogsAndSearchResults
         Invoke(Sub()
                    Try
                        SyncLock logsLockObject
-                           If parentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                           If Logs.Rows.Count < My.Settings.LimitNumberOfIgnoredLogs Then
                                Logs.Rows.Add(ItemToAdd)
                            Else
-                               While parentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                               While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
                                    Logs.Rows.RemoveAt(0)
                                End While
 
