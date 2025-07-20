@@ -109,7 +109,7 @@ Public Class ViewLogBackups
                                                        .Cells(0).Value = file.Name
                                                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                                                       .Cells(1).Value = $"{file.CreationTime.ToLongDateString} {file.CreationTime.ToLongTimeString}"
+                                                       .Cells(1).Value = $"{file.LastWriteTime.ToLongDateString} {file.LastWriteTime.ToLongTimeString}"
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(2).Value = FileSizeToHumanSize(file.Length)

@@ -91,7 +91,7 @@ Partial Class ViewLogBackups
         '
         'ColFileDate
         '
-        Me.ColFileDate.HeaderText = "Creation Date"
+        Me.ColFileDate.HeaderText = "Modified Date"
         Me.ColFileDate.Name = "ColFileDate"
         Me.ColFileDate.ReadOnly = True
         Me.ColFileDate.Width = 240
