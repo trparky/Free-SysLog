@@ -365,7 +365,12 @@ Namespace SyslogParser
                                               If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
                                                   ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
                                               End If
-                                              ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+
+                                              If My.Settings.recordIgnoredLogs Then
+                                                  ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
+                                              Else
+                                                  ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+                                              End If
                                           End Sub)
                         Return True
                     End If
