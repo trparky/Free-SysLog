@@ -191,6 +191,7 @@ Public Class IgnoredLogsAndSearchResults
             Logs.SuspendLayout()
 
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+                ColAlerts.Visible = False
                 LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
             Else
                 LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
