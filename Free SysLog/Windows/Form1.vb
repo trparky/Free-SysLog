@@ -16,6 +16,7 @@ Public Class Form1
     Private boolDoneLoading As Boolean = False
     Public longNumberOfIgnoredLogs As Long = 0
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
+    Public IgnoredLogsLockingObject As New Object
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
@@ -1012,7 +1013,9 @@ Public Class Form1
                     item.Dispose()
                 Next
 
-                IgnoredLogs.Clear()
+                SyncLock IgnoredLogsLockingObject
+                    IgnoredLogs.Clear()
+                End SyncLock
 
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
@@ -1048,7 +1051,10 @@ Public Class Form1
         longNumberOfIgnoredLogs = 0
 
         If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
-            IgnoredLogs.Clear()
+            SyncLock IgnoredLogsLockingObject
+                IgnoredLogs.Clear()
+            End SyncLock
+
             LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         End If
     End Sub
