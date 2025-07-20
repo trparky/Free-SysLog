@@ -442,7 +442,10 @@ Namespace SyslogParser
                     If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
                         ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                     Else
-                        ParentForm.IgnoredLogs.RemoveAt(0)
+                        While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                            ParentForm.IgnoredLogs.RemoveAt(0)
+                        End While
+
                         ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                     End If
 

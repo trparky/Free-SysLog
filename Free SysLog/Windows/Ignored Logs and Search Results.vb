@@ -218,7 +218,10 @@ Public Class IgnoredLogsAndSearchResults
                        If parentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
                            Logs.Rows.Add(ItemToAdd)
                        Else
-                           Logs.Rows.RemoveAt(0)
+                           While parentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                               Logs.Rows.RemoveAt(0)
+                           End While
+
                            Logs.Rows.Add(ItemToAdd)
                        End If
 
