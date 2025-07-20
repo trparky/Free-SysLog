@@ -185,6 +185,8 @@ Public Class IgnoredLogsAndSearchResults
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
+        ChkAutoScroll.Visible = _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
+
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
             Logs.SuspendLayout()
 
@@ -213,7 +215,7 @@ Public Class IgnoredLogsAndSearchResults
         boolDoneLoading = True
     End Sub
 
-    Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
+    Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow)
         Invoke(Sub()
                    Try
                        SyncLock logsLockObject
@@ -228,7 +230,7 @@ Public Class IgnoredLogsAndSearchResults
                            End If
                        End SyncLock
 
-                       If BoolAutoScroll Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                       If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                        LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
                    Catch ex As Exception
                    End Try

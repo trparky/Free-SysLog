@@ -61,6 +61,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.ViewIgnoredLogPatternToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkAutoScroll = New System.Windows.Forms.CheckBox()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenLogForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
@@ -341,11 +342,23 @@ Partial Class IgnoredLogsAndSearchResults
         Me.OpenLogForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
         Me.OpenLogForViewingToolStripMenuItem.Text = "Open Log for Viewing"
         '
+        'ChkAutoScroll
+        '
+        Me.ChkAutoScroll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkAutoScroll.AutoSize = True
+        Me.ChkAutoScroll.Location = New System.Drawing.Point(1251, 381)
+        Me.ChkAutoScroll.Name = "ChkAutoScroll"
+        Me.ChkAutoScroll.Size = New System.Drawing.Size(77, 17)
+        Me.ChkAutoScroll.TabIndex = 31
+        Me.ChkAutoScroll.Text = "Auto Scroll"
+        Me.ChkAutoScroll.UseVisualStyleBackColor = True
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1563, 425)
+        Me.Controls.Add(Me.ChkAutoScroll)
         Me.Controls.Add(Me.LoadingProgressBar)
         Me.Controls.Add(Me.ChkColLogsAutoFill)
         Me.Controls.Add(Me.BtnViewMainWindow)
@@ -401,4 +414,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents LoadingProgressBar As ProgressBar
     Friend WithEvents ViewIgnoredLogPatternToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogForViewingToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChkAutoScroll As CheckBox
 End Class

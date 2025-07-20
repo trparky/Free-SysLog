@@ -452,7 +452,7 @@ Namespace SyslogParser
                     End SyncLock
 
                     SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-                        If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem, ParentForm.ChkEnableAutoScroll.Checked)
+                        If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)
                     End SyncLock
 
                     ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
