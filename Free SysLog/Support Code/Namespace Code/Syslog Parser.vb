@@ -360,18 +360,7 @@ Namespace SyslogParser
                 For Each ignoredClassInstance As IgnoredClass In ignoredList
                     If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
                         strIgnoredPattern = ignoredClassInstance.StrIgnore
-                        ParentForm.Invoke(Sub()
-                                              Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs)
-                                              If Not ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
-                                                  ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                                              End If
-
-                                              If My.Settings.recordIgnoredLogs Then
-                                                  ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
-                                              Else
-                                                  ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
-                                              End If
-                                          End Sub)
+                        ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
                         Return True
                     End If
                 Next
@@ -448,6 +437,13 @@ Namespace SyslogParser
                             End While
 
                             ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                        End If
+
+                        If My.Settings.recordIgnoredLogs Then
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
+                        Else
+                            ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
                         End If
                     End SyncLock
 
