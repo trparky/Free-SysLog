@@ -62,6 +62,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.ViewIgnoredLogPatternToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkAutoScroll = New System.Windows.Forms.CheckBox()
+        Me.ChkKeepIgnoredLogsPastUserLimit = New System.Windows.Forms.CheckBox()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenLogForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
@@ -353,11 +354,23 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ChkAutoScroll.Text = "Auto Scroll"
         Me.ChkAutoScroll.UseVisualStyleBackColor = True
         '
+        'ChkKeepIgnoredLogsPastUserLimit
+        '
+        Me.ChkKeepIgnoredLogsPastUserLimit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkKeepIgnoredLogsPastUserLimit.AutoSize = True
+        Me.ChkKeepIgnoredLogsPastUserLimit.Location = New System.Drawing.Point(1037, 381)
+        Me.ChkKeepIgnoredLogsPastUserLimit.Name = "ChkKeepIgnoredLogsPastUserLimit"
+        Me.ChkKeepIgnoredLogsPastUserLimit.Size = New System.Drawing.Size(208, 17)
+        Me.ChkKeepIgnoredLogsPastUserLimit.TabIndex = 32
+        Me.ChkKeepIgnoredLogsPastUserLimit.Text = "Keep Ignored Logs Past User-Set Limit"
+        Me.ChkKeepIgnoredLogsPastUserLimit.UseVisualStyleBackColor = True
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1563, 425)
+        Me.Controls.Add(Me.ChkKeepIgnoredLogsPastUserLimit)
         Me.Controls.Add(Me.ChkAutoScroll)
         Me.Controls.Add(Me.LoadingProgressBar)
         Me.Controls.Add(Me.ChkColLogsAutoFill)
@@ -415,4 +428,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents ViewIgnoredLogPatternToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogForViewingToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChkAutoScroll As CheckBox
+    Friend WithEvents ChkKeepIgnoredLogsPastUserLimit As CheckBox
 End Class

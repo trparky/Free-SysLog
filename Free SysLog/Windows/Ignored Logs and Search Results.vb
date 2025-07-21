@@ -186,6 +186,7 @@ Public Class IgnoredLogsAndSearchResults
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
         ChkAutoScroll.Visible = _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
+        ChkKeepIgnoredLogsPastUserLimit.Visible = _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
 
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
             Logs.SuspendLayout()
@@ -220,19 +221,23 @@ Public Class IgnoredLogsAndSearchResults
         Invoke(Sub()
                    Try
                        SyncLock logsLockObject
-                           If Logs.Rows.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                           If ChkKeepIgnoredLogsPastUserLimit.Checked Then
                                Logs.Rows.Add(ItemToAdd)
                            Else
-                               While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                                   Logs.Rows.RemoveAt(0)
-                               End While
+                               If Logs.Rows.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                                   Logs.Rows.Add(ItemToAdd)
+                               Else
+                                   While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                                       Logs.Rows.RemoveAt(0)
+                                   End While
 
-                               Logs.Rows.Add(ItemToAdd)
+                                   Logs.Rows.Add(ItemToAdd)
+                               End If
                            End If
                        End SyncLock
 
                        If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
-                       LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+                       LblCount.Text = $"Number of ignored logs: {Logs.Rows.Count:N0}"
                    Catch ex As Exception
                    End Try
                End Sub)
