@@ -603,4 +603,14 @@ Public Class IgnoredLogsAndSearchResults
             MainProgramForm.ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
         End If
     End Sub
+
+    Private Sub ChkKeepIgnoredLogsPastUserLimit_Click(sender As Object, e As EventArgs) Handles ChkKeepIgnoredLogsPastUserLimit.Click
+        If Not ChkKeepIgnoredLogsPastUserLimit.Checked AndAlso Logs.Rows.Count > My.Settings.LimitNumberOfIgnoredLogs Then
+            SyncLock logsLockObject
+                While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                    Logs.Rows.RemoveAt(0)
+                End While
+            End SyncLock
+        End If
+    End Sub
 End Class
