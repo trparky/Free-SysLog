@@ -60,7 +60,11 @@ Partial Class IgnoredLogsAndSearchResults
         Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
+        Me.ViewIgnoredLogPatternToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkAutoScroll = New System.Windows.Forms.CheckBox()
+        Me.ChkKeepIgnoredLogsPastUserLimit = New System.Windows.Forms.CheckBox()
         Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenLogForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
@@ -200,9 +204,9 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LogsContextMenu
         '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem})
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.OpenLogForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
         Me.LogsContextMenu.Name = "LogsContextMenu"
-        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 92)
+        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 158)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -327,11 +331,47 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LoadingProgressBar.TabIndex = 30
         Me.LoadingProgressBar.Visible = False
         '
+        'ViewIgnoredLogPatternToolStripMenuItem
+        '
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Name = "ViewIgnoredLogPatternToolStripMenuItem"
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Text = "View Ignored Log Pattern"
+        '
+        'OpenLogForViewingToolStripMenuItem
+        '
+        Me.OpenLogForViewingToolStripMenuItem.Name = "OpenLogForViewingToolStripMenuItem"
+        Me.OpenLogForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.OpenLogForViewingToolStripMenuItem.Text = "Open Log for Viewing"
+        '
+        'ChkAutoScroll
+        '
+        Me.ChkAutoScroll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkAutoScroll.AutoSize = True
+        Me.ChkAutoScroll.Location = New System.Drawing.Point(1251, 381)
+        Me.ChkAutoScroll.Name = "ChkAutoScroll"
+        Me.ChkAutoScroll.Size = New System.Drawing.Size(77, 17)
+        Me.ChkAutoScroll.TabIndex = 31
+        Me.ChkAutoScroll.Text = "Auto Scroll"
+        Me.ChkAutoScroll.UseVisualStyleBackColor = True
+        '
+        'ChkKeepIgnoredLogsPastUserLimit
+        '
+        Me.ChkKeepIgnoredLogsPastUserLimit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ChkKeepIgnoredLogsPastUserLimit.AutoSize = True
+        Me.ChkKeepIgnoredLogsPastUserLimit.Location = New System.Drawing.Point(1037, 381)
+        Me.ChkKeepIgnoredLogsPastUserLimit.Name = "ChkKeepIgnoredLogsPastUserLimit"
+        Me.ChkKeepIgnoredLogsPastUserLimit.Size = New System.Drawing.Size(208, 17)
+        Me.ChkKeepIgnoredLogsPastUserLimit.TabIndex = 32
+        Me.ChkKeepIgnoredLogsPastUserLimit.Text = "Keep Ignored Logs Past User-Set Limit"
+        Me.ChkKeepIgnoredLogsPastUserLimit.UseVisualStyleBackColor = True
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1563, 425)
+        Me.Controls.Add(Me.ChkKeepIgnoredLogsPastUserLimit)
+        Me.Controls.Add(Me.ChkAutoScroll)
         Me.Controls.Add(Me.LoadingProgressBar)
         Me.Controls.Add(Me.ChkColLogsAutoFill)
         Me.Controls.Add(Me.BtnViewMainWindow)
@@ -385,4 +425,8 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents LogsLoadedInLabel As ToolStripStatusLabel
     Friend WithEvents ChkColLogsAutoFill As CheckBox
     Friend WithEvents LoadingProgressBar As ProgressBar
+    Friend WithEvents ViewIgnoredLogPatternToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OpenLogForViewingToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChkAutoScroll As CheckBox
+    Friend WithEvents ChkKeepIgnoredLogsPastUserLimit As CheckBox
 End Class

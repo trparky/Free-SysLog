@@ -10,6 +10,7 @@ Public Class ConfigureSysLogMirrorClients
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         BtnCancel.Visible = False
         Location = SupportCode.VerifyWindowLocation(My.Settings.syslogProxyLocation, Me)
+        Location = VerifyWindowLocation(My.Settings.syslogProxyLocation, Me)
         If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
             Dim SysLogProxyServer As SysLogProxyServer
 
@@ -180,7 +181,7 @@ Public Class ConfigureSysLogMirrorClients
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer, Newtonsoft.Json.Formatting.Indented))
 
-            MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
+            If MsgBox($"Data exported successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(saveFileDialog.FileName)
         End If
     End Sub
 

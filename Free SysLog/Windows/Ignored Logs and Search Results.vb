@@ -12,6 +12,7 @@ Public Class IgnoredLogsAndSearchResults
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
     Public MainProgramForm As Form1
+    Private logsLockObject As New Object
 
     Public boolLoadExternalData As Boolean = False
     Public strFileToLoad As String
@@ -134,6 +135,7 @@ Public Class IgnoredLogsAndSearchResults
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
             BtnClearIgnoredLogs.Visible = True
             BtnViewMainWindow.Visible = True
+            ChkColLogsAutoFill.Location = New Point(135, 382)
         ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer Then
             BtnExport.Visible = False
             BtnViewMainWindow.Visible = True
@@ -143,6 +145,7 @@ Public Class IgnoredLogsAndSearchResults
             ChkRegExSearch.Visible = True
             ChkCaseInsensitiveSearch.Visible = True
             BtnSearch.Visible = True
+            ViewIgnoredLogPatternToolStripMenuItem.Visible = False
         End If
 
         If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
@@ -182,39 +185,61 @@ Public Class IgnoredLogsAndSearchResults
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
-        If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
-            LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+        ChkAutoScroll.Visible = _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
+        ChkKeepIgnoredLogsPastUserLimit.Visible = _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
 
+        If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
             Logs.SuspendLayout()
 
-            Task.Run(Sub()
-                         For index As Integer = 0 To LogsToBeDisplayed.Count - 1 Step intBatchSize
-                             Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
-                             Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
-                         Next
-
-                         Logs.Invoke(Sub() Logs.ResumeLayout())
-                     End Sub)
-
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
+                ColAlerts.Visible = False
                 LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
             Else
                 LblCount.Text = $"Number of search results: {LogsToBeDisplayed.Count:N0}"
             End If
-        End If
 
-        If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
+            Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                       SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+                                                           LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+
+                                                           For index As Integer = 0 To LogsToBeDisplayed.Count - 1 Step intBatchSize
+                                                               Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(index).Take(intBatchSize).ToArray()
+                                                               Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                                           Next
+
+                                                           Invoke(Sub() Logs.ResumeLayout())
+                                                       End SyncLock
+                                                   End Sub)
+        ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
             Threading.ThreadPool.QueueUserWorkItem(Sub() LoadData(strFileToLoad))
         End If
 
         boolDoneLoading = True
     End Sub
 
-    Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow, BoolAutoScroll As Boolean)
+    Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow)
         Invoke(Sub()
-                   Logs.Rows.Add(ItemToAdd)
-                   If BoolAutoScroll Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
-                   LblCount.Text = $"Number of ignored logs: {LogsToBeDisplayed.Count:N0}"
+                   Try
+                       SyncLock logsLockObject
+                           If ChkKeepIgnoredLogsPastUserLimit.Checked Then
+                               Logs.Rows.Add(ItemToAdd)
+                           Else
+                               If Logs.Rows.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                                   Logs.Rows.Add(ItemToAdd)
+                               Else
+                                   While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                                       Logs.Rows.RemoveAt(0)
+                                   End While
+
+                                   Logs.Rows.Add(ItemToAdd)
+                               End If
+                           End If
+                       End SyncLock
+
+                       If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
+                       LblCount.Text = $"Number of ignored logs: {Logs.Rows.Count:N0}"
+                   Catch ex As Exception
+                   End Try
                End Sub)
     End Sub
 
@@ -454,7 +479,9 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        IgnoredLogsAndSearchResultsInstance = Nothing
+        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+            IgnoredLogsAndSearchResultsInstance = Nothing
+        End SyncLock
     End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
@@ -516,9 +543,22 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub OpenLogFileForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogFileForViewingToolStripMenuItem.Click
-        Dim logFileViewer As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.viewer) With {.MainProgramForm = MainProgramForm, .Icon = Icon, .Text = "Log File Viewer", .strFileToLoad = Path.Combine(strPathToDataBackupFolder, Logs.SelectedRows(0).Cells(ColumnIndex_FileName).Value), .boolLoadExternalData = True}
-        logFileViewer.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
-        logFileViewer.Show(Me)
+        If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
+            Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
+
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
+
+                If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
+                    LogViewerInstance.txtAlertText.Text = selectedRow.AlertText
+                End If
+
+                LogViewerInstance.ShowDialog(Me)
+            End Using
+        End If
     End Sub
 
     Private Sub TxtSearchTerms_KeyDown(sender As Object, e As KeyEventArgs) Handles TxtSearchTerms.KeyDown
@@ -532,6 +572,28 @@ Public Class IgnoredLogsAndSearchResults
         DataHandling.ExportSelectedLogs(Logs.SelectedRows)
     End Sub
 
+    Private Sub ViewIgnoredLogPatternToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogPatternToolStripMenuItem.Click
+        If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strIgnoredPattern As String = selectedRow.IgnoredPattern
+
+            Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                IgnoredWordsAndPhrasesOrAlertsInstance.strIgnoredPattern = strIgnoredPattern
+                IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
+
+                If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
+                    SyncLock IgnoredRegexCache
+                        IgnoredRegexCache.Clear()
+                    End SyncLock
+                End If
+            End Using
+        End If
+    End Sub
+
+    Private Sub OpenLogForViewingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenLogForViewingToolStripMenuItem.Click
+        OpenLogViewerWindow()
+    End Sub
+
     Private Sub ChkColLogsAutoFill_Click(sender As Object, e As EventArgs) Handles ChkColLogsAutoFill.Click
         My.Settings.colLogAutoFill = ChkColLogsAutoFill.Checked
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
@@ -539,6 +601,16 @@ Public Class IgnoredLogsAndSearchResults
         If MainProgramForm IsNot Nothing Then
             MainProgramForm.ColLogsAutoFill.Checked = ChkColLogsAutoFill.Checked
             MainProgramForm.ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+        End If
+    End Sub
+
+    Private Sub ChkKeepIgnoredLogsPastUserLimit_Click(sender As Object, e As EventArgs) Handles ChkKeepIgnoredLogsPastUserLimit.Click
+        If Not ChkKeepIgnoredLogsPastUserLimit.Checked AndAlso Logs.Rows.Count > My.Settings.LimitNumberOfIgnoredLogs Then
+            SyncLock logsLockObject
+                While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                    Logs.Rows.RemoveAt(0)
+                End While
+            End SyncLock
         End If
     End Sub
 End Class

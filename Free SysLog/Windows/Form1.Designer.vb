@@ -26,6 +26,7 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.BtnOpenLogLocation = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LimitNumberOfIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnOpenLogForViewing = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearLog = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlertsHistory = New System.Windows.Forms.ToolStripMenuItem()
@@ -169,6 +170,13 @@ Partial Class Form1
         Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
         Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
         Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
+        '
+        'LimitNumberOfIgnoredLogs
+        '
+        Me.LimitNumberOfIgnoredLogs.Name = "LimitNumberOfIgnoredLogs"
+        Me.LimitNumberOfIgnoredLogs.Size = New System.Drawing.Size(239, 22)
+        Me.LimitNumberOfIgnoredLogs.Text = "Limit Number of Ignored Logs"
+        Me.LimitNumberOfIgnoredLogs.ToolTipText = "Limits the number of ignored logs that stored in system RAM by the program."
         '
         'BtnOpenLogLocation
         '
@@ -405,7 +413,7 @@ Partial Class Form1
         '
         'LogFunctionsToolStripMenuItem
         '
-        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AlertsHistory, Me.BtnClearLog, Me.ClearNotificationLimits, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ViewLogBackups, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
+        Me.LogFunctionsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AlertsHistory, Me.BtnClearLog, Me.ClearNotificationLimits, Me.ExportAllLogsToolStripMenuItem, Me.IgnoredLogsToolStripMenuItem, Me.LimitNumberOfIgnoredLogs, Me.BtnOpenLogLocation, Me.BtnOpenLogForViewing, Me.BtnSaveLogsToDisk, Me.ViewLogBackups, Me.ZerooutIgnoredLogsCounterToolStripMenuItem})
         Me.LogFunctionsToolStripMenuItem.Name = "LogFunctionsToolStripMenuItem"
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
@@ -874,9 +882,9 @@ Partial Class Form1
         '
         Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LoadingProgressBar.Location = New System.Drawing.Point(977, 28)
+        Me.LoadingProgressBar.Location = New System.Drawing.Point(954, 28)
         Me.LoadingProgressBar.Name = "LoadingProgressBar"
-        Me.LoadingProgressBar.Size = New System.Drawing.Size(186, 23)
+        Me.LoadingProgressBar.Size = New System.Drawing.Size(209, 23)
         Me.LoadingProgressBar.TabIndex = 19
         Me.LoadingProgressBar.Visible = False
         '
@@ -903,9 +911,10 @@ Partial Class Form1
         '
         'btnShowLimit
         '
+        Me.btnShowLimit.Enabled = False
         Me.btnShowLimit.Location = New System.Drawing.Point(909, 27)
         Me.btnShowLimit.Name = "btnShowLimit"
-        Me.btnShowLimit.Size = New System.Drawing.Size(62, 23)
+        Me.btnShowLimit.Size = New System.Drawing.Size(39, 23)
         Me.btnShowLimit.TabIndex = 45
         Me.btnShowLimit.Text = "Limit"
         Me.btnShowLimit.UseVisualStyleBackColor = True
@@ -918,7 +927,7 @@ Partial Class Form1
         Me.boxLimiter.Location = New System.Drawing.Point(595, 29)
         Me.boxLimiter.Name = "boxLimiter"
         Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
-        Me.boxLimiter.Text = "(Not Specified)"
+        Me.boxLimiter.Sorted = True
         Me.boxLimiter.TabIndex = 44
         '
         'boxLimitBy
@@ -966,6 +975,7 @@ Partial Class Form1
 
     End Sub
     Friend WithEvents BtnOpenLogLocation As ToolStripMenuItem
+    Friend WithEvents LimitNumberOfIgnoredLogs As ToolStripMenuItem
     Friend WithEvents BtnOpenLogForViewing As ToolStripMenuItem
     Friend WithEvents SaveFileDialog As SaveFileDialog
     Friend WithEvents StatusStrip As StatusStrip

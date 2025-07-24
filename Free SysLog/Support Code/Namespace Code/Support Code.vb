@@ -3,6 +3,7 @@ Imports System.Net.Sockets
 Imports System.Text
 Imports System.Net.NetworkInformation
 Imports Microsoft.Toolkit.Uwp.Notifications
+Imports System.Text.RegularExpressions
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -23,9 +24,27 @@ Namespace SupportCode
             hostNames = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
             ipAddresses = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
         End Sub
+
+        Public Sub Clear()
+            logTypes.Clear()
+            processes.Clear()
+            hostNames.Clear()
+            ipAddresses.Clear()
+        End Sub
+
+        Public Sub Merge(other As uniqueObjectsClass)
+            If other Is Nothing Then Exit Sub
+
+            logTypes.UnionWith(other.logTypes)
+            processes.UnionWith(other.processes)
+            hostNames.UnionWith(other.hostNames)
+            ipAddresses.UnionWith(other.ipAddresses)
+        End Sub
     End Class
 
     Module SupportCode
+        Public ParentForm As Form1
+
         Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
         Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
         Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
@@ -68,6 +87,8 @@ Namespace SupportCode
 
         Public allUniqueObjects As uniqueObjectsClass
         Public recentUniqueObjects As uniqueObjectsClass
+        Public ReadOnly recentUniqueObjectsLock As New Object()
+        Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
 
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True
@@ -87,6 +108,64 @@ Namespace SupportCode
             Catch ex As Exception
                 Return New Specialized.StringCollection
             End Try
+        End Function
+
+        Public Function GetProcessUsingPort(port As Integer, protocolType As ProtocolType) As Process
+            Dim startInfo As New ProcessStartInfo() With {
+                .FileName = "netstat",
+                .UseShellExecute = False,
+                .RedirectStandardOutput = True,
+                .CreateNoWindow = True
+            }
+
+            Dim strOutput, strLocalAddress, strPID, strPort, strProtocolType As String
+            Dim strArrayParts As String()
+            Dim intPID As Integer
+
+            If protocolType = ProtocolType.Tcp Then
+                startInfo.Arguments = "-ano -p tcp"
+                strProtocolType = "TCP"
+            Else
+                startInfo.Arguments = "-ano -p udp"
+                strProtocolType = "UDP"
+            End If
+
+            Using proc As Process = Process.Start(startInfo)
+                strOutput = proc.StandardOutput.ReadToEnd()
+                proc.WaitForExit()
+            End Using
+
+            Dim strArrayLines As String() = strOutput.Split({Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
+
+            For Each strLine As String In strArrayLines
+                strLine = strLine.Trim()
+
+                If strLine.StartsWith(strProtocolType, StringComparison.OrdinalIgnoreCase) Then
+                    ' Normalize spaces, then split
+                    strArrayParts = Regex.Split(strLine, "\s+")
+
+                    If strArrayParts.Length >= 4 Then
+                        strLocalAddress = strArrayParts(1)
+                        strPID = strArrayParts(3)
+
+                        ' Match port
+                        strPort = ":" & port.ToString()
+
+                        If strLocalAddress.EndsWith(strPort) Then
+                            If Integer.TryParse(strPID, intPID) Then
+                                Try
+                                    Return Process.GetProcessById(intPID)
+                                Catch ex As Exception
+                                    ' Process may have exited
+                                    Return Nothing
+                                End Try
+                            End If
+                        End If
+                    End If
+                End If
+            Next
+
+            Return Nothing
         End Function
 
         Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)

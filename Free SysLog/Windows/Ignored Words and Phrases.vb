@@ -4,6 +4,7 @@ Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
+    Public strIgnoredPattern As String = Nothing
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Any(Function(item As MyIgnoredListViewItem)
@@ -79,6 +80,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
         BtnCancel.Visible = False
+        btnDeleteDuringEditing.Visible = False
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
 
@@ -98,6 +100,19 @@ Public Class IgnoredWordsAndPhrases
         Size = My.Settings.ConfigureIgnoredSize
 
         boolDoneLoading = True
+
+        If Not String.IsNullOrWhiteSpace(strIgnoredPattern) AndAlso CheckForExistingItem(strIgnoredPattern) Then
+            For Each item As ListViewItem In IgnoredListView.Items
+                If item.SubItems(0).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
+                    item.Selected = True
+                    btnDeleteDuringEditing.Visible = True
+                    IgnoredListView.Refresh()
+                    'IgnoredListView_Click(Nothing, Nothing)
+                    EditItem()
+                    Exit For
+                End If
+            Next
+        End If
     End Sub
 
     Private Sub IgnoredListView_KeyUp(sender As Object, e As KeyEventArgs) Handles IgnoredListView.KeyUp
@@ -238,7 +253,7 @@ Public Class IgnoredWordsAndPhrases
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
 
-            MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
+            If MsgBox($"Data exported successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(saveFileDialog.FileName)
         End If
     End Sub
 
@@ -328,5 +343,18 @@ Public Class IgnoredWordsAndPhrases
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
+    End Sub
+
+    Private Sub btnDeleteDuringEditing_Click(sender As Object, e As EventArgs) Handles btnDeleteDuringEditing.Click
+        IgnoredListView.SelectedItems(0).Remove()
+        IgnoredListView.Enabled = True
+        BtnAdd.Text = "Add"
+        Label4.Text = "Add Ignored Words and Phrases"
+        boolEditMode = False
+        boolChanged = True
+        TxtIgnored.Text = Nothing
+        ChkCaseSensitive.Checked = False
+        ChkRegex.Checked = False
+        ChkEnabled.Checked = True
     End Sub
 End Class

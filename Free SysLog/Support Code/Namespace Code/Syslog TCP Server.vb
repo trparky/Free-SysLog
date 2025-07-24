@@ -1,6 +1,7 @@
 ﻿Imports System.Net
 Imports System.Net.Sockets
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 
@@ -35,7 +36,14 @@ Namespace SyslogTcpServer
                     Await HandleClientAsync(tcpClient)
                 End While
             Catch ex As Exception
-                _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
+                Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Tcp)
+
+                If process Is Nothing Then
+                    _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
+                Else
+                    Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+                    _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}{vbCrLf}{vbCrLf}{strLogText}", IPAddress.Loopback.ToString)
+                End If
             End Try
         End Function
 

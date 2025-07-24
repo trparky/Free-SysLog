@@ -16,6 +16,7 @@ Public Class Form1
     Private boolDoneLoading As Boolean = False
     Public longNumberOfIgnoredLogs As Long = 0
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
+    Public IgnoredLogsLockingObject As New Object
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
@@ -70,6 +71,10 @@ Public Class Form1
             UpdateLogCount()
             SelectLatestLogEntry()
             BtnSaveLogsToDisk.Enabled = True
+
+            SyncLock recentUniqueObjectsLock
+                recentUniqueObjects.Clear()
+            End SyncLock
 
             NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
         End SyncLock
@@ -180,7 +185,10 @@ Public Class Form1
                 My.Settings.boolMaximized = WindowState = FormWindowState.Maximized
             End If
 
-            If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
+            SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+                If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.BtnViewMainWindow.Enabled = WindowState = FormWindowState.Minimized
+            End SyncLock
+
             If MinimizeToClockTray.Checked Then ShowInTaskbar = WindowState <> FormWindowState.Minimized
 
             Logs.Invalidate()
@@ -234,6 +242,7 @@ Public Class Form1
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
         ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
         ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
+        LimitNumberOfIgnoredLogs.Visible = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
         ChkEnableAutoScroll.Checked = My.Settings.autoScroll
@@ -326,6 +335,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub boxLimiter_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimiter.SelectedValueChanged
+        btnShowLimit.Enabled = Not String.IsNullOrWhiteSpace(boxLimiter.Text)
+    End Sub
+
     Private Sub BoxLimitBy_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimitBy.SelectedValueChanged
         boxLimiter.Text = Nothing
         boxLimiter.Items.Clear()
@@ -334,30 +347,32 @@ Public Class Form1
 
         Dim sortedList As List(Of String)
 
-        If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.logTypes.ToList()
-            sortedList.Sort()
+        SyncLock recentUniqueObjectsLock
+            If boxLimitBy.Text.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.logTypes.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.processes.ToList()
-            sortedList.Sort()
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.processes.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.hostNames.ToList()
-            sortedList.Sort()
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.hostNames.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-            sortedList = recentUniqueObjects.ipAddresses.ToList()
-            sortedList.Sort()
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            ElseIf boxLimitBy.Text.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                sortedList = recentUniqueObjects.ipAddresses.ToList()
+                sortedList.Sort()
 
-            boxLimiter.Items.AddRange(sortedList.ToArray)
-        Else
-            boxLimiter.Text = "(Not Specified)"
-            boxLimiter.Enabled = False
-        End If
+                boxLimiter.Items.AddRange(sortedList.ToArray)
+            Else
+                boxLimiter.Text = "(Not Specified)"
+                boxLimiter.Enabled = False
+            End If
+        End SyncLock
     End Sub
 
     Private Function FormatSecondsToReadableTime(input As Integer) As String
@@ -380,9 +395,7 @@ Public Class Form1
     End Function
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        SyslogParser.SetParentForm = Me
-        DataHandling.SetParentForm = Me
-        TaskHandling.SetParentForm = Me
+        SupportCode.ParentForm = Me
 
         TaskHandling.ConvertRegistryRunCommandToTask()
 
@@ -391,6 +404,7 @@ Public Class Form1
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
         ConfigureTimeBetweenSameNotifications.Text = $"Configure Time Between Same Notifications ({My.Settings.TimeBetweenSameNotifications} Seconds or {FormatSecondsToReadableTime(My.Settings.TimeBetweenSameNotifications)})"
+        LimitNumberOfIgnoredLogs.Text = $"Limit Number of Ignored Logs ({My.Settings.LimitNumberOfIgnoredLogs:N0})"
 
         ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
         ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
@@ -489,10 +503,10 @@ Public Class Form1
     End Sub
 
     Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
-        If My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                                                           Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
-                                                                                           checkForUpdatesClassObject.CheckForUpdates(False)
-                                                                                       End Sub)
+        If Not boolDebugBuild AndAlso My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                                                                      Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                                                                                      checkForUpdatesClassObject.CheckForUpdates(False)
+                                                                                                                  End Sub)
 
         If boolDoWeOwnTheMutex Then
             serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
@@ -505,7 +519,19 @@ Public Class Form1
 
             boolServerRunning = True
         Else
-            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
+
+            If process Is Nothing Then
+                MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            Else
+                Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+
+                SyncLock dataGridLockObject
+                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                End SyncLock
+
+                MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            End If
         End If
     End Sub
 
@@ -826,7 +852,7 @@ Public Class Form1
         End If
 
         Try
-            Mutex.ReleaseMutex()
+            mutex.ReleaseMutex()
         Catch ex As ApplicationException
         End Try
 
@@ -968,27 +994,42 @@ Public Class Form1
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
-        If IgnoredLogsAndSearchResultsInstance Is Nothing Then
-            IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
-            IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
-            IgnoredLogsAndSearchResultsInstance.Show()
-        Else
-            IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
-            IgnoredLogsAndSearchResultsInstance.BringToFront()
-        End If
+        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+            If IgnoredLogsAndSearchResultsInstance Is Nothing Then
+                IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
+                IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+                IgnoredLogsAndSearchResultsInstance.Show()
+            Else
+                IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
+                IgnoredLogsAndSearchResultsInstance.BringToFront()
+            End If
+        End SyncLock
     End Sub
 
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
-        If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then ClearIgnoredLogs()
-    End Sub
+        If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+            SyncLock IgnoredLogsLockObject
+                For Each item As MyDataGridViewRow In IgnoredLogs
+                    item.Dispose()
+                Next
 
-    Public Sub ClearIgnoredLogs()
-        SyncLock IgnoredLogsLockObject
-            IgnoredLogs.Clear()
-            longNumberOfIgnoredLogs = 0
-            ClearIgnoredLogsToolStripMenuItem.Enabled = False
-            LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
-        End SyncLock
+                SyncLock IgnoredLogsLockingObject
+                    IgnoredLogs.Clear()
+                End SyncLock
+
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
+
+                longNumberOfIgnoredLogs = 0
+                ClearIgnoredLogsToolStripMenuItem.Enabled = False
+
+                If My.Settings.recordIgnoredLogs Then
+                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {IgnoredLogs.Count:N0}"
+                Else
+                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                End If
+            End SyncLock
+        End If
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)
@@ -1004,11 +1045,16 @@ Public Class Form1
 
     Private Sub ChkRecordIgnoredLogs_Click(sender As Object, e As EventArgs) Handles ChkEnableRecordingOfIgnoredLogs.Click
         My.Settings.recordIgnoredLogs = ChkEnableRecordingOfIgnoredLogs.Checked
+        LimitNumberOfIgnoredLogs.Visible = My.Settings.recordIgnoredLogs
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
+        longNumberOfIgnoredLogs = 0
 
         If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
-            IgnoredLogs.Clear()
+            SyncLock IgnoredLogsLockingObject
+                IgnoredLogs.Clear()
+            End SyncLock
+
             LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         End If
     End Sub
@@ -1099,7 +1145,7 @@ Public Class Form1
 
     Private Sub ExportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportToolStripMenuItem.Click
         Using SaveFileDialog As New SaveFileDialog()
-            SaveFileDialog.Title = "Safe Program Settings..."
+            SaveFileDialog.Title = "Save Program Settings..."
             SaveFileDialog.Filter = "JSON File|*.json"
 
             If SaveFileDialog.ShowDialog() = DialogResult.OK Then
@@ -1127,7 +1173,7 @@ Public Class Form1
                 Process.Start(strEXEPath)
 
                 Try
-                    Mutex.ReleaseMutex()
+                    mutex.ReleaseMutex()
                 Catch ex As ApplicationException
                 End Try
 
@@ -1865,6 +1911,22 @@ Public Class Form1
         worker.RunWorkerAsync()
     End Sub
 
+    Private Sub LimitNumberOfIgnoredLogs_Click(sender As Object, e As EventArgs) Handles LimitNumberOfIgnoredLogs.Click
+        Using IntegerInputForm As New IntegerInputForm(1, 2000) With {.Icon = Icon, .Text = "Limit Number of Ignored Logs", .StartPosition = FormStartPosition.CenterParent}
+            IntegerInputForm.lblSetting.Text = "Limit Number of Ignored Logs"
+            IntegerInputForm.TxtSetting.Text = My.Settings.LimitNumberOfIgnoredLogs
+
+            IntegerInputForm.ShowDialog(Me)
+
+            If IntegerInputForm.DialogResult = DialogResult.OK Then
+                My.Settings.LimitNumberOfIgnoredLogs = IntegerInputForm.intResult
+                LimitNumberOfIgnoredLogs.Text = $"Limit Number of Ignored Logs ({My.Settings.LimitNumberOfIgnoredLogs:N0})"
+
+                MsgBox("Done.", MsgBoxStyle.Information, Text)
+            End If
+        End Using
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -1928,13 +1990,22 @@ Public Class Form1
             ' Does nothing
         Catch e As Exception
             Invoke(Sub()
-                       SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
-                           SelectLatestLogEntry()
-                           UpdateLogCount()
-                       End SyncLock
+                       Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
 
-                       MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       If process Is Nothing Then
+                           MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       Else
+                           Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+
+                           SyncLock dataGridLockObject
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                               SelectLatestLogEntry()
+                               UpdateLogCount()
+                           End SyncLock
+
+                           MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       End If
                    End Sub)
         End Try
     End Sub
