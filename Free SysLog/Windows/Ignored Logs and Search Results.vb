@@ -413,9 +413,9 @@ Public Class IgnoredLogsAndSearchResults
                     listOfLogEntries.Add(item.MakeDataGridRow(Logs))
                 Next
 
-                Logs.Invoke(Sub()
-                                listOfLogEntries.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+                listOfLogEntries.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
 
+                Logs.Invoke(Sub()
                                 Logs.SuspendLayout()
                                 Logs.Rows.Clear()
 
@@ -424,23 +424,29 @@ Public Class IgnoredLogsAndSearchResults
                                     LoadingProgressBar.Value = 0 ' Start progress at 0
                                     LoadingProgressBar.Visible = True
                                 End If
+                            End Sub)
 
-                                If listOfLogEntries.Count > 1000 Then
-                                    Dim index, progress As Integer
+                If listOfLogEntries.Count > 1000 Then
+                    Dim index, progress As Integer
+                    Dim batch As MyDataGridViewRow()
 
-                                    For index = 0 To listOfLogEntries.Count - 1 Step intBatchSize
-                                        Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                    For index = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                        batch = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+
+                        Logs.Invoke(Sub()
                                         Logs.Rows.AddRange(batch)
 
                                         progress = (index + intBatchSize) / listOfLogEntries.Count * 100
 
                                         ' Update the progress bar value, ensuring it's within the valid range
                                         LoadingProgressBar.Value = Math.Min(progress, LoadingProgressBar.Maximum)
-                                    Next
-                                Else
-                                    Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                                End If
+                                    End Sub)
+                    Next
+                Else
+                    Logs.Invoke(Sub() Logs.Rows.AddRange(listOfLogEntries.ToArray))
+                End If
 
+                Logs.Invoke(Sub()
                                 Logs.ResumeLayout()
                                 LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
                                 SortLogsByDateObject(0, SortOrder.Ascending)
