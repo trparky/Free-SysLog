@@ -416,7 +416,6 @@ Public Class IgnoredLogsAndSearchResults
                 listOfLogEntries.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
 
                 Logs.Invoke(Sub()
-                                Logs.SuspendLayout()
                                 Logs.Rows.Clear()
 
                                 If listOfLogEntries.Count > 1000 Then
@@ -447,9 +446,7 @@ Public Class IgnoredLogsAndSearchResults
                 End If
 
                 Logs.Invoke(Sub()
-                                Logs.ResumeLayout()
                                 LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
-                                SortLogsByDateObject(0, SortOrder.Ascending)
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                 LoadingProgressBar.Visible = False
