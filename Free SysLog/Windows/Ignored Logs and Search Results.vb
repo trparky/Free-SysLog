@@ -425,41 +425,29 @@ Public Class IgnoredLogsAndSearchResults
                                     LoadingProgressBar.Visible = True
                                 End If
 
-                                Dim BackgroundWorker As New BackgroundWorker()
+                                If listOfLogEntries.Count > 1000 Then
+                                    Dim index, progress As Integer
 
-                                AddHandler BackgroundWorker.RunWorkerCompleted, Sub()
-                                                                                    If listOfLogEntries.Count > 1000 Then
-                                                                                        Dim index, progress As Integer
+                                    For index = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                                        Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                        Logs.Rows.AddRange(batch)
 
-                                                                                        For index = 0 To listOfLogEntries.Count - 1 Step intBatchSize
-                                                                                            Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
-                                                                                            Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                        progress = (index + intBatchSize) / listOfLogEntries.Count * 100
 
-                                                                                            LoadingProgressBar.Invoke(Sub()
-                                                                                                                          progress = (index + intBatchSize) / listOfLogEntries.Count * 100
-                                                                                                                          ' Update the progress bar value, ensuring it's within the valid range
-                                                                                                                          LoadingProgressBar.Value = Math.Min(progress, LoadingProgressBar.Maximum)
-                                                                                                                      End Sub)
-                                                                                        Next
-                                                                                    Else
-                                                                                        Logs.Invoke(Sub() Logs.Rows.AddRange(listOfLogEntries.ToArray)) ' Invoke needed for UI updates
-                                                                                    End If
-                                                                                End Sub
+                                        ' Update the progress bar value, ensuring it's within the valid range
+                                        LoadingProgressBar.Value = Math.Min(progress, LoadingProgressBar.Maximum)
+                                    Next
+                                Else
+                                    Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                                End If
 
-                                AddHandler BackgroundWorker.RunWorkerCompleted, Sub()
-                                                                                    Logs.Invoke(Sub()
-                                                                                                    Logs.ResumeLayout()
-                                                                                                    LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
-                                                                                                    SortLogsByDateObject(0, SortOrder.Ascending)
-                                                                                                    LogsLoadedInLabel.Visible = True
-                                                                                                    LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
-                                                                                                    LoadingProgressBar.Visible = False
-                                                                                                    boolDoneLoading = True
-                                                                                                End Sub)
-                                                                                End Sub
-
-                                ' Start the background work
-                                BackgroundWorker.RunWorkerAsync()
+                                Logs.ResumeLayout()
+                                LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
+                                SortLogsByDateObject(0, SortOrder.Ascending)
+                                LogsLoadedInLabel.Visible = True
+                                LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                LoadingProgressBar.Visible = False
+                                boolDoneLoading = True
                             End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
