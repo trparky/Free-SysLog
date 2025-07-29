@@ -407,49 +407,27 @@ Public Class IgnoredLogsAndSearchResults
             End Using
 
             If collectionOfSavedData.Any() Then
-                Dim listOfLogEntries As New List(Of MyDataGridViewRow)
-
-                For Each item As SavedData In collectionOfSavedData
-                    listOfLogEntries.Add(item.MakeDataGridRow(Logs))
-                Next
-
-                listOfLogEntries.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
+                collectionOfSavedData.Sort(Function(x As SavedData, y As SavedData) x.DateObject.CompareTo(y.DateObject))
 
                 Logs.Invoke(Sub()
                                 Logs.Rows.Clear()
-
-                                If listOfLogEntries.Count > 1000 Then
-                                    LoadingProgressBar.Minimum = 0
-                                    LoadingProgressBar.Value = 0 ' Start progress at 0
-                                    LoadingProgressBar.Visible = True
-                                End If
+                                LblCount.Text = $"Number of logs: {collectionOfSavedData.Count:N0}"
                             End Sub)
 
-                If listOfLogEntries.Count > 1000 Then
-                    Dim index, progress As Integer
-                    Dim batch As MyDataGridViewRow()
+                Dim index As Integer = 0
 
-                    For index = 0 To listOfLogEntries.Count - 1 Step intBatchSize
-                        batch = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                Dim parallelOptions As New ParallelOptions()
+                parallelOptions.MaxDegreeOfParallelism = 4
 
-                        Logs.Invoke(Sub()
-                                        Logs.Rows.AddRange(batch)
-
-                                        progress = (index + intBatchSize) / listOfLogEntries.Count * 100
-
-                                        ' Update the progress bar value, ensuring it's within the valid range
-                                        LoadingProgressBar.Value = Math.Min(progress, LoadingProgressBar.Maximum)
-                                    End Sub)
-                    Next
-                Else
-                    Logs.Invoke(Sub() Logs.Rows.AddRange(listOfLogEntries.ToArray))
-                End If
+                Parallel.ForEach(collectionOfSavedData, parallelOptions, Sub(item As SavedData)
+                                                                             SyncLock dataGridLockObject
+                                                                                 Logs.Invoke(Sub() Logs.Rows.Add(item.MakeDataGridRow(Logs)))
+                                                                             End SyncLock
+                                                                         End Sub)
 
                 Logs.Invoke(Sub()
-                                LblCount.Text = $"Number of logs: {Logs.Rows.Count:N0}"
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
-                                LoadingProgressBar.Visible = False
                                 boolDoneLoading = True
                             End Sub)
             End If
