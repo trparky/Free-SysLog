@@ -3,7 +3,6 @@ Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
 Imports System.ComponentModel
 Imports System.Threading
-Imports Windows.AI.MachineLearning
 
 Namespace SyslogParser
     Public Module SyslogParser
