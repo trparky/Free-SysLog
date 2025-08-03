@@ -363,8 +363,8 @@ Namespace SyslogParser
                     For Each ignoredClassInstance As IgnoredClass In ignoredList
                         strRegexPattern = ignoredClassInstance.StrIgnore
 
-                        If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
-                            strIgnoredPattern = ignoredClassInstance.StrIgnore
+                        If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, strRegexPattern, $".*{Regex.Escape(strRegexPattern)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
+                            strIgnoredPattern = strRegexPattern
                             ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
                             Return True
                         End If
