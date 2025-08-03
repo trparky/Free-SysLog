@@ -357,17 +357,26 @@ Namespace SyslogParser
         End Sub
 
         Private Function ProcessIgnoredLogPreferences(message As String, ByRef strIgnoredPattern As String) As Boolean
-            SyncLock IgnoredRegexCache
-                For Each ignoredClassInstance As IgnoredClass In ignoredList
-                    If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
-                        strIgnoredPattern = ignoredClassInstance.StrIgnore
-                        ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
-                        Return True
-                    End If
-                Next
-            End SyncLock
+            Dim strRegexPattern As String = Nothing
 
-            Return False
+            Try
+                SyncLock IgnoredRegexCache
+                    For Each ignoredClassInstance As IgnoredClass In ignoredList
+                        strRegexPattern = ignoredClassInstance.StrIgnore
+
+                        If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
+                            strIgnoredPattern = ignoredClassInstance.StrIgnore
+                            ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                            Return True
+                        End If
+                    Next
+                End SyncLock
+
+                Return False
+            Catch ex As Exception
+                AddToLogList(Nothing, $"{strQuote}{strRegexPattern}{strQuote} failed to be processed.")
+                Return False
+            End Try
         End Function
 
         Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String)
