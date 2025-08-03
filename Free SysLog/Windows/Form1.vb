@@ -1482,10 +1482,16 @@ Public Class Form1
     End Sub
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
-        Using Ignored As New IgnoredWordsAndPhrases With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            Ignored.TxtIgnored.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            Ignored.ShowDialog(Me)
-        End Using
+        If Logs.SelectedRows.Count > 0 Then
+            Using Ignored As New IgnoredWordsAndPhrases With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+
+                If myItem IsNot Nothing Then
+                    Ignored.TxtIgnored.Text = myItem.RawLogData
+                    Ignored.ShowDialog(Me)
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
