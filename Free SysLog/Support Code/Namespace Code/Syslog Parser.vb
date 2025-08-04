@@ -360,7 +360,6 @@ Namespace SyslogParser
             Dim strRegexPattern As String = Nothing
             Dim matchFound As Boolean = False
             Dim _strIgnoredPattern As String = Nothing
-            Dim stopWatch As Stopwatch = Stopwatch.StartNew()
             Dim parallelOptions As New ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
 
             Try
@@ -397,7 +396,6 @@ Namespace SyslogParser
                 End SyncLock
 
                 If matchFound Then strIgnoredPattern = _strIgnoredPattern
-                Debug.WriteLine($"ProcessIgnoredLogPreferences took {stopWatch.ElapsedMilliseconds} ms to complete for message: {message}")
                 Return matchFound
             Catch ex As Exception
                 AddToLogList(Nothing, $"{strQuote}{strRegexPattern}{strQuote} failed to be processed.")
