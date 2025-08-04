@@ -219,8 +219,7 @@ Public Class IgnoredLogsAndSearchResults
                                                            Dim numBatches As Integer = Math.Ceiling(totalLogs / intBatchSize)
 
                                                            ' Create ParallelOptions to control the degree of parallelism
-                                                           Dim parallelOptions As New ParallelOptions()
-                                                           parallelOptions.MaxDegreeOfParallelism = 4 ' Max 4 concurrent threads (adjust as needed)
+                                                           Dim parallelOptions As New ParallelOptions() With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
 
                                                            ' Parallel loop to process batches
                                                            Parallel.For(0, numBatches, parallelOptions, Sub(batchIndex As Integer)
@@ -449,8 +448,7 @@ Public Class IgnoredLogsAndSearchResults
                 Dim index As Integer = 0
 
                 ' Create ParallelOptions to control the degree of parallelism
-                Dim parallelOptions As New ParallelOptions()
-                parallelOptions.MaxDegreeOfParallelism = 4
+                Dim parallelOptions As New ParallelOptions() With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
 
                 ' Dynamically calculate the batch size based on total logs
                 Dim totalLogs As Integer = collectionOfSavedData.Count
