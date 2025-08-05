@@ -377,7 +377,7 @@ Namespace SyslogParser
                                                                                strRegexPattern = ignoredClassInstance.StrIgnore
 
                                                                                ' Build the correct regex pattern based on the BoolRegex flag
-                                                                               Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, $".*{Regex.Escape(strRegexPattern).Replace("\ ", " ")}.*")
+                                                                               Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, Regex.Escape(strRegexPattern).Replace("\ ", " "))
 
                                                                                ' Get the cached regex or create it as needed
                                                                                Dim myRegExPattern As Regex = GetCachedRegex(IgnoredRegexCache, regexPattern, ignoredClassInstance.BoolCaseSensitive)
