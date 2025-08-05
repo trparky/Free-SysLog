@@ -357,7 +357,7 @@ Namespace SyslogParser
         End Sub
 
         Private Function ProcessIgnoredLogPreferences(message As String, ByRef strIgnoredPattern As String) As Boolean
-            Dim strRegexPattern As String = Nothing
+            Dim strFailedPattern As String = Nothing
             Dim matchFound As Boolean = False
             Dim _strIgnoredPattern As String = Nothing
             Dim parallelOptions As New ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
@@ -372,9 +372,10 @@ Namespace SyslogParser
                         Dim lockObj As New Object()
 
                         ' Parallel loop to check each pattern concurrently
-                        Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass)
+                        Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
                                                                            If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                               strRegexPattern = ignoredClassInstance.StrIgnore
+                                                                               Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
+                                                                               strFailedPattern = strRegexPattern
 
                                                                                ' Build the correct regex pattern based on the BoolRegex flag
                                                                                Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, Regex.Escape(strRegexPattern).Replace("\ ", " "))
@@ -389,6 +390,7 @@ Namespace SyslogParser
                                                                                        If Not matchFound Then
                                                                                            _strIgnoredPattern = strRegexPattern
                                                                                            matchFound = True
+                                                                                           state.Stop()
                                                                                            ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
                                                                                        End If
                                                                                    End SyncLock
@@ -400,7 +402,7 @@ Namespace SyslogParser
                     If matchFound Then strIgnoredPattern = _strIgnoredPattern
                     Return matchFound
                 Catch ex As Exception
-                    AddToLogList(Nothing, $"{strQuote}{strRegexPattern}{strQuote} failed to be processed.")
+                    AddToLogList(Nothing, $"{strQuote}{strFailedPattern}{strQuote} failed to be processed.")
                     Return False
                 End Try
             End SyncLock
