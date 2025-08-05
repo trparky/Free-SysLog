@@ -221,6 +221,12 @@
     </Compile>
     <Compile Include="Support Code\MyDataGridViewRow.vb" />
     <Compile Include="Support Code\Namespace Code\NativeMethod.vb" />
+    <Compile Include="Windows\OpenExplorer.Designer.vb">
+      <DependentUpon>OpenExplorer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\OpenExplorer.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Replacements.Designer.vb">
       <DependentUpon>Replacements.vb</DependentUpon>
     </Compile>
@@ -288,6 +294,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\OpenExplorer.resx">
+      <DependentUpon>OpenExplorer.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Replacements.resx">
       <DependentUpon>Replacements.vb</DependentUpon>

@@ -65,8 +65,21 @@ Namespace DataHandling
                         End If
                     End Using
 
-                    If MsgBox($"Data exported to ""{saveFileDialog.FileName}"" successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, ParentForm.Text) = MsgBoxResult.Yes Then
-                        SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                    If My.Settings.AskOpenExplorer Then
+                        Using OpenExplorer As New OpenExplorer()
+                            OpenExplorer.StartPosition = FormStartPosition.CenterParent
+                            OpenExplorer.MyParentForm = ParentForm
+
+                            Dim result As DialogResult = OpenExplorer.ShowDialog(ParentForm)
+
+                            If result = DialogResult.No Then
+                                Exit Sub
+                            ElseIf result = DialogResult.Yes Then
+                                SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                            End If
+                        End Using
+                    Else
+                        MsgBox("Data exported successfully.", MsgBoxStyle.Information, ParentForm.Text)
                     End If
                 End If
             End SyncLock
@@ -133,8 +146,21 @@ Namespace DataHandling
                         End If
                     End Using
 
-                    If MsgBox($"Data exported to ""{saveFileDialog.FileName}"" successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, ParentForm.Text) = MsgBoxResult.Yes Then
-                        SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                    If My.Settings.AskOpenExplorer Then
+                        Using OpenExplorer As New OpenExplorer()
+                            OpenExplorer.StartPosition = FormStartPosition.CenterParent
+                            OpenExplorer.MyParentForm = ParentForm
+
+                            Dim result As DialogResult = OpenExplorer.ShowDialog(ParentForm)
+
+                            If result = DialogResult.No Then
+                                Exit Sub
+                            ElseIf result = DialogResult.Yes Then
+                                SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                            End If
+                        End Using
+                    Else
+                        MsgBox("Data exported successfully.", MsgBoxStyle.Information, ParentForm.Text)
                     End If
                 End If
             End SyncLock
