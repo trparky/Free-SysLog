@@ -62,19 +62,21 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If boolChanged Then
-            ignoredList.Clear()
+            SyncLock ignoredList
+                ignoredList.Clear()
 
-            Dim ignoredClass As IgnoredClass
-            Dim tempIgnored As New Specialized.StringCollection()
+                Dim ignoredClass As IgnoredClass
+                Dim tempIgnored As New Specialized.StringCollection()
 
-            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
-                If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
-                tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-            Next
+                For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
+                    If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
+                    tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+                Next
 
-            My.Settings.ignored2 = tempIgnored
-            My.Settings.Save()
+                My.Settings.ignored2 = tempIgnored
+                My.Settings.Save()
+            End SyncLock
         End If
     End Sub
 

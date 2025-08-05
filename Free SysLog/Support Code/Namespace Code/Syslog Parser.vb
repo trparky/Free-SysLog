@@ -362,45 +362,48 @@ Namespace SyslogParser
             Dim _strIgnoredPattern As String = Nothing
             Dim parallelOptions As New ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
 
-            Try
-                ' Using a SyncLock to protect the shared IgnoredRegexCache and prevent race conditions.
-                SyncLock IgnoredRegexCache
-                    ' Use a thread-safe flag to stop Parallel.ForEach as soon as a match is found.
-                    ' This ensures that only the first match updates the result.
-                    Dim lockObj As New Object()
+            ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
+            SyncLock ignoredList
+                Try
+                    ' Using a SyncLock to protect the shared IgnoredRegexCache and prevent race conditions.
+                    SyncLock IgnoredRegexCache
+                        ' Use a thread-safe flag to stop Parallel.ForEach as soon as a match is found.
+                        ' This ensures that only the first match updates the result.
+                        Dim lockObj As New Object()
 
-                    ' Parallel loop to check each pattern concurrently
-                    Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass)
-                                                                       If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                           strRegexPattern = ignoredClassInstance.StrIgnore
+                        ' Parallel loop to check each pattern concurrently
+                        Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass)
+                                                                           If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
+                                                                               strRegexPattern = ignoredClassInstance.StrIgnore
 
-                                                                           ' Build the correct regex pattern based on the BoolRegex flag
-                                                                           Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, $".*{Regex.Escape(strRegexPattern)}.*")
+                                                                               ' Build the correct regex pattern based on the BoolRegex flag
+                                                                               Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, $".*{Regex.Escape(strRegexPattern)}.*")
 
-                                                                           ' Get the cached regex or create it as needed
-                                                                           Dim myRegExPattern As Regex = GetCachedRegex(IgnoredRegexCache, regexPattern, ignoredClassInstance.BoolCaseSensitive)
+                                                                               ' Get the cached regex or create it as needed
+                                                                               Dim myRegExPattern As Regex = GetCachedRegex(IgnoredRegexCache, regexPattern, ignoredClassInstance.BoolCaseSensitive)
 
-                                                                           ' Check if the message matches the current pattern
-                                                                           If myRegExPattern.IsMatch(message) Then
-                                                                               ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
-                                                                               SyncLock lockObj
-                                                                                   If Not matchFound Then
-                                                                                       _strIgnoredPattern = strRegexPattern
-                                                                                       matchFound = True
-                                                                                       ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
-                                                                                   End If
-                                                                               End SyncLock
+                                                                               ' Check if the message matches the current pattern
+                                                                               If myRegExPattern.IsMatch(message) Then
+                                                                                   ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
+                                                                                   SyncLock lockObj
+                                                                                       If Not matchFound Then
+                                                                                           _strIgnoredPattern = strRegexPattern
+                                                                                           matchFound = True
+                                                                                           ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                       End If
+                                                                                   End SyncLock
+                                                                               End If
                                                                            End If
-                                                                       End If
-                                                                   End Sub)
-                End SyncLock
+                                                                       End Sub)
+                    End SyncLock
 
-                If matchFound Then strIgnoredPattern = _strIgnoredPattern
-                Return matchFound
-            Catch ex As Exception
-                AddToLogList(Nothing, $"{strQuote}{strRegexPattern}{strQuote} failed to be processed.")
-                Return False
-            End Try
+                    If matchFound Then strIgnoredPattern = _strIgnoredPattern
+                    Return matchFound
+                Catch ex As Exception
+                    AddToLogList(Nothing, $"{strQuote}{strRegexPattern}{strQuote} failed to be processed.")
+                    Return False
+                End Try
+            End SyncLock
         End Function
 
         Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String)

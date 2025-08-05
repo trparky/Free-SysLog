@@ -318,13 +318,15 @@ Public Class Form1
             End If
         End If
 
-        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
-            For Each strJSONString As String In My.Settings.ignored2
-                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
-                tempIgnoredClass = Nothing
-            Next
-        End If
+        SyncLock ignoredList
+            If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
+                For Each strJSONString As String In My.Settings.ignored2
+                    tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                    If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
+                    tempIgnoredClass = Nothing
+                Next
+            End If
+        End SyncLock
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
