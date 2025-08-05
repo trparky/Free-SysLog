@@ -377,7 +377,7 @@ Namespace SyslogParser
                                                                                strRegexPattern = ignoredClassInstance.StrIgnore
 
                                                                                ' Build the correct regex pattern based on the BoolRegex flag
-                                                                               Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, $".*{Regex.Escape(strRegexPattern)}.*")
+                                                                               Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, $".*{Regex.Escape(strRegexPattern).Replace("\ ", " ")}.*")
 
                                                                                ' Get the cached regex or create it as needed
                                                                                Dim myRegExPattern As Regex = GetCachedRegex(IgnoredRegexCache, regexPattern, ignoredClassInstance.BoolCaseSensitive)
@@ -502,7 +502,7 @@ Namespace SyslogParser
             SyncLock ReplacementsRegexCache
                 For Each item As ReplacementsClass In replacementsList
                     Try
-                        input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+                        input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " ")), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
                     Catch ex As Exception
                     End Try
                 Next
@@ -524,7 +524,7 @@ Namespace SyslogParser
 
             SyncLock AlertsRegexCache
                 For Each alert As AlertsClass In alertsList
-                    RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
+                    RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText).Replace("\ ", " ")), alert.BoolCaseSensitive)
 
                     If RegExObject.IsMatch(strLogText) Then
                         If alert.alertType = AlertType.Warning Then
