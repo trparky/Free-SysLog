@@ -48,6 +48,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.Label1 = New System.Windows.Forms.Label()
         Me.BtnCancel = New System.Windows.Forms.Button()
         Me.btnDeleteDuringEditing = New System.Windows.Forms.Button()
+        Me.ChkRemoteProcess = New System.Windows.Forms.CheckBox()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -286,11 +287,23 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnDeleteDuringEditing.Text = "Delete"
         Me.btnDeleteDuringEditing.UseVisualStyleBackColor = True
         '
+        'ChkRemoteProcess
+        '
+        Me.ChkRemoteProcess.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkRemoteProcess.AutoSize = True
+        Me.ChkRemoteProcess.Location = New System.Drawing.Point(684, 325)
+        Me.ChkRemoteProcess.Name = "ChkRemoteProcess"
+        Me.ChkRemoteProcess.Size = New System.Drawing.Size(110, 17)
+        Me.ChkRemoteProcess.TabIndex = 47
+        Me.ChkRemoteProcess.Text = "Remote Process?"
+        Me.ChkRemoteProcess.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(799, 378)
+        Me.Controls.Add(Me.ChkRemoteProcess)
         Me.Controls.Add(Me.btnDeleteDuringEditing)
         Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.ChkEnabled)
@@ -344,4 +357,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents Label1 As Label
     Friend WithEvents BtnCancel As Button
     Friend WithEvents btnDeleteDuringEditing As Button
+    Friend WithEvents ChkRemoteProcess As CheckBox
 End Class

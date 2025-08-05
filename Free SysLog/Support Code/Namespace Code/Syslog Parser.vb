@@ -312,9 +312,9 @@ Namespace SyslogParser
                     ' Step 3: Handle the ignored logs and alerts
                     If My.Settings.ProcessReplacementsInSyslogDataFirst Then
                         If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, strIgnoredPattern)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
                     Else
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, strIgnoredPattern)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
                         If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
                     End If
 
@@ -356,7 +356,7 @@ Namespace SyslogParser
             End Try
         End Sub
 
-        Private Function ProcessIgnoredLogPreferences(message As String, ByRef strIgnoredPattern As String) As Boolean
+        Private Function ProcessIgnoredLogPreferences(message As String, remoteProcess As String, ByRef strIgnoredPattern As String) As Boolean
             Dim strFailedPattern As String = Nothing
             Dim matchFound As Boolean = False
             Dim _strIgnoredPattern As String = Nothing
@@ -374,26 +374,43 @@ Namespace SyslogParser
                         ' Parallel loop to check each pattern concurrently
                         Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
                                                                            If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                               Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
-                                                                               strFailedPattern = strRegexPattern
+                                                                               If ignoredClassInstance.StrIgnore.StartsWith("RemoteProcess:", StringComparison.OrdinalIgnoreCase) Then
+                                                                                   If Not String.IsNullOrWhiteSpace(remoteProcess) Then
+                                                                                       Dim strRemoteProcess As String = ignoredClassInstance.StrIgnore.Substring("RemoteProcess:".Length).Trim()
 
-                                                                               ' Build the correct regex pattern based on the BoolRegex flag
-                                                                               Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, Regex.Escape(strRegexPattern).Replace("\ ", " "))
-
-                                                                               ' Get the cached regex or create it as needed
-                                                                               Dim myRegExPattern As Regex = GetCachedRegex(IgnoredRegexCache, regexPattern, ignoredClassInstance.BoolCaseSensitive)
-
-                                                                               ' Check if the message matches the current pattern
-                                                                               If myRegExPattern.IsMatch(message) Then
-                                                                                   ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
-                                                                                   SyncLock lockObj
-                                                                                       If Not matchFound Then
-                                                                                           _strIgnoredPattern = strRegexPattern
-                                                                                           matchFound = True
-                                                                                           state.Stop()
-                                                                                           ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                       If remoteProcess.CaseInsensitiveContains(strRemoteProcess) Then
+                                                                                           SyncLock lockObj
+                                                                                               If Not matchFound Then
+                                                                                                   _strIgnoredPattern = ignoredClassInstance.StrIgnore
+                                                                                                   matchFound = True
+                                                                                                   state.Stop()
+                                                                                                   ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                               End If
+                                                                                           End SyncLock
                                                                                        End If
-                                                                                   End SyncLock
+                                                                                   End If
+                                                                               Else
+                                                                                   Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
+                                                                                   strFailedPattern = strRegexPattern
+
+                                                                                   ' Build the correct regex pattern based on the BoolRegex flag
+                                                                                   Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, Regex.Escape(strRegexPattern).Replace("\ ", " "))
+
+                                                                                   ' Get the cached regex or create it as needed
+                                                                                   Dim myRegExPattern As Regex = GetCachedRegex(IgnoredRegexCache, regexPattern, ignoredClassInstance.BoolCaseSensitive)
+
+                                                                                   ' Check if the message matches the current pattern
+                                                                                   If myRegExPattern.IsMatch(message) Then
+                                                                                       ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
+                                                                                       SyncLock lockObj
+                                                                                           If Not matchFound Then
+                                                                                               _strIgnoredPattern = strRegexPattern
+                                                                                               matchFound = True
+                                                                                               state.Stop()
+                                                                                               ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                           End If
+                                                                                       End SyncLock
+                                                                                   End If
                                                                                End If
                                                                            End If
                                                                        End Sub)

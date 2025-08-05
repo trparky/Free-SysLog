@@ -23,7 +23,7 @@ Public Class IgnoredWordsAndPhrases
                 Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
                 With selectedItemObject
-                    .SubItems(0).Text = TxtIgnored.Text
+                    .SubItems(0).Text = If(chkRemoteProcess.Checked, $"RemoteProcess:{TxtIgnored.Text}", TxtIgnored.Text)
                     .SubItems(1).Text = If(ChkRegex.Checked, "Yes", "No")
                     .SubItems(2).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
                     .SubItems(3).Text = If(ChkEnabled.Checked, "Yes", "No")
@@ -36,7 +36,13 @@ Public Class IgnoredWordsAndPhrases
                 BtnAdd.Text = "Add"
                 Label4.Text = "Add Ignored Words and Phrases"
             Else
-                Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
+                Dim IgnoredListViewItem As MyIgnoredListViewItem
+
+                If chkRemoteProcess.Checked Then
+                    IgnoredListViewItem = New MyIgnoredListViewItem($"RemoteProcess:{TxtIgnored.Text}")
+                Else
+                    IgnoredListViewItem = New MyIgnoredListViewItem(TxtIgnored.Text)
+                End If
 
                 With IgnoredListViewItem
                     .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
@@ -57,6 +63,7 @@ Public Class IgnoredWordsAndPhrases
             ChkCaseSensitive.Checked = False
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
+            chkRemoteProcess.Checked = False
         End If
     End Sub
 
@@ -177,7 +184,8 @@ Public Class IgnoredWordsAndPhrases
 
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
-            TxtIgnored.Text = selectedItemObject.SubItems(0).Text
+            chkRemoteProcess.Checked = selectedItemObject.SubItems(0).Text.StartsWith("RemoteProcess:", StringComparison.OrdinalIgnoreCase)
+            TxtIgnored.Text = If(chkRemoteProcess.Checked, selectedItemObject.SubItems(0).Text.Substring("RemoteProcess:".Length).Trim, selectedItemObject.SubItems(0).Text)
             ChkRegex.Checked = selectedItemObject.BoolRegex
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
@@ -373,5 +381,9 @@ Public Class IgnoredWordsAndPhrases
         ChkCaseSensitive.Checked = False
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
+    End Sub
+
+    Private Sub ChkRemoteProcess_Click(sender As Object, e As EventArgs) Handles ChkRemoteProcess.Click
+        If ChkRemoteProcess.Checked Then ChkRegex.Checked = False
     End Sub
 End Class
