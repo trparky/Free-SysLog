@@ -278,6 +278,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         'btnDeleteDuringEditing
         '
+        Me.btnDeleteDuringEditing.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnDeleteDuringEditing.Location = New System.Drawing.Point(164, 348)
         Me.btnDeleteDuringEditing.Name = "btnDeleteDuringEditing"
         Me.btnDeleteDuringEditing.Size = New System.Drawing.Size(75, 23)
