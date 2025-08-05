@@ -254,7 +254,22 @@ Public Class Replacements
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass, Newtonsoft.Json.Formatting.Indented))
 
-            If MsgBox($"Data exported successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(saveFileDialog.FileName)
+            If My.Settings.AskOpenExplorer Then
+                Using OpenExplorer As New OpenExplorer()
+                    OpenExplorer.StartPosition = FormStartPosition.CenterParent
+                    OpenExplorer.MyParentForm = SupportCode.ParentForm
+
+                    Dim result As DialogResult = OpenExplorer.ShowDialog(SupportCode.ParentForm)
+
+                    If result = DialogResult.No Then
+                        Exit Sub
+                    ElseIf result = DialogResult.Yes Then
+                        SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                    End If
+                End Using
+            Else
+                MsgBox("Data exported successfully.", MsgBoxStyle.Information, SupportCode.ParentForm.Text)
+            End If
         End If
     End Sub
 

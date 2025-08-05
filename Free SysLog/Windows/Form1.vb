@@ -237,6 +237,7 @@ Public Class Form1
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
+        AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer
         ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
@@ -1153,7 +1154,10 @@ Public Class Form1
             If SaveFileDialog.ShowDialog() = DialogResult.OK Then
                 Try
                     SaveAppSettings.SaveApplicationSettingsToFile(SaveFileDialog.FileName)
-                    If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+
+                    If My.Settings.AskOpenExplorer Then
+                        If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+                    End If
                 Catch ex As Exception
                     MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
                 End Try
@@ -1933,6 +1937,10 @@ Public Class Form1
                 MsgBox("Done.", MsgBoxStyle.Information, Text)
             End If
         End Using
+    End Sub
+
+    Private Sub AskToOpenExplorerWhenSavingData_Click(sender As Object, e As EventArgs) Handles AskToOpenExplorerWhenSavingData.Click
+        My.Settings.AskOpenExplorer = AskToOpenExplorerWhenSavingData.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"
