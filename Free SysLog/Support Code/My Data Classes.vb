@@ -118,6 +118,7 @@ Public Class IgnoredClass
     Public BoolCaseSensitive As Boolean
     Public StrIgnore As String
     Public BoolEnabled As Boolean = True
+    Public IgnoreType As IgnoreType = IgnoreType.MainLog
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
@@ -127,6 +128,7 @@ Public Class IgnoredClass
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
+        listViewItem.IgnoreType = IgnoreType
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         Return listViewItem
     End Function

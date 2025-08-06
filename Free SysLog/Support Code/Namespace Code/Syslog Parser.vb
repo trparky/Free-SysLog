@@ -374,9 +374,9 @@ Namespace SyslogParser
                         ' Parallel loop to check each pattern concurrently
                         Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
                                                                            If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                               If ignoredClassInstance.StrIgnore.StartsWith("RemoteProcess:", StringComparison.OrdinalIgnoreCase) Then
+                                                                               If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp Then
                                                                                    If Not String.IsNullOrWhiteSpace(remoteProcess) Then
-                                                                                       Dim strRemoteProcess As String = ignoredClassInstance.StrIgnore.Substring("RemoteProcess:".Length).Trim()
+                                                                                       Dim strRemoteProcess As String = ignoredClassInstance.StrIgnore
 
                                                                                        If remoteProcess.CaseInsensitiveContains(strRemoteProcess) Then
                                                                                            SyncLock lockObj

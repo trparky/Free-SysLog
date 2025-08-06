@@ -23,26 +23,21 @@ Public Class IgnoredWordsAndPhrases
                 Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
                 With selectedItemObject
-                    .SubItems(0).Text = If(chkRemoteProcess.Checked, $"RemoteProcess:{TxtIgnored.Text}", TxtIgnored.Text)
+                    .SubItems(0).Text = TxtIgnored.Text
                     .SubItems(1).Text = If(ChkRegex.Checked, "Yes", "No")
                     .SubItems(2).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
                     .SubItems(3).Text = If(ChkEnabled.Checked, "Yes", "No")
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
+                    .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                 End With
 
                 IgnoredListView.Enabled = True
                 BtnAdd.Text = "Add"
                 Label4.Text = "Add Ignored Words and Phrases"
             Else
-                Dim IgnoredListViewItem As MyIgnoredListViewItem
-
-                If chkRemoteProcess.Checked Then
-                    IgnoredListViewItem = New MyIgnoredListViewItem($"RemoteProcess:{TxtIgnored.Text}")
-                Else
-                    IgnoredListViewItem = New MyIgnoredListViewItem(TxtIgnored.Text)
-                End If
+                Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
 
                 With IgnoredListViewItem
                     .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
@@ -51,6 +46,7 @@ Public Class IgnoredWordsAndPhrases
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
+                    .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 
@@ -76,7 +72,7 @@ Public Class IgnoredWordsAndPhrases
                 Dim tempIgnored As New Specialized.StringCollection()
 
                 For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
+                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType}
                     If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
                     tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
                 Next
@@ -184,8 +180,8 @@ Public Class IgnoredWordsAndPhrases
 
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
-            chkRemoteProcess.Checked = selectedItemObject.SubItems(0).Text.StartsWith("RemoteProcess:", StringComparison.OrdinalIgnoreCase)
-            TxtIgnored.Text = If(chkRemoteProcess.Checked, selectedItemObject.SubItems(0).Text.Substring("RemoteProcess:".Length).Trim, selectedItemObject.SubItems(0).Text)
+            ChkRemoteProcess.Checked = selectedItemObject.IgnoreType <> IgnoreType.MainLog
+            TxtIgnored.Text = selectedItemObject.SubItems(0).Text
             ChkRegex.Checked = selectedItemObject.BoolRegex
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
@@ -258,7 +254,7 @@ Public Class IgnoredWordsAndPhrases
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled})
+                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType})
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))

@@ -22,8 +22,8 @@
 
             Return If(soSortOrder = SortOrder.Ascending, size1.CompareTo(size2), size2.CompareTo(size1))
         ElseIf intColumnNumber = 3 Then
-            Dim entry1 As Long = row1.entryCount
-            Dim entry2 As Long = row2.entryCount
+            Dim entry1 As UInteger = row1.entryCount
+            Dim entry2 As UInteger = row2.entryCount
 
             Return If(soSortOrder = SortOrder.Ascending, entry1.CompareTo(entry2), entry2.CompareTo(entry1))
         Else
