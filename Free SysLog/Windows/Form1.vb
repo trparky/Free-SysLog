@@ -1156,7 +1156,20 @@ Public Class Form1
                     SaveAppSettings.SaveApplicationSettingsToFile(SaveFileDialog.FileName)
 
                     If My.Settings.AskOpenExplorer Then
-                        If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+                        Using OpenExplorer As New OpenExplorer()
+                            OpenExplorer.StartPosition = FormStartPosition.CenterParent
+                            OpenExplorer.MyParentForm = SupportCode.ParentForm
+
+                            Dim result As DialogResult = OpenExplorer.ShowDialog(Me)
+
+                            If result = DialogResult.No Then
+                                Exit Sub
+                            ElseIf result = DialogResult.Yes Then
+                                SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+                            End If
+                        End Using
+                    Else
+                        MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
                     End If
                 Catch ex As Exception
                     MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
