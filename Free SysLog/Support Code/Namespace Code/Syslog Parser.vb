@@ -393,21 +393,26 @@ Namespace SyslogParser
                                                                                    Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
                                                                                    strFailedPattern = strRegexPattern
 
-                                                                                   ' Build the correct regex pattern based on the BoolRegex flag
-                                                                                   Dim regexPattern As String = If(ignoredClassInstance.BoolRegex, strRegexPattern, Regex.Escape(strRegexPattern).Replace("\ ", " "))
+                                                                                   Dim boolDidWeMatch As Boolean = False
 
-                                                                                   ' Get the cached regex or create it as needed
-                                                                                   Dim myRegExPattern As Regex = GetCachedRegex(IgnoredRegexCache, regexPattern, ignoredClassInstance.BoolCaseSensitive)
+                                                                                   If ignoredClassInstance.BoolRegex Then
+                                                                                       boolDidWeMatch = GetCachedRegex(IgnoredRegexCache, ignoredClassInstance.StrIgnore, ignoredClassInstance.BoolCaseSensitive).IsMatch(message)
+                                                                                   Else
+                                                                                       If ignoredClassInstance.BoolCaseSensitive Then
+                                                                                           boolDidWeMatch = message.Contains(strRegexPattern)
+                                                                                       Else
+                                                                                           boolDidWeMatch = message.CaseInsensitiveContains(strRegexPattern)
+                                                                                       End If
+                                                                                   End If
 
-                                                                                   ' Check if the message matches the current pattern
-                                                                                   If myRegExPattern.IsMatch(message) Then
+                                                                                   If boolDidWeMatch Then
                                                                                        ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
                                                                                        SyncLock lockObj
                                                                                            If Not matchFound Then
                                                                                                _strIgnoredPattern = strRegexPattern
                                                                                                matchFound = True
                                                                                                state.Stop()
-                                                                                               ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                               If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
                                                                                            End If
                                                                                        End SyncLock
                                                                                    End If
