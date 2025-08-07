@@ -101,7 +101,7 @@ Partial Class OpenExplorer
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "OpenExplorer"
-        Me.Text = "OpenExplorer"
+        Me.Text = "Open Windows Explorer?"
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
