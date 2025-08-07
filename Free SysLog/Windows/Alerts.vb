@@ -325,9 +325,9 @@ Public Class Alerts
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer()
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent
-                    OpenExplorer.MyParentForm = SupportCode.ParentForm
+                    OpenExplorer.MyParentForm = Me
 
-                    Dim result As DialogResult = OpenExplorer.ShowDialog(SupportCode.ParentForm)
+                    Dim result As DialogResult = OpenExplorer.ShowDialog(Me)
 
                     If result = DialogResult.No Then
                         Exit Sub

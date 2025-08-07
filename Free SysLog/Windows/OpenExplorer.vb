@@ -1,5 +1,5 @@
 ﻿Public Class OpenExplorer
-    Public Property MyParentForm As Form1
+    Public Property MyParentForm As Form
 
     Private Sub OpenExplorer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Media.SystemSounds.Asterisk.Play()
@@ -26,7 +26,6 @@
     End Sub
 
     Private Sub ChkAskEveryTime_Click(sender As Object, e As EventArgs) Handles ChkAskEveryTime.Click
-        My.Settings.AskOpenExplorer = ChkAskEveryTime.Checked
-        If MyParentForm IsNot Nothing Then MyParentForm.AskToOpenExplorerWhenSavingData.Checked = ChkAskEveryTime.Checked
+        SupportCode.AskOpenExplorer = ChkAskEveryTime.Checked
     End Sub
 End Class

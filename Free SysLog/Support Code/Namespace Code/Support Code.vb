@@ -90,6 +90,13 @@ Namespace SupportCode
         Public ReadOnly recentUniqueObjectsLock As New Object()
         Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
 
+        Public WriteOnly Property AskOpenExplorer As Boolean
+            Set(value As Boolean)
+                My.Settings.AskOpenExplorer = value
+                If ParentForm IsNot Nothing Then ParentForm.AskToOpenExplorerWhenSavingData.Checked = value
+            End Set
+        End Property
+
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True
 #Else
