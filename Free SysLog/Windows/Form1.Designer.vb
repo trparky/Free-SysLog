@@ -448,11 +448,9 @@ Partial Class Form1
         '
         'ZerooutIgnoredLogsCounterToolStripMenuItem
         '
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = False
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Name = "ZerooutIgnoredLogsCounterToolStripMenuItem"
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Text = "Zero-out Ignored Logs Counter"
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = False
         '
         'ViewLogBackups
         '
