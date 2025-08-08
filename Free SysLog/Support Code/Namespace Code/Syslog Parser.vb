@@ -446,31 +446,29 @@ Namespace SyslogParser
             End If
 
             If Not boolIgnored Then
-                ParentForm.Invoke(Sub()
-                                      SyncLock ParentForm.dataGridLockObject
-                                          ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
-                                                                                   dateObject:=currentDate,
-                                                                                   strTime:=currentDate.ToString,
-                                                                                   strSourceAddress:=strSourceIP,
-                                                                                   strHostname:=strHostname,
-                                                                                   strRemoteProcess:=strRemoteProcess,
-                                                                                   strLog:=strLogText,
-                                                                                   strLogType:=$"{priority.Severity}, {priority.Facility}",
-                                                                                   boolAlerted:=boolAlerted,
-                                                                                   strRawLogText:=strRawLogText.Trim,
-                                                                                   strAlertText:=strAlertText,
-                                                                                   AlertType:=alertType,
-                                                                                   dataGrid:=ParentForm.Logs)
-                                                                                  )
-                                          If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
-                                      End SyncLock
+                SyncLock ParentForm.dataGridLockObject
+                    ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                             dateObject:=currentDate,
+                                                             strTime:=currentDate.ToString,
+                                                             strSourceAddress:=strSourceIP,
+                                                             strHostname:=strHostname,
+                                                             strRemoteProcess:=strRemoteProcess,
+                                                             strLog:=strLogText,
+                                                             strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                             boolAlerted:=boolAlerted,
+                                                             strRawLogText:=strRawLogText.Trim,
+                                                             strAlertText:=strAlertText,
+                                                             AlertType:=alertType,
+                                                             dataGrid:=ParentForm.Logs)
+                                                            )
+                    If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
+                End SyncLock
 
-                                      ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
-                                      ParentForm.UpdateLogCount()
-                                      ParentForm.BtnSaveLogsToDisk.Enabled = True
+                ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
+                ParentForm.UpdateLogCount()
+                ParentForm.BtnSaveLogsToDisk.Enabled = True
 
-                                      ParentForm.SelectLatestLogEntry()
-                                  End Sub)
+                ParentForm.SelectLatestLogEntry()
             ElseIf boolIgnored Then
                 If ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
                     SyncLock ParentForm.IgnoredLogsLockObject
