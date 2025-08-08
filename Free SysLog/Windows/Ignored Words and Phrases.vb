@@ -31,6 +31,7 @@ Public Class IgnoredWordsAndPhrases
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
+                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
 
                 IgnoredListView.Enabled = True
@@ -48,6 +49,7 @@ Public Class IgnoredWordsAndPhrases
                     .BoolEnabled = ChkEnabled.Checked
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
 
                 IgnoredListView.Items.Add(IgnoredListViewItem)
@@ -210,10 +212,12 @@ Public Class IgnoredWordsAndPhrases
         Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
 
         If selectedItem.BoolEnabled Then
+            selectedItem.BackColor = Color.LightGreen
             selectedItem.BoolEnabled = False
             selectedItem.SubItems(3).Text = "No"
             BtnEnableDisable.Text = "Enable"
         Else
+            selectedItem.BackColor = Color.Pink
             selectedItem.BoolEnabled = True
             selectedItem.SubItems(3).Text = "Yes"
             BtnEnableDisable.Text = "Disable"

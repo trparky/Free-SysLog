@@ -67,6 +67,7 @@ Public Class ReplacementsClass
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+        listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem
     End Function
 End Class
@@ -130,6 +131,7 @@ Public Class IgnoredClass
         listViewItem.BoolEnabled = BoolEnabled
         listViewItem.IgnoreType = IgnoreType
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+        listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem
     End Function
 End Class

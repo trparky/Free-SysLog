@@ -30,6 +30,7 @@ Public Class Replacements
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
+                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
 
                 ReplacementsListView.Enabled = True
@@ -52,6 +53,7 @@ Public Class Replacements
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
 
                 ReplacementsListView.Items.Add(MyReplacementsListViewItem)
@@ -207,10 +209,12 @@ Public Class Replacements
             selectedItem.BoolEnabled = False
             selectedItem.SubItems(4).Text = "No"
             BtnEnableDisable.Text = "Enable"
+            selectedItem.BackColor = Color.LightGreen
         Else
             selectedItem.BoolEnabled = True
             selectedItem.SubItems(4).Text = "Yes"
             BtnEnableDisable.Text = "Disable"
+            selectedItem.BackColor = Color.Pink
         End If
 
         boolChanged = True
