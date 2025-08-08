@@ -237,6 +237,7 @@ Public Class Form1
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
+        SaveIgnoredLogCount.Checked = My.Settings.saveIgnoredLogCount
         AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer
         ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
@@ -449,6 +450,11 @@ Public Class Form1
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
         ColAlerts.Width = My.Settings.columnAlertedSize
+
+        If My.Settings.saveIgnoredLogCount Then
+            longNumberOfIgnoredLogs = My.Settings.ignoredLogCount
+            LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        End If
 
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
@@ -845,6 +851,7 @@ Public Class Form1
             End SyncLock
         End If
 
+        If My.Settings.saveIgnoredLogCount Then My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         DataHandling.WriteLogsToDisk()
@@ -1953,6 +1960,10 @@ Public Class Form1
 
     Private Sub AskToOpenExplorerWhenSavingData_Click(sender As Object, e As EventArgs) Handles AskToOpenExplorerWhenSavingData.Click
         My.Settings.AskOpenExplorer = AskToOpenExplorerWhenSavingData.Checked
+    End Sub
+
+    Private Sub SaveIgnoredLogCount_Click(sender As Object, e As EventArgs) Handles SaveIgnoredLogCount.Click
+        My.Settings.saveIgnoredLogCount = SaveIgnoredLogCount.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

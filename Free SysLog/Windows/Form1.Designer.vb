@@ -111,6 +111,7 @@ Partial Class Form1
         Me.ProcessReplacementsInSyslogDataFirst = New System.Windows.Forms.ToolStripMenuItem()
         Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveIgnoredLogCount = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowServerTimeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowHostnameColumn = New System.Windows.Forms.ToolStripMenuItem()
@@ -461,7 +462,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -872,6 +873,13 @@ Partial Class Form1
         Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(319, 22)
         Me.ShowRawLogOnLogViewer.Text = "Show Raw Log on Log Viewer Window"
         '
+        'SaveIgnoredLogCount
+        '
+        Me.SaveIgnoredLogCount.CheckOnClick = True
+        Me.SaveIgnoredLogCount.Name = "SaveIgnoredLogCount"
+        Me.SaveIgnoredLogCount.Size = New System.Drawing.Size(319, 22)
+        Me.SaveIgnoredLogCount.Text = "Save Ignored Log Count"
+        '
         'CreateIgnoredLogToolStripMenuItem
         '
         Me.CreateIgnoredLogToolStripMenuItem.Name = "CreateIgnoredLogToolStripMenuItem"
@@ -1078,6 +1086,7 @@ Partial Class Form1
     Friend WithEvents ProcessReplacementsInSyslogDataFirst As ToolStripMenuItem
     Friend WithEvents RemoveNumbersFromRemoteApp As ToolStripMenuItem
     Friend WithEvents ShowRawLogOnLogViewer As ToolStripMenuItem
+    Friend WithEvents SaveIgnoredLogCount As ToolStripMenuItem
     Friend WithEvents ChkShowLogTypeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowServerTimeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowHostnameColumn As ToolStripMenuItem
