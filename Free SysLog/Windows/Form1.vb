@@ -320,7 +320,7 @@ Public Class Form1
             End If
         End If
 
-        SyncLock ignoredList
+        SyncLock ignoredListLockingObject
             If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
                 For Each strJSONString As String In My.Settings.ignored2
                     tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)

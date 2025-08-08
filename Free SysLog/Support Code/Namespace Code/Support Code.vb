@@ -53,6 +53,7 @@ Namespace SupportCode
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
         Public replacementsList As New List(Of ReplacementsClass)
         Public ignoredList As New List(Of IgnoredClass)
+        Public ignoredListLockingObject As New Object()
         Public alertsList As New List(Of AlertsClass)
         Public serversList As New List(Of SysLogProxyServer)
         Public hostnames As New Dictionary(Of String, String)(StringComparison.OrdinalIgnoreCase)

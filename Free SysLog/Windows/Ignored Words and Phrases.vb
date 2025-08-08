@@ -67,7 +67,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If boolChanged Then
-            SyncLock ignoredList
+            SyncLock ignoredListLockingObject
                 ignoredList.Clear()
 
                 Dim ignoredClass As IgnoredClass
