@@ -40,6 +40,7 @@ Partial Class Form1
         Me.LblItemsSelected = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblAutoScrollStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDisableAutoScrollUponScrolling = New System.Windows.Forms.ToolStripMenuItem()
         Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
@@ -229,7 +230,7 @@ Partial Class Form1
         '
         'StatusStrip
         '
-        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs})
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs, Me.LblAutoScrollStatus})
         Me.StatusStrip.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip.Name = "StatusStrip"
         Me.StatusStrip.Size = New System.Drawing.Size(1175, 22)
@@ -267,9 +268,16 @@ Partial Class Form1
         '
         'LblNumberOfIgnoredIncomingLogs
         '
+        Me.LblNumberOfIgnoredIncomingLogs.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.LblNumberOfIgnoredIncomingLogs.Name = "LblNumberOfIgnoredIncomingLogs"
         Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
         Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+        '
+        'LblAutoScrollStatus
+        '
+        Me.LblAutoScrollStatus.Name = "LblAutoScrollStatus"
+        Me.LblAutoScrollStatus.Size = New System.Drawing.Size(200, 17)
+        Me.LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
         '
         'AskToOpenExplorerWhenSavingData
         '
@@ -1021,6 +1029,7 @@ Partial Class Form1
     Friend WithEvents BtnSearch As Button
     Friend WithEvents ConfigureIgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
+    Friend WithEvents LblAutoScrollStatus As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClearIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents IgnoredLogsToolStripMenuItem As ToolStripMenuItem

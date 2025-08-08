@@ -451,6 +451,8 @@ Public Class Form1
         ColLog.Width = My.Settings.columnLogSize
         ColAlerts.Width = My.Settings.columnAlertedSize
 
+        LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
+
         If My.Settings.saveIgnoredLogCount Then
             longNumberOfIgnoredLogs = My.Settings.ignoredLogCount
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
@@ -774,6 +776,7 @@ Public Class Form1
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
+        LblAutoScrollStatus.Text = "Auto Scroll Status: Enabled"
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
@@ -1824,6 +1827,7 @@ Public Class Form1
         If ChkDisableAutoScrollUponScrolling.Checked AndAlso Not boolIsProgrammaticScroll AndAlso ChkEnableAutoScroll.Checked AndAlso e.NewValue < e.OldValue Then
             My.Settings.autoScroll = False
             ChkEnableAutoScroll.Checked = False
+            LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
         End If
     End Sub
 
