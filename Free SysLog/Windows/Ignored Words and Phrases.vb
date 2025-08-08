@@ -378,8 +378,4 @@ Public Class IgnoredWordsAndPhrases
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
     End Sub
-
-    Private Sub ChkRemoteProcess_Click(sender As Object, e As EventArgs) Handles ChkRemoteProcess.Click
-        If ChkRemoteProcess.Checked Then ChkRegex.Checked = False
-    End Sub
 End Class

@@ -356,6 +356,18 @@ Namespace SyslogParser
             End Try
         End Sub
 
+        Private Function MatchPattern(strInput As String, strPattern As String, boolUseRegex As Boolean, boolCaseSensitive As Boolean) As Boolean
+            If boolUseRegex Then
+                Return GetCachedRegex(IgnoredRegexCache, strPattern, boolCaseSensitive).IsMatch(strInput)
+            Else
+                If boolCaseSensitive Then
+                    Return strInput.Contains(strPattern)
+                Else
+                    Return strInput.CaseInsensitiveContains(strPattern)
+                End If
+            End If
+        End Function
+
         Private Function ProcessIgnoredLogPreferences(message As String, remoteProcess As String, ByRef strIgnoredPattern As String) As Boolean
             Dim strFailedPattern As String = Nothing
             Dim matchFound As Boolean = False
@@ -374,48 +386,28 @@ Namespace SyslogParser
                         ' Parallel loop to check each pattern concurrently
                         Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
                                                                            If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                               If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp Then
-                                                                                   If Not String.IsNullOrWhiteSpace(remoteProcess) Then
-                                                                                       Dim strRemoteProcess As String = ignoredClassInstance.StrIgnore
+                                                                               Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
+                                                                               strFailedPattern = strRegexPattern
 
-                                                                                       If remoteProcess.CaseInsensitiveContains(strRemoteProcess) Then
-                                                                                           SyncLock lockObj
-                                                                                               If Not matchFound Then
-                                                                                                   _strIgnoredPattern = ignoredClassInstance.StrIgnore
-                                                                                                   matchFound = True
-                                                                                                   state.Stop()
-                                                                                                   ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
-                                                                                               End If
-                                                                                           End SyncLock
-                                                                                       End If
-                                                                                   End If
+                                                                               Dim boolDidWeMatch As Boolean = False
+                                                                               Dim strInput As String
+
+                                                                               If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
+                                                                                   strInput = remoteProcess
                                                                                Else
-                                                                                   Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
-                                                                                   strFailedPattern = strRegexPattern
+                                                                                   strInput = message
+                                                                               End If
 
-                                                                                   Dim boolDidWeMatch As Boolean = False
-
-                                                                                   If ignoredClassInstance.BoolRegex Then
-                                                                                       boolDidWeMatch = GetCachedRegex(IgnoredRegexCache, ignoredClassInstance.StrIgnore, ignoredClassInstance.BoolCaseSensitive).IsMatch(message)
-                                                                                   Else
-                                                                                       If ignoredClassInstance.BoolCaseSensitive Then
-                                                                                           boolDidWeMatch = message.Contains(strRegexPattern)
-                                                                                       Else
-                                                                                           boolDidWeMatch = message.CaseInsensitiveContains(strRegexPattern)
+                                                                               If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
+                                                                                   ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
+                                                                                   SyncLock lockObj
+                                                                                       If Not matchFound Then
+                                                                                           _strIgnoredPattern = strRegexPattern
+                                                                                           matchFound = True
+                                                                                           state.Stop()
+                                                                                           If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
                                                                                        End If
-                                                                                   End If
-
-                                                                                   If boolDidWeMatch Then
-                                                                                       ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
-                                                                                       SyncLock lockObj
-                                                                                           If Not matchFound Then
-                                                                                               _strIgnoredPattern = strRegexPattern
-                                                                                               matchFound = True
-                                                                                               state.Stop()
-                                                                                               If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
-                                                                                           End If
-                                                                                       End SyncLock
-                                                                                   End If
+                                                                                   End SyncLock
                                                                                End If
                                                                            End If
                                                                        End Sub)
