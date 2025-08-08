@@ -49,7 +49,6 @@ Namespace SupportCode
         Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
         Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
 
-        Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
         Public replacementsList As New List(Of ReplacementsClass)
         Public ignoredList As New List(Of IgnoredClass)
@@ -89,6 +88,23 @@ Namespace SupportCode
         Public recentUniqueObjects As uniqueObjectsClass
         Public ReadOnly recentUniqueObjectsLock As New Object()
         Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
+
+
+        Public _boolIsProgrammaticScroll As Boolean = False
+        Private boolIsProgrammaticScrollLockObj As New Object()
+
+        Public Property boolIsProgrammaticScroll As Boolean
+            Set(value As Boolean)
+                SyncLock boolIsProgrammaticScrollLockObj
+                    _boolIsProgrammaticScroll = value
+                End SyncLock
+            End Set
+            Get
+                SyncLock boolIsProgrammaticScrollLockObj
+                    Return _boolIsProgrammaticScroll
+                End SyncLock
+            End Get
+        End Property
 
         Public WriteOnly Property AskOpenExplorer As Boolean
             Set(value As Boolean)
