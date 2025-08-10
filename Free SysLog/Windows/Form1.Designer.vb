@@ -91,6 +91,7 @@ Partial Class Form1
         Me.ColLogsAutoFill = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CopyRawLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CloseMe = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuSeparator = New System.Windows.Forms.ToolStripSeparator()
@@ -762,7 +763,7 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(183, 180)
         '
@@ -771,6 +772,12 @@ Partial Class Form1
         Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
         Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
         Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
+        '
+        'CopyRawLogTextToolStripMenuItem
+        '
+        Me.CopyRawLogTextToolStripMenuItem.Name = "CopyRawLogTextToolStripMenuItem"
+        Me.CopyRawLogTextToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.CopyRawLogTextToolStripMenuItem.Text = "Copy Raw Log Text"
         '
         'OpenLogViewerToolStripMenuItem
         '
@@ -1078,6 +1085,7 @@ Partial Class Form1
     Friend WithEvents ChkEnableConfirmCloseToolStripItem As ToolStripMenuItem
     Friend WithEvents LogsMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CopyRawLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteSimilarLogsToolStripMenuItem As ToolStripMenuItem

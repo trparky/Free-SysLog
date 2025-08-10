@@ -1295,6 +1295,9 @@ Public Class Form1
             CreateReplacementToolStripMenuItem.Visible = True
             CreateIgnoredLogToolStripMenuItem.Visible = True
             DeleteSimilarLogsToolStripMenuItem.Visible = True
+
+            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
         Else
             CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
@@ -1302,6 +1305,7 @@ Public Class Form1
             CreateReplacementToolStripMenuItem.Visible = False
             CreateIgnoredLogToolStripMenuItem.Visible = False
             DeleteSimilarLogsToolStripMenuItem.Visible = False
+            CopyRawLogTextToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1975,6 +1979,13 @@ Public Class Form1
 
     Private Sub SaveIgnoredLogCount_Click(sender As Object, e As EventArgs) Handles SaveIgnoredLogCount.Click
         My.Settings.saveIgnoredLogCount = SaveIgnoredLogCount.Checked
+    End Sub
+
+    Private Sub CopyRawLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyRawLogTextToolStripMenuItem.Click
+        If Logs.SelectedRows().Count <> 0 Then
+            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

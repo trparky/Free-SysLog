@@ -410,10 +410,19 @@ Public Class IgnoredLogsAndSearchResults
             CreateAlertToolStripMenuItem.Visible = False
             OpenLogFileForViewingToolStripMenuItem.Visible = False
         Else
-            ExportSelectedLogsToolStripMenuItem.Visible = False
-            CopyLogTextToolStripMenuItem.Visible = True
-            CreateAlertToolStripMenuItem.Visible = True
-            OpenLogFileForViewingToolStripMenuItem.Visible = True
+            If Logs.SelectedRows().Count > 1 Then
+                Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+                If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
+
+                ExportSelectedLogsToolStripMenuItem.Visible = True
+                CopyLogTextToolStripMenuItem.Visible = False
+                CreateAlertToolStripMenuItem.Visible = False
+                OpenLogFileForViewingToolStripMenuItem.Visible = False
+            Else
+                CopyLogTextToolStripMenuItem.Visible = True
+                CreateAlertToolStripMenuItem.Visible = True
+                OpenLogFileForViewingToolStripMenuItem.Visible = True
+            End If
         End If
     End Sub
 
@@ -650,6 +659,13 @@ Public Class IgnoredLogsAndSearchResults
                     Logs.Rows.RemoveAt(0)
                 End While
             End SyncLock
+        End If
+    End Sub
+
+    Private Sub CopyRawLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyRawLogTextToolStripMenuItem.Click
+        If Logs.SelectedRows().Count <> 0 Then
+            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
         End If
     End Sub
 End Class
