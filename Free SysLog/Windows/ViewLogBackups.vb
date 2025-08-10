@@ -382,7 +382,7 @@ Public Class ViewLogBackups
                                               End If
                                           End If
 
-                                          listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(ColumnIndex_LogText).Value.ToString()).ThenBy(Function(row) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
+                                          listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
                                       Catch ex As ArgumentException
                                           MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
                                       End Try
@@ -639,8 +639,6 @@ Public Class ViewLogBackups
                                           If My.Settings.font IsNot Nothing Then item.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
                                       Next
 
-                                      listOfSearchResults.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
-
                                       For Each item As SavedData In currentLogs
                                           If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
                                               boolDidWeHaveAMatch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
@@ -675,7 +673,7 @@ Public Class ViewLogBackups
                                           End If
                                       End If
 
-                                      listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row) row.Cells(ColumnIndex_LogText).Value.ToString()).ThenBy(Function(row) row.Cells(ColumnIndex_ComputedTime).Value.ToString()).ToList()
+                                      listOfSearchResults2 = listOfSearchResults.Distinct().ToList().OrderBy(Function(row As MyDataGridViewRow) row.DateObject).ToList()
                                   End Sub
 
         AddHandler worker.RunWorkerCompleted, Sub()

@@ -200,8 +200,6 @@ Public Class IgnoredLogsAndSearchResults
 
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-                                                           LogsToBeDisplayed.Sort(Function(x As MyDataGridViewRow, y As MyDataGridViewRow) x.DateObject.CompareTo(y.DateObject))
-
                                                            ' Dynamically calculate the batch size based on total logs
                                                            Dim totalLogs As Integer = LogsToBeDisplayed.Count
                                                            Dim intBatchSize As Integer
