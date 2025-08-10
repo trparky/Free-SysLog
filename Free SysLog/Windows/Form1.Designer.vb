@@ -887,6 +887,9 @@ Partial Class Form1
         Me.SaveIgnoredLogCount.Name = "SaveIgnoredLogCount"
         Me.SaveIgnoredLogCount.Size = New System.Drawing.Size(319, 22)
         Me.SaveIgnoredLogCount.Text = "Save Ignored Log Count"
+        Me.SaveIgnoredLogCount.ToolTipText = "In case you want to reach a very high number without having" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to keep the program " &
+    "running for a very long time. This is" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "more for the funzies, if you know what I " &
+    "mean."
         '
         'CreateIgnoredLogToolStripMenuItem
         '
