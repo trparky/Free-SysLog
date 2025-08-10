@@ -38,7 +38,7 @@ Partial Class OpenExplorer
         Me.ChkAskEveryTime.Location = New System.Drawing.Point(12, 81)
         Me.ChkAskEveryTime.Name = "ChkAskEveryTime"
         Me.ChkAskEveryTime.Size = New System.Drawing.Size(106, 17)
-        Me.ChkAskEveryTime.TabIndex = 8
+        Me.ChkAskEveryTime.TabIndex = 2
         Me.ChkAskEveryTime.Text = "Ask Every Time?"
         Me.ChkAskEveryTime.UseVisualStyleBackColor = True
         '
@@ -47,7 +47,7 @@ Partial Class OpenExplorer
         Me.BtnYes.Location = New System.Drawing.Point(231, 75)
         Me.BtnYes.Name = "BtnYes"
         Me.BtnYes.Size = New System.Drawing.Size(75, 23)
-        Me.BtnYes.TabIndex = 6
+        Me.BtnYes.TabIndex = 0
         Me.BtnYes.Text = "&Yes"
         Me.BtnYes.UseVisualStyleBackColor = True
         '
@@ -56,7 +56,7 @@ Partial Class OpenExplorer
         Me.BtnNo.Location = New System.Drawing.Point(312, 75)
         Me.BtnNo.Name = "BtnNo"
         Me.BtnNo.Size = New System.Drawing.Size(75, 23)
-        Me.BtnNo.TabIndex = 4
+        Me.BtnNo.TabIndex = 1
         Me.BtnNo.Text = "&No"
         Me.BtnNo.UseVisualStyleBackColor = True
         '
