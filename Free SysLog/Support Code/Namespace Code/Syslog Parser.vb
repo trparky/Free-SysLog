@@ -109,7 +109,6 @@ Namespace SyslogParser
                                       boolIsProgrammaticScroll = True
                                       ParentForm.Logs.BeginInvoke(Sub()
                                                                       ParentForm.Logs.FirstDisplayedScrollingRowIndex = If(ParentForm.sortOrder = SortOrder.Ascending, ParentForm.Logs.Rows.Count - 1, 0)
-                                                                      boolIsProgrammaticScroll = False
                                                                   End Sub)
                                   End If
                               End Sub)

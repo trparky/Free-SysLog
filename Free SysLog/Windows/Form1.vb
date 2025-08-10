@@ -26,6 +26,7 @@ Public Class Form1
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
     Private boolServerRunning As Boolean = False
     Private boolTCPServerRunning As Boolean = False
+    Private lastFirstDisplayedRowIndex As Integer = -1
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -153,7 +154,6 @@ Public Class Form1
             boolIsProgrammaticScroll = True
             Logs.BeginInvoke(Sub()
                                  Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                                 boolIsProgrammaticScroll = False
                              End Sub)
         End If
     End Sub
@@ -1828,6 +1828,13 @@ Public Class Form1
             My.Settings.autoScroll = False
             ChkEnableAutoScroll.Checked = False
             LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
+        End If
+
+        If Logs.FirstDisplayedScrollingRowIndex <> lastFirstDisplayedRowIndex Then
+            ' The visible area has changed, handle the change
+            lastFirstDisplayedRowIndex = Logs.FirstDisplayedScrollingRowIndex
+            ' Your custom logic when the first displayed row changes
+            boolIsProgrammaticScroll = False
         End If
     End Sub
 
