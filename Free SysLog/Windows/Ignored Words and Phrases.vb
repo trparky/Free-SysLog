@@ -209,18 +209,32 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub DisableEnableItem()
-        Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+        If IgnoredListView.SelectedItems.Count = 1 Then
+            Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
 
-        If selectedItem.BoolEnabled Then
-            selectedItem.BackColor = Color.LightGreen
-            selectedItem.BoolEnabled = False
-            selectedItem.SubItems(3).Text = "No"
-            BtnEnableDisable.Text = "Enable"
+            If selectedItem.BoolEnabled Then
+                selectedItem.BackColor = Color.Pink
+                selectedItem.BoolEnabled = False
+                selectedItem.SubItems(3).Text = "No"
+                BtnEnableDisable.Text = "Enable"
+            Else
+                selectedItem.BackColor = Color.LightGreen
+                selectedItem.BoolEnabled = True
+                selectedItem.SubItems(3).Text = "Yes"
+                BtnEnableDisable.Text = "Disable"
+            End If
         Else
-            selectedItem.BackColor = Color.Pink
-            selectedItem.BoolEnabled = True
-            selectedItem.SubItems(3).Text = "Yes"
-            BtnEnableDisable.Text = "Disable"
+            For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
+                If item.BoolEnabled Then
+                    item.BackColor = Color.Pink
+                    item.BoolEnabled = False
+                    item.SubItems(3).Text = "No"
+                Else
+                    item.BackColor = Color.LightGreen
+                    item.BoolEnabled = True
+                    item.SubItems(3).Text = "Yes"
+                End If
+            Next
         End If
 
         boolChanged = True
