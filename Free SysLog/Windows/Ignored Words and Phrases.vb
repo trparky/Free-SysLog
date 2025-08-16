@@ -150,7 +150,7 @@ Public Class IgnoredWordsAndPhrases
     Private Sub IgnoredListView_Click(sender As Object, e As EventArgs) Handles IgnoredListView.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             BtnDelete.Enabled = True
-            BtnEdit.Enabled = True
+            BtnEdit.Enabled = IgnoredListView.SelectedItems.Count = 1
             BtnEnableDisable.Enabled = True
 
             BtnEnableDisable.Text = If(DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem).BoolEnabled, "Disable", "Enable")
