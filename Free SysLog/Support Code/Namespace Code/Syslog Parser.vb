@@ -388,7 +388,7 @@ Namespace SyslogParser
 
             Try
                 ' Using a SyncLock to protect the shared IgnoredRegexCache and prevent race conditions.
-                SyncLock IgnoredRegexCache
+                SyncLock IgnoredRegexCacheLockingObject
                     ' Use a thread-safe flag to stop Parallel.ForEach as soon as a match is found.
                     ' This ensures that only the first match updates the result.
                     Dim lockObj As New Object()
@@ -527,7 +527,7 @@ Namespace SyslogParser
         End Sub
 
         Private Function ProcessReplacements(input As String) As String
-            SyncLock ReplacementsRegexCache
+            SyncLock ReplacementsRegexCacheLockingObject
                 For Each item As ReplacementsClass In replacementsList
                     Try
                         input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " ")), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
@@ -550,7 +550,7 @@ Namespace SyslogParser
             Dim strAlertText As String
             Dim regExGroupCollection As GroupCollection
 
-            SyncLock AlertsRegexCache
+            SyncLock AlertsRegexCacheLockingObject
                 For Each alert As AlertsClass In alertsList
                     RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText).Replace("\ ", " ")), alert.BoolCaseSensitive)
 

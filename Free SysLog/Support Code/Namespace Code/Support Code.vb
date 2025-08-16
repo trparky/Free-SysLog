@@ -47,8 +47,11 @@ Namespace SupportCode
         Public ParentForm As Form1
 
         Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public AlertsRegexCacheLockingObject As New Object
         Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public ReplacementsRegexCacheLockingObject As New Object
         Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public IgnoredRegexCacheLockingObject As New Object()
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
         Public boolIsProgrammaticScroll As Boolean = False

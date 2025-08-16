@@ -999,7 +999,7 @@ Public Class Form1
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
 
             If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                SyncLock IgnoredRegexCache
+                SyncLock IgnoredRegexCacheLockingObject
                     IgnoredRegexCache.Clear()
                 End SyncLock
             End If
@@ -1128,7 +1128,7 @@ Public Class Form1
         Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsInstance.ShowDialog(Me)
 
-            SyncLock ReplacementsRegexCache
+            SyncLock ReplacementsRegexCacheLockingObject
                 If ReplacementsInstance.boolChanged Then
                     ReplacementsRegexCache.Clear()
                 End If
@@ -1437,7 +1437,7 @@ Public Class Form1
             Alerts.ShowDialog(Me)
 
             If Alerts.boolChanged Then
-                SyncLock AlertsRegexCache
+                SyncLock AlertsRegexCacheLockingObject
                     AlertsRegexCache.Clear()
                 End SyncLock
             End If
