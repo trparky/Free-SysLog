@@ -1,9 +1,10 @@
-﻿Imports System.Net
+﻿Imports System.Collections.Concurrent
+Imports System.Net
+Imports System.Net.NetworkInformation
 Imports System.Net.Sockets
 Imports System.Text
-Imports System.Net.NetworkInformation
-Imports Microsoft.Toolkit.Uwp.Notifications
 Imports System.Text.RegularExpressions
+Imports Microsoft.Toolkit.Uwp.Notifications
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -48,6 +49,7 @@ Namespace SupportCode
         Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
         Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
         Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing

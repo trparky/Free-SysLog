@@ -49,6 +49,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.BtnCancel = New System.Windows.Forms.Button()
         Me.btnDeleteDuringEditing = New System.Windows.Forms.Button()
         Me.ChkRemoteProcess = New System.Windows.Forms.CheckBox()
+        Me.colHits = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -78,7 +79,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -298,6 +299,11 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkRemoteProcess.Text = "Remote Process?"
         Me.ChkRemoteProcess.UseVisualStyleBackColor = True
         '
+        'colHits
+        '
+        Me.colHits.Text = "Hits"
+        Me.colHits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -358,4 +364,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents BtnCancel As Button
     Friend WithEvents btnDeleteDuringEditing As Button
     Friend WithEvents ChkRemoteProcess As CheckBox
+    Friend WithEvents colHits As ColumnHeader
 End Class
