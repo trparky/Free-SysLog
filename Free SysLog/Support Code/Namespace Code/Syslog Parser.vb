@@ -281,6 +281,12 @@ Namespace SyslogParser
                     Dim AlertType As AlertType = AlertType.None
                     Dim strIgnoredPattern As String = Nothing
 
+                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
+                        SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
+                            strRawLogText = ProcessReplacements(strRawLogText)
+                        End SyncLock
+                    End If
+
                     ' Step 1: Use Regex to extract the RFC 5424 header and the message
                     Dim match As Match = Nothing
 
@@ -308,18 +314,20 @@ Namespace SyslogParser
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
-                    If My.Settings.ProcessReplacementsInSyslogDataFirst Then
-                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                    If Not My.Settings.ProcessReplacementsInSyslogDataFirst Then
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
+                            SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
+                                boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
+                            End SyncLock
+                        End If
 
-                        SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
-                            If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
-                        End SyncLock
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
                     Else
-                        SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
-                            If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
-                        End SyncLock
-
-                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
+                            SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
+                                boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
+                            End SyncLock
+                        End If
                     End If
 
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
