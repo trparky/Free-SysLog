@@ -4,6 +4,44 @@ Public Class Hostnames
     Private selectedItem As ListViewItem
     Private boolEditMode As Boolean = False
     Private boolDoneLoading As Boolean = False
+    Private draggedItem As ListViewItem
+
+    Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles ListHostnames.ItemDrag
+        draggedItem = CType(e.Item, ListViewItem)
+        DoDragDrop(e.Item, DragDropEffects.Move)
+    End Sub
+
+    Private Sub IgnoredListView_DragEnter(sender As Object, e As DragEventArgs) Handles ListHostnames.DragEnter
+        If e.Data.GetDataPresent(GetType(ListViewItem)) Then
+            e.Effect = DragDropEffects.Move
+        Else
+            e.Effect = DragDropEffects.None
+        End If
+    End Sub
+
+    Private Sub IgnoredListView_DragOver(sender As Object, e As DragEventArgs) Handles ListHostnames.DragOver
+        e.Effect = DragDropEffects.Move
+    End Sub
+
+    Private Sub IgnoredListView_DragDrop(sender As Object, e As DragEventArgs) Handles ListHostnames.DragDrop
+        If draggedItem Is Nothing Then Return
+
+        Dim cp As Point = ListHostnames.PointToClient(New Point(e.X, e.Y))
+        Dim targetItem As ListViewItem = ListHostnames.GetItemAt(cp.X, cp.Y)
+
+        If targetItem Is Nothing OrElse targetItem Is draggedItem Then Return
+
+        Dim targetIndex As Integer = targetItem.Index
+        Dim draggedIndex As Integer = draggedItem.Index
+
+        ' Remove and re-insert the dragged item
+        ListHostnames.Items.RemoveAt(draggedIndex)
+        ListHostnames.Items.Insert(targetIndex, draggedItem)
+
+        ' Re-select the moved item
+        draggedItem.Selected = True
+        draggedItem.Focused = True
+    End Sub
 
     Private Sub BtnEdit_Click(sender As Object, e As EventArgs) Handles BtnEdit.Click
         If ListHostnames.SelectedItems.Count > 0 Then

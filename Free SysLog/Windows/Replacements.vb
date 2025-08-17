@@ -4,6 +4,46 @@ Public Class Replacements
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
+    Private draggedItem As ListViewItem
+
+    Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles ReplacementsListView.ItemDrag
+        draggedItem = CType(e.Item, ListViewItem)
+        DoDragDrop(e.Item, DragDropEffects.Move)
+    End Sub
+
+    Private Sub IgnoredListView_DragEnter(sender As Object, e As DragEventArgs) Handles ReplacementsListView.DragEnter
+        If e.Data.GetDataPresent(GetType(ListViewItem)) Then
+            e.Effect = DragDropEffects.Move
+        Else
+            e.Effect = DragDropEffects.None
+        End If
+    End Sub
+
+    Private Sub IgnoredListView_DragOver(sender As Object, e As DragEventArgs) Handles ReplacementsListView.DragOver
+        e.Effect = DragDropEffects.Move
+    End Sub
+
+    Private Sub IgnoredListView_DragDrop(sender As Object, e As DragEventArgs) Handles ReplacementsListView.DragDrop
+        If draggedItem Is Nothing Then Return
+
+        Dim cp As Point = ReplacementsListView.PointToClient(New Point(e.X, e.Y))
+        Dim targetItem As ListViewItem = ReplacementsListView.GetItemAt(cp.X, cp.Y)
+
+        If targetItem Is Nothing OrElse targetItem Is draggedItem Then Return
+
+        Dim targetIndex As Integer = targetItem.Index
+        Dim draggedIndex As Integer = draggedItem.Index
+
+        ' Remove and re-insert the dragged item
+        ReplacementsListView.Items.RemoveAt(draggedIndex)
+        ReplacementsListView.Items.Insert(targetIndex, draggedItem)
+
+        ' Re-select the moved item
+        draggedItem.Selected = True
+        draggedItem.Focused = True
+
+        boolChanged = True ' Mark changes
+    End Sub
 
     Private Function CheckForExistingItem(strReplace As String, strReplaceWith As String) As Boolean
         Return ReplacementsListView.Items.Cast(Of MyReplacementsListViewItem).Any(Function(item As MyReplacementsListViewItem)
