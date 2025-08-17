@@ -43,6 +43,7 @@
         End If
 
         AdjustScrollBars(LogText)
+        BringToFront()
     End Sub
 
     Private Sub Log_Viewer_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
