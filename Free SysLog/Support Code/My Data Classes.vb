@@ -182,6 +182,7 @@ Public Class AlertsClass
         listViewItem.BoolEnabled = BoolEnabled
         listViewItem.BoolLimited = BoolLimited
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+        listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem
     End Function
 End Class

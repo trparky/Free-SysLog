@@ -314,10 +314,12 @@ Public Class Alerts
             selectedItem.BoolEnabled = False
             selectedItem.SubItems(5).Text = "No"
             BtnEnableDisable.Text = "Enable"
+            selectedItem.BackColor = Color.Pink
         Else
             selectedItem.BoolEnabled = True
             selectedItem.SubItems(5).Text = "Yes"
             BtnEnableDisable.Text = "Disable"
+            selectedItem.BackColor = Color.LightGreen
         End If
 
         boolChanged = True
