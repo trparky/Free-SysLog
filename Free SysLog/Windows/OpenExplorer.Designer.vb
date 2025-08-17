@@ -92,7 +92,7 @@ Partial Class OpenExplorer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(399, 110)
+        Me.ClientSize = New System.Drawing.Size(399, 105)
         Me.Controls.Add(Me.ChkAskEveryTime)
         Me.Controls.Add(Me.BtnYes)
         Me.Controls.Add(Me.BtnNo)
