@@ -122,14 +122,14 @@ Public Class IgnoredClass
     Public IgnoreType As IgnoreType = IgnoreType.MainLog
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
-        Dim intIgnoreType As Integer
-        If Not IgnoredHits.TryGetValue(StrIgnore, intIgnoreType) Then intIgnoreType = 0
+        Dim intHits As Integer
+        If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
 
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolCaseSensitive, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
-        listViewItem.SubItems.Add(intIgnoreType.ToString("N0"))
+        listViewItem.SubItems.Add(intHits.ToString("N0"))
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
