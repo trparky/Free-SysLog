@@ -71,15 +71,15 @@ Public Class IgnoredWordsAndPhrases
                 ignoredList.Clear()
 
                 Dim ignoredClass As IgnoredClass
-                Dim tempIgnored As New Specialized.StringCollection()
+                Dim listOfIgnoredRulesToBeSavedToSettings As New Specialized.StringCollection()
 
                 For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                     ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType}
                     If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
-                    tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+                    listOfIgnoredRulesToBeSavedToSettings.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
                 Next
 
-                My.Settings.ignored2 = tempIgnored
+                My.Settings.ignored2 = listOfIgnoredRulesToBeSavedToSettings
                 My.Settings.Save()
             End SyncLock
         End If
