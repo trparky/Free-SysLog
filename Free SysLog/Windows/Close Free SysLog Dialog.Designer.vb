@@ -42,7 +42,7 @@ Partial Class CloseFreeSysLogDialog
         Me.Panel1.Controls.Add(Me.PictureBox1)
         Me.Panel1.Location = New System.Drawing.Point(0, 0)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(293, 58)
+        Me.Panel1.Size = New System.Drawing.Size(358, 58)
         Me.Panel1.TabIndex = 2
         '
         'Label1
@@ -64,7 +64,7 @@ Partial Class CloseFreeSysLogDialog
         '
         'BtnNo
         '
-        Me.BtnNo.Location = New System.Drawing.Point(123, 64)
+        Me.BtnNo.Location = New System.Drawing.Point(189, 64)
         Me.BtnNo.Name = "BtnNo"
         Me.BtnNo.Size = New System.Drawing.Size(75, 23)
         Me.BtnNo.TabIndex = 0
@@ -74,7 +74,7 @@ Partial Class CloseFreeSysLogDialog
         '
         'BtnYes
         '
-        Me.BtnYes.Location = New System.Drawing.Point(42, 64)
+        Me.BtnYes.Location = New System.Drawing.Point(108, 64)
         Me.BtnYes.Name = "BtnYes"
         Me.BtnYes.Size = New System.Drawing.Size(75, 23)
         Me.BtnYes.TabIndex = 2
@@ -84,7 +84,7 @@ Partial Class CloseFreeSysLogDialog
         '
         'BtnMinimize
         '
-        Me.BtnMinimize.Location = New System.Drawing.Point(204, 64)
+        Me.BtnMinimize.Location = New System.Drawing.Point(271, 64)
         Me.BtnMinimize.Name = "BtnMinimize"
         Me.BtnMinimize.Size = New System.Drawing.Size(75, 23)
         Me.BtnMinimize.TabIndex = 1
@@ -95,18 +95,18 @@ Partial Class CloseFreeSysLogDialog
         'ChkConfirmClose
         '
         Me.ChkConfirmClose.AutoSize = True
-        Me.ChkConfirmClose.Location = New System.Drawing.Point(12, 93)
+        Me.ChkConfirmClose.Location = New System.Drawing.Point(12, 68)
         Me.ChkConfirmClose.Name = "ChkConfirmClose"
-        Me.ChkConfirmClose.Size = New System.Drawing.Size(90, 17)
+        Me.ChkConfirmClose.Size = New System.Drawing.Size(96, 17)
         Me.ChkConfirmClose.TabIndex = 3
-        Me.ChkConfirmClose.Text = "Confirm Close"
+        Me.ChkConfirmClose.Text = "Confirm Close?"
         Me.ChkConfirmClose.UseVisualStyleBackColor = True
         '
         'CloseFreeSysLogDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(291, 116)
+        Me.ClientSize = New System.Drawing.Size(354, 93)
         Me.Controls.Add(Me.ChkConfirmClose)
         Me.Controls.Add(Me.BtnMinimize)
         Me.Controls.Add(Me.BtnYes)
