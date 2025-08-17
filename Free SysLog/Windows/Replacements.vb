@@ -249,12 +249,12 @@ Public Class Replacements
             selectedItem.BoolEnabled = False
             selectedItem.SubItems(4).Text = "No"
             BtnEnableDisable.Text = "Enable"
-            selectedItem.BackColor = Color.LightGreen
+            selectedItem.BackColor = Color.Pink
         Else
             selectedItem.BoolEnabled = True
             selectedItem.SubItems(4).Text = "Yes"
             BtnEnableDisable.Text = "Disable"
-            selectedItem.BackColor = Color.Pink
+            selectedItem.BackColor = Color.LightGreen
         End If
 
         boolChanged = True
