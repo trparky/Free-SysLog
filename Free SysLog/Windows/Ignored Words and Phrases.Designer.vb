@@ -50,6 +50,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnDeleteDuringEditing = New System.Windows.Forms.Button()
         Me.ChkRemoteProcess = New System.Windows.Forms.CheckBox()
         Me.colHits = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colTarget = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -80,7 +81,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -305,6 +306,12 @@ Partial Class IgnoredWordsAndPhrases
         Me.colHits.Text = "Hits"
         Me.colHits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
+        'colTarget
+        '
+        Me.colTarget.Text = "Target"
+        Me.colTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.colTarget.Width = 125
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -366,4 +373,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents btnDeleteDuringEditing As Button
     Friend WithEvents ChkRemoteProcess As CheckBox
     Friend WithEvents colHits As ColumnHeader
+    Friend WithEvents colTarget As ColumnHeader
 End Class
