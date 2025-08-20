@@ -26,6 +26,7 @@ Public Class Form1
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
     Private boolServerRunning As Boolean = False
     Private boolTCPServerRunning As Boolean = False
+    Private lastFirstDisplayedRowIndex As Integer = -1
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -153,7 +154,6 @@ Public Class Form1
             boolIsProgrammaticScroll = True
             Logs.BeginInvoke(Sub()
                                  Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                                 boolIsProgrammaticScroll = False
                              End Sub)
         End If
     End Sub
@@ -237,6 +237,8 @@ Public Class Form1
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
+        SaveIgnoredLogCount.Checked = My.Settings.saveIgnoredLogCount
+        AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer
         ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
         AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
@@ -318,13 +320,15 @@ Public Class Form1
             End If
         End If
 
-        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
-            For Each strJSONString As String In My.Settings.ignored2
-                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
-                tempIgnoredClass = Nothing
-            Next
-        End If
+        SyncLock ignoredListLockingObject
+            If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
+                For Each strJSONString As String In My.Settings.ignored2
+                    tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                    If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
+                    tempIgnoredClass = Nothing
+                Next
+            End If
+        End SyncLock
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
@@ -446,6 +450,13 @@ Public Class Form1
         ColRemoteProcess.Width = My.Settings.RemoteProcessHeaderSize
         ColLog.Width = My.Settings.columnLogSize
         ColAlerts.Width = My.Settings.columnAlertedSize
+
+        LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
+
+        If My.Settings.saveIgnoredLogCount Then
+            longNumberOfIgnoredLogs = My.Settings.ignoredLogCount
+            LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        End If
 
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
@@ -765,6 +776,7 @@ Public Class Form1
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
+        LblAutoScrollStatus.Text = "Auto Scroll Status: Enabled"
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
@@ -842,6 +854,7 @@ Public Class Form1
             End SyncLock
         End If
 
+        If My.Settings.saveIgnoredLogCount Then My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         DataHandling.WriteLogsToDisk()
@@ -986,7 +999,7 @@ Public Class Form1
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
 
             If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                SyncLock IgnoredRegexCache
+                SyncLock IgnoredRegexCacheLockingObject
                     IgnoredRegexCache.Clear()
                 End SyncLock
             End If
@@ -1109,14 +1122,13 @@ Public Class Form1
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
         longNumberOfIgnoredLogs = 0
         LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
-        ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = False
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
         Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsInstance.ShowDialog(Me)
 
-            SyncLock ReplacementsRegexCache
+            SyncLock ReplacementsRegexCacheLockingObject
                 If ReplacementsInstance.boolChanged Then
                     ReplacementsRegexCache.Clear()
                 End If
@@ -1151,7 +1163,23 @@ Public Class Form1
             If SaveFileDialog.ShowDialog() = DialogResult.OK Then
                 Try
                     SaveAppSettings.SaveApplicationSettingsToFile(SaveFileDialog.FileName)
-                    If MsgBox("Application settings have been saved to disk. Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+
+                    If My.Settings.AskOpenExplorer Then
+                        Using OpenExplorer As New OpenExplorer()
+                            OpenExplorer.StartPosition = FormStartPosition.CenterParent
+                            OpenExplorer.MyParentForm = SupportCode.ParentForm
+
+                            Dim result As DialogResult = OpenExplorer.ShowDialog(Me)
+
+                            If result = DialogResult.No Then
+                                Exit Sub
+                            ElseIf result = DialogResult.Yes Then
+                                SelectFileInWindowsExplorer(SaveFileDialog.FileName)
+                            End If
+                        End Using
+                    Else
+                        MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
+                    End If
                 Catch ex As Exception
                     MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
                 End Try
@@ -1267,6 +1295,9 @@ Public Class Form1
             CreateReplacementToolStripMenuItem.Visible = True
             CreateIgnoredLogToolStripMenuItem.Visible = True
             DeleteSimilarLogsToolStripMenuItem.Visible = True
+
+            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
         Else
             CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
@@ -1274,6 +1305,7 @@ Public Class Form1
             CreateReplacementToolStripMenuItem.Visible = False
             CreateIgnoredLogToolStripMenuItem.Visible = False
             DeleteSimilarLogsToolStripMenuItem.Visible = False
+            CopyRawLogTextToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1405,7 +1437,7 @@ Public Class Form1
             Alerts.ShowDialog(Me)
 
             If Alerts.boolChanged Then
-                SyncLock AlertsRegexCache
+                SyncLock AlertsRegexCacheLockingObject
                     AlertsRegexCache.Clear()
                 End SyncLock
             End If
@@ -1482,10 +1514,16 @@ Public Class Form1
     End Sub
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
-        Using Ignored As New IgnoredWordsAndPhrases With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            Ignored.TxtIgnored.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            Ignored.ShowDialog(Me)
-        End Using
+        If Logs.SelectedRows.Count > 0 Then
+            Using Ignored As New IgnoredWordsAndPhrases With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+                Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+
+                If myItem IsNot Nothing Then
+                    Ignored.TxtIgnored.Text = myItem.RawLogData
+                    Ignored.ShowDialog(Me)
+                End If
+            End Using
+        End If
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
@@ -1793,6 +1831,14 @@ Public Class Form1
         If ChkDisableAutoScrollUponScrolling.Checked AndAlso Not boolIsProgrammaticScroll AndAlso ChkEnableAutoScroll.Checked AndAlso e.NewValue < e.OldValue Then
             My.Settings.autoScroll = False
             ChkEnableAutoScroll.Checked = False
+            LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
+        End If
+
+        If Logs.FirstDisplayedScrollingRowIndex <> lastFirstDisplayedRowIndex Then
+            ' The visible area has changed, handle the change
+            lastFirstDisplayedRowIndex = Logs.FirstDisplayedScrollingRowIndex
+            ' Your custom logic when the first displayed row changes
+            boolIsProgrammaticScroll = False
         End If
     End Sub
 
@@ -1925,6 +1971,21 @@ Public Class Form1
                 MsgBox("Done.", MsgBoxStyle.Information, Text)
             End If
         End Using
+    End Sub
+
+    Private Sub AskToOpenExplorerWhenSavingData_Click(sender As Object, e As EventArgs) Handles AskToOpenExplorerWhenSavingData.Click
+        My.Settings.AskOpenExplorer = AskToOpenExplorerWhenSavingData.Checked
+    End Sub
+
+    Private Sub SaveIgnoredLogCount_Click(sender As Object, e As EventArgs) Handles SaveIgnoredLogCount.Click
+        My.Settings.saveIgnoredLogCount = SaveIgnoredLogCount.Checked
+    End Sub
+
+    Private Sub CopyRawLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyRawLogTextToolStripMenuItem.Click
+        If Logs.SelectedRows().Count <> 0 Then
+            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

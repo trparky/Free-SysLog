@@ -6,6 +6,44 @@ Public Class ConfigureSysLogMirrorClients
     Public boolSuccess As Boolean = False
     Private boolEditMode As Boolean = False
     Private boolDoneLoading As Boolean = False
+    Private draggedItem As ListViewItem
+
+    Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles servers.ItemDrag
+        draggedItem = CType(e.Item, ListViewItem)
+        DoDragDrop(e.Item, DragDropEffects.Move)
+    End Sub
+
+    Private Sub IgnoredListView_DragEnter(sender As Object, e As DragEventArgs) Handles servers.DragEnter
+        If e.Data.GetDataPresent(GetType(ListViewItem)) Then
+            e.Effect = DragDropEffects.Move
+        Else
+            e.Effect = DragDropEffects.None
+        End If
+    End Sub
+
+    Private Sub IgnoredListView_DragOver(sender As Object, e As DragEventArgs) Handles servers.DragOver
+        e.Effect = DragDropEffects.Move
+    End Sub
+
+    Private Sub IgnoredListView_DragDrop(sender As Object, e As DragEventArgs) Handles servers.DragDrop
+        If draggedItem Is Nothing Then Return
+
+        Dim cp As Point = servers.PointToClient(New Point(e.X, e.Y))
+        Dim targetItem As ListViewItem = servers.GetItemAt(cp.X, cp.Y)
+
+        If targetItem Is Nothing OrElse targetItem Is draggedItem Then Return
+
+        Dim targetIndex As Integer = targetItem.Index
+        Dim draggedIndex As Integer = draggedItem.Index
+
+        ' Remove and re-insert the dragged item
+        servers.Items.RemoveAt(draggedIndex)
+        servers.Items.Insert(targetIndex, draggedItem)
+
+        ' Re-select the moved item
+        draggedItem.Selected = True
+        draggedItem.Focused = True
+    End Sub
 
     Private Sub ConfigureSysLogMirrorServers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         BtnCancel.Visible = False
@@ -181,7 +219,22 @@ Public Class ConfigureSysLogMirrorClients
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer, Newtonsoft.Json.Formatting.Indented))
 
-            If MsgBox($"Data exported successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(saveFileDialog.FileName)
+            If My.Settings.AskOpenExplorer Then
+                Using OpenExplorer As New OpenExplorer()
+                    OpenExplorer.StartPosition = FormStartPosition.CenterParent
+                    OpenExplorer.MyParentForm = Me
+
+                    Dim result As DialogResult = OpenExplorer.ShowDialog(Me)
+
+                    If result = DialogResult.No Then
+                        Exit Sub
+                    ElseIf result = DialogResult.Yes Then
+                        SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                    End If
+                End Using
+            Else
+                MsgBox("Data exported successfully.", MsgBoxStyle.Information, SupportCode.ParentForm.Text)
+            End If
         End If
     End Sub
 

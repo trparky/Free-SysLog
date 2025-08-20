@@ -3,11 +3,12 @@ Imports System.Text.RegularExpressions
 Imports Free_SysLog.SupportCode
 Imports System.ComponentModel
 Imports System.Threading
+Imports System.Threading.Tasks
 
 Namespace SyslogParser
     Public Module SyslogParser
         Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?:\d ){0,1}(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z)(?: -){0,1} (?<hostname>(?:\\.|[^\n\r ])+) (?:\d+ ){0,1}(?<appname>(?:\\.|[^\n\r:]+?)(?: \d*){0,1}):{0,1} (?:- - %% ){0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
-        Private ReadOnly rfc5424TransformRegex As New Regex("<(?<priority>[0-9]+)>(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) {1,2}[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+)(?: \:){0,1} (?<appname>(?:\\.|[^\n\r:]+)): (?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
+        Private ReadOnly rfc5424TransformRegex As New Regex("<{0,1}(?<priority>[0-9]{0,})>{0,1}(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) {1,2}[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+)(?: \:){0,1} \[{0,1}(?<appname>(?:\\.|[^\n\r:]+))\]{0,1}:{0,1} {0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
 
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
@@ -105,12 +106,10 @@ Namespace SyslogParser
                                   ParentForm.BtnSaveLogsToDisk.Enabled = True
 
                                   If ParentForm.ChkEnableAutoScroll.Checked And ParentForm.Logs.Rows.Count > 0 And ParentForm.intSortColumnIndex = 0 Then
-                                      Try
-                                          boolIsProgrammaticScroll = True
-                                          ParentForm.Logs.FirstDisplayedScrollingRowIndex = If(ParentForm.sortOrder = SortOrder.Ascending, ParentForm.Logs.Rows.Count - 1, 0)
-                                      Finally
-                                          boolIsProgrammaticScroll = False
-                                      End Try
+                                      boolIsProgrammaticScroll = True
+                                      ParentForm.Logs.BeginInvoke(Sub()
+                                                                      ParentForm.Logs.FirstDisplayedScrollingRowIndex = If(ParentForm.sortOrder = SortOrder.Ascending, ParentForm.Logs.Rows.Count - 1, 0)
+                                                                  End Sub)
                                   End If
                               End Sub)
         End Sub
@@ -282,6 +281,12 @@ Namespace SyslogParser
                     Dim AlertType As AlertType = AlertType.None
                     Dim strIgnoredPattern As String = Nothing
 
+                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
+                        SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
+                            strRawLogText = ProcessReplacements(strRawLogText)
+                        End SyncLock
+                    End If
+
                     ' Step 1: Use Regex to extract the RFC 5424 header and the message
                     Dim match As Match = Nothing
 
@@ -309,12 +314,20 @@ Namespace SyslogParser
                     If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
-                    If My.Settings.ProcessReplacementsInSyslogDataFirst Then
+                    If Not My.Settings.ProcessReplacementsInSyslogDataFirst Then
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
+                            SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
+                                boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
+                            End SyncLock
+                        End If
+
                         If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message, strIgnoredPattern)
                     Else
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then boolIgnored = ProcessIgnoredLogPreferences(message, strIgnoredPattern)
-                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
+                            SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
+                                boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
+                            End SyncLock
+                        End If
                     End If
 
                     If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
@@ -355,18 +368,68 @@ Namespace SyslogParser
             End Try
         End Sub
 
-        Private Function ProcessIgnoredLogPreferences(message As String, ByRef strIgnoredPattern As String) As Boolean
-            SyncLock IgnoredRegexCache
-                For Each ignoredClassInstance As IgnoredClass In ignoredList
-                    If GetCachedRegex(IgnoredRegexCache, If(ignoredClassInstance.BoolRegex, ignoredClassInstance.StrIgnore, $".*{Regex.Escape(ignoredClassInstance.StrIgnore)}.*"), ignoredClassInstance.BoolCaseSensitive).IsMatch(message) Then
-                        strIgnoredPattern = ignoredClassInstance.StrIgnore
-                        ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
-                        Return True
-                    End If
-                Next
-            End SyncLock
+        Private Function MatchPattern(strInput As String, strPattern As String, boolUseRegex As Boolean, boolCaseSensitive As Boolean) As Boolean
+            If boolUseRegex Then
+                Return GetCachedRegex(IgnoredRegexCache, strPattern, boolCaseSensitive).IsMatch(strInput)
+            Else
+                If boolCaseSensitive Then
+                    Return strInput.Contains(strPattern)
+                Else
+                    Return strInput.CaseInsensitiveContains(strPattern)
+                End If
+            End If
+        End Function
 
-            Return False
+        Private Function ProcessIgnoredLogPreferences(message As String, remoteProcess As String, ByRef strIgnoredPattern As String) As Boolean
+            Dim strFailedPattern As String = Nothing
+            Dim matchFound As Boolean = False
+            Dim _strIgnoredPattern As String = Nothing
+            Dim parallelOptions As New ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
+
+            Try
+                ' Using a SyncLock to protect the shared IgnoredRegexCache and prevent race conditions.
+                SyncLock IgnoredRegexCacheLockingObject
+                    ' Use a thread-safe flag to stop Parallel.ForEach as soon as a match is found.
+                    ' This ensures that only the first match updates the result.
+                    Dim lockObj As New Object()
+
+                    ' Parallel loop to check each pattern concurrently
+                    Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
+                                                                       If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
+                                                                           Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
+                                                                           strFailedPattern = strRegexPattern
+
+                                                                           Dim boolDidWeMatch As Boolean = False
+                                                                           Dim strInput As String
+
+                                                                           If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
+                                                                               strInput = remoteProcess
+                                                                           Else
+                                                                               strInput = message
+                                                                           End If
+
+                                                                           If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
+                                                                               ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
+                                                                               SyncLock lockObj
+                                                                                   If Not matchFound Then
+                                                                                       _strIgnoredPattern = strRegexPattern
+                                                                                       matchFound = True
+                                                                                       IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key, oldValue) oldValue + 1)
+                                                                                       state.Stop()
+                                                                                       If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                   End If
+                                                                               End SyncLock
+                                                                           End If
+                                                                       End If
+                                                                   End Sub)
+                End SyncLock
+
+                If matchFound Then strIgnoredPattern = _strIgnoredPattern
+                Return matchFound
+            Catch ex As Exception
+                AddToLogList(Nothing, $"{strQuote}{strFailedPattern}{strQuote} failed to be processed.")
+                Return False
+            End Try
         End Function
 
         Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String)
@@ -385,82 +448,89 @@ Namespace SyslogParser
             End If
 
             If Not boolIgnored Then
+                SyncLock ParentForm.dataGridLockObject
+                    ParentForm.Logs.Invoke(Sub()
+                                               ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                                        dateObject:=currentDate,
+                                                                                        strTime:=currentDate.ToString,
+                                                                                        strSourceAddress:=strSourceIP,
+                                                                                        strHostname:=strHostname,
+                                                                                        strRemoteProcess:=strRemoteProcess,
+                                                                                        strLog:=strLogText,
+                                                                                        strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                                        boolAlerted:=boolAlerted,
+                                                                                        strRawLogText:=strRawLogText.Trim,
+                                                                                        strAlertText:=strAlertText,
+                                                                                        AlertType:=alertType,
+                                                                                        dataGrid:=ParentForm.Logs)
+                                                                                       )
+                                           End Sub)
+                    If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
+                End SyncLock
+
+                ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
+                ParentForm.UpdateLogCount()
+
                 ParentForm.Invoke(Sub()
-                                      SyncLock ParentForm.dataGridLockObject
-                                          ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
-                                                                                   dateObject:=currentDate,
-                                                                                   strTime:=currentDate.ToString,
-                                                                                   strSourceAddress:=strSourceIP,
-                                                                                   strHostname:=strHostname,
-                                                                                   strRemoteProcess:=strRemoteProcess,
-                                                                                   strLog:=strLogText,
-                                                                                   strLogType:=$"{priority.Severity}, {priority.Facility}",
-                                                                                   boolAlerted:=boolAlerted,
-                                                                                   strRawLogText:=strRawLogText.Trim,
-                                                                                   strAlertText:=strAlertText,
-                                                                                   AlertType:=alertType,
-                                                                                   dataGrid:=ParentForm.Logs)
-                                                                                  )
-                                          If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
-                                      End SyncLock
-
-                                      ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
-                                      ParentForm.UpdateLogCount()
                                       ParentForm.BtnSaveLogsToDisk.Enabled = True
-
                                       ParentForm.SelectLatestLogEntry()
                                   End Sub)
-            ElseIf boolIgnored And ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
-                SyncLock ParentForm.IgnoredLogsLockObject
-                    Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
-                                                                              dateObject:=currentDate,
-                                                                              strTime:=currentDate.ToString,
-                                                                              strSourceAddress:=strSourceIP,
-                                                                              strHostname:=strHostname,
-                                                                              strRemoteProcess:=strRemoteProcess,
-                                                                              strLog:=strLogText,
-                                                                              strLogType:=$"{priority.Severity}, {priority.Facility}",
-                                                                              boolAlerted:=boolAlerted,
-                                                                              strRawLogText:=strRawLogText.Trim,
-                                                                              strAlertText:=strAlertText,
-                                                                              AlertType:=alertType,
-                                                                              dataGrid:=ParentForm.Logs
-                                                                             )
-                    NewIgnoredItem.IgnoredPattern = strIgnoredPattern
+            ElseIf boolIgnored Then
+                If ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
+                    SyncLock ParentForm.IgnoredLogsLockObject
+                        Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                                  dateObject:=currentDate,
+                                                                                  strTime:=currentDate.ToString,
+                                                                                  strSourceAddress:=strSourceIP,
+                                                                                  strHostname:=strHostname,
+                                                                                  strRemoteProcess:=strRemoteProcess,
+                                                                                  strLog:=strLogText,
+                                                                                  strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                                  boolAlerted:=boolAlerted,
+                                                                                  strRawLogText:=strRawLogText.Trim,
+                                                                                  strAlertText:=strAlertText,
+                                                                                  AlertType:=alertType,
+                                                                                  dataGrid:=ParentForm.Logs
+                                                                                 )
+                        NewIgnoredItem.IgnoredPattern = strIgnoredPattern
 
-                    SyncLock ParentForm.IgnoredLogsLockingObject
-                        If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
-                            ParentForm.IgnoredLogs.Add(NewIgnoredItem)
-                        Else
-                            While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                                ParentForm.IgnoredLogs.RemoveAt(0)
-                            End While
+                        SyncLock ParentForm.IgnoredLogsLockingObject
+                            If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                                ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                            Else
+                                While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                                    ParentForm.IgnoredLogs.RemoveAt(0)
+                                End While
 
-                            ParentForm.IgnoredLogs.Add(NewIgnoredItem)
-                        End If
+                                ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                            End If
 
-                        If My.Settings.recordIgnoredLogs Then
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
-                        Else
-                            ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
-                        End If
+                            If My.Settings.recordIgnoredLogs Then
+                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
+                            Else
+                                ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+                            End If
+                        End SyncLock
+
+                        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+                            If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)
+                        End SyncLock
+
+                        ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
                     End SyncLock
-
-                    SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-                        If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)
-                    End SyncLock
-
-                    ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
-                End SyncLock
+                Else
+                    Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs)
+                    ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+                End If
             End If
         End Sub
 
         Private Function ProcessReplacements(input As String) As String
-            SyncLock ReplacementsRegexCache
+            SyncLock ReplacementsRegexCacheLockingObject
                 For Each item As ReplacementsClass In replacementsList
                     Try
-                        input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace)), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+                        input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " ")), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
                     Catch ex As Exception
                     End Try
                 Next
@@ -480,9 +550,9 @@ Namespace SyslogParser
             Dim strAlertText As String
             Dim regExGroupCollection As GroupCollection
 
-            SyncLock AlertsRegexCache
+            SyncLock AlertsRegexCacheLockingObject
                 For Each alert As AlertsClass In alertsList
-                    RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText)), alert.BoolCaseSensitive)
+                    RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText).Replace("\ ", " ")), alert.BoolCaseSensitive)
 
                     If RegExObject.IsMatch(strLogText) Then
                         If alert.alertType = AlertType.Warning Then

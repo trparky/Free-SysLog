@@ -50,6 +50,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CopyRawLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
         Me.ChkColLogsAutoFill = New System.Windows.Forms.CheckBox()
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
@@ -204,7 +205,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'LogsContextMenu
         '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.OpenLogForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.OpenLogForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
         Me.LogsContextMenu.Name = "LogsContextMenu"
         Me.LogsContextMenu.Size = New System.Drawing.Size(211, 158)
         '
@@ -213,6 +214,12 @@ Partial Class IgnoredLogsAndSearchResults
         Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
         Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
         Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
+        '
+        'CopyRawLogTextToolStripMenuItem
+        '
+        Me.CopyRawLogTextToolStripMenuItem.Name = "CopyRawLogTextToolStripMenuItem"
+        Me.CopyRawLogTextToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.CopyRawLogTextToolStripMenuItem.Text = "Copy Raw Log Text"
         '
         'BtnViewMainWindow
         '
@@ -409,6 +416,7 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents BtnViewMainWindow As Button
     Friend WithEvents LogsContextMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CopyRawLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ColAlerts As DataGridViewTextBoxColumn
     Friend WithEvents ColRemoteProcess As DataGridViewTextBoxColumn

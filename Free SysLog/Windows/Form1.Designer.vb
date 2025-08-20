@@ -40,9 +40,11 @@ Partial Class Form1
         Me.LblItemsSelected = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblAutoScrollStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDisableAutoScrollUponScrolling = New System.Windows.Forms.ToolStripMenuItem()
         Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AskToOpenExplorerWhenSavingData = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ChkEnableAutoSave = New System.Windows.Forms.ToolStripMenuItem()
@@ -89,6 +91,7 @@ Partial Class Form1
         Me.ColLogsAutoFill = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CopyRawLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CloseMe = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuSeparator = New System.Windows.Forms.ToolStripSeparator()
@@ -110,6 +113,7 @@ Partial Class Form1
         Me.ProcessReplacementsInSyslogDataFirst = New System.Windows.Forms.ToolStripMenuItem()
         Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveIgnoredLogCount = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowServerTimeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkShowHostnameColumn = New System.Windows.Forms.ToolStripMenuItem()
@@ -227,7 +231,7 @@ Partial Class Form1
         '
         'StatusStrip
         '
-        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs})
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs, Me.LblAutoScrollStatus})
         Me.StatusStrip.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip.Name = "StatusStrip"
         Me.StatusStrip.Size = New System.Drawing.Size(1175, 22)
@@ -265,9 +269,23 @@ Partial Class Form1
         '
         'LblNumberOfIgnoredIncomingLogs
         '
+        Me.LblNumberOfIgnoredIncomingLogs.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.LblNumberOfIgnoredIncomingLogs.Name = "LblNumberOfIgnoredIncomingLogs"
         Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
         Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+        '
+        'LblAutoScrollStatus
+        '
+        Me.LblAutoScrollStatus.Name = "LblAutoScrollStatus"
+        Me.LblAutoScrollStatus.Size = New System.Drawing.Size(200, 17)
+        Me.LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
+        '
+        'AskToOpenExplorerWhenSavingData
+        '
+        Me.AskToOpenExplorerWhenSavingData.CheckOnClick = True
+        Me.AskToOpenExplorerWhenSavingData.Name = "AskToOpenExplorerWhenSavingData"
+        Me.AskToOpenExplorerWhenSavingData.Size = New System.Drawing.Size(319, 22)
+        Me.AskToOpenExplorerWhenSavingData.Text = "Ask to open Explorer after saving a file to disk"
         '
         'AutomaticallyCheckForUpdates
         '
@@ -440,11 +458,9 @@ Partial Class Form1
         '
         'ZerooutIgnoredLogsCounterToolStripMenuItem
         '
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = False
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Name = "ZerooutIgnoredLogsCounterToolStripMenuItem"
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
         Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Text = "Zero-out Ignored Logs Counter"
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = False
         '
         'ViewLogBackups
         '
@@ -455,7 +471,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -747,7 +763,7 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(183, 180)
         '
@@ -756,6 +772,12 @@ Partial Class Form1
         Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
         Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
         Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
+        '
+        'CopyRawLogTextToolStripMenuItem
+        '
+        Me.CopyRawLogTextToolStripMenuItem.Name = "CopyRawLogTextToolStripMenuItem"
+        Me.CopyRawLogTextToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.CopyRawLogTextToolStripMenuItem.Text = "Copy Raw Log Text"
         '
         'OpenLogViewerToolStripMenuItem
         '
@@ -865,6 +887,16 @@ Partial Class Form1
         Me.ShowRawLogOnLogViewer.Name = "ShowRawLogOnLogViewer"
         Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(319, 22)
         Me.ShowRawLogOnLogViewer.Text = "Show Raw Log on Log Viewer Window"
+        '
+        'SaveIgnoredLogCount
+        '
+        Me.SaveIgnoredLogCount.CheckOnClick = True
+        Me.SaveIgnoredLogCount.Name = "SaveIgnoredLogCount"
+        Me.SaveIgnoredLogCount.Size = New System.Drawing.Size(319, 22)
+        Me.SaveIgnoredLogCount.Text = "Save Ignored Log Count"
+        Me.SaveIgnoredLogCount.ToolTipText = "In case you want to reach a very high number without having" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to keep the program " &
+    "running for a very long time. This is" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "more for the funzies, if you know what I " &
+    "mean."
         '
         'CreateIgnoredLogToolStripMenuItem
         '
@@ -983,6 +1015,7 @@ Partial Class Form1
     Friend WithEvents ChkEnableAutoScroll As ToolStripMenuItem
     Friend WithEvents ChkDisableAutoScrollUponScrolling As ToolStripMenuItem
     Friend WithEvents AutomaticallyCheckForUpdates As ToolStripMenuItem
+    Friend WithEvents AskToOpenExplorerWhenSavingData As ToolStripMenuItem
     Friend WithEvents BtnClearLog As ToolStripMenuItem
     Friend WithEvents AlertsHistory As ToolStripMenuItem
     Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
@@ -1006,6 +1039,7 @@ Partial Class Form1
     Friend WithEvents BtnSearch As Button
     Friend WithEvents ConfigureIgnoredWordsAndPhrasesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LblNumberOfIgnoredIncomingLogs As ToolStripStatusLabel
+    Friend WithEvents LblAutoScrollStatus As ToolStripStatusLabel
     Friend WithEvents ViewIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClearIgnoredLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents IgnoredLogsToolStripMenuItem As ToolStripMenuItem
@@ -1051,6 +1085,7 @@ Partial Class Form1
     Friend WithEvents ChkEnableConfirmCloseToolStripItem As ToolStripMenuItem
     Friend WithEvents LogsMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CopyRawLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteSimilarLogsToolStripMenuItem As ToolStripMenuItem
@@ -1071,6 +1106,7 @@ Partial Class Form1
     Friend WithEvents ProcessReplacementsInSyslogDataFirst As ToolStripMenuItem
     Friend WithEvents RemoveNumbersFromRemoteApp As ToolStripMenuItem
     Friend WithEvents ShowRawLogOnLogViewer As ToolStripMenuItem
+    Friend WithEvents SaveIgnoredLogCount As ToolStripMenuItem
     Friend WithEvents ChkShowLogTypeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowServerTimeColumn As ToolStripMenuItem
     Friend WithEvents ChkShowHostnameColumn As ToolStripMenuItem

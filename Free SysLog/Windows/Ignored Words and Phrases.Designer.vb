@@ -48,6 +48,9 @@ Partial Class IgnoredWordsAndPhrases
         Me.Label1 = New System.Windows.Forms.Label()
         Me.BtnCancel = New System.Windows.Forms.Button()
         Me.btnDeleteDuringEditing = New System.Windows.Forms.Button()
+        Me.ChkRemoteProcess = New System.Windows.Forms.CheckBox()
+        Me.colHits = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colTarget = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -74,10 +77,11 @@ Partial Class IgnoredWordsAndPhrases
         '
         'IgnoredListView
         '
+        Me.IgnoredListView.AllowDrop = True
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -278,6 +282,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         'btnDeleteDuringEditing
         '
+        Me.btnDeleteDuringEditing.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnDeleteDuringEditing.Location = New System.Drawing.Point(164, 348)
         Me.btnDeleteDuringEditing.Name = "btnDeleteDuringEditing"
         Me.btnDeleteDuringEditing.Size = New System.Drawing.Size(75, 23)
@@ -285,11 +290,34 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnDeleteDuringEditing.Text = "Delete"
         Me.btnDeleteDuringEditing.UseVisualStyleBackColor = True
         '
+        'ChkRemoteProcess
+        '
+        Me.ChkRemoteProcess.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkRemoteProcess.AutoSize = True
+        Me.ChkRemoteProcess.Location = New System.Drawing.Point(684, 325)
+        Me.ChkRemoteProcess.Name = "ChkRemoteProcess"
+        Me.ChkRemoteProcess.Size = New System.Drawing.Size(110, 17)
+        Me.ChkRemoteProcess.TabIndex = 47
+        Me.ChkRemoteProcess.Text = "Remote Process?"
+        Me.ChkRemoteProcess.UseVisualStyleBackColor = True
+        '
+        'colHits
+        '
+        Me.colHits.Text = "Hits"
+        Me.colHits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'colTarget
+        '
+        Me.colTarget.Text = "Target"
+        Me.colTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.colTarget.Width = 125
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(799, 378)
+        Me.Controls.Add(Me.ChkRemoteProcess)
         Me.Controls.Add(Me.btnDeleteDuringEditing)
         Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.ChkEnabled)
@@ -343,4 +371,7 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents Label1 As Label
     Friend WithEvents BtnCancel As Button
     Friend WithEvents btnDeleteDuringEditing As Button
+    Friend WithEvents ChkRemoteProcess As CheckBox
+    Friend WithEvents colHits As ColumnHeader
+    Friend WithEvents colTarget As ColumnHeader
 End Class

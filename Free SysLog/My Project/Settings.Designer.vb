@@ -1208,6 +1208,42 @@ Namespace My
                 Me("LimitNumberOfIgnoredLogs") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property AskOpenExplorer() As Boolean
+            Get
+                Return CType(Me("AskOpenExplorer"),Boolean)
+            End Get
+            Set
+                Me("AskOpenExplorer") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property ignoredLogCount() As Long
+            Get
+                Return CType(Me("ignoredLogCount"),Long)
+            End Get
+            Set
+                Me("ignoredLogCount") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property saveIgnoredLogCount() As Boolean
+            Get
+                Return CType(Me("saveIgnoredLogCount"),Boolean)
+            End Get
+            Set
+                Me("saveIgnoredLogCount") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

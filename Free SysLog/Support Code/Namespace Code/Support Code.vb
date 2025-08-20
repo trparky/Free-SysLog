@@ -1,9 +1,10 @@
-﻿Imports System.Net
+﻿Imports System.Collections.Concurrent
+Imports System.Net
+Imports System.Net.NetworkInformation
 Imports System.Net.Sockets
 Imports System.Text
-Imports System.Net.NetworkInformation
-Imports Microsoft.Toolkit.Uwp.Notifications
 Imports System.Text.RegularExpressions
+Imports Microsoft.Toolkit.Uwp.Notifications
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -46,13 +47,18 @@ Namespace SupportCode
         Public ParentForm As Form1
 
         Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public AlertsRegexCacheLockingObject As New Object
         Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public ReplacementsRegexCacheLockingObject As New Object
         Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public IgnoredRegexCacheLockingObject As New Object()
+        Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
         Public replacementsList As New List(Of ReplacementsClass)
         Public ignoredList As New List(Of IgnoredClass)
+        Public ignoredListLockingObject As New Object()
         Public alertsList As New List(Of AlertsClass)
         Public serversList As New List(Of SysLogProxyServer)
         Public hostnames As New Dictionary(Of String, String)(StringComparison.OrdinalIgnoreCase)
@@ -89,6 +95,13 @@ Namespace SupportCode
         Public recentUniqueObjects As uniqueObjectsClass
         Public ReadOnly recentUniqueObjectsLock As New Object()
         Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
+
+        Public WriteOnly Property AskOpenExplorer As Boolean
+            Set(value As Boolean)
+                My.Settings.AskOpenExplorer = value
+                If ParentForm IsNot Nothing Then ParentForm.AskToOpenExplorerWhenSavingData.Checked = value
+            End Set
+        End Property
 
 #If DEBUG Then
         Public Const boolDebugBuild As Boolean = True

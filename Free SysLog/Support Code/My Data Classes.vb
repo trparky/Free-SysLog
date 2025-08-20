@@ -67,6 +67,7 @@ Public Class ReplacementsClass
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+        listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem
     End Function
 End Class
@@ -118,16 +119,24 @@ Public Class IgnoredClass
     Public BoolCaseSensitive As Boolean
     Public StrIgnore As String
     Public BoolEnabled As Boolean = True
+    Public IgnoreType As IgnoreType = IgnoreType.MainLog
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
+        Dim intHits As Integer
+        If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
+
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolCaseSensitive, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
+        listViewItem.SubItems.Add(intHits.ToString("N0"))
+        listViewItem.SubItems.Add(If(IgnoreType = IgnoreType.MainLog, "Main Log Text", "Remote App"))
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
+        listViewItem.IgnoreType = IgnoreType
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+        listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem
     End Function
 End Class
@@ -173,6 +182,7 @@ Public Class AlertsClass
         listViewItem.BoolEnabled = BoolEnabled
         listViewItem.BoolLimited = BoolLimited
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+        listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem
     End Function
 End Class

@@ -31,7 +31,7 @@ Namespace checkForUpdates
         Public windowObject As Form1
         Private ReadOnly shortBuild As Short = Short.Parse(versionInfo(VersionPieces.build).Trim)
         Private ReadOnly versionStringWithoutBuild As Double = Double.Parse($"{versionInfo(VersionPieces.major)}.{versionInfo(VersionPieces.minor)}")
-        Private ReadOnly longInternalVersion As Long = Long.Parse(versionInfo(VersionPieces.revision))
+        Private ReadOnly intInternalVersion As Integer = Integer.Parse(versionInfo(VersionPieces.revision))
 
         Public Sub New(inputWindowObject As Form1)
             windowObject = inputWindowObject
@@ -73,14 +73,14 @@ Namespace checkForUpdates
                 remoteVersion = xmlNode.SelectSingleNode("version")?.InnerText?.Trim()
                 remoteBuild = xmlNode.SelectSingleNode("build")?.InnerText?.Trim()
 
-                Dim longInternalVersionFromXML As Long = 0
+                Dim intInternalVersionFromXML As Integer = 0
                 If xmlNode.SelectSingleNode("internalversion") IsNot Nothing Then
-                    If Long.TryParse(xmlNode.SelectSingleNode("internalversion").InnerText.Trim, longInternalVersionFromXML) Then
-                        If longInternalVersionFromXML = longInternalVersion Then ' If the internal version from the XML file matches the internal version from the program itself, we return a noUpdateNeeded value.
+                    If Integer.TryParse(xmlNode.SelectSingleNode("internalversion").InnerText.Trim, intInternalVersionFromXML) Then
+                        If intInternalVersionFromXML = intInternalVersion Then ' If the internal version from the XML file matches the internal version from the program itself, we return a noUpdateNeeded value.
                             Return ProcessUpdateXMLResponse.noUpdateNeeded
-                        ElseIf longInternalVersionFromXML > longInternalVersion Then ' If the internal version from the XML file is greater than the internal version from the program itself, we return a newVersion value.
+                        ElseIf intInternalVersionFromXML > intInternalVersion Then ' If the internal version from the XML file is greater than the internal version from the program itself, we return a newVersion value.
                             Return ProcessUpdateXMLResponse.newVersion
-                        ElseIf longInternalVersionFromXML < longInternalVersion Then
+                        ElseIf intInternalVersionFromXML < intInternalVersion Then
                             Return ProcessUpdateXMLResponse.newerVersionThanWebSite ' If the internal version from the XML file is less than the internal version from the program itself, we return a newerVersionThanWebSite value.
                         End If
                     Else

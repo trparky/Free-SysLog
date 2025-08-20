@@ -28,6 +28,10 @@ Namespace NativeMethod
         <DllImport("shell32.dll", ExactSpelling:=True)>
         Public Shared Sub ILFree(pidlList As IntPtr)
         End Sub
+
+        <DllImport("user32.dll")>
+        Public Shared Function SetForegroundWindow(hwnd As IntPtr) As Boolean
+        End Function
     End Class
 
     Module APIs

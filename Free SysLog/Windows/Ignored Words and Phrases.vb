@@ -5,6 +5,46 @@ Public Class IgnoredWordsAndPhrases
     Public boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Public strIgnoredPattern As String = Nothing
+    Private draggedItem As ListViewItem
+
+    Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
+        draggedItem = CType(e.Item, ListViewItem)
+        DoDragDrop(e.Item, DragDropEffects.Move)
+    End Sub
+
+    Private Sub IgnoredListView_DragEnter(sender As Object, e As DragEventArgs) Handles IgnoredListView.DragEnter
+        If e.Data.GetDataPresent(GetType(ListViewItem)) Then
+            e.Effect = DragDropEffects.Move
+        Else
+            e.Effect = DragDropEffects.None
+        End If
+    End Sub
+
+    Private Sub IgnoredListView_DragOver(sender As Object, e As DragEventArgs) Handles IgnoredListView.DragOver
+        e.Effect = DragDropEffects.Move
+    End Sub
+
+    Private Sub IgnoredListView_DragDrop(sender As Object, e As DragEventArgs) Handles IgnoredListView.DragDrop
+        If draggedItem Is Nothing Then Return
+
+        Dim cp As Point = IgnoredListView.PointToClient(New Point(e.X, e.Y))
+        Dim targetItem As ListViewItem = IgnoredListView.GetItemAt(cp.X, cp.Y)
+
+        If targetItem Is Nothing OrElse targetItem Is draggedItem Then Return
+
+        Dim targetIndex As Integer = targetItem.Index
+        Dim draggedIndex As Integer = draggedItem.Index
+
+        ' Remove and re-insert the dragged item
+        IgnoredListView.Items.RemoveAt(draggedIndex)
+        IgnoredListView.Items.Insert(targetIndex, draggedItem)
+
+        ' Re-select the moved item
+        draggedItem.Selected = True
+        draggedItem.Focused = True
+
+        boolChanged = True ' Mark changes
+    End Sub
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Any(Function(item As MyIgnoredListViewItem)
@@ -30,6 +70,8 @@ Public Class IgnoredWordsAndPhrases
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
+                    .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
+                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
 
                 IgnoredListView.Enabled = True
@@ -45,7 +87,9 @@ Public Class IgnoredWordsAndPhrases
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
+                    .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
 
                 IgnoredListView.Items.Add(IgnoredListViewItem)
@@ -57,24 +101,27 @@ Public Class IgnoredWordsAndPhrases
             ChkCaseSensitive.Checked = False
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
+            chkRemoteProcess.Checked = False
         End If
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If boolChanged Then
-            ignoredList.Clear()
+            SyncLock ignoredListLockingObject
+                ignoredList.Clear()
 
-            Dim ignoredClass As IgnoredClass
-            Dim tempIgnored As New Specialized.StringCollection()
+                Dim ignoredClass As IgnoredClass
+                Dim listOfIgnoredRulesToBeSavedToSettings As New Specialized.StringCollection()
 
-            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled}
-                If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
-                tempIgnored.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-            Next
+                For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType}
+                    If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
+                    listOfIgnoredRulesToBeSavedToSettings.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+                Next
 
-            My.Settings.ignored2 = tempIgnored
-            My.Settings.Save()
+                My.Settings.ignored2 = listOfIgnoredRulesToBeSavedToSettings
+                My.Settings.Save()
+            End SyncLock
         End If
     End Sub
 
@@ -143,7 +190,7 @@ Public Class IgnoredWordsAndPhrases
     Private Sub IgnoredListView_Click(sender As Object, e As EventArgs) Handles IgnoredListView.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             BtnDelete.Enabled = True
-            BtnEdit.Enabled = True
+            BtnEdit.Enabled = IgnoredListView.SelectedItems.Count = 1
             BtnEnableDisable.Enabled = True
 
             BtnEnableDisable.Text = If(DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem).BoolEnabled, "Disable", "Enable")
@@ -175,6 +222,7 @@ Public Class IgnoredWordsAndPhrases
 
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
+            ChkRemoteProcess.Checked = selectedItemObject.IgnoreType <> IgnoreType.MainLog
             TxtIgnored.Text = selectedItemObject.SubItems(0).Text
             ChkRegex.Checked = selectedItemObject.BoolRegex
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
@@ -201,16 +249,32 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub DisableEnableItem()
-        Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+        If IgnoredListView.SelectedItems.Count = 1 Then
+            Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
 
-        If selectedItem.BoolEnabled Then
-            selectedItem.BoolEnabled = False
-            selectedItem.SubItems(3).Text = "No"
-            BtnEnableDisable.Text = "Enable"
+            If selectedItem.BoolEnabled Then
+                selectedItem.BackColor = Color.Pink
+                selectedItem.BoolEnabled = False
+                selectedItem.SubItems(3).Text = "No"
+                BtnEnableDisable.Text = "Enable"
+            Else
+                selectedItem.BackColor = Color.LightGreen
+                selectedItem.BoolEnabled = True
+                selectedItem.SubItems(3).Text = "Yes"
+                BtnEnableDisable.Text = "Disable"
+            End If
         Else
-            selectedItem.BoolEnabled = True
-            selectedItem.SubItems(3).Text = "Yes"
-            BtnEnableDisable.Text = "Disable"
+            For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
+                If item.BoolEnabled Then
+                    item.BackColor = Color.Pink
+                    item.BoolEnabled = False
+                    item.SubItems(3).Text = "No"
+                Else
+                    item.BackColor = Color.LightGreen
+                    item.BoolEnabled = True
+                    item.SubItems(3).Text = "Yes"
+                End If
+            Next
         End If
 
         boolChanged = True
@@ -248,12 +312,27 @@ Public Class IgnoredWordsAndPhrases
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled})
+                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType})
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
 
-            If MsgBox($"Data exported successfully.{vbCrLf}{vbCrLf}Do you want to open Windows Explorer to the location of the file?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + MsgBoxStyle.DefaultButton2, Text) = MsgBoxResult.Yes Then SelectFileInWindowsExplorer(saveFileDialog.FileName)
+            If My.Settings.AskOpenExplorer Then
+                Using OpenExplorer As New OpenExplorer()
+                    OpenExplorer.StartPosition = FormStartPosition.CenterParent
+                    OpenExplorer.MyParentForm = Me
+
+                    Dim result As DialogResult = OpenExplorer.ShowDialog(Me)
+
+                    If result = DialogResult.No Then
+                        Exit Sub
+                    ElseIf result = DialogResult.Yes Then
+                        SelectFileInWindowsExplorer(saveFileDialog.FileName)
+                    End If
+                End Using
+            Else
+                MsgBox("Data exported successfully.", MsgBoxStyle.Information, SupportCode.ParentForm.Text)
+            End If
         End If
     End Sub
 
