@@ -5,6 +5,7 @@ Public Class Replacements
     Public boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
+    Private m_SortingColumn As ColumnHeader
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles ReplacementsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -156,6 +157,8 @@ Public Class Replacements
                 If replacementsClass.BoolEnabled Then replacementsList.Add(replacementsClass)
                 tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
             Next
+
+            replacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
 
             My.Settings.replacements = tempReplacements
             My.Settings.Save()
@@ -404,5 +407,43 @@ Public Class Replacements
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
+    End Sub
+
+    Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles ReplacementsListView.ColumnClick
+        ' Get the new sorting column.
+        Dim new_sorting_column As ColumnHeader = ReplacementsListView.Columns(e.Column)
+
+        ' Figure out the new sorting order.
+        Dim sort_order As SortOrder
+        If m_SortingColumn Is Nothing Then
+            ' New column. Sort ascending.
+            sort_order = SortOrder.Ascending
+        Else
+            ' See if this is the same column.
+            If new_sorting_column.Equals(m_SortingColumn) Then
+                ' Same column. Switch the sort order.
+                If m_SortingColumn.Text.StartsWith("> ") Then
+                    sort_order = SortOrder.Descending
+                Else
+                    sort_order = SortOrder.Ascending
+                End If
+            Else
+                ' New column. Sort ascending.
+                sort_order = SortOrder.Ascending
+            End If
+
+            ' Remove the old sort indicator.
+            m_SortingColumn.Text = m_SortingColumn.Text.Substring(2)
+        End If
+
+        ' Display the new sort order.
+        m_SortingColumn = new_sorting_column
+        m_SortingColumn.Text = If(sort_order = SortOrder.Ascending, "> " & m_SortingColumn.Text, "< " & m_SortingColumn.Text)
+
+        ' Create a comparer.
+        ReplacementsListView.ListViewItemSorter = New listViewSorter.ListViewComparer(e.Column, sort_order)
+
+        ' Sort.
+        ReplacementsListView.Sort()
     End Sub
 End Class
