@@ -157,7 +157,15 @@ Public Class ConfigureSysLogMirrorClients
     End Sub
 
     Private Sub BtnDeleteServer_Click(sender As Object, e As EventArgs) Handles BtnDeleteServer.Click
-        servers.SelectedItems(0).Remove()
+        If servers.SelectedItems.Count > 0 Then
+            If servers.SelectedItems.Count = 1 Then
+                servers.Items.Remove(servers.SelectedItems(0))
+            Else
+                For i As Integer = servers.SelectedItems.Count - 1 To 0 Step -1
+                    servers.SelectedItems(i).Remove()
+                Next
+            End If
+        End If
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
