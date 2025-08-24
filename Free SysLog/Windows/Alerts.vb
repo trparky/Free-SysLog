@@ -92,12 +92,7 @@ Public Class Alerts
     End Sub
 
     Private Sub AlertsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles AlertsListView.KeyUp
-        If e.KeyCode = Keys.Delete And AlertsListView.SelectedItems().Count > 0 Then
-            AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
-            BtnDelete.Enabled = False
-            BtnEdit.Enabled = False
-            boolChanged = True
-        End If
+        If e.KeyCode = Keys.Delete And AlertsListView.SelectedItems().Count > 0 Then BtnDelete.PerformClick()
     End Sub
 
     Private Sub AlertsListView_Click(sender As Object, e As EventArgs) Handles AlertsListView.Click

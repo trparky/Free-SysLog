@@ -168,10 +168,7 @@ Public Class Replacements
     Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles ReplacementsListView.KeyUp
         If ReplacementsListView.SelectedItems.Count > 0 Then
             If e.KeyCode = Keys.Delete Then
-                ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
-                BtnDelete.Enabled = False
-                BtnEdit.Enabled = False
-                boolChanged = True
+                BtnDelete.PerformClick()
             ElseIf e.KeyCode = Keys.Enter Then
                 EditItem()
             End If

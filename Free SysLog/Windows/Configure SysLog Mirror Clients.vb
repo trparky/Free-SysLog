@@ -204,11 +204,7 @@ Public Class ConfigureSysLogMirrorClients
     End Sub
 
     Private Sub Servers_KeyUp(sender As Object, e As KeyEventArgs) Handles servers.KeyUp
-        If e.KeyCode = Keys.Delete And servers.SelectedItems().Count > 0 Then
-            servers.Items.Remove(servers.SelectedItems(0))
-            BtnDeleteServer.Enabled = False
-            BtnEditServer.Enabled = False
-        End If
+        If e.KeyCode = Keys.Delete And servers.SelectedItems().Count > 0 Then BtnDeleteServer.PerformClick()
     End Sub
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click

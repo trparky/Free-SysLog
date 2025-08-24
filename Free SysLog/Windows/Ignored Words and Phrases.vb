@@ -166,12 +166,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredListView_KeyUp(sender As Object, e As KeyEventArgs) Handles IgnoredListView.KeyUp
-        If e.KeyCode = Keys.Delete And IgnoredListView.SelectedItems().Count > 0 Then
-            IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
-            BtnDelete.Enabled = False
-            BtnEdit.Enabled = False
-            boolChanged = True
-        End If
+        If e.KeyCode = Keys.Delete And IgnoredListView.SelectedItems().Count > 0 Then BtnDelete.PerformClick()
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
