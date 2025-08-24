@@ -130,8 +130,8 @@ Public Class Hostnames
             If ListHostnames.SelectedItems.Count = 1 Then
                 ListHostnames.Items.Remove(ListHostnames.SelectedItems(0))
             Else
-                For Each item As ListViewItem In ListHostnames.SelectedItems
-                    item.Remove()
+                For i As Integer = ListHostnames.SelectedItems.Count - 1 To 0 Step -1
+                    ListHostnames.SelectedItems(i).Remove()
                 Next
             End If
         End If

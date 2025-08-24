@@ -122,8 +122,8 @@ Public Class Alerts
             If AlertsListView.SelectedItems.Count = 1 Then
                 AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
             Else
-                For Each item As ListViewItem In AlertsListView.SelectedItems
-                    item.Remove()
+                For i As Integer = AlertsListView.SelectedItems.Count - 1 To 0 Step -1
+                    AlertsListView.SelectedItems(i).Remove()
                 Next
             End If
 

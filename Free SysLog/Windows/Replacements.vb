@@ -183,8 +183,8 @@ Public Class Replacements
             If ReplacementsListView.SelectedItems.Count = 1 Then
                 ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
             Else
-                For Each item As ListViewItem In ReplacementsListView.SelectedItems
-                    item.Remove()
+                For i As Integer = ReplacementsListView.SelectedItems.Count - 1 To 0 Step -1
+                    ReplacementsListView.SelectedItems(i).Remove()
                 Next
             End If
 

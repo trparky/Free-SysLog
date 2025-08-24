@@ -179,8 +179,8 @@ Public Class IgnoredWordsAndPhrases
             If IgnoredListView.SelectedItems.Count = 1 Then
                 IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
             Else
-                For Each item As ListViewItem In IgnoredListView.SelectedItems
-                    item.Remove()
+                For i As Integer = IgnoredListView.SelectedItems.Count - 1 To 0 Step -1
+                    IgnoredListView.SelectedItems(i).Remove()
                 Next
             End If
 
