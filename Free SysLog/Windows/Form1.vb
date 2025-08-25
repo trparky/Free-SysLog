@@ -714,9 +714,7 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles Logs.KeyUp
-        If e.KeyValue = Keys.Enter Then
-            OpenLogViewerWindow()
-        ElseIf e.KeyValue = Keys.Delete Then
+        If e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
                 Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
 
@@ -761,7 +759,10 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_KeyDown(sender As Object, e As KeyEventArgs) Handles Logs.KeyDown
-        If e.KeyCode = Keys.Enter Then e.Handled = True
+        If e.KeyCode = Keys.Enter Then
+            e.Handled = True
+            OpenLogViewerWindow()
+        End If
     End Sub
 
     Private Sub Logs_UserDeletingRow(sender As Object, e As DataGridViewRowCancelEventArgs) Handles Logs.UserDeletingRow
