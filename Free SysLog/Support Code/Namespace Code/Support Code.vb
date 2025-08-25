@@ -123,6 +123,44 @@ Namespace SupportCode
             End Try
         End Function
 
+        Public Sub SortByClickedColumn(ByRef ListView As ListView, intColumn As Integer, ByRef m_SortingColumn As ColumnHeader)
+            ' Get the new sorting column.
+            Dim new_sorting_column As ColumnHeader = ListView.Columns(intColumn)
+
+            ' Figure out the new sorting order.
+            Dim sort_order As SortOrder
+            If m_SortingColumn Is Nothing Then
+                ' New column. Sort ascending.
+                sort_order = SortOrder.Ascending
+            Else
+                ' See if this is the same column.
+                If new_sorting_column.Equals(m_SortingColumn) Then
+                    ' Same column. Switch the sort order.
+                    If m_SortingColumn.Text.StartsWith("> ") Then
+                        sort_order = SortOrder.Descending
+                    Else
+                        sort_order = SortOrder.Ascending
+                    End If
+                Else
+                    ' New column. Sort ascending.
+                    sort_order = SortOrder.Ascending
+                End If
+
+                ' Remove the old sort indicator.
+                m_SortingColumn.Text = m_SortingColumn.Text.Substring(2)
+            End If
+
+            ' Display the new sort order.
+            m_SortingColumn = new_sorting_column
+            m_SortingColumn.Text = If(sort_order = SortOrder.Ascending, "> " & m_SortingColumn.Text, "< " & m_SortingColumn.Text)
+
+            ' Create a comparer.
+            ListView.ListViewItemSorter = New listViewSorter.ListViewComparer(intColumn, sort_order)
+
+            ' Sort.
+            ListView.Sort()
+        End Sub
+
         Public Function GetProcessUsingPort(port As Integer, protocolType As ProtocolType) As Process
             Dim startInfo As New ProcessStartInfo() With {
                 .FileName = "netstat",
