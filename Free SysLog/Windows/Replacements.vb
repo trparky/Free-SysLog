@@ -5,6 +5,7 @@ Public Class Replacements
     Public boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
+    Private m_SortingColumn As ColumnHeader
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles ReplacementsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -157,6 +158,8 @@ Public Class Replacements
                 tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
             Next
 
+            replacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+
             My.Settings.replacements = tempReplacements
             My.Settings.Save()
         End If
@@ -165,10 +168,7 @@ Public Class Replacements
     Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles ReplacementsListView.KeyUp
         If ReplacementsListView.SelectedItems.Count > 0 Then
             If e.KeyCode = Keys.Delete Then
-                ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
-                BtnDelete.Enabled = False
-                BtnEdit.Enabled = False
-                boolChanged = True
+                BtnDelete.PerformClick()
             ElseIf e.KeyCode = Keys.Enter Then
                 EditItem()
             End If
@@ -180,8 +180,8 @@ Public Class Replacements
             If ReplacementsListView.SelectedItems.Count = 1 Then
                 ReplacementsListView.Items.Remove(ReplacementsListView.SelectedItems(0))
             Else
-                For Each item As ListViewItem In ReplacementsListView.SelectedItems
-                    item.Remove()
+                For i As Integer = ReplacementsListView.SelectedItems.Count - 1 To 0 Step -1
+                    ReplacementsListView.SelectedItems(i).Remove()
                 Next
             End If
 
@@ -404,5 +404,9 @@ Public Class Replacements
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
+    End Sub
+
+    Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles ReplacementsListView.ColumnClick
+        SortByClickedColumn(ReplacementsListView, e.Column, m_SortingColumn)
     End Sub
 End Class

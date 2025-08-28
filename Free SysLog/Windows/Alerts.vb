@@ -5,6 +5,7 @@ Public Class Alerts
     Public boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
+    Private m_SortingColumn As ColumnHeader
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles AlertsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -91,12 +92,7 @@ Public Class Alerts
     End Sub
 
     Private Sub AlertsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles AlertsListView.KeyUp
-        If e.KeyCode = Keys.Delete And AlertsListView.SelectedItems().Count > 0 Then
-            AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
-            BtnDelete.Enabled = False
-            BtnEdit.Enabled = False
-            boolChanged = True
-        End If
+        If e.KeyCode = Keys.Delete And AlertsListView.SelectedItems().Count > 0 Then BtnDelete.PerformClick()
     End Sub
 
     Private Sub AlertsListView_Click(sender As Object, e As EventArgs) Handles AlertsListView.Click
@@ -121,8 +117,8 @@ Public Class Alerts
             If AlertsListView.SelectedItems.Count = 1 Then
                 AlertsListView.Items.Remove(AlertsListView.SelectedItems(0))
             Else
-                For Each item As ListViewItem In AlertsListView.SelectedItems
-                    item.Remove()
+                For i As Integer = AlertsListView.SelectedItems.Count - 1 To 0 Step -1
+                    AlertsListView.SelectedItems(i).Remove()
                 Next
             End If
 
@@ -291,6 +287,8 @@ Public Class Alerts
                 If AlertsClass.BoolEnabled Then alertsList.Add(AlertsClass)
                 tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
             Next
+
+            alertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
 
             My.Settings.alerts = tempAlerts
             My.Settings.Save()
@@ -472,5 +470,9 @@ Public Class Alerts
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
+    End Sub
+
+    Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles AlertsListView.ColumnClick
+        SortByClickedColumn(AlertsListView, e.Column, m_SortingColumn)
     End Sub
 End Class

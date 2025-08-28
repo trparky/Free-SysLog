@@ -6,6 +6,7 @@ Public Class IgnoredWordsAndPhrases
     Private boolEditMode As Boolean = False
     Public strIgnoredPattern As String = Nothing
     Private draggedItem As ListViewItem
+    Private m_SortingColumn As ColumnHeader
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -119,6 +120,8 @@ Public Class IgnoredWordsAndPhrases
                     listOfIgnoredRulesToBeSavedToSettings.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
                 Next
 
+                ignoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
+
                 My.Settings.ignored2 = listOfIgnoredRulesToBeSavedToSettings
                 My.Settings.Save()
             End SyncLock
@@ -163,12 +166,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredListView_KeyUp(sender As Object, e As KeyEventArgs) Handles IgnoredListView.KeyUp
-        If e.KeyCode = Keys.Delete And IgnoredListView.SelectedItems().Count > 0 Then
-            IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
-            BtnDelete.Enabled = False
-            BtnEdit.Enabled = False
-            boolChanged = True
-        End If
+        If e.KeyCode = Keys.Delete And IgnoredListView.SelectedItems().Count > 0 Then BtnDelete.PerformClick()
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
@@ -176,8 +174,8 @@ Public Class IgnoredWordsAndPhrases
             If IgnoredListView.SelectedItems.Count = 1 Then
                 IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
             Else
-                For Each item As ListViewItem In IgnoredListView.SelectedItems
-                    item.Remove()
+                For i As Integer = IgnoredListView.SelectedItems.Count - 1 To 0 Step -1
+                    IgnoredListView.SelectedItems(i).Remove()
                 Next
             End If
 
@@ -435,5 +433,9 @@ Public Class IgnoredWordsAndPhrases
         ChkCaseSensitive.Checked = False
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
+    End Sub
+
+    Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
+        SortByClickedColumn(IgnoredListView, e.Column, m_SortingColumn)
     End Sub
 End Class

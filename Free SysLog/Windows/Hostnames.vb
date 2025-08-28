@@ -130,8 +130,8 @@ Public Class Hostnames
             If ListHostnames.SelectedItems.Count = 1 Then
                 ListHostnames.Items.Remove(ListHostnames.SelectedItems(0))
             Else
-                For Each item As ListViewItem In ListHostnames.SelectedItems
-                    item.Remove()
+                For i As Integer = ListHostnames.SelectedItems.Count - 1 To 0 Step -1
+                    ListHostnames.SelectedItems(i).Remove()
                 Next
             End If
         End If
@@ -246,6 +246,10 @@ Public Class Hostnames
     End Sub
 
     Private Sub Hostnames_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Delete Then BtnDelete.PerformClick()
+    End Sub
+
+    Private Sub ListHostnames_KeyUp(sender As Object, e As KeyEventArgs) Handles ListHostnames.KeyUp
         If e.KeyCode = Keys.Delete Then BtnDelete.PerformClick()
     End Sub
 End Class
