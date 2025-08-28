@@ -100,7 +100,7 @@ Namespace checkForUpdates
 
         Private Function CanWriteToFolder(folderPath As String) As Boolean
             Try
-                Dim testFile = IO.Path.Combine(folderPath, Guid.NewGuid().ToString() & ".tmp")
+                Dim testFile As String = IO.Path.Combine(folderPath, Guid.NewGuid().ToString() & ".tmp")
                 File.WriteAllText(testFile, "test")
                 File.Delete(testFile)
                 Return True
