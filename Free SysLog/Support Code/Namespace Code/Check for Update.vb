@@ -281,7 +281,7 @@ Namespace checkForUpdates
                     strOSName = $"Windows NT {intOSMajorVersion}.{intOSMinorVersion}"
                 End If
 
-                Return $"{strOSName} {If(Environment.Is64BitOperatingSystem, "64", "32")}-bit (Microsoft .NET {dblDOTNETVersion })"
+                Return $"{strOSName} {If(Environment.Is64BitOperatingSystem, "64", "32")}-bit (Microsoft .NET {dblDOTNETVersion})"
             Catch ex As Exception
                 Try
                     Return $"Unknown Windows Operating System ({Environment.OSVersion.VersionString})"
