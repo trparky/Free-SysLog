@@ -40,7 +40,7 @@ Public Class LogViewer
         If String.IsNullOrWhiteSpace(txtAlertText.Text) Then
             txtAlertText.Visible = False
             lblAlertText.Visible = False
-            PictureBox1.Visible = False
+            IconImageBox.Visible = False
             TableLayoutPanel1.SetRowSpan(LogText, 3)
         Else
             AdjustScrollBars(txtAlertText)
@@ -56,7 +56,7 @@ Public Class LogViewer
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
                 End If
 
-                If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then PictureBox1.Image = Image.FromFile(strIconPath)
+                If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then IconImageBox.Image = Image.FromFile(strIconPath)
             End If
         End If
 
