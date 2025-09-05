@@ -46,13 +46,17 @@ Public Class LogViewer
             AdjustScrollBars(txtAlertText)
 
             If alertType <> AlertType.None Then
+                Dim strIconPath As String = Nothing
+
                 If alertType = ToolTipIcon.Error Then
-                    PictureBox1.Image = Image.FromFile(IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png"))
+                    strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
                 ElseIf alertType = ToolTipIcon.Warning Then
-                    PictureBox1.Image = Image.FromFile(IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png"))
+                    strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
                 ElseIf alertType = ToolTipIcon.Info Then
-                    PictureBox1.Image = Image.FromFile(IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png"))
+                    strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
                 End If
+
+                If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then PictureBox1.Image = Image.FromFile(strIconPath)
             End If
         End If
 
