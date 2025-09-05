@@ -107,6 +107,7 @@ Public Class AlertsHistory
                 .strLog = strLog
                 .strTime = strTime
                 .strAlertText = strAlertText
+                .alertType = alertType
             End With
 
             Return AlertsHistoryDataGridViewRow
@@ -193,6 +194,7 @@ End Class
 
 Public Class NotificationDataPacket
     Public logtext, alerttext, logdate, sourceip, rawlogtext As String
+    Public alertType As AlertType = AlertType.None
 End Class
 
 Public Class CustomHostname

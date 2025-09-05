@@ -6,6 +6,7 @@
     Public Property strRawLog As String
     Public Property strTime As String
     Public Property strAlertText As String
+    Public alertType As AlertType = AlertType.None
 
     Public Overrides Function Clone()
         Dim AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow()

@@ -1,5 +1,8 @@
-﻿Public Class LogViewer
+﻿Imports Windows.UI.Xaml.Controls.Maps
+
+Public Class LogViewer
     Public strLogText, strRawLogText As String
+    Public alertType As AlertType = AlertType.None
     Public MyParentForm As Form1
 
     Private Sub AdjustScrollBars(ByRef textBoxControl As TextBox)
@@ -37,9 +40,20 @@
         If String.IsNullOrWhiteSpace(txtAlertText.Text) Then
             txtAlertText.Visible = False
             lblAlertText.Visible = False
+            PictureBox1.Visible = False
             TableLayoutPanel1.SetRowSpan(LogText, 3)
         Else
             AdjustScrollBars(txtAlertText)
+
+            If alertType <> AlertType.None Then
+                If alertType = ToolTipIcon.Error Then
+                    PictureBox1.Image = Image.FromFile(IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png"))
+                ElseIf alertType = ToolTipIcon.Warning Then
+                    PictureBox1.Image = Image.FromFile(IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png"))
+                ElseIf alertType = ToolTipIcon.Info Then
+                    PictureBox1.Image = Image.FromFile(IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png"))
+                End If
+            End If
         End If
 
         AdjustScrollBars(LogText)

@@ -585,9 +585,9 @@ Namespace SyslogParser
                         End If
 
                         If alert.BoolLimited Then
-                            NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
+                            NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
                         Else
-                            ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText)
+                            ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
                         End If
 
                         strOutgoingAlertText = strAlertText

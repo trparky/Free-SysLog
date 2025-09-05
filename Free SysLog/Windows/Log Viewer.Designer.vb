@@ -31,14 +31,16 @@ Partial Class LogViewer
         Me.ChkShowRawLog = New System.Windows.Forms.CheckBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.txtAlertText = New System.Windows.Forms.TextBox()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'BtnClose
         '
         Me.BtnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnClose.Location = New System.Drawing.Point(713, 136)
+        Me.BtnClose.Location = New System.Drawing.Point(723, 210)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(75, 26)
         Me.BtnClose.TabIndex = 0
@@ -48,9 +50,9 @@ Partial Class LogViewer
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblLogDate, Me.LblSource})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 165)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 239)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(800, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(810, 22)
         Me.StatusStrip1.TabIndex = 4
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -72,9 +74,9 @@ Partial Class LogViewer
         Me.lblAlertText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblAlertText.AutoSize = True
-        Me.lblAlertText.Location = New System.Drawing.Point(3, 41)
+        Me.lblAlertText.Location = New System.Drawing.Point(81, 78)
         Me.lblAlertText.Name = "lblAlertText"
-        Me.lblAlertText.Size = New System.Drawing.Size(52, 18)
+        Me.lblAlertText.Size = New System.Drawing.Size(39, 13)
         Me.lblAlertText.TabIndex = 6
         Me.lblAlertText.Text = "Alert Text"
         Me.lblAlertText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -94,18 +96,20 @@ Partial Class LogViewer
         Me.TableLayoutPanel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanel1.ColumnCount = 1
+        Me.TableLayoutPanel1.ColumnCount = 2
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78.0!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.LogText, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.lblAlertText, 0, 1)
-        Me.TableLayoutPanel1.Controls.Add(Me.txtAlertText, 0, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.lblAlertText, 1, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.PictureBox1, 0, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtAlertText, 1, 2)
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(12, 30)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 3
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(776, 100)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(786, 174)
         Me.TableLayoutPanel1.TabIndex = 8
         '
         'LogText
@@ -114,11 +118,12 @@ Partial Class LogViewer
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LogText.BackColor = System.Drawing.SystemColors.Window
+        Me.TableLayoutPanel1.SetColumnSpan(Me.LogText, 2)
         Me.LogText.Location = New System.Drawing.Point(3, 3)
         Me.LogText.Multiline = True
         Me.LogText.Name = "LogText"
         Me.LogText.ReadOnly = True
-        Me.LogText.Size = New System.Drawing.Size(770, 35)
+        Me.LogText.Size = New System.Drawing.Size(780, 72)
         Me.LogText.TabIndex = 2
         '
         'txtAlertText
@@ -127,18 +132,29 @@ Partial Class LogViewer
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtAlertText.BackColor = System.Drawing.SystemColors.Window
-        Me.txtAlertText.Location = New System.Drawing.Point(3, 62)
+        Me.txtAlertText.Location = New System.Drawing.Point(81, 99)
         Me.txtAlertText.Multiline = True
         Me.txtAlertText.Name = "txtAlertText"
         Me.txtAlertText.ReadOnly = True
-        Me.txtAlertText.Size = New System.Drawing.Size(770, 35)
+        Me.txtAlertText.Size = New System.Drawing.Size(702, 72)
         Me.txtAlertText.TabIndex = 7
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.PictureBox1.Location = New System.Drawing.Point(3, 99)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(72, 72)
+        Me.PictureBox1.TabIndex = 8
+        Me.PictureBox1.TabStop = False
         '
         'LogViewer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 187)
+        Me.ClientSize = New System.Drawing.Size(810, 261)
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.ChkShowRawLog)
         Me.Controls.Add(Me.StatusStrip1)
@@ -146,13 +162,14 @@ Partial Class LogViewer
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(816, 226)
+        Me.MinimumSize = New System.Drawing.Size(826, 300)
         Me.Name = "LogViewer"
         Me.Text = "Log Viewer"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -166,4 +183,5 @@ Partial Class LogViewer
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents LogText As TextBox
     Friend WithEvents txtAlertText As TextBox
+    Friend WithEvents PictureBox1 As PictureBox
 End Class

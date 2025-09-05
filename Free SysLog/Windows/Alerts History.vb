@@ -11,10 +11,10 @@ Public Class Alerts_History
         End Set
     End Property
 
-    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
         strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
 
-        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
             LogViewerInstance.TopMost = True
@@ -78,7 +78,7 @@ Public Class Alerts_History
             Dim AlertsHistoryDataGridViewRow As AlertsHistoryDataGridViewRow = DirectCast(AlertHistoryList.SelectedRows(0), AlertsHistoryDataGridViewRow)
 
             With AlertsHistoryDataGridViewRow
-                OpenLogViewerWindow(.strLog, .strAlertText, .strTime, .strIP, .strRawLog)
+                OpenLogViewerWindow(.strLog, .strAlertText, .strTime, .strIP, .strRawLog, .alertType)
             End With
         End If
     End Sub
