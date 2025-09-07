@@ -34,6 +34,8 @@ Public Class LogViewer
         TableLayoutPanel1.Controls.Add(txtAlertText, 0, 2)
 
         TableLayoutPanel1.SetColumnSpan(txtAlertText, 2)
+
+        lblAlertType.Visible = False
     End Sub
 
     Private Sub Log_Viewer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -61,10 +63,13 @@ Public Class LogViewer
                 Dim strIconPath As String = Nothing
 
                 If alertType = ToolTipIcon.Error Then
+                    lblAlertType.Text = "Alert Type: Error"
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
                 ElseIf alertType = ToolTipIcon.Warning Then
+                    lblAlertType.Text = "Alert Type: Warning"
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
                 ElseIf alertType = ToolTipIcon.Info Then
+                    lblAlertType.Text = "Alert Type: Information"
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
                 End If
 

@@ -32,6 +32,7 @@ Partial Class LogViewer
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.txtAlertText = New System.Windows.Forms.TextBox()
         Me.IconImageBox = New System.Windows.Forms.PictureBox()
+        Me.lblAlertType = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
         CType(Me.IconImageBox, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -49,7 +50,7 @@ Partial Class LogViewer
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblLogDate, Me.LblSource})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblLogDate, Me.LblSource, Me.lblAlertType})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 239)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(810, 22)
@@ -150,6 +151,13 @@ Partial Class LogViewer
         Me.IconImageBox.TabIndex = 8
         Me.IconImageBox.TabStop = False
         '
+        'lblAlertType
+        '
+        Me.lblAlertType.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
+        Me.lblAlertType.Name = "lblAlertType"
+        Me.lblAlertType.Size = New System.Drawing.Size(63, 17)
+        Me.lblAlertType.Text = "Alert Type:"
+        '
         'LogViewer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -184,4 +192,5 @@ Partial Class LogViewer
     Friend WithEvents LogText As TextBox
     Friend WithEvents txtAlertText As TextBox
     Friend WithEvents IconImageBox As PictureBox
+    Friend WithEvents lblAlertType As ToolStripStatusLabel
 End Class
