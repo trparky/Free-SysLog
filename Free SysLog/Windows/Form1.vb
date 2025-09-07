@@ -398,6 +398,14 @@ Public Class Form1
         Return String.Join(" and ", parts)
     End Function
 
+    Private Sub Logs_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles Logs.CellPainting
+        If e.RowIndex = -1 AndAlso e.ColumnIndex = ColAlerts.Index Then
+            e.PaintBackground(e.CellBounds, False)
+            TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
+            e.Handled = True
+        End If
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SupportCode.ParentForm = Me
 

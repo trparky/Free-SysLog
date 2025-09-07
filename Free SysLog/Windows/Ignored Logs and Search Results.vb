@@ -123,6 +123,14 @@ Public Class IgnoredLogsAndSearchResults
         End If
     End Sub
 
+    Private Sub Logs_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles Logs.CellPainting
+        If e.RowIndex = -1 AndAlso e.ColumnIndex = ColAlerts.Index Then
+            e.PaintBackground(e.CellBounds, False)
+            TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
+            e.Handled = True
+        End If
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
