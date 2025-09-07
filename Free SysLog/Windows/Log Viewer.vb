@@ -26,6 +26,16 @@ Public Class LogViewer
         End If
     End Sub
 
+    Private Sub HideTheImageBox()
+        TableLayoutPanel1.Controls.Remove(lblAlertText)
+        TableLayoutPanel1.Controls.Add(lblAlertText, 0, 1)
+
+        TableLayoutPanel1.Controls.Remove(txtAlertText)
+        TableLayoutPanel1.Controls.Add(txtAlertText, 0, 2)
+
+        TableLayoutPanel1.SetColumnSpan(txtAlertText, 2)
+    End Sub
+
     Private Sub Log_Viewer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.font IsNot Nothing Then
             LogText.Font = My.Settings.font
@@ -46,13 +56,7 @@ Public Class LogViewer
             AdjustScrollBars(txtAlertText)
 
             If alertType = AlertType.None Then
-                TableLayoutPanel1.Controls.Remove(lblAlertText)
-                TableLayoutPanel1.Controls.Add(lblAlertText, 0, 1)
-
-                TableLayoutPanel1.Controls.Remove(txtAlertText)
-                TableLayoutPanel1.Controls.Add(txtAlertText, 0, 2)
-
-                TableLayoutPanel1.SetColumnSpan(txtAlertText, 2)
+                HideTheImageBox()
             Else
                 Dim strIconPath As String = Nothing
 
@@ -64,7 +68,11 @@ Public Class LogViewer
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
                 End If
 
-                If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then IconImageBox.Image = Image.FromFile(strIconPath)
+                If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then
+                    IconImageBox.Image = Image.FromFile(strIconPath)
+                Else
+                    HideTheImageBox()
+                End If
             End If
         End If
 
