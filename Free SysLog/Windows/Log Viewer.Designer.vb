@@ -64,7 +64,7 @@ Partial Class LogViewer
         '
         'LblSource
         '
-        Me.LblSource.Margin = New System.Windows.Forms.Padding(100, 3, 0, 2)
+        Me.LblSource.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
         Me.LblSource.Name = "LblSource"
         Me.LblSource.Size = New System.Drawing.Size(104, 17)
         Me.LblSource.Text = "Source IP Address:"
