@@ -45,7 +45,15 @@ Public Class LogViewer
         Else
             AdjustScrollBars(txtAlertText)
 
-            If alertType <> AlertType.None Then
+            If alertType = AlertType.None Then
+                TableLayoutPanel1.Controls.Remove(lblAlertText)
+                TableLayoutPanel1.Controls.Add(lblAlertText, 0, 1)
+
+                TableLayoutPanel1.Controls.Remove(txtAlertText)
+                TableLayoutPanel1.Controls.Add(txtAlertText, 0, 2)
+
+                TableLayoutPanel1.SetColumnSpan(txtAlertText, 2)
+            Else
                 Dim strIconPath As String = Nothing
 
                 If alertType = ToolTipIcon.Error Then
