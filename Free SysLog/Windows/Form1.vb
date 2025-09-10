@@ -1309,13 +1309,11 @@ Public Class Form1
             Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
             If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
         Else
-            CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
             CreateAlertToolStripMenuItem.Visible = False
             CreateReplacementToolStripMenuItem.Visible = False
             CreateIgnoredLogToolStripMenuItem.Visible = False
             DeleteSimilarLogsToolStripMenuItem.Visible = False
-            CopyRawLogTextToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1323,7 +1321,25 @@ Public Class Form1
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
-        CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value, Text)
+        Dim intLogCount As Integer = Logs.SelectedRows().Count
+
+        If intLogCount <> 0 Then
+            If intLogCount = 1 Then
+                CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value, Text)
+            Else
+                Dim allSelectedLogs As New StringBuilder()
+                Dim selectedItem As MyDataGridViewRow
+
+                For Each item As DataGridViewRow In Logs.SelectedRows
+                    selectedItem = TryCast(item, MyDataGridViewRow)
+                    If selectedItem IsNot Nothing Then allSelectedLogs.AppendLine(selectedItem.Cells(ColumnIndex_LogText).Value)
+                Next
+
+                If allSelectedLogs.Length > 0 Then CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
+            End If
+
+            MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
+        End If
     End Sub
 
     Private Sub Logs_CellMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.CellMouseClick
@@ -1992,9 +2008,25 @@ Public Class Form1
     End Sub
 
     Private Sub CopyRawLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyRawLogTextToolStripMenuItem.Click
-        If Logs.SelectedRows().Count <> 0 Then
-            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-            If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+        Dim intLogCount As Integer = Logs.SelectedRows().Count
+
+        If intLogCount <> 0 Then
+            If intLogCount = 1 Then
+                Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+                If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+            Else
+                Dim allSelectedLogs As New StringBuilder()
+                Dim selectedItem As MyDataGridViewRow
+
+                For Each item As DataGridViewRow In Logs.SelectedRows
+                    selectedItem = TryCast(item, MyDataGridViewRow)
+                    If selectedItem IsNot Nothing Then allSelectedLogs.AppendLine(selectedItem.RawLogData)
+                Next
+
+                If allSelectedLogs.Length > 0 Then CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
+            End If
+
+            MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
