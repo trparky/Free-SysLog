@@ -22,6 +22,7 @@ Partial Class LogViewer
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.LogText = New System.Windows.Forms.TextBox()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
@@ -33,6 +34,7 @@ Partial Class LogViewer
         Me.txtAlertText = New System.Windows.Forms.TextBox()
         Me.IconImageBox = New System.Windows.Forms.PictureBox()
         Me.lblAlertType = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.StatusStrip1.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
         CType(Me.IconImageBox, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -193,4 +195,5 @@ Partial Class LogViewer
     Friend WithEvents txtAlertText As TextBox
     Friend WithEvents IconImageBox As PictureBox
     Friend WithEvents lblAlertType As ToolStripStatusLabel
+    Friend WithEvents ToolTip1 As ToolTip
 End Class
