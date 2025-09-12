@@ -68,6 +68,7 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems(1).Text = If(ChkRegex.Checked, "Yes", "No")
                     .SubItems(2).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
                     .SubItems(3).Text = If(ChkEnabled.Checked, "Yes", "No")
+                    .SubItems(5).Text = If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text")
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
@@ -85,6 +86,8 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
                     .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
                     .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                    .SubItems.Add("0")
+                    .SubItems.Add(If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text"))
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
