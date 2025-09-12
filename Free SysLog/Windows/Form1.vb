@@ -1322,10 +1322,11 @@ Public Class Form1
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
         Dim intLogCount As Integer = Logs.SelectedRows().Count
+        Dim boolCopyToClipboardResults As Boolean = False
 
         If intLogCount <> 0 Then
             If intLogCount = 1 Then
-                CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value, Text)
+                boolCopyToClipboardResults = CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value, Text)
             Else
                 Dim allSelectedLogs As New StringBuilder()
                 Dim selectedItem As MyDataGridViewRow
@@ -1335,10 +1336,10 @@ Public Class Form1
                     If selectedItem IsNot Nothing Then allSelectedLogs.AppendLine(selectedItem.Cells(ColumnIndex_LogText).Value)
                 Next
 
-                If allSelectedLogs.Length > 0 Then CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
+                If allSelectedLogs.Length > 0 Then boolCopyToClipboardResults = CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
             End If
 
-            MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
+            If boolCopyToClipboardResults Then MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
@@ -2009,11 +2010,12 @@ Public Class Form1
 
     Private Sub CopyRawLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyRawLogTextToolStripMenuItem.Click
         Dim intLogCount As Integer = Logs.SelectedRows().Count
+        Dim boolCopyToClipboardResults As Boolean = False
 
         If intLogCount <> 0 Then
             If intLogCount = 1 Then
                 Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-                If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+                If selectedItem IsNot Nothing Then boolCopyToClipboardResults = CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
             Else
                 Dim allSelectedLogs As New StringBuilder()
                 Dim selectedItem As MyDataGridViewRow
@@ -2023,10 +2025,10 @@ Public Class Form1
                     If selectedItem IsNot Nothing Then allSelectedLogs.AppendLine(selectedItem.RawLogData)
                 Next
 
-                If allSelectedLogs.Length > 0 Then CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
+                If allSelectedLogs.Length > 0 Then boolCopyToClipboardResults = CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
             End If
 
-            MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
+            If boolCopyToClipboardResults Then MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
