@@ -441,4 +441,12 @@ Public Class IgnoredWordsAndPhrases
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
         SortByClickedColumn(IgnoredListView, e.Column, m_SortingColumn)
     End Sub
+
+    Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
+        IgnoredHits.Clear()
+
+        For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+            item.SubItems(4).Text = "0"
+        Next
+    End Sub
 End Class

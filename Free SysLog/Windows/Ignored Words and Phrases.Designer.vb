@@ -51,6 +51,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkRemoteProcess = New System.Windows.Forms.CheckBox()
         Me.colHits = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colTarget = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.btnResetHits = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -312,6 +313,16 @@ Partial Class IgnoredWordsAndPhrases
         Me.colTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         Me.colTarget.Width = 125
         '
+        'btnResetHits
+        '
+        Me.btnResetHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnResetHits.Location = New System.Drawing.Point(326, 225)
+        Me.btnResetHits.Name = "btnResetHits"
+        Me.btnResetHits.Size = New System.Drawing.Size(75, 23)
+        Me.btnResetHits.TabIndex = 48
+        Me.btnResetHits.Text = "Reset Hits"
+        Me.btnResetHits.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -337,6 +348,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.Controls.Add(Me.IgnoredListView)
         Me.Controls.Add(Me.BtnDelete)
         Me.Controls.Add(Me.BtnAdd)
+        Me.Controls.Add(Me.btnResetHits)
         Me.KeyPreview = True
         Me.MinimumSize = New System.Drawing.Size(815, 417)
         Me.Name = "IgnoredWordsAndPhrases"
@@ -374,4 +386,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents ChkRemoteProcess As CheckBox
     Friend WithEvents colHits As ColumnHeader
     Friend WithEvents colTarget As ColumnHeader
+    Friend WithEvents btnResetHits As Button
 End Class
