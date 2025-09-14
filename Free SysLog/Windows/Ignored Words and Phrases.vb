@@ -74,6 +74,7 @@ Public Class IgnoredWordsAndPhrases
                     .BoolRegex = ChkRegex.Checked
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                     .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
+                    .strComment = txtComment.Text
                 End With
 
                 IgnoredListView.Enabled = True
@@ -92,6 +93,7 @@ Public Class IgnoredWordsAndPhrases
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
+                    .strComment = txtComment.Text
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                     .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
@@ -118,7 +120,7 @@ Public Class IgnoredWordsAndPhrases
                 Dim listOfIgnoredRulesToBeSavedToSettings As New Specialized.StringCollection()
 
                 For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType}
+                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment}
                     If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
                     listOfIgnoredRulesToBeSavedToSettings.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
                 Next
@@ -228,6 +230,7 @@ Public Class IgnoredWordsAndPhrases
             ChkRegex.Checked = selectedItemObject.BoolRegex
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
+            txtComment.Text = selectedItemObject.strComment
         End If
     End Sub
 
@@ -313,7 +316,7 @@ Public Class IgnoredWordsAndPhrases
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType})
+                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment})
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))

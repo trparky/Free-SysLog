@@ -24,6 +24,8 @@ Public Class MyIgnoredListViewItem
     Public Property BoolCaseSensitive As Boolean
     Public Property BoolEnabled As Boolean
     Public Property IgnoreType As IgnoreType
+    Public dateCreated As Date
+    Public strComment As String
 
     Public Sub New(strInput As String)
         Me.Text = strInput
