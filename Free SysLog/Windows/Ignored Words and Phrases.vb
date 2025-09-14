@@ -75,6 +75,9 @@ Public Class IgnoredWordsAndPhrases
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                     .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                     .strComment = txtComment.Text
+
+                    If .dateCreated = Date.MinValue Then .dateCreated = Date.Now ' Just in case it was never set
+                    .SubItems(6).Text = Date.Now.ToLongDateString
                 End With
 
                 IgnoredListView.Enabled = True
@@ -89,11 +92,13 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
                     .SubItems.Add("0")
                     .SubItems.Add(If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text"))
+                    .SubItems.Add(Date.Now.ToLongDateString)
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                     .strComment = txtComment.Text
+                    .dateCreated = Date.Now
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                     .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
@@ -104,6 +109,7 @@ Public Class IgnoredWordsAndPhrases
             boolEditMode = False
             boolChanged = True
             TxtIgnored.Text = Nothing
+            txtComment.Text = Nothing
             ChkCaseSensitive.Checked = False
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
