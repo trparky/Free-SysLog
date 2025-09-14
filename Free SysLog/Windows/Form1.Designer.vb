@@ -979,7 +979,7 @@ Partial Class Form1
         Me.colDelete.HeaderText = "Delete?"
         Me.colDelete.Name = "colDelete"
         Me.colDelete.ReadOnly = True
-        Me.colDelete.Width = 50
+        Me.colDelete.Width = 60
         '
         'Form1
         '
