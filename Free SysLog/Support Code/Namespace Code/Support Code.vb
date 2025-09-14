@@ -54,8 +54,6 @@ Namespace SupportCode
         Public IgnoredRegexCacheLockingObject As New Object()
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
-        Public beginningDate As Date = New Date(1, 1, 1)
-
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
         Public replacementsList As New List(Of ReplacementsClass)

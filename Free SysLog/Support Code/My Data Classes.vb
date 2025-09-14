@@ -127,7 +127,7 @@ Public Class IgnoredClass
         Dim intHits As Integer
         If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
 
-        If dateCreated = beginningDate Then dateCreated = Date.Now
+        If dateCreated = Date.MinValue Then dateCreated = Date.Now
 
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
