@@ -399,7 +399,7 @@ Public Class Form1
     End Function
 
     Private Sub Logs_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles Logs.CellPainting
-        If e.RowIndex = -1 AndAlso e.ColumnIndex = ColAlerts.Index Then
+        If e.RowIndex = -1 AndAlso e.ColumnIndex = ColAlerts.Index AndAlso e.ColumnIndex = colDelete.Index Then
             e.PaintBackground(e.CellBounds, False)
             TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
             e.Handled = True
@@ -724,19 +724,30 @@ Public Class Form1
     Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles Logs.KeyUp
         If e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
-                Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
+                Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+                Dim intNumberOfSelectedLogs As Integer = Logs.SelectedRows.Count
 
                 If ConfirmDelete.Checked Then
                     Dim choice As Confirm_Delete.UserChoice
 
-                    Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-                        Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
+                    Using Confirm_Delete As New Confirm_Delete(intNumberOfSelectedLogs) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                        If intNumberOfCheckedLogs > 0 Then
+                            Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfCheckedLogs} checked {If(intNumberOfCheckedLogs = 1, "log", "logs")}?"
+                        Else
+                            Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfSelectedLogs} selected {If(intNumberOfSelectedLogs = 1, "log", "logs")}?"
+                        End If
+
                         Confirm_Delete.ShowDialog(Me)
                         choice = Confirm_Delete.choice
                     End Using
 
                     If choice = Confirm_Delete.UserChoice.NoDelete Then
-                        MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                        If intNumberOfCheckedLogs > 0 Then
+                            MsgBox($"{If(intNumberOfCheckedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                        Else
+                            MsgBox($"{If(intNumberOfSelectedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                        End If
+
                         Exit Sub
                     ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
                         MakeLogBackup()
@@ -746,10 +757,17 @@ Public Class Form1
                 ' Create a list to store rows that need to be removed
                 Dim rowsToDelete As New List(Of MyDataGridViewRow)
 
-                ' Loop through the rows in reverse order to avoid index shifting
-                For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
-                    rowsToDelete.Add(Logs.SelectedRows(i))
-                Next
+                If intNumberOfCheckedLogs > 0 Then
+                    ' Loop through the rows in reverse order to avoid index shifting
+                    For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
+                        If Logs.Rows(i).Cells(colDelete.Index).Value Then rowsToDelete.Add(Logs.Rows(i))
+                    Next
+                Else
+                    ' Loop through the rows in reverse order to avoid index shifting
+                    For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
+                        rowsToDelete.Add(Logs.SelectedRows(i))
+                    Next
+                End If
 
                 ' Remove the rows outside the loop
                 For Each row As MyDataGridViewRow In rowsToDelete
@@ -763,6 +781,13 @@ Public Class Form1
 
             UpdateLogCount()
             SaveLogsToDiskSub()
+        ElseIf e.KeyValue = Keys.Space Then
+            e.Handled = True
+
+            If Logs.SelectedCells.Count > 0 Then
+                Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+                selectedRow.Cells(colDelete.Index).Value = Not selectedRow.Cells(colDelete.Index).Value
+            End If
         End If
     End Sub
 
@@ -1366,6 +1391,9 @@ Public Class Form1
 
         If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
             Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+        ElseIf hitTest.Type = DataGridViewHitTestType.Cell And hitTest.ColumnIndex = colDelete.Index Then
+            Dim cell As DataGridViewCheckBoxCell = DirectCast(Logs.Rows(hitTest.RowIndex).Cells(colDelete.Index), DataGridViewCheckBoxCell)
+            cell.Value = Not cell.Value
         End If
     End Sub
 

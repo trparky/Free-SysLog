@@ -141,6 +141,7 @@ Partial Class Form1
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.lblLimitBy = New System.Windows.Forms.Label()
+        Me.colDelete = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -586,7 +587,7 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Logs.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight
         Me.Logs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.colServerTime, Me.colLogType, Me.ColIPAddress, Me.ColHostname, Me.ColRemoteProcess, Me.ColLog, Me.ColAlerts})
+        Me.Logs.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColTime, Me.colServerTime, Me.colLogType, Me.ColIPAddress, Me.ColHostname, Me.ColRemoteProcess, Me.ColLog, Me.ColAlerts, Me.colDelete})
         Me.Logs.ContextMenuStrip = Me.LogsMenu
         Me.Logs.Location = New System.Drawing.Point(12, 52)
         Me.Logs.Name = "Logs"
@@ -973,6 +974,13 @@ Partial Class Form1
         Me.boxLimitBy.Text = "(Not Specified)"
         Me.boxLimitBy.TabIndex = 43
         '
+        'colDelete
+        '
+        Me.colDelete.HeaderText = "Delete?"
+        Me.colDelete.Name = "colDelete"
+        Me.colDelete.ReadOnly = True
+        Me.colDelete.Width = 50
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1125,4 +1133,5 @@ Partial Class Form1
     Friend WithEvents boxLimitBy As ComboBox
     Friend WithEvents lblLimitBy As Label
     Friend WithEvents btnShowLimit As Button
+    Friend WithEvents colDelete As DataGridViewCheckBoxColumn
 End Class
