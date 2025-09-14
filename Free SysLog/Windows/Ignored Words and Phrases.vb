@@ -428,6 +428,7 @@ Public Class IgnoredWordsAndPhrases
         boolEditMode = False
         boolChanged = True
         TxtIgnored.Text = Nothing
+        txtComment.Text = Nothing
         ChkCaseSensitive.Checked = False
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
