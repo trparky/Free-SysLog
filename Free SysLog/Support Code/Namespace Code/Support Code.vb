@@ -113,8 +113,10 @@ Namespace SupportCode
             Try
                 Dim SpecializedStringCollection As New Specialized.StringCollection
 
-                For Each column As DataGridViewTextBoxColumn In columns
-                    SpecializedStringCollection.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New ColumnOrder With {.ColumnName = column.Name, .ColumnIndex = column.DisplayIndex}))
+                For Each column As DataGridViewColumn In columns
+                    If TypeOf column Is DataGridViewTextBoxColumn Then
+                        SpecializedStringCollection.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New ColumnOrder With {.ColumnName = column.Name, .ColumnIndex = column.DisplayIndex}))
+                    End If
                 Next
 
                 Return SpecializedStringCollection
