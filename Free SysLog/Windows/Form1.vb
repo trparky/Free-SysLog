@@ -785,13 +785,24 @@ Public Class Form1
             e.Handled = True
 
             If Logs.SelectedCells.Count > 0 Then
-                Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-                selectedRow.Cells(colDelete.Index).Value = Not selectedRow.Cells(colDelete.Index).Value
+                If Logs.SelectedCells.Count = 1 Then
+                    Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+                    selectedRow.Cells(colDelete.Index).Value = Not selectedRow.Cells(colDelete.Index).Value
+                Else
+                    For Each item As MyDataGridViewRow In Logs.SelectedRows
+                        item.Cells(colDelete.Index).Value = Not item.Cells(colDelete.Index).Value
+                    Next
+                End If
 
                 Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
 
-                LblItemsSelected.Visible = True
-                LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
+                If intNumberOfCheckedLogs = 0 Then
+                    LblItemsSelected.Visible = False
+                    LblItemsSelected.Text = Nothing
+                Else
+                    LblItemsSelected.Visible = True
+                    LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
+                End If
             End If
         End If
     End Sub
