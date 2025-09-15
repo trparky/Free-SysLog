@@ -159,6 +159,7 @@ Public Class IgnoredWordsAndPhrases
         Regex.Width = My.Settings.colIgnoredRegex
         CaseSensitive.Width = My.Settings.colIgnoredCaseSensitive
         ColEnabled.Width = My.Settings.colIgnoredEnabled
+        colDateCreated.Width = My.Settings.colIgnoredDateCreated
 
         Size = My.Settings.ConfigureIgnoredSize
 
@@ -306,6 +307,7 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.colIgnoredRegex = Regex.Width
             My.Settings.colIgnoredCaseSensitive = CaseSensitive.Width
             My.Settings.colIgnoredEnabled = ColEnabled.Width
+            My.Settings.colIgnoredDateCreated = colDateCreated.Width
         End If
     End Sub
 
