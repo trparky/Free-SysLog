@@ -787,6 +787,11 @@ Public Class Form1
             If Logs.SelectedCells.Count > 0 Then
                 Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
                 selectedRow.Cells(colDelete.Index).Value = Not selectedRow.Cells(colDelete.Index).Value
+
+                Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+
+                LblItemsSelected.Visible = True
+                LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
             End If
         End If
     End Sub
@@ -1589,8 +1594,12 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
-        LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
-        LblItemsSelected.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
+        Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+
+        If intNumberOfCheckedLogs = 0 Then
+            LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
+            LblItemsSelected.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
+        End If
     End Sub
 
     Private Sub ChkDeselectItemAfterMinimizingWindow_Click(sender As Object, e As EventArgs) Handles ChkDeselectItemAfterMinimizingWindow.Click
