@@ -776,6 +776,8 @@ Public Class Form1
 
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {rowsToDelete.Count:N0} log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
 
+                BtnSaveLogsToDisk.Enabled = True
+
                 SelectLatestLogEntry()
             End SyncLock
 
