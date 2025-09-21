@@ -113,8 +113,10 @@ Namespace SupportCode
             Try
                 Dim SpecializedStringCollection As New Specialized.StringCollection
 
-                For Each column As DataGridViewTextBoxColumn In columns
-                    SpecializedStringCollection.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New ColumnOrder With {.ColumnName = column.Name, .ColumnIndex = column.DisplayIndex}))
+                For Each column As DataGridViewColumn In columns
+                    If TypeOf column Is DataGridViewTextBoxColumn Then
+                        SpecializedStringCollection.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New ColumnOrder With {.ColumnName = column.Name, .ColumnIndex = column.DisplayIndex}))
+                    End If
                 Next
 
                 Return SpecializedStringCollection
@@ -219,7 +221,7 @@ Namespace SupportCode
             Return Nothing
         End Function
 
-        Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+        Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
             Dim strIconPath As String = Nothing
             Dim notification As New ToastContentBuilder()
 
@@ -235,7 +237,7 @@ Namespace SupportCode
             End If
 
             If My.Settings.IncludeButtonsOnNotifications Then
-                Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText})
+                Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText, .alertType = alertType})
 
                 notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("datapacket", strNotificationPacket))
                 notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", strOpenSysLog))

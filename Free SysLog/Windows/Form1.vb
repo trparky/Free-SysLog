@@ -398,6 +398,14 @@ Public Class Form1
         Return String.Join(" and ", parts)
     End Function
 
+    Private Sub Logs_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles Logs.CellPainting
+        If e.RowIndex = -1 AndAlso e.ColumnIndex = ColAlerts.Index AndAlso e.ColumnIndex = colDelete.Index Then
+            e.PaintBackground(e.CellBounds, False)
+            TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
+            e.Handled = True
+        End If
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SupportCode.ParentForm = Me
 
@@ -496,7 +504,7 @@ Public Class Form1
                                                                            Try
                                                                                Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(argsDictionary("datapacket").ToString, JSONDecoderSettingsForSettingsFiles)
 
-                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext)
+                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext, NotificationDataPacket.alertType)
                                                                            Catch ex As Exception
                                                                            End Try
                                                                        End If
@@ -676,10 +684,10 @@ Public Class Form1
         SelectFileInWindowsExplorer(strPathToDataFile)
     End Sub
 
-    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String)
+    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
         strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
 
-        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
             LogViewerInstance.TopMost = True
@@ -695,7 +703,7 @@ Public Class Form1
             Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
             Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
 
-            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me}
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me, .alertType = selectedRow.alertType}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
 
@@ -716,19 +724,30 @@ Public Class Form1
     Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles Logs.KeyUp
         If e.KeyValue = Keys.Delete Then
             SyncLock dataGridLockObject
-                Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
+                Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+                Dim intNumberOfSelectedLogs As Integer = Logs.SelectedRows.Count
 
                 If ConfirmDelete.Checked Then
                     Dim choice As Confirm_Delete.UserChoice
 
-                    Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-                        Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
+                    Using Confirm_Delete As New Confirm_Delete(intNumberOfSelectedLogs) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                        If intNumberOfCheckedLogs > 0 Then
+                            Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfCheckedLogs} checked {If(intNumberOfCheckedLogs = 1, "log", "logs")}?"
+                        Else
+                            Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfSelectedLogs} selected {If(intNumberOfSelectedLogs = 1, "log", "logs")}?"
+                        End If
+
                         Confirm_Delete.ShowDialog(Me)
                         choice = Confirm_Delete.choice
                     End Using
 
                     If choice = Confirm_Delete.UserChoice.NoDelete Then
-                        MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                        If intNumberOfCheckedLogs > 0 Then
+                            MsgBox($"{If(intNumberOfCheckedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                        Else
+                            MsgBox($"{If(intNumberOfSelectedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                        End If
+
                         Exit Sub
                     ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
                         MakeLogBackup()
@@ -738,10 +757,17 @@ Public Class Form1
                 ' Create a list to store rows that need to be removed
                 Dim rowsToDelete As New List(Of MyDataGridViewRow)
 
-                ' Loop through the rows in reverse order to avoid index shifting
-                For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
-                    rowsToDelete.Add(Logs.SelectedRows(i))
-                Next
+                If intNumberOfCheckedLogs > 0 Then
+                    ' Loop through the rows in reverse order to avoid index shifting
+                    For i As Integer = Logs.Rows.Count - 1 To 0 Step -1
+                        If Logs.Rows(i).Cells(colDelete.Index).Value Then rowsToDelete.Add(Logs.Rows(i))
+                    Next
+                Else
+                    ' Loop through the rows in reverse order to avoid index shifting
+                    For i As Integer = Logs.SelectedRows.Count - 1 To 0 Step -1
+                        rowsToDelete.Add(Logs.SelectedRows(i))
+                    Next
+                End If
 
                 ' Remove the rows outside the loop
                 For Each row As MyDataGridViewRow In rowsToDelete
@@ -750,11 +776,36 @@ Public Class Form1
 
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {rowsToDelete.Count:N0} log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
 
+                BtnSaveLogsToDisk.Enabled = True
+
                 SelectLatestLogEntry()
             End SyncLock
 
             UpdateLogCount()
             SaveLogsToDiskSub()
+        ElseIf e.KeyValue = Keys.Space Then
+            e.Handled = True
+
+            If Logs.SelectedCells.Count > 0 Then
+                If Logs.SelectedCells.Count = 1 Then
+                    Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+                    selectedRow.Cells(colDelete.Index).Value = Not selectedRow.Cells(colDelete.Index).Value
+                Else
+                    For Each item As MyDataGridViewRow In Logs.SelectedRows
+                        item.Cells(colDelete.Index).Value = Not item.Cells(colDelete.Index).Value
+                    Next
+                End If
+
+                Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+
+                If intNumberOfCheckedLogs = 0 Then
+                    LblItemsSelected.Visible = False
+                    LblItemsSelected.Text = Nothing
+                Else
+                    LblItemsSelected.Visible = True
+                    LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
+                End If
+            End If
         End If
     End Sub
 
@@ -1121,6 +1172,7 @@ Public Class Form1
     End Sub
 
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
+        IgnoredHits.Clear()
         longNumberOfIgnoredLogs = 0
         LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
     End Sub
@@ -1300,13 +1352,11 @@ Public Class Form1
             Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
             If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
         Else
-            CopyLogTextToolStripMenuItem.Visible = False
             OpenLogViewerToolStripMenuItem.Visible = False
             CreateAlertToolStripMenuItem.Visible = False
             CreateReplacementToolStripMenuItem.Visible = False
             CreateIgnoredLogToolStripMenuItem.Visible = False
             DeleteSimilarLogsToolStripMenuItem.Visible = False
-            CopyRawLogTextToolStripMenuItem.Visible = False
         End If
 
         DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
@@ -1314,7 +1364,26 @@ Public Class Form1
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
-        CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value, Text)
+        Dim intLogCount As Integer = Logs.SelectedRows().Count
+        Dim boolCopyToClipboardResults As Boolean = False
+
+        If intLogCount <> 0 Then
+            If intLogCount = 1 Then
+                boolCopyToClipboardResults = CopyTextToWindowsClipboard(Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value, Text)
+            Else
+                Dim allSelectedLogs As New StringBuilder()
+                Dim selectedItem As MyDataGridViewRow
+
+                For Each item As DataGridViewRow In Logs.SelectedRows
+                    selectedItem = TryCast(item, MyDataGridViewRow)
+                    If selectedItem IsNot Nothing Then allSelectedLogs.AppendLine(selectedItem.Cells(ColumnIndex_LogText).Value)
+                Next
+
+                If allSelectedLogs.Length > 0 Then boolCopyToClipboardResults = CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
+            End If
+
+            If boolCopyToClipboardResults Then MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
+        End If
     End Sub
 
     Private Sub Logs_CellMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.CellMouseClick
@@ -1340,6 +1409,9 @@ Public Class Form1
 
         If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
             Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
+        ElseIf hitTest.Type = DataGridViewHitTestType.Cell And hitTest.ColumnIndex = colDelete.Index Then
+            Dim cell As DataGridViewCheckBoxCell = DirectCast(Logs.Rows(hitTest.RowIndex).Cells(colDelete.Index), DataGridViewCheckBoxCell)
+            cell.Value = Not cell.Value
         End If
     End Sub
 
@@ -1535,8 +1607,12 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
-        LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
-        LblItemsSelected.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
+        Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+
+        If intNumberOfCheckedLogs = 0 Then
+            LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
+            LblItemsSelected.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
+        End If
     End Sub
 
     Private Sub ChkDeselectItemAfterMinimizingWindow_Click(sender As Object, e As EventArgs) Handles ChkDeselectItemAfterMinimizingWindow.Click
@@ -1983,9 +2059,26 @@ Public Class Form1
     End Sub
 
     Private Sub CopyRawLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyRawLogTextToolStripMenuItem.Click
-        If Logs.SelectedRows().Count <> 0 Then
-            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-            If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+        Dim intLogCount As Integer = Logs.SelectedRows().Count
+        Dim boolCopyToClipboardResults As Boolean = False
+
+        If intLogCount <> 0 Then
+            If intLogCount = 1 Then
+                Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+                If selectedItem IsNot Nothing Then boolCopyToClipboardResults = CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+            Else
+                Dim allSelectedLogs As New StringBuilder()
+                Dim selectedItem As MyDataGridViewRow
+
+                For Each item As DataGridViewRow In Logs.SelectedRows
+                    selectedItem = TryCast(item, MyDataGridViewRow)
+                    If selectedItem IsNot Nothing Then allSelectedLogs.AppendLine(selectedItem.RawLogData)
+                Next
+
+                If allSelectedLogs.Length > 0 Then boolCopyToClipboardResults = CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
+            End If
+
+            If boolCopyToClipboardResults Then MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 

@@ -116,7 +116,7 @@ Public Class ViewLogBackups
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(3).Value = $"{intCount:N0}"
-                                                       .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+                                                       .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
                                                        .Cells(4).Value = If(boolIsHidden, "Yes", "No")
                                                        .Cells(4).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -161,7 +161,18 @@ Public Class ViewLogBackups
                End Sub)
     End Sub
 
+    Private Sub DataGridView1_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles FileList.CellPainting
+        If e.RowIndex = -1 AndAlso (e.ColumnIndex = colHidden.Index Or e.ColumnIndex = colEntryCount.Index) Then
+            e.PaintBackground(e.CellBounds, False)
+            TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
+            e.Handled = True
+        End If
+    End Sub
+
     Private Sub ViewLogBackups_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        colHidden.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+        colEntryCount.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
         ChkIgnoreSearchResultsLimits.Checked = My.Settings.IgnoreSearchResultLimits
         Dim flags As Reflection.BindingFlags = Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty
         Dim propInfo As Reflection.PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)

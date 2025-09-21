@@ -218,6 +218,7 @@ Public Class Alerts
                     .AlertType = AlertType
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolLimited = ChkLimited.Checked
+                    .BackColor = If(ChkEnabled.Checked, Color.LightGreen, Color.Pink)
                 End With
 
                 AlertsListView.Enabled = True
@@ -254,6 +255,7 @@ Public Class Alerts
                     .AlertType = AlertType
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolLimited = ChkLimited.Checked
+                    .BackColor = If(ChkEnabled.Checked, Color.LightGreen, Color.Pink)
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                 End With
 

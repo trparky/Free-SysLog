@@ -67,7 +67,7 @@ Partial Class CloseFreeSysLogDialog
         Me.BtnNo.Location = New System.Drawing.Point(189, 64)
         Me.BtnNo.Name = "BtnNo"
         Me.BtnNo.Size = New System.Drawing.Size(75, 23)
-        Me.BtnNo.TabIndex = 0
+        Me.BtnNo.TabIndex = 1
         Me.BtnNo.Text = "&No"
         Me.ToolTip.SetToolTip(Me.BtnNo, "Can be activated by pressing the N key.")
         Me.BtnNo.UseVisualStyleBackColor = True
@@ -77,7 +77,7 @@ Partial Class CloseFreeSysLogDialog
         Me.BtnYes.Location = New System.Drawing.Point(108, 64)
         Me.BtnYes.Name = "BtnYes"
         Me.BtnYes.Size = New System.Drawing.Size(75, 23)
-        Me.BtnYes.TabIndex = 2
+        Me.BtnYes.TabIndex = 0
         Me.BtnYes.Text = "&Yes"
         Me.ToolTip.SetToolTip(Me.BtnYes, "Can be activated by pressing the Y key.")
         Me.BtnYes.UseVisualStyleBackColor = True
@@ -87,7 +87,7 @@ Partial Class CloseFreeSysLogDialog
         Me.BtnMinimize.Location = New System.Drawing.Point(271, 64)
         Me.BtnMinimize.Name = "BtnMinimize"
         Me.BtnMinimize.Size = New System.Drawing.Size(75, 23)
-        Me.BtnMinimize.TabIndex = 1
+        Me.BtnMinimize.TabIndex = 2
         Me.BtnMinimize.Text = "&Minimize"
         Me.ToolTip.SetToolTip(Me.BtnMinimize, "Can be activated by pressing the M key.")
         Me.BtnMinimize.UseVisualStyleBackColor = True

@@ -68,11 +68,18 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems(1).Text = If(ChkRegex.Checked, "Yes", "No")
                     .SubItems(2).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
                     .SubItems(3).Text = If(ChkEnabled.Checked, "Yes", "No")
+                    .SubItems(5).Text = If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text")
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
                     .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
+                    .strComment = txtComment.Text
+
+                    If .dateCreated = Date.MinValue Then ' Just in case it was never set
+                        .dateCreated = Date.Now
+                        .SubItems(6).Text = Date.Now.ToLongDateString
+                    End If
                 End With
 
                 IgnoredListView.Enabled = True
@@ -85,10 +92,15 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
                     .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
                     .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                    .SubItems.Add("0")
+                    .SubItems.Add(If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text"))
+                    .SubItems.Add(Date.Now.ToLongDateString)
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
+                    .strComment = txtComment.Text
+                    .dateCreated = Date.Now
                     If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
                     .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
@@ -99,6 +111,7 @@ Public Class IgnoredWordsAndPhrases
             boolEditMode = False
             boolChanged = True
             TxtIgnored.Text = Nothing
+            txtComment.Text = Nothing
             ChkCaseSensitive.Checked = False
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
@@ -115,7 +128,7 @@ Public Class IgnoredWordsAndPhrases
                 Dim listOfIgnoredRulesToBeSavedToSettings As New Specialized.StringCollection()
 
                 For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType}
+                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment}
                     If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
                     listOfIgnoredRulesToBeSavedToSettings.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
                 Next
@@ -146,6 +159,7 @@ Public Class IgnoredWordsAndPhrases
         Regex.Width = My.Settings.colIgnoredRegex
         CaseSensitive.Width = My.Settings.colIgnoredCaseSensitive
         ColEnabled.Width = My.Settings.colIgnoredEnabled
+        colDateCreated.Width = My.Settings.colIgnoredDateCreated
 
         Size = My.Settings.ConfigureIgnoredSize
 
@@ -225,6 +239,7 @@ Public Class IgnoredWordsAndPhrases
             ChkRegex.Checked = selectedItemObject.BoolRegex
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
+            txtComment.Text = selectedItemObject.strComment
         End If
     End Sub
 
@@ -292,6 +307,7 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.colIgnoredRegex = Regex.Width
             My.Settings.colIgnoredCaseSensitive = CaseSensitive.Width
             My.Settings.colIgnoredEnabled = ColEnabled.Width
+            My.Settings.colIgnoredDateCreated = colDateCreated.Width
         End If
     End Sub
 
@@ -310,7 +326,7 @@ Public Class IgnoredWordsAndPhrases
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType})
+                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment})
             Next
 
             IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
@@ -416,6 +432,7 @@ Public Class IgnoredWordsAndPhrases
         boolEditMode = False
         boolChanged = True
         TxtIgnored.Text = Nothing
+        txtComment.Text = Nothing
         ChkCaseSensitive.Checked = False
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
@@ -437,5 +454,13 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
         SortByClickedColumn(IgnoredListView, e.Column, m_SortingColumn)
+    End Sub
+
+    Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
+        IgnoredHits.Clear()
+
+        For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+            item.SubItems(4).Text = "0"
+        Next
     End Sub
 End Class
