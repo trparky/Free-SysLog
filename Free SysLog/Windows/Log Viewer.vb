@@ -53,12 +53,14 @@ Public Class LogViewer
             txtAlertText.Visible = False
             lblAlertText.Visible = False
             IconImageBox.Visible = False
+            lblAlertType.Visible = False
             TableLayoutPanel1.SetRowSpan(LogText, 3)
         Else
             AdjustScrollBars(txtAlertText)
 
             If alertType = AlertType.None Then
                 HideTheImageBox()
+                lblAlertType.Visible = False
             Else
                 Dim strIconPath As String = Nothing
 
