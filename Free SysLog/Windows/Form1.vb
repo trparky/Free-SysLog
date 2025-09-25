@@ -727,6 +727,15 @@ Public Class Form1
                 Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
                 Dim intNumberOfSelectedLogs As Integer = Logs.SelectedRows.Count
 
+                If intNumberOfCheckedLogs <> intNumberOfSelectedLogs AndAlso MsgBox("The checked logs does not match the selected logs, do you want to make the checked logs match the selected logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+                    For Each item As MyDataGridViewRow In Logs.SelectedRows
+                        item.Cells(colDelete.Index).Value = True
+                    Next
+
+                    intNumberOfCheckedLogs = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+                    intNumberOfSelectedLogs = Logs.SelectedRows.Count
+                End If
+
                 If ConfirmDelete.Checked Then
                     Dim choice As Confirm_Delete.UserChoice
 
