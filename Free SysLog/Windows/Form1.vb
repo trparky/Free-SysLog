@@ -2111,11 +2111,13 @@ Public Class Form1
                 Dim buffer(4095) As Byte
                 Dim remoteEndPoint As EndPoint = New IPEndPoint(ipAddressSetting, 0)
                 Dim ProxiedSysLogData As ProxiedSysLogData
+                Dim bytesReceived As Integer
+                Dim strReceivedData, strSourceIP As String
 
                 While boolDoServerLoop
-                    Dim bytesReceived As Integer = socket.ReceiveFrom(buffer, remoteEndPoint)
-                    Dim strReceivedData As String = Encoding.UTF8.GetString(buffer, 0, bytesReceived)
-                    Dim strSourceIP As String = GetIPv4Address(CType(remoteEndPoint, IPEndPoint).Address).ToString()
+                    bytesReceived = socket.ReceiveFrom(buffer, remoteEndPoint)
+                    strReceivedData = Encoding.UTF8.GetString(buffer, 0, bytesReceived)
+                    strSourceIP = GetIPv4Address(CType(remoteEndPoint, IPEndPoint).Address).ToString()
 
                     If strReceivedData.Trim.Equals(strRestore, StringComparison.OrdinalIgnoreCase) Then
                         Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
@@ -2148,6 +2150,7 @@ Public Class Form1
 
                     strReceivedData = Nothing
                     strSourceIP = Nothing
+                    bytesReceived = Nothing
                 End While
             End Using
         Catch ex As Threading.ThreadAbortException
