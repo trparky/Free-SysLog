@@ -64,15 +64,15 @@ Public Class LogViewer
             Else
                 Dim strIconPath As String = Nothing
 
-                If alertType = ToolTipIcon.Error Then
+                If alertType = AlertType.ErrorMsg Then
                     lblAlertType.Text = "Alert Type: Error"
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
                     ToolTip1.SetToolTip(IconImageBox, "Error alert type is used for critical issues." & vbCrLf & "It indicates a serious problem that needs immediate attention.")
-                ElseIf alertType = ToolTipIcon.Warning Then
+                ElseIf alertType = AlertType.Warning Then
                     lblAlertType.Text = "Alert Type: Warning"
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
                     ToolTip1.SetToolTip(IconImageBox, "Warning alert type is used for non-critical issues." & vbCrLf & "It indicates a potential problem that may need attention.")
-                ElseIf alertType = ToolTipIcon.Info Then
+                ElseIf alertType = AlertType.Info Then
                     lblAlertType.Text = "Alert Type: Information"
                     strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
                     ToolTip1.SetToolTip(IconImageBox, "Information alert type is used for general information alerts." & vbCrLf & "It does not indicate any problem.")
