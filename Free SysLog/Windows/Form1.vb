@@ -179,7 +179,7 @@ Public Class Form1
                     Logs.ClearSelection()
 
                     For Each item As MyDataGridViewRow In Logs.Rows
-                        item.Cells(colDelete.Index).Value = False
+                        item.UncheckRow()
                     Next
 
                     LblItemsSelected.Visible = False
@@ -735,7 +735,7 @@ Public Class Form1
 
                 If intNumberOfCheckedLogs <> 0 And intNumberOfCheckedLogs <> 1 And intNumberOfSelectedLogs <> 0 And intNumberOfSelectedLogs <> 1 AndAlso intNumberOfCheckedLogs <> intNumberOfSelectedLogs AndAlso MsgBox("The checked logs does not match the selected logs, do you want to make the checked logs match the selected logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
                     For Each item As MyDataGridViewRow In Logs.SelectedRows
-                        item.Cells(colDelete.Index).Value = True
+                        item.CheckRow()
                     Next
 
                     intNumberOfCheckedLogs = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
@@ -804,10 +804,10 @@ Public Class Form1
             If Logs.SelectedCells.Count > 0 Then
                 If Logs.SelectedCells.Count = 1 Then
                     Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-                    selectedRow.Cells(colDelete.Index).Value = Not selectedRow.Cells(colDelete.Index).Value
+                    selectedRow.InvertRowCheckboxStatus()
                 Else
                     For Each item As MyDataGridViewRow In Logs.SelectedRows
-                        item.Cells(colDelete.Index).Value = Not item.Cells(colDelete.Index).Value
+                        item.InvertRowCheckboxStatus()
                     Next
                 End If
 
