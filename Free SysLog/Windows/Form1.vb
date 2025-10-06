@@ -274,6 +274,7 @@ Public Class Form1
         ChkDebug.Checked = My.Settings.boolDebug
         ConfirmDelete.Checked = My.Settings.ConfirmDelete
         ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
+        ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -2089,6 +2090,10 @@ Public Class Form1
 
             If boolCopyToClipboardResults Then MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
         End If
+    End Sub
+
+    Private Sub ShowCloseButtonOnNotifications_Click(sender As Object, e As EventArgs) Handles ShowCloseButtonOnNotifications.Click
+        My.Settings.ShowCloseButtonOnNotifications = ShowCloseButtonOnNotifications.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

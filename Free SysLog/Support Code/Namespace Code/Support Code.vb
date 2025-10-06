@@ -241,7 +241,7 @@ Namespace SupportCode
 
                 notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("datapacket", strNotificationPacket))
                 notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", strOpenSysLog))
-                notification.AddButton(New ToastButton().SetContent("Close").SetDismissActivation())
+                If My.Settings.ShowCloseButtonOnNotifications Then notification.AddButton(New ToastButton().SetContent("Close").SetDismissActivation())
             Else
                 notification.AddArgument("action", strOpenSysLog)
             End If
