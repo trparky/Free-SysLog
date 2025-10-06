@@ -177,6 +177,11 @@ Public Class Form1
             If WindowState = FormWindowState.Minimized Then
                 If My.Settings.boolDeselectItemsWhenMinimizing Then
                     Logs.ClearSelection()
+
+                    For Each item As MyDataGridViewRow In Logs.Rows
+                        item.Cells(colDelete.Index).Value = False
+                    Next
+
                     LblItemsSelected.Visible = False
                 End If
 
