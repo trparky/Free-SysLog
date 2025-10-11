@@ -46,11 +46,11 @@ Namespace SupportCode
     Module SupportCode
         Public ParentForm As Form1
 
-        Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public AlertsRegexCache As New Dictionary(Of String, Regex)
         Public AlertsRegexCacheLockingObject As New Object
-        Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public ReplacementsRegexCache As New Dictionary(Of String, Regex)
         Public ReplacementsRegexCacheLockingObject As New Object
-        Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public IgnoredRegexCache As New Dictionary(Of String, Regex)
         Public IgnoredRegexCacheLockingObject As New Object()
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
@@ -366,7 +366,7 @@ Namespace SupportCode
 
         Public Function IsRegexPatternValid(pattern As String) As Boolean
             Try
-                Dim regex As New RegularExpressions.Regex(pattern)
+                Dim regex As New Regex(pattern)
                 Return True
             Catch ex As ArgumentException
                 Return False
