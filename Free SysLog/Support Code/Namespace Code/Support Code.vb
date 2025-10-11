@@ -200,8 +200,6 @@ Namespace SupportCode
             Dim highAsIs As Integer = high16
             Dim highSwapped As Integer = Swap16(high16)
 
-            Debug.WriteLine($"raw port = {port} ({rawHex}) | low16={low16} lowSwapped={lowSwapped} high16={high16} highSwapped={highSwapped}")
-
             ' Heuristic priority (keeps your original ordering intent):
             ' 1) If high16 != 0 => prefer highSwapped, then highAsIs
             ' 2) Else prefer lowAsIs (if nonzero & plausible)
@@ -209,21 +207,17 @@ Namespace SupportCode
             ' 4) Fallback: any plausible candidate in a consistent order
             If high16 <> 0 Then
                 If IsPlausiblePort(highSwapped) Then
-                    Debug.WriteLine($"-> chosen: highSwapped = {highSwapped}")
                     Return highSwapped
                 ElseIf IsPlausiblePort(highAsIs) Then
-                    Debug.WriteLine($"-> chosen: highAsIs = {highAsIs}")
                     Return highAsIs
                 End If
             End If
 
             If lowAsIs <> 0 AndAlso IsPlausiblePort(lowAsIs) Then
-                Debug.WriteLine($"-> chosen: lowAsIs = {lowAsIs}")
                 Return lowAsIs
             End If
 
             If lowSwapped <> 0 AndAlso IsPlausiblePort(lowSwapped) Then
-                Debug.WriteLine($"-> chosen: lowSwapped = {lowSwapped}")
                 Return lowSwapped
             End If
 
@@ -235,7 +229,6 @@ Namespace SupportCode
                 End If
             Next
 
-            Debug.WriteLine("-> no plausible port found, returning 0")
             Return 0
         End Function
 
