@@ -186,7 +186,7 @@ Namespace SupportCode
         ''' either the low 16 bits or high 16 bits, and each 16-bit word may itself
         ''' be in host or swapped byte order. Uses a small heuristic to choose the best candidate.
         ''' </summary>
-        Public Function GetPortFromDWORD(port As UInteger) As Integer
+        Private Function GetPortFromDWORD(port As UInteger) As Integer
             ' helpful debug hex
             Dim rawHex As String = "0x" & port.ToString("X8")
 
