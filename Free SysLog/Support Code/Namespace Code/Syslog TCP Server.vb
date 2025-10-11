@@ -36,7 +36,7 @@ Namespace SyslogTcpServer
                     Await HandleClientAsync(tcpClient)
                 End While
             Catch ex As Exception
-                Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Tcp)
+                Dim process As Process = GetProcessByTcpPort(My.Settings.sysLogPort)
 
                 If process Is Nothing Then
                     _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)

@@ -544,7 +544,7 @@ Public Class Form1
 
             boolServerRunning = True
         Else
-            Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
+            Dim process As Process = GetProcessByUdpPort(My.Settings.sysLogPort)
 
             If process Is Nothing Then
                 MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
@@ -2167,7 +2167,7 @@ Public Class Form1
             ' Does nothing
         Catch e As Exception
             Invoke(Sub()
-                       Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
+                       Dim process As Process = GetProcessByUdpPort(My.Settings.sysLogPort)
 
                        If process Is Nothing Then
                            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
