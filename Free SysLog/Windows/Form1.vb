@@ -843,7 +843,7 @@ Public Class Form1
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
-        LblAutoScrollStatus.Text = "Auto Scroll Status: Enabled"
+        LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
