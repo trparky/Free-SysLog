@@ -169,9 +169,9 @@ Namespace SupportCode
         ''' </summary>
         Private Function Swap16(value As UShort) As UShort
             ' Do the shifts in an unsigned 32-bit space then mask down to 16 bits.
-            Dim widened As UInteger = CUInt(value)
+            Dim widened As UInteger = value
             Dim swapped As UInteger = ((widened << 8) Or (widened >> 8)) And &HFFFFUI
-            Return CUShort(swapped)
+            Return swapped
         End Function
 
         ''' <summary>
@@ -191,14 +191,14 @@ Namespace SupportCode
             Dim rawHex As String = "0x" & port.ToString("X8")
 
             ' extract 16-bit halves
-            Dim low16 As UShort = CUShort(port And &HFFFFUI)
-            Dim high16 As UShort = CUShort((port >> 16) And &HFFFFUI)
+            Dim low16 As UShort = port And &HFFFFUI
+            Dim high16 As UShort = (port >> 16) And &HFFFFUI
 
             ' possible decodings (as integers for IsPlausiblePort)
-            Dim lowAsIs As Integer = CInt(low16)
-            Dim lowSwapped As Integer = CInt(Swap16(low16))
-            Dim highAsIs As Integer = CInt(high16)
-            Dim highSwapped As Integer = CInt(Swap16(high16))
+            Dim lowAsIs As Integer = low16
+            Dim lowSwapped As Integer = Swap16(low16)
+            Dim highAsIs As Integer = high16
+            Dim highSwapped As Integer = Swap16(high16)
 
             Debug.WriteLine($"raw port = {port} ({rawHex}) | low16={low16} lowSwapped={lowSwapped} high16={high16} highSwapped={highSwapped}")
 
