@@ -232,8 +232,8 @@ Namespace SupportCode
             Return 0
         End Function
 
-        Public Function GetProcessByUdpPort(port As Integer) As Process
-            Dim AF_INET As Integer = 2 ' IPv4
+        Public Function GetProcessByUdpPort(port As Integer, protocolType As AddressFamily) As Process
+            Dim AF_INET As Integer = protocolType
             Dim bufferSize As Integer = 0
 
             ' Initial call to get required buffer size
@@ -263,8 +263,8 @@ Namespace SupportCode
             Return Nothing
         End Function
 
-        Public Function GetProcessByTcpPort(port As Integer) As Process
-            Dim AF_INET As Integer = 2 ' IPv4
+        Public Function GetProcessByTcpPort(port As Integer, protocolType As AddressFamily) As Process
+            Dim AF_INET As Integer = protocolType
             Dim bufferSize As Integer = 0
 
             ' First call to determine required buffer size

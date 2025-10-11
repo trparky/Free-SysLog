@@ -36,12 +36,20 @@ Namespace SyslogTcpServer
                     Await HandleClientAsync(tcpClient)
                 End While
             Catch ex As Exception
-                Dim process As Process = GetProcessByTcpPort(My.Settings.sysLogPort)
+                Dim processIPv4 As Process = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
+                Dim processIPv6 As Process = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+                Dim activeProcess As Process = Nothing
 
-                If process Is Nothing Then
+                If processIPv4 IsNot Nothing Then
+                    activeProcess = processIPv4
+                ElseIf processIPv6 IsNot Nothing Then
+                    activeProcess = processIPv6
+                End If
+
+                If activeProcess Is Nothing Then
                     _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
                 Else
-                    Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+                    Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {activeProcess.Id} already has the port open."
                     _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}{vbCrLf}{vbCrLf}{strLogText}", IPAddress.Loopback.ToString)
                 End If
             End Try
