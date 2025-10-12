@@ -548,6 +548,12 @@ Public Class Form1
             Dim processIPv6 As Process = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
             Dim activeProcess As Process = Nothing
 
+            If processIPv4 IsNot Nothing Then
+                activeProcess = processIPv4
+            ElseIf processIPv6 IsNot Nothing Then
+                activeProcess = processIPv6
+            End If
+
             If activeProcess Is Nothing Then
                 MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
             Else
