@@ -232,7 +232,7 @@ Namespace SupportCode
             Return 0
         End Function
 
-        Public Function GetProcessByUdpPort(port As Integer, protocolType As AddressFamily) As Process
+        Private Function GetProcessByUdpPort(port As Integer, protocolType As AddressFamily) As Process
             Dim AF_INET As Integer = protocolType
             Dim bufferSize As Integer = 0
 
@@ -263,7 +263,7 @@ Namespace SupportCode
             Return Nothing
         End Function
 
-        Public Function GetProcessByTcpPort(port As Integer, protocolType As AddressFamily) As Process
+        Private Function GetProcessByTcpPort(port As Integer, protocolType As AddressFamily) As Process
             Dim AF_INET As Integer = protocolType
             Dim bufferSize As Integer = 0
 
@@ -292,6 +292,27 @@ Namespace SupportCode
             End Try
 
             Return Nothing
+        End Function
+
+        Public Function GetProcessByPort(protocolType As ProtocolType) As Process
+            Dim processIPv4 As Process = Nothing
+            Dim processIPv6 As Process = Nothing
+
+            If protocolType = ProtocolType.Tcp Then
+                processIPv4 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+            ElseIf protocolType = ProtocolType.Udp Then
+                processIPv4 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+            End If
+
+            If processIPv4 IsNot Nothing Then
+                Return processIPv4
+            ElseIf processIPv6 IsNot Nothing Then
+                Return processIPv6
+            Else
+                Return Nothing
+            End If
         End Function
 
         Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)

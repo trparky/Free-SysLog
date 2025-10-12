@@ -36,15 +36,7 @@ Namespace SyslogTcpServer
                     Await HandleClientAsync(tcpClient)
                 End While
             Catch ex As Exception
-                Dim processIPv4 As Process = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
-                Dim processIPv6 As Process = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
-                Dim activeProcess As Process = Nothing
-
-                If processIPv4 IsNot Nothing Then
-                    activeProcess = processIPv4
-                ElseIf processIPv6 IsNot Nothing Then
-                    activeProcess = processIPv6
-                End If
+                Dim activeProcess As Process = GetProcessByPort(ProtocolType.Tcp)
 
                 If activeProcess Is Nothing Then
                     _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
