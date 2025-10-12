@@ -549,7 +549,7 @@ Public Class Form1
             If activeProcess Is Nothing Then
                 MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
             Else
-                Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {activeProcess.Id} already has the port open."
+                Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
 
                 SyncLock dataGridLockObject
                     Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
@@ -2172,7 +2172,7 @@ Public Class Form1
                        If activeProcess Is Nothing Then
                            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
                        Else
-                           Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {activeProcess.Id} already has the port open."
+                           Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
 
                            SyncLock dataGridLockObject
                                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))

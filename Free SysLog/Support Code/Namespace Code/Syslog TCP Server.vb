@@ -41,7 +41,7 @@ Namespace SyslogTcpServer
                 If activeProcess Is Nothing Then
                     _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", IPAddress.Loopback.ToString)
                 Else
-                    Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {activeProcess.Id} already has the port open."
+                    Dim strLogText As String = $"Unable to start syslog TCP server. A process with a PID of {activeProcess.Id} already has the TCP port open."
                     _syslogMessageHandler($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}{vbCrLf}{vbCrLf}{strLogText}", IPAddress.Loopback.ToString)
                 End If
             End Try
