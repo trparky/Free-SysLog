@@ -5,6 +5,7 @@ Imports System.Net.Sockets
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports Microsoft.Toolkit.Uwp.Notifications
+Imports System.Runtime.InteropServices
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -46,11 +47,11 @@ Namespace SupportCode
     Module SupportCode
         Public ParentForm As Form1
 
-        Public AlertsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public AlertsRegexCache As New Dictionary(Of String, Regex)
         Public AlertsRegexCacheLockingObject As New Object
-        Public ReplacementsRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public ReplacementsRegexCache As New Dictionary(Of String, Regex)
         Public ReplacementsRegexCacheLockingObject As New Object
-        Public IgnoredRegexCache As New Dictionary(Of String, RegularExpressions.Regex)
+        Public IgnoredRegexCache As New Dictionary(Of String, Regex)
         Public IgnoredRegexCacheLockingObject As New Object()
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
@@ -163,62 +164,155 @@ Namespace SupportCode
             ListView.Sort()
         End Sub
 
-        Public Function GetProcessUsingPort(port As Integer, protocolType As ProtocolType) As Process
-            Dim startInfo As New ProcessStartInfo() With {
-                .FileName = "netstat",
-                .UseShellExecute = False,
-                .RedirectStandardOutput = True,
-                .CreateNoWindow = True
-            }
+        ''' <summary>
+        ''' Swap the bytes of a 16-bit unsigned value (endian swap).
+        ''' </summary>
+        Private Function Swap16(value As UShort) As UShort
+            ' Do the shifts in an unsigned 32-bit space then mask down to 16 bits.
+            Dim widened As UInteger = value
+            Dim swapped As UInteger = ((widened << 8) Or (widened >> 8)) And &HFFFFUI
+            Return swapped
+        End Function
 
-            Dim strOutput, strLocalAddress, strPID, strPort, strProtocolType As String
-            Dim strArrayParts As String()
-            Dim intPID As Integer
+        ''' <summary>
+        ''' Returns True for a plausibly valid TCP/UDP port number (1..65535).
+        ''' </summary>
+        Private Function IsPlausiblePort(p As Integer) As Boolean
+            Return p >= 1 AndAlso p <= 65535
+        End Function
 
-            If protocolType = ProtocolType.Tcp Then
-                startInfo.Arguments = "-ano -p tcp"
-                strProtocolType = "TCP"
-            Else
-                startInfo.Arguments = "-ano -p udp"
-                strProtocolType = "UDP"
+        ''' <summary>
+        ''' Try to extract a port from a 32-bit DWORD that may contain the port in
+        ''' either the low 16 bits or high 16 bits, and each 16-bit word may itself
+        ''' be in host or swapped byte order. Uses a small heuristic to choose the best candidate.
+        ''' </summary>
+        Private Function GetPortFromDWORD(port As UInteger) As Integer
+            ' helpful debug hex
+            Dim rawHex As String = "0x" & port.ToString("X8")
+
+            ' extract 16-bit halves
+            Dim low16 As UShort = port And &HFFFFUI
+            Dim high16 As UShort = (port >> 16) And &HFFFFUI
+
+            ' possible decodings (as integers for IsPlausiblePort)
+            Dim lowAsIs As Integer = low16
+            Dim lowSwapped As Integer = Swap16(low16)
+            Dim highAsIs As Integer = high16
+            Dim highSwapped As Integer = Swap16(high16)
+
+            ' Heuristic priority (keeps your original ordering intent):
+            ' 1) If high16 != 0 => prefer highSwapped, then highAsIs
+            ' 2) Else prefer lowAsIs (if nonzero & plausible)
+            ' 3) Else try lowSwapped
+            ' 4) Fallback: any plausible candidate in a consistent order
+            If high16 <> 0 Then
+                If IsPlausiblePort(highSwapped) Then
+                    Return highSwapped
+                ElseIf IsPlausiblePort(highAsIs) Then
+                    Return highAsIs
+                End If
             End If
 
-            Using proc As Process = Process.Start(startInfo)
-                strOutput = proc.StandardOutput.ReadToEnd()
-                proc.WaitForExit()
-            End Using
+            If lowAsIs <> 0 AndAlso IsPlausiblePort(lowAsIs) Then
+                Return lowAsIs
+            End If
 
-            Dim strArrayLines As String() = strOutput.Split({Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
+            If lowSwapped <> 0 AndAlso IsPlausiblePort(lowSwapped) Then
+                Return lowSwapped
+            End If
 
-            For Each strLine As String In strArrayLines
-                strLine = strLine.Trim()
-
-                If strLine.StartsWith(strProtocolType, StringComparison.OrdinalIgnoreCase) Then
-                    ' Normalize spaces, then split
-                    strArrayParts = Regex.Split(strLine, "\s+")
-
-                    If strArrayParts.Length >= 4 Then
-                        strLocalAddress = strArrayParts(1)
-                        strPID = strArrayParts(3)
-
-                        ' Match port
-                        strPort = ":" & port.ToString()
-
-                        If strLocalAddress.EndsWith(strPort) Then
-                            If Integer.TryParse(strPID, intPID) Then
-                                Try
-                                    Return Process.GetProcessById(intPID)
-                                Catch ex As Exception
-                                    ' Process may have exited
-                                    Return Nothing
-                                End Try
-                            End If
-                        End If
-                    End If
+            ' final fallback - try any plausible candidate in a deterministic order
+            For Each cand In New Integer() {highSwapped, highAsIs, lowAsIs, lowSwapped}
+                If IsPlausiblePort(cand) Then
+                    Debug.WriteLine($"-> fallback chosen: {cand}")
+                    Return cand
                 End If
             Next
 
+            Return 0
+        End Function
+
+        Private Function GetProcessByUdpPort(port As Integer, protocolType As AddressFamily) As Process
+            Dim AF_INET As Integer = protocolType
+            Dim bufferSize As Integer = 0
+
+            ' Initial call to get required buffer size
+            NativeMethod.NativeMethods.GetExtendedUdpTable(IntPtr.Zero, bufferSize, True, AF_INET, NativeMethod.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0)
+            Dim udpTablePtr As IntPtr = Marshal.AllocHGlobal(bufferSize)
+
+            Try
+                Dim result As UInteger = NativeMethod.NativeMethods.GetExtendedUdpTable(udpTablePtr, bufferSize, True, AF_INET, NativeMethod.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0)
+
+                If result <> 0 Then Return Nothing
+
+                Dim numEntries As Integer = Marshal.ReadInt32(udpTablePtr)
+                Dim rowPtr As IntPtr = IntPtr.Add(udpTablePtr, 4)
+                Dim row As NativeMethod.MIB_UDPROW_OWNER_PID
+
+                For i As Integer = 0 To numEntries - 1
+                    row = Marshal.PtrToStructure(Of NativeMethod.MIB_UDPROW_OWNER_PID)(rowPtr)
+
+                    If GetPortFromDWORD(row.localPort) = port Then Return Process.GetProcessById(row.owningPid)
+
+                    rowPtr = IntPtr.Add(rowPtr, Marshal.SizeOf(Of NativeMethod.MIB_UDPROW_OWNER_PID)())
+                Next
+            Finally
+                Marshal.FreeHGlobal(udpTablePtr)
+            End Try
+
             Return Nothing
+        End Function
+
+        Private Function GetProcessByTcpPort(port As Integer, protocolType As AddressFamily) As Process
+            Dim AF_INET As Integer = protocolType
+            Dim bufferSize As Integer = 0
+
+            ' First call to determine required buffer size
+            NativeMethod.NativeMethods.GetExtendedTcpTable(IntPtr.Zero, bufferSize, True, AF_INET, NativeMethod.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0)
+            Dim tcpTablePtr As IntPtr = Marshal.AllocHGlobal(bufferSize)
+
+            Try
+                Dim result As UInteger = NativeMethod.NativeMethods.GetExtendedTcpTable(tcpTablePtr, bufferSize, True, AF_INET, NativeMethod.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0)
+
+                If result <> 0 Then Return Nothing
+
+                Dim numEntries As Integer = Marshal.ReadInt32(tcpTablePtr)
+                Dim rowPtr As IntPtr = IntPtr.Add(tcpTablePtr, 4)
+                Dim row As NativeMethod.MIB_TCPROW_OWNER_PID
+
+                For i As Integer = 0 To numEntries - 1
+                    row = Marshal.PtrToStructure(Of NativeMethod.MIB_TCPROW_OWNER_PID)(rowPtr)
+
+                    If GetPortFromDWORD(row.localPort) = port Then Return Process.GetProcessById(row.owningPid)
+
+                    rowPtr = IntPtr.Add(rowPtr, Marshal.SizeOf(Of NativeMethod.MIB_TCPROW_OWNER_PID)())
+                Next
+            Finally
+                Marshal.FreeHGlobal(tcpTablePtr)
+            End Try
+
+            Return Nothing
+        End Function
+
+        Public Function GetProcessByPort(protocolType As ProtocolType) As Process
+            Dim processIPv4 As Process = Nothing
+            Dim processIPv6 As Process = Nothing
+
+            If protocolType = ProtocolType.Tcp Then
+                processIPv4 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+            ElseIf protocolType = ProtocolType.Udp Then
+                processIPv4 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+            End If
+
+            If processIPv4 IsNot Nothing Then
+                Return processIPv4
+            ElseIf processIPv6 IsNot Nothing Then
+                Return processIPv6
+            Else
+                Return Nothing
+            End If
         End Function
 
         Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
@@ -241,6 +335,7 @@ Namespace SupportCode
 
                 notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("datapacket", strNotificationPacket))
                 notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", strOpenSysLog))
+                If My.Settings.ShowCloseButtonOnNotifications Then notification.AddButton(New ToastButton().SetContent("Close").SetDismissActivation())
             Else
                 notification.AddArgument("action", strOpenSysLog)
             End If
@@ -365,7 +460,7 @@ Namespace SupportCode
 
         Public Function IsRegexPatternValid(pattern As String) As Boolean
             Try
-                Dim regex As New RegularExpressions.Regex(pattern)
+                Dim regex As New Regex(pattern)
                 Return True
             Catch ex As ArgumentException
                 Return False

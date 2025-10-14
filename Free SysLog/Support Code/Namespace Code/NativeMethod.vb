@@ -32,9 +32,67 @@ Namespace NativeMethod
         <DllImport("user32.dll")>
         Public Shared Function SetForegroundWindow(hwnd As IntPtr) As Boolean
         End Function
+
+        <DllImport("iphlpapi.dll", SetLastError:=True)>
+        Public Shared Function GetExtendedTcpTable(pTcpTable As IntPtr, ByRef dwOutBufLen As Integer, sort As Boolean, ipVersion As Integer, tblClass As TCP_TABLE_CLASS, reserved As Integer) As UInteger
+        End Function
+
+        <DllImport("iphlpapi.dll", SetLastError:=True)>
+        Public Shared Function GetExtendedUdpTable(pUdpTable As IntPtr, ByRef dwOutBufLen As Integer, sort As Boolean, ipVersion As Integer, tableClass As UDP_TABLE_CLASS, reserved As Integer) As UInteger
+        End Function
     End Class
 
     Module APIs
+        Public Enum UDP_TABLE_CLASS
+            UDP_TABLE_BASIC
+            UDP_TABLE_OWNER_PID
+            UDP_TABLE_OWNER_MODULE
+        End Enum
+
+        <StructLayout(LayoutKind.Sequential)>
+        Public Structure MIB_UDPROW_OWNER_PID
+            Public localAddr As UInteger
+            Public localPort As UInteger
+            Public owningPid As UInteger
+        End Structure
+
+        Public Enum MIB_TCP_STATE
+            CLOSED = 1
+            LISTENING = 2
+            SYN_SENT = 3
+            SYN_RCVD = 4
+            ESTABLISHED = 5
+            FIN_WAIT1 = 6
+            FIN_WAIT2 = 7
+            CLOSE_WAIT = 8
+            CLOSING = 9
+            LAST_ACK = 10
+            TIME_WAIT = 11
+            DELETE_TCB = 12
+        End Enum
+
+        <StructLayout(LayoutKind.Sequential)>
+        Public Structure MIB_TCPROW_OWNER_PID
+            Public state As UInteger
+            Public localAddr As UInteger
+            Public localPort As UInteger
+            Public remoteAddr As UInteger
+            Public remotePort As UInteger
+            Public owningPid As UInteger
+        End Structure
+
+        Public Enum TCP_TABLE_CLASS
+            TCP_TABLE_BASIC_LISTENER
+            TCP_TABLE_BASIC_CONNECTIONS
+            TCP_TABLE_BASIC_ALL
+            TCP_TABLE_OWNER_PID_LISTENER
+            TCP_TABLE_OWNER_PID_CONNECTIONS
+            TCP_TABLE_OWNER_PID_ALL
+            TCP_TABLE_OWNER_MODULE_LISTENER
+            TCP_TABLE_OWNER_MODULE_CONNECTIONS
+            TCP_TABLE_OWNER_MODULE_ALL
+        End Enum
+
         <Flags>
         Public Enum ProcessAccessFlags As UInteger
             PROCESS_QUERY_LIMITED_INFORMATION = &H1000

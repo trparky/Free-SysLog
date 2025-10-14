@@ -177,6 +177,11 @@ Public Class Form1
             If WindowState = FormWindowState.Minimized Then
                 If My.Settings.boolDeselectItemsWhenMinimizing Then
                     Logs.ClearSelection()
+
+                    For Each item As MyDataGridViewRow In Logs.Rows
+                        item.UncheckRow()
+                    Next
+
                     LblItemsSelected.Visible = False
                 End If
 
@@ -274,6 +279,7 @@ Public Class Form1
         ChkDebug.Checked = My.Settings.boolDebug
         ConfirmDelete.Checked = My.Settings.ConfirmDelete
         ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
+        ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -538,12 +544,12 @@ Public Class Form1
 
             boolServerRunning = True
         Else
-            Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
+            Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp)
 
-            If process Is Nothing Then
+            If activeProcess Is Nothing Then
                 MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
             Else
-                Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+                Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
 
                 SyncLock dataGridLockObject
                     Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
@@ -727,6 +733,15 @@ Public Class Form1
                 Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
                 Dim intNumberOfSelectedLogs As Integer = Logs.SelectedRows.Count
 
+                If intNumberOfCheckedLogs <> 0 And intNumberOfCheckedLogs <> 1 And intNumberOfSelectedLogs <> 0 And intNumberOfSelectedLogs <> 1 AndAlso intNumberOfCheckedLogs <> intNumberOfSelectedLogs AndAlso MsgBox("The checked logs does not match the selected logs, do you want to make the checked logs match the selected logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+                    For Each item As MyDataGridViewRow In Logs.SelectedRows
+                        item.CheckRow()
+                    Next
+
+                    intNumberOfCheckedLogs = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+                    intNumberOfSelectedLogs = Logs.SelectedRows.Count
+                End If
+
                 If ConfirmDelete.Checked Then
                     Dim choice As Confirm_Delete.UserChoice
 
@@ -789,10 +804,10 @@ Public Class Form1
             If Logs.SelectedCells.Count > 0 Then
                 If Logs.SelectedCells.Count = 1 Then
                     Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-                    selectedRow.Cells(colDelete.Index).Value = Not selectedRow.Cells(colDelete.Index).Value
+                    selectedRow.InvertRowCheckboxStatus()
                 Else
                     For Each item As MyDataGridViewRow In Logs.SelectedRows
-                        item.Cells(colDelete.Index).Value = Not item.Cells(colDelete.Index).Value
+                        item.InvertRowCheckboxStatus()
                     Next
                 End If
 
@@ -828,7 +843,7 @@ Public Class Form1
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
-        LblAutoScrollStatus.Text = "Auto Scroll Status: Enabled"
+        LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
@@ -2082,6 +2097,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub ShowCloseButtonOnNotifications_Click(sender As Object, e As EventArgs) Handles ShowCloseButtonOnNotifications.Click
+        My.Settings.ShowCloseButtonOnNotifications = ShowCloseButtonOnNotifications.Checked
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -2102,11 +2121,13 @@ Public Class Form1
                 Dim buffer(4095) As Byte
                 Dim remoteEndPoint As EndPoint = New IPEndPoint(ipAddressSetting, 0)
                 Dim ProxiedSysLogData As ProxiedSysLogData
+                Dim bytesReceived As Integer
+                Dim strReceivedData, strSourceIP As String
 
                 While boolDoServerLoop
-                    Dim bytesReceived As Integer = socket.ReceiveFrom(buffer, remoteEndPoint)
-                    Dim strReceivedData As String = Encoding.UTF8.GetString(buffer, 0, bytesReceived)
-                    Dim strSourceIP As String = GetIPv4Address(CType(remoteEndPoint, IPEndPoint).Address).ToString()
+                    bytesReceived = socket.ReceiveFrom(buffer, remoteEndPoint)
+                    strReceivedData = Encoding.UTF8.GetString(buffer, 0, bytesReceived)
+                    strSourceIP = GetIPv4Address(CType(remoteEndPoint, IPEndPoint).Address).ToString()
 
                     If strReceivedData.Trim.Equals(strRestore, StringComparison.OrdinalIgnoreCase) Then
                         Invoke(Sub() RestoreWindowAfterReceivingRestoreCommand())
@@ -2139,18 +2160,19 @@ Public Class Form1
 
                     strReceivedData = Nothing
                     strSourceIP = Nothing
+                    bytesReceived = Nothing
                 End While
             End Using
         Catch ex As Threading.ThreadAbortException
             ' Does nothing
         Catch e As Exception
             Invoke(Sub()
-                       Dim process As Process = GetProcessUsingPort(My.Settings.sysLogPort, ProtocolType.Udp)
+                       Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp)
 
-                       If process Is Nothing Then
+                       If activeProcess Is Nothing Then
                            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
                        Else
-                           Dim strLogText As String = $"Unable to start syslog server. A process with a PID of {process.Id} already has the port open."
+                           Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
 
                            SyncLock dataGridLockObject
                                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))

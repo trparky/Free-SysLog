@@ -570,7 +570,7 @@ Public Class IgnoredLogsAndSearchResults
                                                   MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
                                                   If MyDataGridRowItem IsNot Nothing Then
-                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value
+                                                      strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
                                                       If Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
                                                           listOfSearchResults.Add(MyDataGridRowItem.Clone())

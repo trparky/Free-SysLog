@@ -305,5 +305,8 @@
     <Setting Name="colIgnoredDateCreated" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">180</Value>
     </Setting>
+    <Setting Name="ShowCloseButtonOnNotifications" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -99,20 +99,12 @@ Namespace TaskHandling
         End Sub
 
         Public Sub ConvertRegistryRunCommandToTask()
-            Dim boolDoesRegistryStartupKeyExist As Boolean = False
-
-            Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", False)
-                If registryKey.GetValue("Free Syslog") IsNot Nothing Then
-                    boolDoesRegistryStartupKeyExist = True
-                    CreateTask()
+            Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True) ' Opens the registry key with write access.
+                If registryKey.GetValue("Free Syslog") IsNot Nothing Then ' Check if the "Free Syslog" key exists
+                    CreateTask() ' Create the task if the registry value exists
+                    registryKey.DeleteValue("Free Syslog", False) ' Delete the registry value
                 End If
             End Using
-
-            If boolDoesRegistryStartupKeyExist Then
-                Using registryKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Run", True)
-                    registryKey.DeleteValue("Free Syslog")
-                End Using
-            End If
         End Sub
     End Module
 End Namespace
