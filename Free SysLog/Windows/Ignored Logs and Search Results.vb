@@ -515,6 +515,7 @@ Public Class IgnoredLogsAndSearchResults
                                 Logs.ResumeLayout()
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
+                                Logs.Sort(Logs.Columns(0), ListSortDirection.Ascending)
                                 boolDoneLoading = True
                             End Sub)
             End If
