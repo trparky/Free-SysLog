@@ -21,7 +21,7 @@ Public Class SavedData
                 .Cells(ColumnIndex_IPAddress).Value = ip
                 .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(appName), "", appName)
                 .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(hostname), "", hostname)
-                .Cells(ColumnIndex_LogText).Value = log
+                .Cells(ColumnIndex_LogText).Value = log.Replace(vbTab, "        ")
                 .Cells(ColumnIndex_Alerted).Value = If(BoolAlerted, "Yes", "No")
                 .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                 .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
