@@ -242,6 +242,7 @@ Public Class Form1
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
+        OnlySaveAlertedLogs.Checked = My.Settings.OnlySaveAlertedLogs
         SaveIgnoredLogCount.Checked = My.Settings.saveIgnoredLogCount
         AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer
         ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
@@ -2099,6 +2100,10 @@ Public Class Form1
 
     Private Sub ShowCloseButtonOnNotifications_Click(sender As Object, e As EventArgs) Handles ShowCloseButtonOnNotifications.Click
         My.Settings.ShowCloseButtonOnNotifications = ShowCloseButtonOnNotifications.Checked
+    End Sub
+
+    Private Sub OnlySaveAlertedLogs_Click(sender As Object, e As EventArgs) Handles OnlySaveAlertedLogs.Click
+        My.Settings.OnlySaveAlertedLogs = OnlySaveAlertedLogs.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

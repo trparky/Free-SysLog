@@ -133,6 +133,7 @@ Partial Class Form1
         Me.BackupFileNameDateFormatChooser = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnShowLimit = New System.Windows.Forms.Button()
         Me.MinimizeToClockTray = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OnlySaveAlertedLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.NotificationLength = New System.Windows.Forms.ToolStripMenuItem()
         Me.NotificationLengthLong = New System.Windows.Forms.ToolStripMenuItem()
         Me.NotificationLengthShort = New System.Windows.Forms.ToolStripMenuItem()
@@ -170,6 +171,13 @@ Partial Class Form1
         Me.NotificationLengthShort.Name = "NotificationLengthShort"
         Me.NotificationLengthShort.Size = New System.Drawing.Size(102, 22)
         Me.NotificationLengthShort.Text = "Short"
+        '
+        'OnlySaveAlertedLogs
+        '
+        Me.OnlySaveAlertedLogs.CheckOnClick = True
+        Me.OnlySaveAlertedLogs.Name = "OnlySaveAlertedLogs"
+        Me.OnlySaveAlertedLogs.Size = New System.Drawing.Size(102, 22)
+        Me.OnlySaveAlertedLogs.Text = "Only Save Alerted Logs"
         '
         'CreateAlertToolStripMenuItem
         '
@@ -473,7 +481,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -1133,6 +1141,7 @@ Partial Class Form1
     Friend WithEvents LoadingProgressBar As ProgressBar
     Friend WithEvents MinimizeToClockTray As ToolStripMenuItem
     Friend WithEvents BackupFileNameDateFormatChooser As ToolStripMenuItem
+    Friend WithEvents OnlySaveAlertedLogs As ToolStripMenuItem
     Friend WithEvents NotificationLength As ToolStripMenuItem
     Friend WithEvents NotificationLengthLong As ToolStripMenuItem
     Friend WithEvents NotificationLengthShort As ToolStripMenuItem
