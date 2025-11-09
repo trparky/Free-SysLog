@@ -252,12 +252,34 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening
-        If IgnoredListView.SelectedItems.Count = 0 And IgnoredListView.SelectedItems.Count > 1 Then
+        ' Default visibility settings
+        EnableDisableToolStripMenuItem.Visible = False
+        ResetHitsToolStripMenuItem.Visible = False
+
+        ' Handle different cases based on the number of selected items
+        If IgnoredListView.SelectedItems.Count = 0 Then
+            ' If there are no selected items, cancel opening the context menu.
             e.Cancel = True
             Exit Sub
-        Else
+        End If
+
+        ' If exactly one item is selected, show enable/disable and reset options
+        If IgnoredListView.SelectedItems.Count = 1 Then
+            EnableDisableToolStripMenuItem.Visible = True
+            ResetHitsToolStripMenuItem.Visible = True
+
+            ' Update the Enable/Disable text based on the item's BoolEnabled property
             Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
             EnableDisableToolStripMenuItem.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
+
+            ' Make Reset Hits option be singular.
+            ResetHitsToolStripMenuItem.Text = "Reset Hit"
+        Else
+            ' If multiple items are selected, only show the reset hits option
+            ResetHitsToolStripMenuItem.Visible = True
+
+            ' Make Reset Hits option be plural.
+            ResetHitsToolStripMenuItem.Text = "Reset Hits"
         End If
     End Sub
 
@@ -457,10 +479,28 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
-        IgnoredHits.Clear()
+        If IgnoredListView.SelectedItems.Count > 0 Then
+            For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
+                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) Then
+                    item.SubItems(4).Text = "0"
+                End If
+            Next
+        Else
+            IgnoredHits.Clear()
 
-        For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            item.SubItems(4).Text = "0"
-        Next
+            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                item.SubItems(4).Text = "0"
+            Next
+        End If
+    End Sub
+
+    Private Sub ResetHitsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetHitsToolStripMenuItem.Click
+        If IgnoredListView.SelectedItems.Count > 0 Then
+            For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
+                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) Then
+                    item.SubItems(4).Text = "0"
+                End If
+            Next
+        End If
     End Sub
 End Class

@@ -30,8 +30,12 @@ Partial Class IgnoredWordsAndPhrases
         Me.Regex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CaseSensitive = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColEnabled = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colHits = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colTarget = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colDateCreated = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ResetHitsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnEdit = New System.Windows.Forms.Button()
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
@@ -49,10 +53,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.BtnCancel = New System.Windows.Forms.Button()
         Me.btnDeleteDuringEditing = New System.Windows.Forms.Button()
         Me.ChkRemoteProcess = New System.Windows.Forms.CheckBox()
-        Me.colHits = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.colTarget = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.btnResetHits = New System.Windows.Forms.Button()
-        Me.colDateCreated = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.txtComment = New System.Windows.Forms.TextBox()
         Me.lblCommentLabel = New System.Windows.Forms.Label()
         Me.ListViewMenu.SuspendLayout()
@@ -114,17 +115,39 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ColEnabled.Text = "Enabled"
         '
+        'colHits
+        '
+        Me.colHits.Text = "Hits"
+        Me.colHits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'colTarget
+        '
+        Me.colTarget.Text = "Target"
+        Me.colTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.colTarget.Width = 125
+        '
+        'colDateCreated
+        '
+        Me.colDateCreated.Text = "Date Created"
+        Me.colDateCreated.Width = 180
+        '
         'ListViewMenu
         '
-        Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem})
+        Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem, Me.ResetHitsToolStripMenuItem})
         Me.ListViewMenu.Name = "ContextMenuStrip1"
-        Me.ListViewMenu.Size = New System.Drawing.Size(153, 26)
+        Me.ListViewMenu.Size = New System.Drawing.Size(153, 48)
         '
         'EnableDisableToolStripMenuItem
         '
         Me.EnableDisableToolStripMenuItem.Name = "EnableDisableToolStripMenuItem"
         Me.EnableDisableToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.EnableDisableToolStripMenuItem.Text = "Enable/Disable"
+        '
+        'ResetHitsToolStripMenuItem
+        '
+        Me.ResetHitsToolStripMenuItem.Name = "ResetHitsToolStripMenuItem"
+        Me.ResetHitsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ResetHitsToolStripMenuItem.Text = "Reset Hit"
         '
         'BtnEdit
         '
@@ -305,17 +328,6 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkRemoteProcess.Text = "Remote Process?"
         Me.ChkRemoteProcess.UseVisualStyleBackColor = True
         '
-        'colHits
-        '
-        Me.colHits.Text = "Hits"
-        Me.colHits.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'colTarget
-        '
-        Me.colTarget.Text = "Target"
-        Me.colTarget.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.colTarget.Width = 125
-        '
         'btnResetHits
         '
         Me.btnResetHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -325,11 +337,6 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnResetHits.TabIndex = 48
         Me.btnResetHits.Text = "Reset Hits"
         Me.btnResetHits.UseVisualStyleBackColor = True
-        '
-        'colDateCreated
-        '
-        Me.colDateCreated.Text = "Date Created"
-        Me.colDateCreated.Width = 180
         '
         'txtComment
         '
@@ -419,4 +426,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents colDateCreated As ColumnHeader
     Friend WithEvents txtComment As TextBox
     Friend WithEvents lblCommentLabel As Label
+    Friend WithEvents ResetHitsToolStripMenuItem As ToolStripMenuItem
 End Class
