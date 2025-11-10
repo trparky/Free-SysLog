@@ -242,6 +242,12 @@ Namespace checkForUpdates
                 End Using
 
                 If boolDebugBuild Or My.Settings.boolDebug Then
+                    MakeLogEntry($"Saving program configuration to ""{strPathToConfigBackupFile}"".")
+                End If
+
+                SaveAppSettings.SaveApplicationSettingsToFile(strPathToConfigBackupFile)
+
+                If boolDebugBuild Or My.Settings.boolDebug Then
                     MakeLogEntry("Launching updater module.")
                 End If
 

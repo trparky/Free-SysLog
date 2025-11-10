@@ -72,6 +72,7 @@ Namespace SupportCode
         Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
         Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
         Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
+        Public strPathToConfigBackupFile As String = IO.Path.Combine(strPathToDataFolder, "config_backup.json")
         Public Const strProxiedString As String = "proxied|"
         Public Const strQuote As String = Chr(34)
         Public Const strViewLog As String = "viewlog"

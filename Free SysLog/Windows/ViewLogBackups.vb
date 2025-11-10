@@ -1,9 +1,10 @@
-﻿Imports System.IO
+﻿Imports System.ComponentModel
+Imports System.IO
 Imports System.Text.RegularExpressions
-Imports System.ComponentModel
+Imports System.Threading
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
-Imports System.Threading
+Imports Microsoft.VisualBasic.Logging
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -204,7 +205,8 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub FileList_DoubleClick(sender As Object, e As EventArgs) Handles FileList.DoubleClick
-        BtnView.PerformClick()
+        Dim hitTest As DataGridView.HitTestInfo = FileList.HitTest(FileList.PointToClient(MousePosition).X, FileList.PointToClient(MousePosition).Y)
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 Then BtnView.PerformClick()
     End Sub
 
     Private Sub BtnView_Click(sender As Object, e As EventArgs) Handles BtnView.Click
