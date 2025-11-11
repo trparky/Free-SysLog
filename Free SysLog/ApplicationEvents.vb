@@ -133,11 +133,5 @@ Namespace My
             _reportCrash.Silent = False
             _reportCrash.Send(exception)
         End Sub
-
-        Public Sub SendReportSilently(exception As Exception, Optional developerMessage As String = "")
-            _reportCrash.DeveloperMessage = developerMessage
-            _reportCrash.Silent = True
-            _reportCrash.Send(exception)
-        End Sub
     End Class
 End Namespace
