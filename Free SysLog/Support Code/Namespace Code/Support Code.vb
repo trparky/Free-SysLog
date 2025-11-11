@@ -15,16 +15,16 @@ Namespace SupportCode
     End Enum
 
     Public Class uniqueObjectsClass
-        Public logTypes As HashSet(Of String)
-        Public processes As HashSet(Of String)
-        Public hostNames As HashSet(Of String)
-        Public ipAddresses As HashSet(Of String)
+        Public logTypes As ThreadSafetyLists.ConcurrentHashSet(Of String)
+        Public processes As ThreadSafetyLists.ConcurrentHashSet(Of String)
+        Public hostNames As ThreadSafetyLists.ConcurrentHashSet(Of String)
+        Public ipAddresses As ThreadSafetyLists.ConcurrentHashSet(Of String)
 
         Public Sub New()
-            logTypes = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            processes = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            hostNames = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            ipAddresses = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            logTypes = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            processes = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            hostNames = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            ipAddresses = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
         End Sub
 
         Public Sub Clear()
