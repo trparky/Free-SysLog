@@ -54,11 +54,10 @@ Namespace SupportCode
 
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
-        Public replacementsList As New List(Of ReplacementsClass)
-        Public ignoredList As New List(Of IgnoredClass)
-        Public ignoredListLockingObject As New Object()
-        Public alertsList As New List(Of AlertsClass)
-        Public serversList As New List(Of SysLogProxyServer)
+        Public replacementsList As New ThreadSafetyLists.ThreadSafeReplacementsList
+        Public ignoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
+        Public alertsList As New ThreadSafetyLists.ThreadSafeAlertsList
+        Public serversList As New ThreadSafetyLists.ThreadSafeProxyServerList
         Public hostnames As New ConcurrentDictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
         Public Const strMutexName As String = "Free SysLog Server"
         Public mutex As Threading.Mutex

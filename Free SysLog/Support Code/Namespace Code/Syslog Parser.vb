@@ -282,10 +282,8 @@ Namespace SyslogParser
                     Dim AlertType As AlertType = AlertType.None
                     Dim strIgnoredPattern As String = Nothing
 
-                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
-                        SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
-                            strRawLogText = ProcessReplacements(strRawLogText)
-                        End SyncLock
+                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then
+                        strRawLogText = ProcessReplacements(strRawLogText)
                     End If
 
                     ' Step 1: Use Regex to extract the RFC 5424 header and the message
@@ -316,22 +314,18 @@ Namespace SyslogParser
 
                     ' Step 3: Handle the ignored logs and alerts
                     If Not My.Settings.ProcessReplacementsInSyslogDataFirst Then
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
-                            SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
-                                boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
-                            End SyncLock
+                        If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
+                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
                         End If
 
-                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                        If replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then message = ProcessReplacements(message)
                     Else
-                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
-                            SyncLock ignoredListLockingObject ' Using a SyncLock to protect the shared ignoredList and prevent race conditions.
-                                boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
-                            End SyncLock
+                        If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
+                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
                         End If
                     End If
 
-                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
+                    If alertsList IsNot Nothing AndAlso alertsList.GetSnapshot.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
                     If Not boolIgnored Then
                         Dim strLimitBy As String = Nothing
@@ -395,34 +389,34 @@ Namespace SyslogParser
                 Dim lockObj As New Object()
 
                 ' Parallel loop to check each pattern concurrently
-                Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
-                                                                   If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                       Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
-                                                                       strFailedPattern = strRegexPattern
+                Parallel.ForEach(ignoredList.GetSnapshot, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
+                                                                               If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
+                                                                                   Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
+                                                                                   strFailedPattern = strRegexPattern
 
-                                                                       Dim boolDidWeMatch As Boolean = False
-                                                                       Dim strInput As String
+                                                                                   Dim boolDidWeMatch As Boolean = False
+                                                                                   Dim strInput As String
 
-                                                                       If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
-                                                                           strInput = remoteProcess
-                                                                       Else
-                                                                           strInput = message
-                                                                       End If
+                                                                                   If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
+                                                                                       strInput = remoteProcess
+                                                                                   Else
+                                                                                       strInput = message
+                                                                                   End If
 
-                                                                       If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
-                                                                           ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
-                                                                           SyncLock lockObj
-                                                                               If Not matchFound Then
-                                                                                   _strIgnoredPattern = strRegexPattern
-                                                                                   matchFound = True
-                                                                                   IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key, oldValue) oldValue + 1)
-                                                                                   state.Stop()
-                                                                                   If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                   If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
+                                                                                       ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
+                                                                                       SyncLock lockObj
+                                                                                           If Not matchFound Then
+                                                                                               _strIgnoredPattern = strRegexPattern
+                                                                                               matchFound = True
+                                                                                               IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key, oldValue) oldValue + 1)
+                                                                                               state.Stop()
+                                                                                               If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                           End If
+                                                                                       End SyncLock
+                                                                                   End If
                                                                                End If
-                                                                           End SyncLock
-                                                                       End If
-                                                                   End If
-                                                               End Sub)
+                                                                           End Sub)
 
                 If matchFound Then strIgnoredPattern = _strIgnoredPattern
                 Return matchFound
@@ -527,7 +521,7 @@ Namespace SyslogParser
         End Sub
 
         Private Function ProcessReplacements(input As String) As String
-            For Each item As ReplacementsClass In replacementsList
+            For Each item As ReplacementsClass In replacementsList.GetSnapshot
                 Try
                     input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " ")), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
                 Catch ex As Exception
@@ -548,7 +542,7 @@ Namespace SyslogParser
             Dim strAlertText As String
             Dim regExGroupCollection As GroupCollection
 
-            For Each alert As AlertsClass In alertsList
+            For Each alert As AlertsClass In alertsList.GetSnapshot
                 RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText).Replace("\ ", " ")), alert.BoolCaseSensitive)
 
                 If RegExObject.IsMatch(strLogText) Then

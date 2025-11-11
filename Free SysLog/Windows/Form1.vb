@@ -327,15 +327,13 @@ Public Class Form1
             End If
         End If
 
-        SyncLock ignoredListLockingObject
-            If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
-                For Each strJSONString As String In My.Settings.ignored2
-                    tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                    If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
-                    tempIgnoredClass = Nothing
-                Next
-            End If
-        End SyncLock
+        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
+            For Each strJSONString As String In My.Settings.ignored2
+                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
+                tempIgnoredClass = Nothing
+            Next
+        End If
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
@@ -2140,12 +2138,12 @@ Public Class Form1
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList IsNot Nothing AndAlso serversList.Any() Then
+                        If serversList IsNot Nothing AndAlso serversList.GetSnapshot.Any() Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
                                                                        Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
 
-                                                                       For Each item As SysLogProxyServer In serversList
+                                                                       For Each item As SysLogProxyServer In serversList.GetSnapshot
                                                                            SendMessageToSysLogServer(strDataToSend, item.ip, item.port)
                                                                        Next
 

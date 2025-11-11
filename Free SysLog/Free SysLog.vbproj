@@ -124,6 +124,7 @@
     <Compile Include="Support Code\Namespace Code\Notification Limiter.vb" />
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Support Code\Namespace Code\Check for Update.vb" />
+    <Compile Include="Support Code\Namespace Code\Thread Safety Lists.vb" />
     <Compile Include="Windows\Alerts History.Designer.vb">
       <DependentUpon>Alerts History.vb</DependentUpon>
     </Compile>
