@@ -47,12 +47,9 @@ Namespace SupportCode
     Module SupportCode
         Public ParentForm As Form1
 
-        Public AlertsRegexCache As New Dictionary(Of String, Regex)
-        Public AlertsRegexCacheLockingObject As New Object
-        Public ReplacementsRegexCache As New Dictionary(Of String, Regex)
-        Public ReplacementsRegexCacheLockingObject As New Object
-        Public IgnoredRegexCache As New Dictionary(Of String, Regex)
-        Public IgnoredRegexCacheLockingObject As New Object()
+        Public AlertsRegexCache As New ConcurrentDictionary(Of String, Regex)
+        Public ReplacementsRegexCache As New ConcurrentDictionary(Of String, Regex)
+        Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
         Public boolIsProgrammaticScroll As Boolean = False
@@ -62,7 +59,7 @@ Namespace SupportCode
         Public ignoredListLockingObject As New Object()
         Public alertsList As New List(Of AlertsClass)
         Public serversList As New List(Of SysLogProxyServer)
-        Public hostnames As New Dictionary(Of String, String)(StringComparison.OrdinalIgnoreCase)
+        Public hostnames As New ConcurrentDictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
         Public Const strMutexName As String = "Free SysLog Server"
         Public mutex As Threading.Mutex
         Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName

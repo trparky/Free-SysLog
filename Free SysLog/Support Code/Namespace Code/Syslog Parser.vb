@@ -1,9 +1,10 @@
-﻿Imports System.Net
-Imports System.Text.RegularExpressions
-Imports Free_SysLog.SupportCode
+﻿Imports System.Collections.Concurrent
 Imports System.ComponentModel
+Imports System.Net
+Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports Free_SysLog.SupportCode
 
 Namespace SyslogParser
     Public Module SyslogParser
@@ -389,42 +390,39 @@ Namespace SyslogParser
             Dim parallelOptions As New ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
 
             Try
-                ' Using a SyncLock to protect the shared IgnoredRegexCache and prevent race conditions.
-                SyncLock IgnoredRegexCacheLockingObject
-                    ' Use a thread-safe flag to stop Parallel.ForEach as soon as a match is found.
-                    ' This ensures that only the first match updates the result.
-                    Dim lockObj As New Object()
+                ' Use a thread-safe flag to stop Parallel.ForEach as soon as a match is found.
+                ' This ensures that only the first match updates the result.
+                Dim lockObj As New Object()
 
-                    ' Parallel loop to check each pattern concurrently
-                    Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
-                                                                       If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                           Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
-                                                                           strFailedPattern = strRegexPattern
+                ' Parallel loop to check each pattern concurrently
+                Parallel.ForEach(ignoredList, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
+                                                                   If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
+                                                                       Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
+                                                                       strFailedPattern = strRegexPattern
 
-                                                                           Dim boolDidWeMatch As Boolean = False
-                                                                           Dim strInput As String
+                                                                       Dim boolDidWeMatch As Boolean = False
+                                                                       Dim strInput As String
 
-                                                                           If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
-                                                                               strInput = remoteProcess
-                                                                           Else
-                                                                               strInput = message
-                                                                           End If
-
-                                                                           If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
-                                                                               ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
-                                                                               SyncLock lockObj
-                                                                                   If Not matchFound Then
-                                                                                       _strIgnoredPattern = strRegexPattern
-                                                                                       matchFound = True
-                                                                                       IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key, oldValue) oldValue + 1)
-                                                                                       state.Stop()
-                                                                                       If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
-                                                                                   End If
-                                                                               End SyncLock
-                                                                           End If
+                                                                       If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
+                                                                           strInput = remoteProcess
+                                                                       Else
+                                                                           strInput = message
                                                                        End If
-                                                                   End Sub)
-                End SyncLock
+
+                                                                       If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
+                                                                           ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
+                                                                           SyncLock lockObj
+                                                                               If Not matchFound Then
+                                                                                   _strIgnoredPattern = strRegexPattern
+                                                                                   matchFound = True
+                                                                                   IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key, oldValue) oldValue + 1)
+                                                                                   state.Stop()
+                                                                                   If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                               End If
+                                                                           End SyncLock
+                                                                       End If
+                                                                   End If
+                                                               End Sub)
 
                 If matchFound Then strIgnoredPattern = _strIgnoredPattern
                 Return matchFound
@@ -529,19 +527,17 @@ Namespace SyslogParser
         End Sub
 
         Private Function ProcessReplacements(input As String) As String
-            SyncLock ReplacementsRegexCacheLockingObject
-                For Each item As ReplacementsClass In replacementsList
-                    Try
-                        input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " ")), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
-                    Catch ex As Exception
-                    End Try
-                Next
-            End SyncLock
+            For Each item As ReplacementsClass In replacementsList
+                Try
+                    input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " ")), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+                Catch ex As Exception
+                End Try
+            Next
 
             Return input
         End Function
 
-        Private Function GetCachedRegex(ByRef regexCache As Dictionary(Of String, Regex), pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
+        Private Function GetCachedRegex(ByRef regexCache As ConcurrentDictionary(Of String, Regex), pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
             If Not regexCache.ContainsKey(pattern) Then regexCache(pattern) = New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
             Return regexCache(pattern)
         End Function
@@ -552,51 +548,49 @@ Namespace SyslogParser
             Dim strAlertText As String
             Dim regExGroupCollection As GroupCollection
 
-            SyncLock AlertsRegexCacheLockingObject
-                For Each alert As AlertsClass In alertsList
-                    RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText).Replace("\ ", " ")), alert.BoolCaseSensitive)
+            For Each alert As AlertsClass In alertsList
+                RegExObject = GetCachedRegex(AlertsRegexCache, If(alert.BoolRegex, alert.StrLogText, Regex.Escape(alert.StrLogText).Replace("\ ", " ")), alert.BoolCaseSensitive)
 
-                    If RegExObject.IsMatch(strLogText) Then
-                        If alert.alertType = AlertType.Warning Then
-                            ToolTipIcon = ToolTipIcon.Warning
-                            alertTypeAsAlertType = AlertType.Warning
-                        ElseIf alert.alertType = AlertType.ErrorMsg Then
-                            ToolTipIcon = ToolTipIcon.Error
-                            alertTypeAsAlertType = AlertType.ErrorMsg
-                        ElseIf alert.alertType = AlertType.Info Then
-                            ToolTipIcon = ToolTipIcon.Info
-                            alertTypeAsAlertType = AlertType.Info
-                        End If
-
-                        strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
-
-                        If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
-                            regExGroupCollection = RegExObject.Match(strLogText).Groups
-
-                            If regExGroupCollection.Count > 0 Then
-                                For index As Integer = 0 To regExGroupCollection.Count - 1
-                                    ' Handle the indexed group
-                                    strAlertText = GetCachedRegex(AlertsRegexCache, Regex.Escape($"${index}"), False).Replace(strAlertText, regExGroupCollection(index).Value)
-
-                                    ' Handle the named group
-                                    If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
-                                        strAlertText = GetCachedRegex(AlertsRegexCache, Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strAlertText, regExGroupCollection(regExGroupCollection(index).Name).Value)
-                                    End If
-                                Next
-                            End If
-                        End If
-
-                        If alert.BoolLimited Then
-                            NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
-                        Else
-                            ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
-                        End If
-
-                        strOutgoingAlertText = strAlertText
-                        Return True
+                If RegExObject.IsMatch(strLogText) Then
+                    If alert.alertType = AlertType.Warning Then
+                        ToolTipIcon = ToolTipIcon.Warning
+                        alertTypeAsAlertType = AlertType.Warning
+                    ElseIf alert.alertType = AlertType.ErrorMsg Then
+                        ToolTipIcon = ToolTipIcon.Error
+                        alertTypeAsAlertType = AlertType.ErrorMsg
+                    ElseIf alert.alertType = AlertType.Info Then
+                        ToolTipIcon = ToolTipIcon.Info
+                        alertTypeAsAlertType = AlertType.Info
                     End If
-                Next
-            End SyncLock
+
+                    strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
+
+                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                        regExGroupCollection = RegExObject.Match(strLogText).Groups
+
+                        If regExGroupCollection.Count > 0 Then
+                            For index As Integer = 0 To regExGroupCollection.Count - 1
+                                ' Handle the indexed group
+                                strAlertText = GetCachedRegex(AlertsRegexCache, Regex.Escape($"${index}"), False).Replace(strAlertText, regExGroupCollection(index).Value)
+
+                                ' Handle the named group
+                                If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
+                                    strAlertText = GetCachedRegex(AlertsRegexCache, Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strAlertText, regExGroupCollection(regExGroupCollection(index).Name).Value)
+                                End If
+                            Next
+                        End If
+                    End If
+
+                    If alert.BoolLimited Then
+                        NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
+                    Else
+                        ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
+                    End If
+
+                    strOutgoingAlertText = strAlertText
+                    Return True
+                End If
+            Next
 
             Return False
         End Function

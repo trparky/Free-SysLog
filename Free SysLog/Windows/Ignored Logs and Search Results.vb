@@ -639,9 +639,7 @@ Public Class IgnoredLogsAndSearchResults
                 IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
 
                 If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                    SyncLock IgnoredRegexCacheLockingObject
-                        IgnoredRegexCache.Clear()
-                    End SyncLock
+                    IgnoredRegexCache.Clear()
                 End If
             End Using
         End If

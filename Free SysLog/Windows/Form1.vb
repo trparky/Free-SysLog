@@ -302,7 +302,7 @@ Public Class Form1
 
             For Each strJSONString As String In My.Settings.hostnames
                 customHostname = Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                SupportCode.hostnames.Add(customHostname.ip, customHostname.deviceName)
+                SupportCode.hostnames(customHostname.ip) = customHostname.deviceName
             Next
         End If
 
@@ -1067,9 +1067,7 @@ Public Class Form1
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
 
             If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                SyncLock IgnoredRegexCacheLockingObject
-                    IgnoredRegexCache.Clear()
-                End SyncLock
+                IgnoredRegexCache.Clear()
             End If
         End Using
     End Sub
@@ -1197,11 +1195,9 @@ Public Class Form1
         Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsInstance.ShowDialog(Me)
 
-            SyncLock ReplacementsRegexCacheLockingObject
-                If ReplacementsInstance.boolChanged Then
-                    ReplacementsRegexCache.Clear()
-                End If
-            End SyncLock
+            If ReplacementsInstance.boolChanged Then
+                ReplacementsRegexCache.Clear()
+            End If
         End Using
     End Sub
 
@@ -1526,9 +1522,7 @@ Public Class Form1
             Alerts.ShowDialog(Me)
 
             If Alerts.boolChanged Then
-                SyncLock AlertsRegexCacheLockingObject
-                    AlertsRegexCache.Clear()
-                End SyncLock
+                AlertsRegexCache.Clear()
             End If
         End Using
     End Sub
