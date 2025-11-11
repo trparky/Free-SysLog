@@ -40,9 +40,7 @@ Namespace My
 
             If Not Debugger.IsAttached Then
                 AddHandler System.Windows.Forms.Application.ThreadException, Sub(exSender, args) SendReport(args.Exception, "I crashed!")
-                AddHandler AppDomain.CurrentDomain.UnhandledException, Sub(exSender, args)
-                                                                           SendReport(DirectCast(args.ExceptionObject, Exception), "I crashed!")
-                                                                       End Sub
+                AddHandler AppDomain.CurrentDomain.UnhandledException, Sub(exSender, args) SendReport(DirectCast(args.ExceptionObject, Exception), "I crashed!")
 
                 _reportCrash = New ReportCrash("5v22h1sh@anonaddy.me") With {
                     .Silent = True,
