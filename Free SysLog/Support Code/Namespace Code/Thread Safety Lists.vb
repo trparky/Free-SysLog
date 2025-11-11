@@ -26,13 +26,14 @@ Namespace ThreadSafetyLists
         End Sub
 
         Public Sub UnionWith(other As IEnumerable(Of T)) Implements ISet(Of T).UnionWith
-            For Each item In other
+            For Each item As T In other
                 _dict.TryAdd(item, 0)
             Next
         End Sub
 
         Public Sub IntersectWith(other As IEnumerable(Of T)) Implements ISet(Of T).IntersectWith
-            Dim otherSet = New HashSet(Of T)(other, _comparer)
+            Dim otherSet As New HashSet(Of T)(other, _comparer)
+
             For Each key In _dict.Keys
                 If Not otherSet.Contains(key) Then
                     _dict.TryRemove(key, Nothing)
@@ -41,13 +42,13 @@ Namespace ThreadSafetyLists
         End Sub
 
         Public Sub ExceptWith(other As IEnumerable(Of T)) Implements ISet(Of T).ExceptWith
-            For Each item In other
+            For Each item As T In other
                 _dict.TryRemove(item, Nothing)
             Next
         End Sub
 
         Public Sub SymmetricExceptWith(other As IEnumerable(Of T)) Implements ISet(Of T).SymmetricExceptWith
-            For Each item In other
+            For Each item As T In other
                 If Not _dict.TryAdd(item, 0) Then
                     _dict.TryRemove(item, Nothing)
                 End If
@@ -55,21 +56,21 @@ Namespace ThreadSafetyLists
         End Sub
 
         Public Function IsSubsetOf(other As IEnumerable(Of T)) As Boolean Implements ISet(Of T).IsSubsetOf
-            Dim otherSet = New HashSet(Of T)(other, _comparer)
+            Dim otherSet As New HashSet(Of T)(other, _comparer)
             Return _dict.Keys.All(Function(k) otherSet.Contains(k))
         End Function
 
         Public Function IsSupersetOf(other As IEnumerable(Of T)) As Boolean Implements ISet(Of T).IsSupersetOf
-            Return other.All(Function(k) _dict.ContainsKey(k))
+            Return other.All(Function(k As T) _dict.ContainsKey(k))
         End Function
 
         Public Function IsProperSupersetOf(other As IEnumerable(Of T)) As Boolean Implements ISet(Of T).IsProperSupersetOf
-            Dim otherSet = New HashSet(Of T)(other, _comparer)
+            Dim otherSet As New HashSet(Of T)(other, _comparer)
             Return otherSet.All(Function(k) _dict.ContainsKey(k)) AndAlso _dict.Count > otherSet.Count
         End Function
 
         Public Function IsProperSubsetOf(other As IEnumerable(Of T)) As Boolean Implements ISet(Of T).IsProperSubsetOf
-            Dim otherSet = New HashSet(Of T)(other, _comparer)
+            Dim otherSet As New HashSet(Of T)(other, _comparer)
             Return _dict.Keys.All(Function(k) otherSet.Contains(k)) AndAlso _dict.Count < otherSet.Count
         End Function
 
@@ -78,7 +79,7 @@ Namespace ThreadSafetyLists
         End Function
 
         Public Function SetEquals(other As IEnumerable(Of T)) As Boolean Implements ISet(Of T).SetEquals
-            Dim otherSet = New HashSet(Of T)(other, _comparer)
+            Dim otherSet As New HashSet(Of T)(other, _comparer)
             Return _dict.Count = otherSet.Count AndAlso _dict.Keys.All(Function(k) otherSet.Contains(k))
         End Function
 
