@@ -6,7 +6,7 @@
     <StartupObject>Free_SysLog.My.MyApplication</StartupObject>
     <RootNamespace>Free_SysLog</RootNamespace>
     <MyType>WindowsForms</MyType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <DocumentationFile>Free SysLog.xml</DocumentationFile>
