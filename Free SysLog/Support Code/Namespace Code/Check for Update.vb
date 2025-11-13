@@ -25,7 +25,7 @@ Namespace checkForUpdates
         Private Const updaterURL As String = "https://www.toms-world.org/download/updater.exe"
         Private Const updaterSHA256URL As String = "https://www.toms-world.org/download/updater.exe.sha2"
         Private Const programUpdateCheckerXMLFile As String = "https://www.toms-world.org/updates/freesyslog_update.xml"
-        Private Const programCode As String = "freesyslog"
+        Private Const programCode As String = "freesyslognet"
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
         Public windowObject As Form1
