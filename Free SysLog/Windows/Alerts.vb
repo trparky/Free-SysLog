@@ -287,7 +287,16 @@ Public Class Alerts
                 Dim AlertsClass As AlertsClass
 
                 For Each item As AlertsListViewItem In AlertsListView.Items
-                    AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled, .BoolLimited = item.BoolLimited}
+                    AlertsClass = New AlertsClass() With {
+                        .StrLogText = item.StrLogText,
+                        .StrAlertText = item.StrAlertText,
+                        .BoolCaseSensitive = item.BoolCaseSensitive,
+                        .BoolRegex = item.BoolRegex,
+                        .alertType = item.AlertType,
+                        .BoolEnabled = item.BoolEnabled,
+                        .BoolLimited = item.BoolLimited
+                    }
+
                     If AlertsClass.BoolEnabled Then newAlertsList.Add(AlertsClass)
                     tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
                 Next

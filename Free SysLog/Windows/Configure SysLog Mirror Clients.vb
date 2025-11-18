@@ -177,7 +177,13 @@ Public Class ConfigureSysLogMirrorClients
             Dim SysLogProxyServer As SysLogProxyServer
 
             For Each item As ServerListViewItem In servers.Items
-                SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text}
+                SysLogProxyServer = New SysLogProxyServer() With {
+                    .ip = item.SubItems(0).Text,
+                    .port = Integer.Parse(item.SubItems(1).Text),
+                    .boolEnabled = item.BoolEnabled,
+                    .name = item.SubItems(3).Text
+                }
+
                 If SysLogProxyServer.boolEnabled Then newServerList.Add(SysLogProxyServer)
                 tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
             Next

@@ -129,7 +129,16 @@ Public Class IgnoredWordsAndPhrases
                 Dim ignoredClass As IgnoredClass
 
                 For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment}
+                    ignoredClass = New IgnoredClass() With {
+                        .StrIgnore = item.SubItems(0).Text,
+                        .BoolCaseSensitive = item.BoolCaseSensitive,
+                        .BoolRegex = item.BoolRegex,
+                        .BoolEnabled = item.BoolEnabled,
+                        .IgnoreType = item.IgnoreType,
+                        .dateCreated = item.dateCreated,
+                        .strComment = item.strComment
+                    }
+
                     If ignoredClass.BoolEnabled Then newIgnoredList.Add(ignoredClass)
                     tempIgnoredRules.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
                 Next

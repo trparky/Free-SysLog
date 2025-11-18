@@ -121,7 +121,11 @@ Public Class Hostnames
             Dim hostName As CustomHostname
 
             For Each item As ListViewItem In ListHostnames.Items
-                hostName = New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}
+                hostName = New CustomHostname() With {
+                    .ip = item.SubItems(0).Text,
+                    .deviceName = item.SubItems(1).Text
+                }
+
                 tempHostnames.Add(Newtonsoft.Json.JsonConvert.SerializeObject(hostName))
                 newHostNames(item.SubItems(0).Text) = item.SubItems(1).Text
             Next
