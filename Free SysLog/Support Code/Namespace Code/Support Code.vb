@@ -15,16 +15,16 @@ Namespace SupportCode
     End Enum
 
     Public Class uniqueObjectsClass
-        Public logTypes As HashSet(Of String)
-        Public processes As HashSet(Of String)
-        Public hostNames As HashSet(Of String)
-        Public ipAddresses As HashSet(Of String)
+        Public logTypes As ThreadSafetyLists.ConcurrentHashSet(Of String)
+        Public processes As ThreadSafetyLists.ConcurrentHashSet(Of String)
+        Public hostNames As ThreadSafetyLists.ConcurrentHashSet(Of String)
+        Public ipAddresses As ThreadSafetyLists.ConcurrentHashSet(Of String)
 
         Public Sub New()
-            logTypes = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            processes = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            hostNames = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
-            ipAddresses = New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            logTypes = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            processes = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            hostNames = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            ipAddresses = New ThreadSafetyLists.ConcurrentHashSet(Of String)(StringComparer.OrdinalIgnoreCase)
         End Sub
 
         Public Sub Clear()
@@ -47,22 +47,18 @@ Namespace SupportCode
     Module SupportCode
         Public ParentForm As Form1
 
-        Public AlertsRegexCache As New Dictionary(Of String, Regex)
-        Public AlertsRegexCacheLockingObject As New Object
-        Public ReplacementsRegexCache As New Dictionary(Of String, Regex)
-        Public ReplacementsRegexCacheLockingObject As New Object
-        Public IgnoredRegexCache As New Dictionary(Of String, Regex)
-        Public IgnoredRegexCacheLockingObject As New Object()
+        Public AlertsRegexCache As New ConcurrentDictionary(Of String, Regex)
+        Public ReplacementsRegexCache As New ConcurrentDictionary(Of String, Regex)
+        Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
 
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
-        Public replacementsList As New List(Of ReplacementsClass)
-        Public ignoredList As New List(Of IgnoredClass)
-        Public ignoredListLockingObject As New Object()
-        Public alertsList As New List(Of AlertsClass)
-        Public serversList As New List(Of SysLogProxyServer)
-        Public hostnames As New Dictionary(Of String, String)(StringComparison.OrdinalIgnoreCase)
+        Public replacementsList As New ThreadSafetyLists.ThreadSafeReplacementsList
+        Public ignoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
+        Public alertsList As New ThreadSafetyLists.ThreadSafeAlertsList
+        Public serversList As New ThreadSafetyLists.ThreadSafeProxyServerList
+        Public hostnames As New ConcurrentDictionary(Of String, String)(StringComparer.OrdinalIgnoreCase)
         Public Const strMutexName As String = "Free SysLog Server"
         Public mutex As Threading.Mutex
         Public strEXEPath As String = Process.GetCurrentProcess.MainModule.FileName

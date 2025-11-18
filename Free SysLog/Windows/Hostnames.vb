@@ -118,7 +118,7 @@ Public Class Hostnames
 
         For Each item As ListViewItem In ListHostnames.Items
             tempHostnames.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}))
-            SupportCode.hostnames.Add(item.SubItems(0).Text, item.SubItems(1).Text)
+            SupportCode.hostnames(item.SubItems(0).Text) = item.SubItems(1).Text
         Next
 
         My.Settings.hostnames = tempHostnames

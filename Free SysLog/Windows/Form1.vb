@@ -242,6 +242,7 @@ Public Class Form1
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
+        OnlySaveAlertedLogs.Checked = My.Settings.OnlySaveAlertedLogs
         SaveIgnoredLogCount.Checked = My.Settings.saveIgnoredLogCount
         AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer
         ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
@@ -301,7 +302,7 @@ Public Class Form1
 
             For Each strJSONString As String In My.Settings.hostnames
                 customHostname = Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                SupportCode.hostnames.Add(customHostname.ip, customHostname.deviceName)
+                SupportCode.hostnames(customHostname.ip) = customHostname.deviceName
             Next
         End If
 
@@ -326,15 +327,13 @@ Public Class Form1
             End If
         End If
 
-        SyncLock ignoredListLockingObject
-            If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
-                For Each strJSONString As String In My.Settings.ignored2
-                    tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                    If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
-                    tempIgnoredClass = Nothing
-                Next
-            End If
-        End SyncLock
+        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
+            For Each strJSONString As String In My.Settings.ignored2
+                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
+                tempIgnoredClass = Nothing
+            Next
+        End If
 
         If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
             For Each strJSONString As String In My.Settings.alerts
@@ -1066,9 +1065,7 @@ Public Class Form1
             IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
 
             If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                SyncLock IgnoredRegexCacheLockingObject
-                    IgnoredRegexCache.Clear()
-                End SyncLock
+                IgnoredRegexCache.Clear()
             End If
         End Using
     End Sub
@@ -1196,11 +1193,9 @@ Public Class Form1
         Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
             ReplacementsInstance.ShowDialog(Me)
 
-            SyncLock ReplacementsRegexCacheLockingObject
-                If ReplacementsInstance.boolChanged Then
-                    ReplacementsRegexCache.Clear()
-                End If
-            End SyncLock
+            If ReplacementsInstance.boolChanged Then
+                ReplacementsRegexCache.Clear()
+            End If
         End Using
     End Sub
 
@@ -1525,9 +1520,7 @@ Public Class Form1
             Alerts.ShowDialog(Me)
 
             If Alerts.boolChanged Then
-                SyncLock AlertsRegexCacheLockingObject
-                    AlertsRegexCache.Clear()
-                End SyncLock
+                AlertsRegexCache.Clear()
             End If
         End Using
     End Sub
@@ -2101,6 +2094,10 @@ Public Class Form1
         My.Settings.ShowCloseButtonOnNotifications = ShowCloseButtonOnNotifications.Checked
     End Sub
 
+    Private Sub OnlySaveAlertedLogs_Click(sender As Object, e As EventArgs) Handles OnlySaveAlertedLogs.Click
+        My.Settings.OnlySaveAlertedLogs = OnlySaveAlertedLogs.Checked
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
@@ -2141,12 +2138,12 @@ Public Class Form1
                         Catch ex As Newtonsoft.Json.JsonSerializationException
                         End Try
                     Else
-                        If serversList IsNot Nothing AndAlso serversList.Any() Then
+                        If serversList IsNot Nothing AndAlso serversList.GetSnapshot.Any() Then
                             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
                                                                        Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
 
-                                                                       For Each item As SysLogProxyServer In serversList
+                                                                       For Each item As SysLogProxyServer In serversList.GetSnapshot
                                                                            SendMessageToSysLogServer(strDataToSend, item.ip, item.port)
                                                                        Next
 

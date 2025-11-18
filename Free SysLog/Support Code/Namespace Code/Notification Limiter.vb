@@ -1,6 +1,7 @@
 ﻿Namespace NotificationLimiter
     Public Module NotificationLimiter
         Public lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
+        Public lastNotificationTimeLockingObject As New Object()
 
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
@@ -9,7 +10,7 @@
             ' Get the current time
             Dim currentTime As Date = Date.Now
 
-            SyncLock lastNotificationTime
+            SyncLock lastNotificationTimeLockingObject
                 ' Clean up old notification entries
                 CleanUpOldEntries(currentTime)
 
