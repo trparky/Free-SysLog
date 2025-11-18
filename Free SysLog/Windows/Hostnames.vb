@@ -114,15 +114,26 @@ Public Class Hostnames
 
     Private Sub Hostnames_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         Dim tempHostnames As New Specialized.StringCollection()
-        SupportCode.hostnames.Clear()
+        Dim newHostNames As New Concurrent.ConcurrentDictionary(Of String, String)
+        Dim boolSuccess As Boolean = False
 
-        For Each item As ListViewItem In ListHostnames.Items
-            tempHostnames.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}))
-            SupportCode.hostnames(item.SubItems(0).Text) = item.SubItems(1).Text
-        Next
+        Try
+            For Each item As ListViewItem In ListHostnames.Items
+                tempHostnames.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}))
+                newHostNames(item.SubItems(0).Text) = item.SubItems(1).Text
+            Next
 
-        My.Settings.hostnames = tempHostnames
-        My.Settings.Save()
+            boolSuccess = True
+        Catch
+        Finally
+            If boolSuccess Then
+                SupportCode.hostnames.Clear()
+                SupportCode.hostnames = newHostNames
+
+                My.Settings.hostnames = tempHostnames
+                My.Settings.Save()
+            End If
+        End Try
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click

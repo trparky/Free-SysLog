@@ -169,19 +169,30 @@ Public Class ConfigureSysLogMirrorClients
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        serversList.Clear()
-
-        Dim SysLogProxyServer As SysLogProxyServer
+        Dim newServerList As New ThreadSafetyLists.ThreadSafeProxyServerList
         Dim tempServer As New Specialized.StringCollection()
+        Dim boolSuccess As Boolean = False
 
-        For Each item As ServerListViewItem In servers.Items
-            SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text}
-            If SysLogProxyServer.boolEnabled Then serversList.Add(SysLogProxyServer)
-            tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
-        Next
+        Try
+            Dim SysLogProxyServer As SysLogProxyServer
 
-        My.Settings.ServersToSendTo = tempServer
-        My.Settings.Save()
+            For Each item As ServerListViewItem In servers.Items
+                SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text}
+                If SysLogProxyServer.boolEnabled Then newServerList.Add(SysLogProxyServer)
+                tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
+            Next
+
+            boolSuccess = True
+        Catch
+        Finally
+            If boolSuccess Then
+                serversList.Clear()
+                serversList.Merge(newServerList)
+
+                My.Settings.ServersToSendTo = tempServer
+                My.Settings.Save()
+            End If
+        End Try
     End Sub
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening

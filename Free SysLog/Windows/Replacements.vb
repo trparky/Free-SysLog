@@ -147,21 +147,31 @@ Public Class Replacements
 
     Private Sub Replacements_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
         If boolChanged Then
-            replacementsList.Clear()
-
-            Dim replacementsClass As ReplacementsClass
+            Dim newReplacementsList As New ThreadSafetyLists.ThreadSafeReplacementsList
             Dim tempReplacements As New Specialized.StringCollection()
+            Dim boolSuccess As Boolean = False
 
-            For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
-                replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled}
-                If replacementsClass.BoolEnabled Then replacementsList.Add(replacementsClass)
-                tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
-            Next
+            Try
+                Dim replacementsClass As ReplacementsClass
 
-            replacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+                For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
+                    replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled}
+                    If replacementsClass.BoolEnabled Then newReplacementsList.Add(replacementsClass)
+                    tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
+                Next
 
-            My.Settings.replacements = tempReplacements
-            My.Settings.Save()
+                newReplacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+                boolSuccess = True
+            Catch
+            Finally
+                If boolSuccess Then
+                    replacementsList.Clear()
+                    replacementsList.Merge(newReplacementsList)
+
+                    My.Settings.replacements = tempReplacements
+                    My.Settings.Save()
+                End If
+            End Try
         End If
     End Sub
 

@@ -121,21 +121,31 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If boolChanged Then
-            ignoredList.Clear()
+            Dim newIgnoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
+            Dim tempIgnoredRules As New Specialized.StringCollection()
+            Dim boolSuccess As Boolean = False
 
-            Dim ignoredClass As IgnoredClass
-            Dim listOfIgnoredRulesToBeSavedToSettings As New Specialized.StringCollection()
+            Try
+                Dim ignoredClass As IgnoredClass
 
-            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment}
-                If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
-                listOfIgnoredRulesToBeSavedToSettings.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-            Next
+                For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                    ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment}
+                    If ignoredClass.BoolEnabled Then newIgnoredList.Add(ignoredClass)
+                    tempIgnoredRules.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+                Next
 
-            ignoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
+                newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
+                boolSuccess = True
+            Catch
+            Finally
+                If boolSuccess Then
+                    ignoredList.Clear()
+                    ignoredList.Merge(newIgnoredList)
 
-            My.Settings.ignored2 = listOfIgnoredRulesToBeSavedToSettings
-            My.Settings.Save()
+                    My.Settings.ignored2 = tempIgnoredRules
+                    My.Settings.Save()
+                End If
+            End Try
         End If
     End Sub
 

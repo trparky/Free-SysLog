@@ -130,6 +130,12 @@ Namespace ThreadSafetyLists
             End SyncLock
         End Sub
 
+        Public Sub Merge(items As IEnumerable(Of T))
+            SyncLock _lock
+                _list.AddRange(items)
+            End SyncLock
+        End Sub
+
         Public Sub Clear()
             SyncLock _lock
                 _list.Clear()
