@@ -115,7 +115,6 @@ Public Class Hostnames
     Private Sub Hostnames_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         Dim tempHostnames As New Specialized.StringCollection()
         Dim newHostNames As New Concurrent.ConcurrentDictionary(Of String, String)
-        Dim boolSuccess As Boolean = False
 
         Try
             Dim hostName As CustomHostname
@@ -130,16 +129,13 @@ Public Class Hostnames
                 newHostNames(item.SubItems(0).Text) = item.SubItems(1).Text
             Next
 
-            boolSuccess = True
-        Catch
-        Finally
-            If boolSuccess Then
-                SupportCode.hostnames.Clear()
-                SupportCode.hostnames = newHostNames
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            SupportCode.hostnames.Clear()
+            SupportCode.hostnames = newHostNames
 
-                My.Settings.hostnames = tempHostnames
-                My.Settings.Save()
-            End If
+            My.Settings.hostnames = tempHostnames
+            My.Settings.Save()
+        Catch
         End Try
     End Sub
 

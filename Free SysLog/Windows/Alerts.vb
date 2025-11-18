@@ -282,7 +282,6 @@ Public Class Alerts
 
         Dim newAlertsList As New ThreadSafetyLists.ThreadSafeAlertsList
         Dim tempAlerts As New Specialized.StringCollection()
-        Dim boolSuccess As Boolean = False
 
         Try
             Dim AlertsClass As AlertsClass
@@ -303,16 +302,14 @@ Public Class Alerts
             Next
 
             newAlertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
-            boolSuccess = True
-        Catch
-        Finally
-            If boolSuccess Then
-                alertsList.Clear()
-                alertsList.Merge(newAlertsList)
 
-                My.Settings.alerts = tempAlerts
-                My.Settings.Save()
-            End If
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            alertsList.Clear()
+            alertsList.Merge(newAlertsList)
+
+            My.Settings.alerts = tempAlerts
+            My.Settings.Save()
+        Catch
         End Try
     End Sub
 

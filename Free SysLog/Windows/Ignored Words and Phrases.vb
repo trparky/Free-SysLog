@@ -124,7 +124,6 @@ Public Class IgnoredWordsAndPhrases
 
         Dim newIgnoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
         Dim tempIgnoredRules As New Specialized.StringCollection()
-        Dim boolSuccess As Boolean = False
 
         Try
             Dim ignoredClass As IgnoredClass
@@ -145,16 +144,14 @@ Public Class IgnoredWordsAndPhrases
             Next
 
             newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
-            boolSuccess = True
-        Catch
-        Finally
-            If boolSuccess Then
-                ignoredList.Clear()
-                ignoredList.Merge(newIgnoredList)
 
-                My.Settings.ignored2 = tempIgnoredRules
-                My.Settings.Save()
-            End If
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            ignoredList.Clear()
+            ignoredList.Merge(newIgnoredList)
+
+            My.Settings.ignored2 = tempIgnoredRules
+            My.Settings.Save()
+        Catch
         End Try
     End Sub
 

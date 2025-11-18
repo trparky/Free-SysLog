@@ -171,7 +171,6 @@ Public Class ConfigureSysLogMirrorClients
     Private Sub ConfigureSysLogMirrorServers_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         Dim newServerList As New ThreadSafetyLists.ThreadSafeProxyServerList
         Dim tempServer As New Specialized.StringCollection()
-        Dim boolSuccess As Boolean = False
 
         Try
             Dim SysLogProxyServer As SysLogProxyServer
@@ -188,16 +187,13 @@ Public Class ConfigureSysLogMirrorClients
                 tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
             Next
 
-            boolSuccess = True
-        Catch
-        Finally
-            If boolSuccess Then
-                serversList.Clear()
-                serversList.Merge(newServerList)
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            serversList.Clear()
+            serversList.Merge(newServerList)
 
-                My.Settings.ServersToSendTo = tempServer
-                My.Settings.Save()
-            End If
+            My.Settings.ServersToSendTo = tempServer
+            My.Settings.Save()
+        Catch
         End Try
     End Sub
 

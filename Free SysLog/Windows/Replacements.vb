@@ -150,7 +150,6 @@ Public Class Replacements
 
         Dim newReplacementsList As New ThreadSafetyLists.ThreadSafeReplacementsList
         Dim tempReplacements As New Specialized.StringCollection()
-        Dim boolSuccess As Boolean = False
 
         Try
             Dim replacementsClass As ReplacementsClass
@@ -169,16 +168,14 @@ Public Class Replacements
             Next
 
             newReplacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
-            boolSuccess = True
-        Catch
-        Finally
-            If boolSuccess Then
-                replacementsList.Clear()
-                replacementsList.Merge(newReplacementsList)
 
-                My.Settings.replacements = tempReplacements
-                My.Settings.Save()
-            End If
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            replacementsList.Clear()
+            replacementsList.Merge(newReplacementsList)
+
+            My.Settings.replacements = tempReplacements
+            My.Settings.Save()
+        Catch
         End Try
     End Sub
 
