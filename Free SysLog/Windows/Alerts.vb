@@ -278,42 +278,42 @@ Public Class Alerts
     End Sub
 
     Private Sub Alerts_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If boolChanged Then
-            Dim newAlertsList As New ThreadSafetyLists.ThreadSafeAlertsList
-            Dim tempAlerts As New Specialized.StringCollection()
-            Dim boolSuccess As Boolean = False
+        If Not boolChanged Then Exit Sub
 
-            Try
-                Dim AlertsClass As AlertsClass
+        Dim newAlertsList As New ThreadSafetyLists.ThreadSafeAlertsList
+        Dim tempAlerts As New Specialized.StringCollection()
+        Dim boolSuccess As Boolean = False
 
-                For Each item As AlertsListViewItem In AlertsListView.Items
-                    AlertsClass = New AlertsClass() With {
-                        .StrLogText = item.StrLogText,
-                        .StrAlertText = item.StrAlertText,
-                        .BoolCaseSensitive = item.BoolCaseSensitive,
-                        .BoolRegex = item.BoolRegex,
-                        .alertType = item.AlertType,
-                        .BoolEnabled = item.BoolEnabled,
-                        .BoolLimited = item.BoolLimited
-                    }
+        Try
+            Dim AlertsClass As AlertsClass
 
-                    If AlertsClass.BoolEnabled Then newAlertsList.Add(AlertsClass)
-                    tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
-                Next
+            For Each item As AlertsListViewItem In AlertsListView.Items
+                AlertsClass = New AlertsClass() With {
+                    .StrLogText = item.StrLogText,
+                    .StrAlertText = item.StrAlertText,
+                    .BoolCaseSensitive = item.BoolCaseSensitive,
+                    .BoolRegex = item.BoolRegex,
+                    .alertType = item.AlertType,
+                    .BoolEnabled = item.BoolEnabled,
+                    .BoolLimited = item.BoolLimited
+                }
 
-                newAlertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
-                boolSuccess = True
-            Catch
-            Finally
-                If boolSuccess Then
-                    alertsList.Clear()
-                    alertsList.Merge(newAlertsList)
+                If AlertsClass.BoolEnabled Then newAlertsList.Add(AlertsClass)
+                tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
+            Next
 
-                    My.Settings.alerts = tempAlerts
-                    My.Settings.Save()
-                End If
-            End Try
-        End If
+            newAlertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            boolSuccess = True
+        Catch
+        Finally
+            If boolSuccess Then
+                alertsList.Clear()
+                alertsList.Merge(newAlertsList)
+
+                My.Settings.alerts = tempAlerts
+                My.Settings.Save()
+            End If
+        End Try
     End Sub
 
     Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening

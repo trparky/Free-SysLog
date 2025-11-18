@@ -120,42 +120,42 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If boolChanged Then
-            Dim newIgnoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
-            Dim tempIgnoredRules As New Specialized.StringCollection()
-            Dim boolSuccess As Boolean = False
+        If Not boolChanged Then Exit Sub
 
-            Try
-                Dim ignoredClass As IgnoredClass
+        Dim newIgnoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
+        Dim tempIgnoredRules As New Specialized.StringCollection()
+        Dim boolSuccess As Boolean = False
 
-                For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                    ignoredClass = New IgnoredClass() With {
-                        .StrIgnore = item.SubItems(0).Text,
-                        .BoolCaseSensitive = item.BoolCaseSensitive,
-                        .BoolRegex = item.BoolRegex,
-                        .BoolEnabled = item.BoolEnabled,
-                        .IgnoreType = item.IgnoreType,
-                        .dateCreated = item.dateCreated,
-                        .strComment = item.strComment
-                    }
+        Try
+            Dim ignoredClass As IgnoredClass
 
-                    If ignoredClass.BoolEnabled Then newIgnoredList.Add(ignoredClass)
-                    tempIgnoredRules.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-                Next
+            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                ignoredClass = New IgnoredClass() With {
+                    .StrIgnore = item.SubItems(0).Text,
+                    .BoolCaseSensitive = item.BoolCaseSensitive,
+                    .BoolRegex = item.BoolRegex,
+                    .BoolEnabled = item.BoolEnabled,
+                    .IgnoreType = item.IgnoreType,
+                    .dateCreated = item.dateCreated,
+                    .strComment = item.strComment
+                }
 
-                newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
-                boolSuccess = True
-            Catch
-            Finally
-                If boolSuccess Then
-                    ignoredList.Clear()
-                    ignoredList.Merge(newIgnoredList)
+                If ignoredClass.BoolEnabled Then newIgnoredList.Add(ignoredClass)
+                tempIgnoredRules.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+            Next
 
-                    My.Settings.ignored2 = tempIgnoredRules
-                    My.Settings.Save()
-                End If
-            End Try
-        End If
+            newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            boolSuccess = True
+        Catch
+        Finally
+            If boolSuccess Then
+                ignoredList.Clear()
+                ignoredList.Merge(newIgnoredList)
+
+                My.Settings.ignored2 = tempIgnoredRules
+                My.Settings.Save()
+            End If
+        End Try
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
