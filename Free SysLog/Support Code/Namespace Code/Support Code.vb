@@ -91,7 +91,6 @@ Namespace SupportCode
 
         Public allUniqueObjects As uniqueObjectsClass
         Public recentUniqueObjects As uniqueObjectsClass
-        Public ReadOnly recentUniqueObjectsLock As New Object()
         Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
 
         Public WriteOnly Property AskOpenExplorer As Boolean

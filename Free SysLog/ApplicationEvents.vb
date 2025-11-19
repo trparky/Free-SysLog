@@ -111,14 +111,12 @@ Namespace My
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
                     Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
-                                                                                SyncLock lockObject
-                                                                                    With uniqueObjects
-                                                                                        If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
-                                                                                        If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
-                                                                                        If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
-                                                                                        If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
-                                                                                    End With
-                                                                                End SyncLock
+                                                                                With uniqueObjects
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                    If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                End With
                                                                             End Sub)
                 End Using
             End If
