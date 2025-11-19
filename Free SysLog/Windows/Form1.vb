@@ -130,8 +130,52 @@ Public Class Form1
         End Select
     End Function
 
+    Public Sub WriteLogsToDisk()
+        SyncLock dataGridLockObject
+            Dim collectionOfSavedData As New List(Of SavedData)
+            Dim myItem As MyDataGridViewRow
+
+            Try
+                For Each item As DataGridViewRow In Logs.Rows
+                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
+                        myItem = DirectCast(item, MyDataGridViewRow)
+
+                        collectionOfSavedData.Add(New SavedData With {
+                                                .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                                .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                                .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
+                                                .log = myItem.Cells(ColumnIndex_LogText).Value,
+                                                .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                                .DateObject = myItem.DateObject,
+                                                .BoolAlerted = myItem.BoolAlerted,
+                                                .ServerDate = myItem.ServerDate,
+                                                .rawLogData = myItem.RawLogData,
+                                                .alertText = myItem.AlertText,
+                                                .alertType = myItem.alertType
+                                              })
+                    End If
+                Next
+
+                Using fileStream As New StreamWriter(strPathToDataFile & ".new")
+                    fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
+                End Using
+
+                File.Delete(strPathToDataFile)
+                File.Move(strPathToDataFile & ".new", strPathToDataFile)
+            Catch ex As Exception
+                MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption and loss.", MsgBoxStyle.Critical, Text)
+                Process.GetCurrentProcess.Kill()
+            End Try
+
+            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
+
+            BtnSaveLogsToDisk.Enabled = False
+        End SyncLock
+    End Sub
+
     Private Sub MakeLogBackup()
-        DataHandling.WriteLogsToDisk()
+        WriteLogsToDisk()
         File.Copy(strPathToDataFile, GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json")))
     End Sub
 
@@ -208,7 +252,7 @@ Public Class Form1
     End Sub
 
     Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
-        DataHandling.WriteLogsToDisk()
+        WriteLogsToDisk()
         LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
     End Sub
 
@@ -876,7 +920,7 @@ Public Class Form1
     End Sub
 
     Public Sub SaveLogsToDiskSub()
-        DataHandling.WriteLogsToDisk()
+        WriteLogsToDisk()
         LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
         SaveTimer.Enabled = False
         SaveTimer.Enabled = True
@@ -923,7 +967,7 @@ Public Class Form1
         If My.Settings.saveIgnoredLogCount Then My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
-        DataHandling.WriteLogsToDisk()
+        WriteLogsToDisk()
 
         If boolDoWeOwnTheMutex Then
             SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
@@ -1832,7 +1876,7 @@ Public Class Form1
                 Logs.DefaultCellStyle.Font = My.Settings.font
                 Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
 
-                DataHandling.WriteLogsToDisk()
+                WriteLogsToDisk()
 
                 SyncLock dataGridLockObject
                     Threading.Tasks.Task.Run(Sub() LoadDataFile(False))

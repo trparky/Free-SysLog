@@ -165,49 +165,5 @@ Namespace DataHandling
                 End If
             End SyncLock
         End Sub
-
-        Public Sub WriteLogsToDisk()
-            SyncLock ParentForm.dataGridLockObject
-                Dim collectionOfSavedData As New List(Of SavedData)
-                Dim myItem As MyDataGridViewRow
-
-                For Each item As DataGridViewRow In ParentForm.Logs.Rows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                        myItem = DirectCast(item, MyDataGridViewRow)
-
-                        collectionOfSavedData.Add(New SavedData With {
-                                            .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                            .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                            .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                            .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                            .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                            .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                            .DateObject = myItem.DateObject,
-                                            .BoolAlerted = myItem.BoolAlerted,
-                                            .ServerDate = myItem.ServerDate,
-                                            .rawLogData = myItem.RawLogData,
-                                            .alertText = myItem.AlertText,
-                                            .alertType = myItem.alertType
-                                          })
-                    End If
-                Next
-
-                Try
-                    Using fileStream As New StreamWriter(strPathToDataFile & ".new")
-                        fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
-                    End Using
-
-                    File.Delete(strPathToDataFile)
-                    File.Move(strPathToDataFile & ".new", strPathToDataFile)
-                Catch ex As Exception
-                    MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption.", MsgBoxStyle.Critical, ParentForm.Text)
-                    Process.GetCurrentProcess.Kill()
-                End Try
-
-                ParentForm.LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
-
-                ParentForm.BtnSaveLogsToDisk.Enabled = False
-            End SyncLock
-        End Sub
     End Module
 End Namespace
