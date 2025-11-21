@@ -305,7 +305,7 @@ Public Class Alerts
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             alertsList.Clear()
-            alertsList.Merge(newAlertsList)
+            alertsList.Merge(newAlertsList.GetSnapshot())
 
             My.Settings.alerts = tempAlerts
             My.Settings.Save()

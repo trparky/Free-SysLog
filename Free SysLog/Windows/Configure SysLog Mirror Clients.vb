@@ -189,7 +189,7 @@ Public Class ConfigureSysLogMirrorClients
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             serversList.Clear()
-            serversList.Merge(newServerList)
+            serversList.Merge(newServerList.GetSnapshot())
 
             My.Settings.ServersToSendTo = tempServer
             My.Settings.Save()

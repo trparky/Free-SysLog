@@ -147,7 +147,7 @@ Public Class IgnoredWordsAndPhrases
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             ignoredList.Clear()
-            ignoredList.Merge(newIgnoredList)
+            ignoredList.Merge(newIgnoredList.GetSnapshot())
 
             My.Settings.ignored2 = tempIgnoredRules
             My.Settings.Save()

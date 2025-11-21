@@ -171,7 +171,7 @@ Public Class Replacements
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             replacementsList.Clear()
-            replacementsList.Merge(newReplacementsList)
+            replacementsList.Merge(newReplacementsList.GetSnapshot())
 
             My.Settings.replacements = tempReplacements
             My.Settings.Save()
