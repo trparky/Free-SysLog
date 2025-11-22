@@ -512,7 +512,6 @@ Namespace SyslogParser
                         ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
                     End SyncLock
                 Else
-                    Interlocked.Increment(longNumberOfIgnoredLogs)
                     ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                 End If
             End If
