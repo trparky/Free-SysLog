@@ -56,6 +56,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnResetHits = New System.Windows.Forms.Button()
         Me.txtComment = New System.Windows.Forms.TextBox()
         Me.lblCommentLabel = New System.Windows.Forms.Label()
+        Me.lblTotalHits = New System.Windows.Forms.Label()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -357,11 +358,22 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblCommentLabel.TabIndex = 50
         Me.lblCommentLabel.Text = "Comment"
         '
+        'lblTotalHits
+        '
+        Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblTotalHits.AutoSize = True
+        Me.lblTotalHits.Location = New System.Drawing.Point(407, 256)
+        Me.lblTotalHits.Name = "lblTotalHits"
+        Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
+        Me.lblTotalHits.TabIndex = 51
+        Me.lblTotalHits.Text = "Total Ignored Hits: 0"
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1004, 437)
+        Me.Controls.Add(Me.lblTotalHits)
         Me.Controls.Add(Me.ChkRemoteProcess)
         Me.Controls.Add(Me.btnDeleteDuringEditing)
         Me.Controls.Add(Me.BtnCancel)
@@ -427,4 +439,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents txtComment As TextBox
     Friend WithEvents lblCommentLabel As Label
     Friend WithEvents ResetHitsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents lblTotalHits As Label
 End Class

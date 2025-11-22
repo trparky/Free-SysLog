@@ -172,11 +172,15 @@ Public Class IgnoredWordsAndPhrases
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
 
+        Dim longTotalHits As Long = 0
+
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem())
+                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem(longTotalHits))
             Next
         End If
+
+        lblTotalHits.Text = $"Total Ignored Hits: {longTotalHits:N0}"
 
         IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
 
