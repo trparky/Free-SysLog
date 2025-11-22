@@ -14,7 +14,6 @@ Imports Free_SysLog.SyslogTcpServer.SyslogTcpServer
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
-    Public longNumberOfIgnoredLogs As Long = 0
     Public IgnoredLogs As New List(Of MyDataGridViewRow)
     Public IgnoredLogsLockingObject As New Object
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level

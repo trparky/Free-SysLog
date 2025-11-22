@@ -409,7 +409,7 @@ Namespace SyslogParser
                                                                                                matchFound = True
                                                                                                IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key, oldValue) oldValue + 1)
                                                                                                state.Stop()
-                                                                                               If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs))
+                                                                                               If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(longNumberOfIgnoredLogs))
                                                                                            End If
                                                                                        End SyncLock
                                                                                    End If
@@ -501,7 +501,7 @@ Namespace SyslogParser
                                 ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
                             Else
                                 ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                             End If
                         End SyncLock
 
@@ -512,8 +512,8 @@ Namespace SyslogParser
                         ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
                     End SyncLock
                 Else
-                    Interlocked.Increment(ParentForm.longNumberOfIgnoredLogs)
-                    ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.longNumberOfIgnoredLogs:N0}"
+                    Interlocked.Increment(longNumberOfIgnoredLogs)
+                    ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                 End If
             End If
         End Sub
