@@ -309,7 +309,18 @@ Public Class Alerts
 
             My.Settings.alerts = tempAlerts
             My.Settings.Save()
-        Catch
+        Catch ex As Exception
+            SyncLock SupportCode.ParentForm.dataGridLockObject
+                SupportCode.ParentForm.Logs.Rows.Add(
+                    SyslogParser.MakeLocalDataGridRowEntry(
+                        $"Unable to save user preferences on ""Alerts"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        SupportCode.ParentForm.Logs
+                    )
+                )
+
+                If SupportCode.ParentForm.ChkEnableAutoScroll.Checked Then SupportCode.ParentForm.Logs.FirstDisplayedScrollingRowIndex = SupportCode.ParentForm.Logs.Rows.Count - 1
+                SupportCode.ParentForm.NumberOfLogs.Text = $"Number of Log Entries: {SupportCode.ParentForm.Logs.Rows.Count:N0}"
+            End SyncLock
         End Try
     End Sub
 
