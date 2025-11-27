@@ -143,6 +143,8 @@ Public Class IgnoredClass
         If Not dateLastEvent.Equals(Date.MinValue) Then
             dateLastEvent = dateLastEvent.ToLocalTime()
             listViewItem.SubItems.Add(dateLastEvent.ToLongDateString & " " & dateLastEvent.ToLongTimeString)
+        Else
+            listViewItem.SubItems.Add("")
         End If
 
         listViewItem.BoolRegex = BoolRegex

@@ -58,6 +58,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblCommentLabel = New System.Windows.Forms.Label()
         Me.lblTotalHits = New System.Windows.Forms.Label()
         Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.btnUpdateHits = New System.Windows.Forms.Button()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -363,7 +364,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblTotalHits.AutoSize = True
-        Me.lblTotalHits.Location = New System.Drawing.Point(407, 256)
+        Me.lblTotalHits.Location = New System.Drawing.Point(583, 256)
         Me.lblTotalHits.Name = "lblTotalHits"
         Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
         Me.lblTotalHits.TabIndex = 51
@@ -374,11 +375,22 @@ Partial Class IgnoredWordsAndPhrases
         Me.colDateOfLastEvent.Text = "Date of Last Event"
         Me.colDateOfLastEvent.Width = 240
         '
+        'btnUpdateHits
+        '
+        Me.btnUpdateHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnUpdateHits.Location = New System.Drawing.Point(407, 251)
+        Me.btnUpdateHits.Name = "btnUpdateHits"
+        Me.btnUpdateHits.Size = New System.Drawing.Size(170, 23)
+        Me.btnUpdateHits.TabIndex = 52
+        Me.btnUpdateHits.Text = "Update Hits and Last Events"
+        Me.btnUpdateHits.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1004, 437)
+        Me.Controls.Add(Me.btnUpdateHits)
         Me.Controls.Add(Me.lblTotalHits)
         Me.Controls.Add(Me.ChkRemoteProcess)
         Me.Controls.Add(Me.btnDeleteDuringEditing)
@@ -447,4 +459,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents ResetHitsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblTotalHits As Label
     Friend WithEvents colDateOfLastEvent As ColumnHeader
+    Friend WithEvents btnUpdateHits As Button
 End Class
