@@ -408,6 +408,7 @@ Namespace SyslogParser
                                                                                                _strIgnoredPattern = strRegexPattern
                                                                                                matchFound = True
                                                                                                IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key As String, oldValue As Integer) oldValue + 1)
+                                                                                               IgnoredLastEvent.AddOrUpdate(strRegexPattern, Date.Now, Function(key As String, oldValue As Date) Date.Now)
                                                                                                state.Stop()
                                                                                                If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(longNumberOfIgnoredLogs))
                                                                                            End If

@@ -125,6 +125,8 @@ Public Class IgnoredClass
 
     Public Function ToListViewItem(ByRef longTotalHits As Long) As MyIgnoredListViewItem
         Dim intHits As Integer
+        Dim dateLastEvent As Date = Date.MinValue
+        IgnoredLastEvent.TryGetValue(StrIgnore, dateLastEvent)
         If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
         longTotalHits += intHits
 
@@ -137,6 +139,12 @@ Public Class IgnoredClass
         listViewItem.SubItems.Add(intHits.ToString("N0"))
         listViewItem.SubItems.Add(If(IgnoreType = IgnoreType.MainLog, "Main Log Text", "Remote App"))
         listViewItem.SubItems.Add(dateCreated.ToLongDateString)
+
+        If Not dateLastEvent.Equals(Date.MinValue) Then
+            dateLastEvent = dateLastEvent.ToLocalTime()
+            listViewItem.SubItems.Add(dateLastEvent.ToLongDateString & " " & dateLastEvent.ToLongTimeString)
+        End If
+
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled

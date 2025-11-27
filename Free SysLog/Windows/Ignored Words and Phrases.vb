@@ -189,6 +189,7 @@ Public Class IgnoredWordsAndPhrases
         CaseSensitive.Width = My.Settings.colIgnoredCaseSensitive
         ColEnabled.Width = My.Settings.colIgnoredEnabled
         colDateCreated.Width = My.Settings.colIgnoredDateCreated
+        colDateOfLastEvent.Width = My.Settings.DateOfLastEventColumnWidth
 
         Size = My.Settings.ConfigureIgnoredSize
 
@@ -359,6 +360,7 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.colIgnoredCaseSensitive = CaseSensitive.Width
             My.Settings.colIgnoredEnabled = ColEnabled.Width
             My.Settings.colIgnoredDateCreated = colDateCreated.Width
+            My.Settings.DateOfLastEventColumnWidth = colDateOfLastEvent.Width
         End If
     End Sub
 

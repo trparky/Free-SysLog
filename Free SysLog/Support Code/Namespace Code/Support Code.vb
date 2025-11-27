@@ -51,6 +51,7 @@ Namespace SupportCode
         Public ReplacementsRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
+        Public IgnoredLastEvent As New ConcurrentDictionary(Of String, Date)
 
         Public longNumberOfIgnoredLogs As Long = 0
         Public boolIsProgrammaticScroll As Boolean = False

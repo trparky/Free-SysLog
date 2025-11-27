@@ -57,6 +57,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.txtComment = New System.Windows.Forms.TextBox()
         Me.lblCommentLabel = New System.Windows.Forms.Label()
         Me.lblTotalHits = New System.Windows.Forms.Label()
+        Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -87,7 +88,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated, Me.colDateOfLastEvent})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -368,6 +369,11 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblTotalHits.TabIndex = 51
         Me.lblTotalHits.Text = "Total Ignored Hits: 0"
         '
+        'colDateOfLastEvent
+        '
+        Me.colDateOfLastEvent.Text = "Date of Last Event"
+        Me.colDateOfLastEvent.Width = 240
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -440,4 +446,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents lblCommentLabel As Label
     Friend WithEvents ResetHitsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents lblTotalHits As Label
+    Friend WithEvents colDateOfLastEvent As ColumnHeader
 End Class

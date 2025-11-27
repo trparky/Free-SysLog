@@ -314,5 +314,8 @@
     <Setting Name="OnlySaveAlertedLogs" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="DateOfLastEventColumnWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
