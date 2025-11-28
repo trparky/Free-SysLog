@@ -124,24 +124,24 @@ Namespace SupportCode
             End Try
         End Function
 
-        Public Sub LoadSavedListViewColumnOrder(ByRef listView As ListView, strToLoadFrom As String)
+        Public Sub LoadSavedListViewColumnOrder(ByRef columns As ListView.ColumnHeaderCollection, strToLoadFrom As String)
             Try
                 If String.IsNullOrWhiteSpace(strToLoadFrom) Then Exit Sub
 
                 Dim columnOrder As Integer() = Array.ConvertAll(strToLoadFrom.Split(","), Function(s As String) Integer.Parse(s))
 
-                For i As Integer = 0 To Math.Min(columnOrder.Length - 1, listView.Columns.Count - 1)
-                    listView.Columns(i).DisplayIndex = columnOrder(i)
+                For i As Integer = 0 To Math.Min(columnOrder.Length - 1, columns.Count - 1)
+                    columns(i).DisplayIndex = columnOrder(i)
                 Next
             Catch
             End Try
         End Sub
 
-        Public Function SaveListViewColumnOrder(ByRef listView As ListView) As String
+        Public Function SaveListViewColumnOrder(ByRef columns As ListView.ColumnHeaderCollection) As String
             Dim columnOrder As New List(Of Integer)
 
-            For i As Integer = 0 To listView.Columns.Count - 1
-                columnOrder.Add(listView.Columns(i).DisplayIndex)
+            For i As Integer = 0 To columns.Count - 1
+                columnOrder.Add(columns(i).DisplayIndex)
             Next
 
             Return String.Join(",", columnOrder)
