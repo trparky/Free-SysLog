@@ -125,10 +125,10 @@ Public Class IgnoredClass
 
     Public Function ToListViewItem(ByRef longTotalHits As Long) As MyIgnoredListViewItem
         Dim intHits As Integer
-        Dim dateLastEvent As Date = Date.MinValue
+        Dim dateLastEvent As Date
         Dim intSecondsSinceLastEvent As Integer
 
-        IgnoredLastEvent.TryGetValue(StrIgnore, dateLastEvent)
+        If Not IgnoredLastEvent.TryGetValue(StrIgnore, dateLastEvent) Then dateLastEvent = Date.MinValue
         If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
         longTotalHits += intHits
 
