@@ -3,6 +3,7 @@
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
+    Private boolColumnOrderChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Public strIgnoredPattern As String = Nothing
     Private draggedItem As ListViewItem
@@ -119,7 +120,16 @@ Public Class IgnoredWordsAndPhrases
         End If
     End Sub
 
+    Private Sub IgnoredListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles IgnoredListView.ColumnReordered
+        boolColumnOrderChanged = True
+    End Sub
+
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If boolColumnOrderChanged Then
+            My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveListViewColumnOrder(IgnoredListView)
+            My.Settings.Save()
+        End If
+
         If Not boolChanged Then Exit Sub
 
         Dim newIgnoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
@@ -167,6 +177,8 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
+        LoadSavedListViewColumnOrder(IgnoredListView, My.Settings.IgnoredWordsAndPhrasesColumnOrder)
+
         BtnCancel.Visible = False
         btnDeleteDuringEditing.Visible = False
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)

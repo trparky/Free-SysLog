@@ -124,6 +124,29 @@ Namespace SupportCode
             End Try
         End Function
 
+        Public Sub LoadSavedListViewColumnOrder(ByRef listView As ListView, strToLoadFrom As String)
+            Try
+                If String.IsNullOrWhiteSpace(strToLoadFrom) Then Exit Sub
+
+                Dim columnOrder As Integer() = Array.ConvertAll(strToLoadFrom.Split(","), Function(s As String) Integer.Parse(s))
+
+                For i As Integer = 0 To Math.Min(columnOrder.Length - 1, listView.Columns.Count - 1)
+                    listView.Columns(i).DisplayIndex = columnOrder(i)
+                Next
+            Catch
+            End Try
+        End Sub
+
+        Public Function SaveListViewColumnOrder(ByRef listView As ListView) As String
+            Dim columnOrder As New List(Of Integer)
+
+            For i As Integer = 0 To listView.Columns.Count - 1
+                columnOrder.Add(listView.Columns(i).DisplayIndex)
+            Next
+
+            Return String.Join(",", columnOrder)
+        End Function
+
         Public Sub SortByClickedColumn(ByRef ListView As ListView, intColumn As Integer, ByRef m_SortingColumn As ColumnHeader)
             ' Get the new sorting column.
             Dim new_sorting_column As ColumnHeader = ListView.Columns(intColumn)

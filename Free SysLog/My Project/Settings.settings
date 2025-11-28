@@ -317,5 +317,8 @@
     <Setting Name="DateOfLastEventColumnWidth" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">240</Value>
     </Setting>
+    <Setting Name="IgnoredWordsAndPhrasesColumnOrder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
