@@ -1062,9 +1062,6 @@ Public Class Form1
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.ColumnHeaderMouseClick
         If e.Button = MouseButtons.Left Then
-            ' Disable user sorting
-            Logs.AllowUserToOrderColumns = False
-
             Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
             intSortColumnIndex = e.ColumnIndex
 
