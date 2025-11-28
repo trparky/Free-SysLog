@@ -124,7 +124,7 @@ Namespace SupportCode
             End Try
         End Function
 
-        Public Sub LoadSavedListViewColumnOrder(ByRef columns As ListView.ColumnHeaderCollection, strToLoadFrom As String)
+        Public Sub LoadColumnOrders(ByRef columns As ListView.ColumnHeaderCollection, strToLoadFrom As String)
             Try
                 If String.IsNullOrWhiteSpace(strToLoadFrom) Then Exit Sub
 
@@ -137,7 +137,7 @@ Namespace SupportCode
             End Try
         End Sub
 
-        Public Function SaveListViewColumnOrder(ByRef columns As ListView.ColumnHeaderCollection) As String
+        Public Function SaveColumnOrders(ByRef columns As ListView.ColumnHeaderCollection) As String
             Dim columnOrder As New List(Of Integer)
 
             For i As Integer = 0 To columns.Count - 1

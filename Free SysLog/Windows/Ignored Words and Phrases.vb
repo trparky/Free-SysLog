@@ -126,7 +126,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If boolColumnOrderChanged Then
-            My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveListViewColumnOrder(IgnoredListView.Columns)
+            My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveColumnOrders(IgnoredListView.Columns)
             My.Settings.Save()
         End If
 
@@ -177,7 +177,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
-        LoadSavedListViewColumnOrder(IgnoredListView.Columns, My.Settings.IgnoredWordsAndPhrasesColumnOrder)
+        LoadColumnOrders(IgnoredListView.Columns, My.Settings.IgnoredWordsAndPhrasesColumnOrder)
 
         BtnCancel.Visible = False
         btnDeleteDuringEditing.Visible = False
