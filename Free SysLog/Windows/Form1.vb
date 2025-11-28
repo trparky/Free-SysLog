@@ -1223,6 +1223,7 @@ Public Class Form1
     End Sub
 
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
+        IgnoredLastEvent.Clear()
         IgnoredHits.Clear()
         longNumberOfIgnoredLogs = 0
         LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
