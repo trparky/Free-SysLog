@@ -6,6 +6,7 @@ Public Class Alerts
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
+    Private boolColumnOrderChanged As Boolean = False
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles AlertsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -66,7 +67,12 @@ Public Class Alerts
                                                                     End Function)
     End Function
 
+    Private Sub AlertsListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles AlertsListView.ColumnReordered
+        boolColumnOrderChanged = True
+    End Sub
+
     Private Sub Alerts_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LoadColumnOrders(AlertsListView.Columns, My.Settings.alertsColumnOrder)
         BtnCancel.Visible = False
         Location = VerifyWindowLocation(My.Settings.alertsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of AlertsListViewItem)
@@ -278,6 +284,11 @@ Public Class Alerts
     End Sub
 
     Private Sub Alerts_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If boolColumnOrderChanged Then
+            My.Settings.alertsColumnOrder = SaveColumnOrders(AlertsListView.Columns)
+            My.Settings.Save()
+        End If
+
         If Not boolChanged Then Exit Sub
 
         Dim newAlertsList As New ThreadSafetyLists.ThreadSafeAlertsList

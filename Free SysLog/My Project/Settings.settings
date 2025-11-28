@@ -320,5 +320,8 @@
     <Setting Name="IgnoredWordsAndPhrasesColumnOrder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="alertsColumnOrder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

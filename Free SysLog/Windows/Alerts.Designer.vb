@@ -76,6 +76,7 @@ Partial Class Alerts
         '
         'AlertsListView
         '
+        Me.AlertsListView.AllowColumnReorder = True
         Me.AlertsListView.AllowDrop = True
         Me.AlertsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
