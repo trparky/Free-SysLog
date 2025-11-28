@@ -55,6 +55,7 @@ Partial Class Replacements
         '
         'ReplacementsListView
         '
+        Me.ReplacementsListView.AllowColumnReorder = True
         Me.ReplacementsListView.AllowDrop = True
         Me.ReplacementsListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _

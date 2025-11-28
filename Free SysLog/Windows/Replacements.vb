@@ -6,6 +6,11 @@ Public Class Replacements
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
+    Private boolColumnOrderChanged As Boolean = False
+
+    Private Sub ReplacementsListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles ReplacementsListView.ColumnReordered
+        boolColumnOrderChanged = True
+    End Sub
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles ReplacementsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -122,6 +127,7 @@ Public Class Replacements
     End Sub
 
     Private Sub Replacements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LoadColumnOrders(ReplacementsListView.Columns, My.Settings.replacementsColumnOrder)
         BtnCancel.Visible = False
         Location = VerifyWindowLocation(My.Settings.replacementsLocation, Me)
         Dim listOfReplacementsToAdd As New List(Of MyReplacementsListViewItem)
@@ -146,6 +152,11 @@ Public Class Replacements
     End Sub
 
     Private Sub Replacements_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
+        If boolColumnOrderChanged Then
+            My.Settings.replacementsColumnOrder = SaveColumnOrders(ReplacementsListView.Columns)
+            My.Settings.Save()
+        End If
+
         If Not boolChanged Then Exit Sub
 
         Dim newReplacementsList As New ThreadSafetyLists.ThreadSafeReplacementsList
