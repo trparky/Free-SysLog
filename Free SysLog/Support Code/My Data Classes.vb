@@ -138,7 +138,7 @@ Public Class IgnoredClass
         listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolCaseSensitive, "Yes", "No"))
         listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
-        listViewItem.SubItems.Add(intHits.ToString("N0"))
+        listViewItem.SubItems.Add(If(BoolEnabled, intHits.ToString("N0"), ""))
         listViewItem.SubItems.Add(If(IgnoreType = IgnoreType.MainLog, "Main Log Text", "Remote App"))
         listViewItem.SubItems.Add(dateCreated.ToLongDateString)
 
