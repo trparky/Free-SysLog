@@ -59,7 +59,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblTotalHits = New System.Windows.Forms.Label()
         Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.btnUpdateHits = New System.Windows.Forms.Button()
-        Me.colSecondsAgo = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSinceLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -91,7 +91,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated, Me.colDateOfLastEvent, Me.colSecondsAgo})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated, Me.colDateOfLastEvent, Me.colSinceLastEvent})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -387,10 +387,10 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnUpdateHits.Text = "Update Hits and Last Events"
         Me.btnUpdateHits.UseVisualStyleBackColor = True
         '
-        'colSecondsAgo
+        'colSinceLastEvent
         '
-        Me.colSecondsAgo.Text = "Seconds Ago"
-        Me.colSecondsAgo.Width = 80
+        Me.colSinceLastEvent.Text = "Since Last Event"
+        Me.colSinceLastEvent.Width = 80
         '
         'IgnoredWordsAndPhrases
         '
@@ -467,5 +467,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents lblTotalHits As Label
     Friend WithEvents colDateOfLastEvent As ColumnHeader
     Friend WithEvents btnUpdateHits As Button
-    Friend WithEvents colSecondsAgo As ColumnHeader
+    Friend WithEvents colSinceLastEvent As ColumnHeader
 End Class

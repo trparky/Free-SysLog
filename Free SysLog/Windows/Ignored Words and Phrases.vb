@@ -549,7 +549,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub btnUpdateHits_Click(sender As Object, e As EventArgs) Handles btnUpdateHits.Click
         Dim longTotalHits As Long = 0
-        Dim intSecondsSinceLastEvent As Integer
+        Dim sinceLastEvent As TimeSpan
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
             Dim longHits As Long = 0
@@ -562,9 +562,9 @@ Public Class IgnoredWordsAndPhrases
 
             If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
                 dateOfLastEvent = dateOfLastEvent.ToLocalTime
-                intSecondsSinceLastEvent = (Now.ToLocalTime - dateOfLastEvent).TotalSeconds
+                sinceLastEvent = Now.ToLocalTime - dateOfLastEvent
                 item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
-                item.SubItems(8).Text = intSecondsSinceLastEvent.ToString("N0")
+                item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
             End If
         Next
 

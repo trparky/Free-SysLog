@@ -126,7 +126,7 @@ Public Class IgnoredClass
     Public Function ToListViewItem(ByRef longTotalHits As Long) As MyIgnoredListViewItem
         Dim intHits As Integer
         Dim dateLastEvent As Date
-        Dim intSecondsSinceLastEvent As Integer
+        Dim sinceLastEvent As TimeSpan
 
         If Not IgnoredLastEvent.TryGetValue(StrIgnore, dateLastEvent) Then dateLastEvent = Date.MinValue
         If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
@@ -144,9 +144,9 @@ Public Class IgnoredClass
 
         If Not dateLastEvent.Equals(Date.MinValue) Then
             dateLastEvent = dateLastEvent.ToLocalTime()
-            intSecondsSinceLastEvent = (Now.ToLocalTime - dateLastEvent).TotalSeconds
+            sinceLastEvent = Now.ToLocalTime - dateLastEvent
             listViewItem.SubItems.Add($"{dateLastEvent.ToLongDateString} {dateLastEvent.ToLongTimeString}")
-            listViewItem.SubItems.Add(intSecondsSinceLastEvent.ToString("N0"))
+            listViewItem.SubItems.Add(TimespanToHMS(sinceLastEvent))
         Else
             listViewItem.SubItems.Add("")
             listViewItem.SubItems.Add("")

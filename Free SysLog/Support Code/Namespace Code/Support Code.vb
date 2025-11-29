@@ -108,6 +108,19 @@ Namespace SupportCode
         Public Const boolDebugBuild As Boolean = False
 #End If
 
+        Public Function TimespanToHMS(timeSpan As TimeSpan) As String
+            Dim parts As New List(Of String)
+
+            If timeSpan.Hours > 0 Then parts.Add($"{timeSpan.Hours}h")
+            If timeSpan.Minutes > 0 Then parts.Add($"{timeSpan.Minutes}m")
+            If timeSpan.Seconds > 0 Then parts.Add($"{timeSpan.Seconds}s")
+
+            ' If everything is zero (unlikely but possible), show 0s
+            If parts.Count = 0 Then Return "0s"
+
+            Return String.Join(", ", parts)
+        End Function
+
         Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
             Try
                 Dim SpecializedStringCollection As New Specialized.StringCollection
