@@ -390,7 +390,7 @@ Partial Class IgnoredWordsAndPhrases
         'colSinceLastEvent
         '
         Me.colSinceLastEvent.Text = "Since Last Event"
-        Me.colSinceLastEvent.Width = 80
+        Me.colSinceLastEvent.Width = 100
         '
         'IgnoredWordsAndPhrases
         '
