@@ -109,7 +109,7 @@ Namespace SupportCode
 #End If
 
         Public Function TimespanToHMS(timeSpan As TimeSpan) As String
-            If timeSpan.TotalSeconds = 0 Then Return "0s"
+            If timeSpan.TotalMilliseconds < 1 Then Return "0s"
 
             Dim parts As New List(Of String)
 
@@ -117,7 +117,7 @@ Namespace SupportCode
             If timeSpan.Minutes > 0 Then parts.Add($"{timeSpan.Minutes}m")
             If timeSpan.Seconds > 0 Then parts.Add($"{timeSpan.Seconds}s")
 
-            Return String.Join(", ", parts)
+            Return If(parts.Count > 0, String.Join(", ", parts), "0s")
         End Function
 
         Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
