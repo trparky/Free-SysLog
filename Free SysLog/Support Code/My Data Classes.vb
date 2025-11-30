@@ -160,6 +160,7 @@ Public Class IgnoredClass
         listViewItem.IgnoreType = IgnoreType
         listViewItem.dateCreated = dateCreated
         listViewItem.strComment = strComment
+        listViewItem.intHits = intHits
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem
@@ -184,6 +185,7 @@ Public Class IgnoredClass
         listViewItem.IgnoreType = IgnoreType
         listViewItem.dateCreated = dateCreated
         listViewItem.strComment = strComment
+        listViewItem.intHits = intHits
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem

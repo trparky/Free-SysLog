@@ -590,12 +590,12 @@ Public Class IgnoredWordsAndPhrases
         Dim sinceLastEvent As TimeSpan
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            Dim longHits As Long = 0
+            Dim intHits As Integer = 0
             Dim dateOfLastEvent As Date = Date.MinValue
 
-            If IgnoredHits.TryGetValue(item.SubItems(0).Text, longHits) Then
-                item.SubItems(4).Text = longHits.ToString("N0")
-                longTotalHits += longHits
+            If IgnoredHits.TryGetValue(item.SubItems(0).Text, intHits) Then
+                item.SubItems(4).Text = intHits.ToString("N0")
+                longTotalHits += intHits
             End If
 
             If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
@@ -605,6 +605,7 @@ Public Class IgnoredWordsAndPhrases
                 item.dateOfLastOccurrence = dateOfLastEvent
                 item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
                 item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
+                item.intHits = intHits
             End If
         Next
 
