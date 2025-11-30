@@ -366,7 +366,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblTotalHits.AutoSize = True
-        Me.lblTotalHits.Location = New System.Drawing.Point(583, 256)
+        Me.lblTotalHits.Location = New System.Drawing.Point(592, 256)
         Me.lblTotalHits.Name = "lblTotalHits"
         Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
         Me.lblTotalHits.TabIndex = 51
@@ -382,9 +382,9 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnUpdateHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnUpdateHits.Location = New System.Drawing.Point(407, 251)
         Me.btnUpdateHits.Name = "btnUpdateHits"
-        Me.btnUpdateHits.Size = New System.Drawing.Size(170, 23)
+        Me.btnUpdateHits.Size = New System.Drawing.Size(179, 23)
         Me.btnUpdateHits.TabIndex = 52
-        Me.btnUpdateHits.Text = "Update Hits and Last Events"
+        Me.btnUpdateHits.Text = "Update Hits and Last Events (F5)"
         Me.btnUpdateHits.UseVisualStyleBackColor = True
         '
         'colSinceLastEvent
