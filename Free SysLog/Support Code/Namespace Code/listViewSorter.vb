@@ -129,6 +129,35 @@
 
                 ' If both are enabled, sort by dateOfLastOccurrence
                 Return If(soSortOrder = SortOrder.Ascending, item1.dateOfLastOccurrence.CompareTo(item2.dateOfLastOccurrence), item2.dateOfLastOccurrence.CompareTo(item1.dateOfLastOccurrence))
+            ElseIf intColumnNumber = 4 AndAlso TypeOf lvFirstListView Is MyIgnoredListViewItem AndAlso TypeOf lvSecondListView Is MyIgnoredListViewItem Then
+                Dim item1 As MyIgnoredListViewItem = DirectCast(lvFirstListView, MyIgnoredListViewItem)
+                Dim item2 As MyIgnoredListViewItem = DirectCast(lvSecondListView, MyIgnoredListViewItem)
+
+                Dim enabled1 As Boolean = item1.BoolEnabled
+                Dim enabled2 As Boolean = item2.BoolEnabled
+
+                ' Always keep enabled items above disabled items (independent of sort order)
+                If enabled1 AndAlso Not enabled2 Then Return -1     ' item1 first
+                If Not enabled1 AndAlso enabled2 Then Return 1      ' item2 first
+
+                ' If both disabled, don't change their relative order
+                If Not enabled1 AndAlso Not enabled2 Then Return 0
+
+                ' --- Now compare ENABLED items by hits first ---
+                Dim hits1 As Long = Long.Parse(item1.SubItems(4).Text)
+                Dim hits2 As Long = Long.Parse(item2.SubItems(4).Text)
+
+                Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
+
+                ' Enabled items with hits > 0 should sort ahead of hits = 0
+                If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
+                If hits1 <> 0 AndAlso hits2 = 0 Then Return -1   ' item1 goes above
+
+                ' If both have zero hits, do not reorder them
+                If bothZeroHits Then Return 0
+
+                ' If both are enabled, sort by dateOfLastOccurrence
+                Return If(soSortOrder = SortOrder.Ascending, hits1.CompareTo(hits2), hits2.CompareTo(hits1))
             Else
                 ' Compare them.
                 If Double.TryParse(strFirstString, dbl1) And Double.TryParse(strSecondString, dbl2) Then
