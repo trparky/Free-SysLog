@@ -602,6 +602,7 @@ Public Class IgnoredWordsAndPhrases
                 dateOfLastEvent = dateOfLastEvent.ToLocalTime
                 sinceLastEvent = Now.ToLocalTime - dateOfLastEvent
                 item.timeSpanOfLastOccurrence = sinceLastEvent
+                item.dateOfLastOccurrence = dateOfLastEvent
                 item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
                 item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
             End If

@@ -25,6 +25,7 @@ Public Class MyIgnoredListViewItem
     Public Property BoolEnabled As Boolean
     Public Property IgnoreType As IgnoreType
     Public Property timeSpanOfLastOccurrence As TimeSpan
+    Public Property dateOfLastOccurrence As Date
     Public dateCreated As Date
     Public strComment As String
 

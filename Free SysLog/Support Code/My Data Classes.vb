@@ -146,6 +146,7 @@ Public Class IgnoredClass
             dateLastEvent = dateLastEvent.ToLocalTime()
             sinceLastEvent = Now.ToLocalTime - dateLastEvent
             listViewItem.timeSpanOfLastOccurrence = sinceLastEvent
+            listViewItem.dateOfLastOccurrence = dateLastEvent
             listViewItem.SubItems.Add($"{dateLastEvent.ToLongDateString} {dateLastEvent.ToLongTimeString}")
             listViewItem.SubItems.Add(TimespanToHMS(sinceLastEvent))
         Else
