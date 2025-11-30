@@ -86,7 +86,7 @@
                 Dim hits1 As Integer = item1.intHits
                 Dim hits2 As Integer = item2.intHits
 
-                Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
+                Dim bothZeroHits As Boolean = hits1 = 0 AndAlso hits2 = 0
 
                 ' Enabled items with hits > 0 should sort ahead of hits = 0
                 If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
@@ -118,7 +118,7 @@
                 Dim hits1 As Integer = item1.intHits
                 Dim hits2 As Integer = item2.intHits
 
-                Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
+                Dim bothZeroHits As Boolean = hits1 = 0 AndAlso hits2 = 0
 
                 ' Enabled items with hits > 0 should sort ahead of hits = 0
                 If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
@@ -147,7 +147,7 @@
                 Dim hits1 As Integer = item1.intHits
                 Dim hits2 As Integer = item2.intHits
 
-                Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
+                Dim bothZeroHits As Boolean = hits1 = 0 AndAlso hits2 = 0
 
                 ' Enabled items with hits > 0 should sort ahead of hits = 0
                 If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
