@@ -69,8 +69,35 @@
             strSecondString = If(lvSecondListView.SubItems.Count <= intColumnNumber, "", lvSecondListView.SubItems(intColumnNumber).Text)
 
             If intColumnNumber = 8 AndAlso TypeOf lvFirstListView Is MyIgnoredListViewItem AndAlso TypeOf lvSecondListView Is MyIgnoredListViewItem Then
-                Dim timeSpan1 As TimeSpan = DirectCast(lvFirstListView, MyIgnoredListViewItem).timeSpanOfLastOccurrence
-                Dim timeSpan2 As TimeSpan = DirectCast(lvSecondListView, MyIgnoredListViewItem).timeSpanOfLastOccurrence
+                Dim item1 As MyIgnoredListViewItem = DirectCast(lvFirstListView, MyIgnoredListViewItem)
+                Dim item2 As MyIgnoredListViewItem = DirectCast(lvSecondListView, MyIgnoredListViewItem)
+
+                Dim enabled1 As Boolean = item1.BoolEnabled
+                Dim enabled2 As Boolean = item2.BoolEnabled
+
+                ' Always keep enabled items above disabled items (independent of sort order)
+                If enabled1 AndAlso Not enabled2 Then Return -1     ' item1 first
+                If Not enabled1 AndAlso enabled2 Then Return 1      ' item2 first
+
+                ' If both disabled, don't change their relative order
+                If Not enabled1 AndAlso Not enabled2 Then Return 0
+
+                ' --- Now compare ENABLED items by hits first ---
+                Dim hits1 As Long = Long.Parse(item1.SubItems(4).Text)
+                Dim hits2 As Long = Long.Parse(item2.SubItems(4).Text)
+
+                Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
+
+                ' Enabled items with hits > 0 should sort ahead of hits = 0
+                If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
+                If hits1 <> 0 AndAlso hits2 = 0 Then Return -1   ' item1 goes above
+
+                ' If both have zero hits, do not reorder them
+                If bothZeroHits Then Return 0
+
+                ' If both are enabled, sort by timeSpanOfLastOccurrence
+                Dim timeSpan1 As TimeSpan = item1.timeSpanOfLastOccurrence
+                Dim timeSpan2 As TimeSpan = item2.timeSpanOfLastOccurrence
 
                 Return If(soSortOrder = SortOrder.Ascending, timeSpan1.CompareTo(timeSpan2), timeSpan2.CompareTo(timeSpan1))
             Else
