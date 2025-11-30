@@ -145,6 +145,7 @@ Public Class IgnoredClass
         If Not dateLastEvent.Equals(Date.MinValue) Then
             dateLastEvent = dateLastEvent.ToLocalTime()
             sinceLastEvent = Now.ToLocalTime - dateLastEvent
+            listViewItem.timeSpanOfLastOccurrence = sinceLastEvent
             listViewItem.SubItems.Add($"{dateLastEvent.ToLongDateString} {dateLastEvent.ToLongTimeString}")
             listViewItem.SubItems.Add(TimespanToHMS(sinceLastEvent))
         Else
