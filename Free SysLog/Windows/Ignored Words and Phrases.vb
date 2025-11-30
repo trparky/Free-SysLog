@@ -446,7 +446,11 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.Escape Then Close()
+        If e.KeyCode = Keys.Escape Then
+            Close()
+        ElseIf e.KeyCode = Keys.F5 Then
+            btnUpdateHits.PerformClick()
+        End If
     End Sub
 
     Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
