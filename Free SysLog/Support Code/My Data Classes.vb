@@ -11,7 +11,7 @@ Public Class SavedData
     Public DateObject, ServerDate As Date
     Public BoolAlerted As Boolean = False
 
-    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView) As MyDataGridViewRow
+    Public Function MakeDataGridRow(dataGrid As DataGridView) As MyDataGridViewRow
         Using MyDataGridViewRow As New MyDataGridViewRow
             With MyDataGridViewRow
                 .CreateCells(dataGrid)
@@ -76,7 +76,7 @@ Public Class AlertsHistory
     Public strTime, strAlertText, strIP, strLog, strRawLog As String
     Public alertType As AlertType
 
-    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView) As AlertsHistoryDataGridViewRow
+    Public Function MakeDataGridRow(dataGrid As DataGridView) As AlertsHistoryDataGridViewRow
         Using AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow
             With AlertsHistoryDataGridViewRow
                 .CreateCells(dataGrid)
