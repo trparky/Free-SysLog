@@ -202,6 +202,7 @@ Public Class IgnoredWordsAndPhrases
         ColEnabled.Width = My.Settings.colIgnoredEnabled
         colDateCreated.Width = My.Settings.colIgnoredDateCreated
         colDateOfLastEvent.Width = My.Settings.DateOfLastEventColumnWidth
+        colSinceLastEvent.Width = My.Settings.ColSinceLastEventWidth
 
         Size = My.Settings.ConfigureIgnoredSize
 
@@ -373,6 +374,7 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.colIgnoredEnabled = ColEnabled.Width
             My.Settings.colIgnoredDateCreated = colDateCreated.Width
             My.Settings.DateOfLastEventColumnWidth = colDateOfLastEvent.Width
+            My.Settings.ColSinceLastEventWidth = colSinceLastEvent.Width
         End If
     End Sub
 
