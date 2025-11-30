@@ -83,8 +83,9 @@
                 If Not enabled1 AndAlso Not enabled2 Then Return 0
 
                 ' --- Now compare ENABLED items by hits first ---
-                Dim hits1 As Long = Long.Parse(item1.SubItems(4).Text)
-                Dim hits2 As Long = Long.Parse(item2.SubItems(4).Text)
+                Dim hits1, hits2 As Long
+                If Not Long.TryParse(item1.SubItems(4).Text, hits1) Then hits1 = 0
+                If Not Long.TryParse(item2.SubItems(4).Text, hits2) Then hits2 = 0
 
                 Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
 
@@ -115,8 +116,9 @@
                 If Not enabled1 AndAlso Not enabled2 Then Return 0
 
                 ' --- Now compare ENABLED items by hits first ---
-                Dim hits1 As Long = Long.Parse(item1.SubItems(4).Text)
-                Dim hits2 As Long = Long.Parse(item2.SubItems(4).Text)
+                Dim hits1, hits2 As Long
+                If Not Long.TryParse(item1.SubItems(4).Text, hits1) Then hits1 = 0
+                If Not Long.TryParse(item2.SubItems(4).Text, hits2) Then hits2 = 0
 
                 Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
 
@@ -144,8 +146,9 @@
                 If Not enabled1 AndAlso Not enabled2 Then Return 0
 
                 ' --- Now compare ENABLED items by hits first ---
-                Dim hits1 As Long = Long.Parse(item1.SubItems(4).Text)
-                Dim hits2 As Long = Long.Parse(item2.SubItems(4).Text)
+                Dim hits1, hits2 As Long
+                If Not Long.TryParse(item1.SubItems(4).Text, hits1) Then hits1 = 0
+                If Not Long.TryParse(item2.SubItems(4).Text, hits2) Then hits2 = 0
 
                 Dim bothZeroHits As Boolean = (hits1 = 0 AndAlso hits2 = 0)
 
