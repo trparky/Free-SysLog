@@ -610,5 +610,7 @@ Public Class IgnoredWordsAndPhrases
         Next
 
         lblTotalHits.Text = $"Total Ignored Hits: {longTotalHits:N0}"
+
+        If IgnoredListView.ListViewItemSorter IsNot Nothing Then IgnoredListView.Sort()
     End Sub
 End Class
