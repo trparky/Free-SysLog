@@ -8,6 +8,8 @@ Public Class IgnoredWordsAndPhrases
     Public strIgnoredPattern As String = Nothing
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
+    Private AutoRefreshTimer As Timer
+    Private boolCurrentlyEditing As Boolean = False
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -86,6 +88,7 @@ Public Class IgnoredWordsAndPhrases
                 IgnoredListView.Enabled = True
                 BtnAdd.Text = "Add"
                 Label4.Text = "Add Ignored Words and Phrases"
+                boolCurrentlyEditing = False
             Else
                 Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
 
@@ -176,6 +179,24 @@ Public Class IgnoredWordsAndPhrases
         End Try
     End Sub
 
+    Private Sub InitializeAutoRefreshTimer()
+        AutoRefreshTimer = New Timer() With {.Interval = 5000, .Enabled = ChkAutoRefresh.Checked}
+        AddHandler AutoRefreshTimer.Tick, AddressOf AutoRefreshTimer_Tick
+    End Sub
+
+    Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
+        If boolCurrentlyEditing Then Exit Sub
+
+        ' Prevent re-entry if refresh takes longer than the interval
+        AutoRefreshTimer.Stop()
+
+        Try
+            btnUpdateHits.PerformClick()
+        Finally
+            AutoRefreshTimer.Start()
+        End Try
+    End Sub
+
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
         SetDoubleBufferingFlag(IgnoredListView)
 
@@ -206,6 +227,10 @@ Public Class IgnoredWordsAndPhrases
         colDateOfLastEvent.Width = My.Settings.DateOfLastEventColumnWidth
         colSinceLastEvent.Width = My.Settings.ColSinceLastEventWidth
 
+        ChkAutoRefresh.Checked = My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases
+
+        InitializeAutoRefreshTimer()
+
         Size = My.Settings.ConfigureIgnoredSize
 
         boolDoneLoading = True
@@ -229,6 +254,8 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
+        boolCurrentlyEditing = True
+
         If IgnoredListView.SelectedItems.Count > 0 Then
             If IgnoredListView.SelectedItems.Count = 1 Then
                 IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
@@ -242,6 +269,8 @@ Public Class IgnoredWordsAndPhrases
             BtnEdit.Enabled = False
             boolChanged = True
         End If
+
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub IgnoredListView_Click(sender As Object, e As EventArgs) Handles IgnoredListView.Click
@@ -271,6 +300,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub EditItem()
         If IgnoredListView.SelectedItems.Count > 0 Then
+            boolCurrentlyEditing = True
             BtnCancel.Visible = True
             IgnoredListView.Enabled = False
             boolEditMode = True
@@ -329,6 +359,8 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub DisableEnableItem()
+        boolCurrentlyEditing = True
+
         If IgnoredListView.SelectedItems.Count = 1 Then
             Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
 
@@ -358,6 +390,7 @@ Public Class IgnoredWordsAndPhrases
         End If
 
         boolChanged = True
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
@@ -424,6 +457,8 @@ Public Class IgnoredWordsAndPhrases
         Dim listOfIgnoredClass As New List(Of IgnoredClass)
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
+            boolCurrentlyEditing = True
+
             Try
                 listOfIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of IgnoredClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettingsForLogFiles)
 
@@ -445,6 +480,8 @@ Public Class IgnoredWordsAndPhrases
                 boolChanged = True
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+            Finally
+                boolCurrentlyEditing = False
             End Try
         End If
     End Sub
@@ -466,6 +503,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
         If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        boolCurrentlyEditing = True
         Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
 
         ' Ensure the item is not already at the top
@@ -479,10 +517,12 @@ Public Class IgnoredWordsAndPhrases
 
         BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
         BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
         If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        boolCurrentlyEditing = True
         Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
 
         ' Ensure the item is not already at the bottom
@@ -496,6 +536,7 @@ Public Class IgnoredWordsAndPhrases
 
         BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
         BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
@@ -510,6 +551,7 @@ Public Class IgnoredWordsAndPhrases
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub btnDeleteDuringEditing_Click(sender As Object, e As EventArgs) Handles btnDeleteDuringEditing.Click
@@ -523,6 +565,7 @@ Public Class IgnoredWordsAndPhrases
         ChkCaseSensitive.Checked = False
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
@@ -624,5 +667,10 @@ Public Class IgnoredWordsAndPhrases
         If IgnoredListView.ListViewItemSorter IsNot Nothing Then IgnoredListView.Sort()
 
         IgnoredListView.EndUpdate()
+    End Sub
+
+    Private Sub ChkAutoRefresh_Click(sender As Object, e As EventArgs) Handles ChkAutoRefresh.Click
+        My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases = ChkAutoRefresh.Checked
+        AutoRefreshTimer.Enabled = ChkAutoRefresh.Checked
     End Sub
 End Class

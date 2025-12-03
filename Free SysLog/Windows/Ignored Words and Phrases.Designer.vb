@@ -59,7 +59,9 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblTotalHits = New System.Windows.Forms.Label()
         Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.btnUpdateHits = New System.Windows.Forms.Button()
+        Me.ChkAutoRefresh = New System.Windows.Forms.CheckBox()
         Me.colSinceLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -366,7 +368,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblTotalHits.AutoSize = True
-        Me.lblTotalHits.Location = New System.Drawing.Point(592, 256)
+        Me.lblTotalHits.Location = New System.Drawing.Point(701, 256)
         Me.lblTotalHits.Name = "lblTotalHits"
         Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
         Me.lblTotalHits.TabIndex = 51
@@ -392,11 +394,24 @@ Partial Class IgnoredWordsAndPhrases
         Me.colSinceLastEvent.Text = "Since Last Event"
         Me.colSinceLastEvent.Width = 100
         '
+        'ChkAutoRefresh
+        '
+        Me.ChkAutoRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkAutoRefresh.AutoSize = True
+        Me.ChkAutoRefresh.Location = New System.Drawing.Point(592, 255)
+        Me.ChkAutoRefresh.Name = "ChkAutoRefresh"
+        Me.ChkAutoRefresh.Size = New System.Drawing.Size(88, 17)
+        Me.ChkAutoRefresh.TabIndex = 53
+        Me.ChkAutoRefresh.Text = "Auto Refresh"
+        Me.ToolTip.SetToolTip(Me.ChkAutoRefresh, "Enabling this makes it so that the data is refreshed every five seconds.")
+        Me.ChkAutoRefresh.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1004, 437)
+        Me.Controls.Add(Me.ChkAutoRefresh)
         Me.Controls.Add(Me.btnUpdateHits)
         Me.Controls.Add(Me.lblTotalHits)
         Me.Controls.Add(Me.ChkRemoteProcess)
@@ -468,4 +483,6 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents colDateOfLastEvent As ColumnHeader
     Friend WithEvents btnUpdateHits As Button
     Friend WithEvents colSinceLastEvent As ColumnHeader
+    Friend WithEvents ChkAutoRefresh As CheckBox
+    Friend WithEvents ToolTip As ToolTip
 End Class
