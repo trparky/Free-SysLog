@@ -120,6 +120,12 @@ Namespace SupportCode
             Return If(parts.Count > 0, String.Join(", ", parts), "0s")
         End Function
 
+        Public Sub SetDoubleBufferingFlag(guiObject As Object)
+            Dim flags As Reflection.BindingFlags = Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty
+            Dim propInfo As Reflection.PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
+            propInfo?.SetValue(guiObject, True, Nothing)
+        End Sub
+
         Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
             Try
                 Dim SpecializedStringCollection As New Specialized.StringCollection

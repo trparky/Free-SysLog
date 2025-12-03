@@ -177,6 +177,8 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
+        SetDoubleBufferingFlag(IgnoredListView)
+
         LoadColumnOrders(IgnoredListView.Columns, My.Settings.IgnoredWordsAndPhrasesColumnOrder)
 
         BtnCancel.Visible = False
@@ -595,6 +597,8 @@ Public Class IgnoredWordsAndPhrases
         Dim longTotalHits As Long = 0
         Dim sinceLastEvent As TimeSpan
 
+        IgnoredListView.BeginUpdate()
+
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
             Dim intHits As Integer = 0
             Dim dateOfLastEvent As Date = Date.MinValue
@@ -618,5 +622,7 @@ Public Class IgnoredWordsAndPhrases
         lblTotalHits.Text = $"Total Ignored Hits: {longTotalHits:N0}"
 
         If IgnoredListView.ListViewItemSorter IsNot Nothing Then IgnoredListView.Sort()
+
+        IgnoredListView.EndUpdate()
     End Sub
 End Class

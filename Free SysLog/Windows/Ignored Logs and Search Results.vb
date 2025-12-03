@@ -1,6 +1,5 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
-Imports System.Reflection
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
 Imports Free_SysLog.SupportCode
@@ -185,9 +184,7 @@ Public Class IgnoredLogsAndSearchResults
 
         ColTime.HeaderCell.SortGlyphDirection = SortOrder.Ascending
 
-        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
-        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-        propInfo?.SetValue(Logs, True, Nothing)
+        SetDoubleBufferingFlag(Logs)
 
         Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}

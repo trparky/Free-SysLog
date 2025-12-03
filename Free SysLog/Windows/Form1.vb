@@ -5,7 +5,6 @@ Imports System.Text
 Imports System.ComponentModel
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
-Imports System.Reflection
 Imports System.Configuration
 Imports Free_SysLog.SupportCode
 Imports Microsoft.Toolkit.Uwp.Notifications
@@ -476,9 +475,7 @@ Public Class Form1
 
         LoadCheckboxSettings()
 
-        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
-        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-        propInfo?.SetValue(Logs, True, Nothing)
+        SetDoubleBufferingFlag(Logs)
 
         Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
