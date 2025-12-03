@@ -1,6 +1,4 @@
-﻿Imports System.Reflection
-
-Public Class Alerts_History
+﻿Public Class Alerts_History
     Public Property DataToLoad As List(Of AlertsHistory)
     Private Shadows ParentForm As Form1
     Private boolDoneLoading As Boolean = False
@@ -30,9 +28,7 @@ Public Class Alerts_History
             AlertHistoryList.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
         End If
 
-        Dim flags As BindingFlags = BindingFlags.NonPublic Or BindingFlags.Instance Or BindingFlags.SetProperty
-        Dim propInfo As PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-        propInfo?.SetValue(AlertHistoryList, True, Nothing)
+        SupportCode.SetDoubleBufferingFlag(AlertHistoryList)
 
         AlertHistoryList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = SupportCode.GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
         Size = My.Settings.AlertHistorySize
