@@ -114,15 +114,40 @@ Public Class Hostnames
 
     Private Sub Hostnames_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         Dim tempHostnames As New Specialized.StringCollection()
-        SupportCode.hostnames.Clear()
+        Dim newHostNames As New Concurrent.ConcurrentDictionary(Of String, String)
 
-        For Each item As ListViewItem In ListHostnames.Items
-            tempHostnames.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}))
-            SupportCode.hostnames(item.SubItems(0).Text) = item.SubItems(1).Text
-        Next
+        Try
+            Dim hostName As CustomHostname
 
-        My.Settings.hostnames = tempHostnames
-        My.Settings.Save()
+            For Each item As ListViewItem In ListHostnames.Items
+                hostName = New CustomHostname() With {
+                    .ip = item.SubItems(0).Text,
+                    .deviceName = item.SubItems(1).Text
+                }
+
+                tempHostnames.Add(Newtonsoft.Json.JsonConvert.SerializeObject(hostName))
+                newHostNames(item.SubItems(0).Text) = item.SubItems(1).Text
+            Next
+
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            SupportCode.hostnames.Clear()
+            SupportCode.hostnames = newHostNames
+
+            My.Settings.hostnames = tempHostnames
+            My.Settings.Save()
+        Catch ex As Exception
+            SyncLock SupportCode.ParentForm.dataGridLockObject
+                SupportCode.ParentForm.Logs.Rows.Add(
+                    SyslogParser.MakeLocalDataGridRowEntry(
+                        $"Unable to save user preferences on ""Hostnames"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        SupportCode.ParentForm.Logs
+                    )
+                )
+
+                If SupportCode.ParentForm.ChkEnableAutoScroll.Checked Then SupportCode.ParentForm.Logs.FirstDisplayedScrollingRowIndex = SupportCode.ParentForm.Logs.Rows.Count - 1
+                SupportCode.ParentForm.NumberOfLogs.Text = $"Number of Log Entries: {SupportCode.ParentForm.Logs.Rows.Count:N0}"
+            End SyncLock
+        End Try
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click

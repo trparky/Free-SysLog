@@ -6,6 +6,7 @@ Public Class Alerts
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
+    Private boolColumnOrderChanged As Boolean = False
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles AlertsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -66,7 +67,12 @@ Public Class Alerts
                                                                     End Function)
     End Function
 
+    Private Sub AlertsListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles AlertsListView.ColumnReordered
+        boolColumnOrderChanged = True
+    End Sub
+
     Private Sub Alerts_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LoadColumnOrders(AlertsListView.Columns, My.Settings.alertsColumnOrder)
         BtnCancel.Visible = False
         Location = VerifyWindowLocation(My.Settings.alertsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of AlertsListViewItem)
@@ -278,23 +284,55 @@ Public Class Alerts
     End Sub
 
     Private Sub Alerts_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If boolChanged Then
-            alertsList.Clear()
+        If boolColumnOrderChanged Then
+            My.Settings.alertsColumnOrder = SaveColumnOrders(AlertsListView.Columns)
+            My.Settings.Save()
+        End If
 
+        If Not boolChanged Then Exit Sub
+
+        Dim newAlertsList As New ThreadSafetyLists.ThreadSafeAlertsList
+        Dim tempAlerts As New Specialized.StringCollection()
+
+        Try
             Dim AlertsClass As AlertsClass
-            Dim tempAlerts As New Specialized.StringCollection()
 
             For Each item As AlertsListViewItem In AlertsListView.Items
-                AlertsClass = New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled, .boolLimited = item.BoolLimited}
-                If AlertsClass.BoolEnabled Then alertsList.Add(AlertsClass)
+                AlertsClass = New AlertsClass() With {
+                    .StrLogText = item.StrLogText,
+                    .StrAlertText = item.StrAlertText,
+                    .BoolCaseSensitive = item.BoolCaseSensitive,
+                    .BoolRegex = item.BoolRegex,
+                    .alertType = item.AlertType,
+                    .BoolEnabled = item.BoolEnabled,
+                    .BoolLimited = item.BoolLimited
+                }
+
+                If AlertsClass.BoolEnabled Then newAlertsList.Add(AlertsClass)
                 tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
             Next
 
-            alertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            newAlertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            alertsList.Clear()
+            alertsList.Merge(newAlertsList.GetSnapshot())
 
             My.Settings.alerts = tempAlerts
             My.Settings.Save()
-        End If
+        Catch ex As Exception
+            SyncLock SupportCode.ParentForm.dataGridLockObject
+                SupportCode.ParentForm.Logs.Rows.Add(
+                    SyslogParser.MakeLocalDataGridRowEntry(
+                        $"Unable to save user preferences on ""Alerts"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        SupportCode.ParentForm.Logs
+                    )
+                )
+
+                If SupportCode.ParentForm.ChkEnableAutoScroll.Checked Then SupportCode.ParentForm.Logs.FirstDisplayedScrollingRowIndex = SupportCode.ParentForm.Logs.Rows.Count - 1
+                SupportCode.ParentForm.NumberOfLogs.Text = $"Number of Log Entries: {SupportCode.ParentForm.Logs.Rows.Count:N0}"
+            End SyncLock
+        End Try
     End Sub
 
     Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening

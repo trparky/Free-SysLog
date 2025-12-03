@@ -1292,6 +1292,66 @@ Namespace My
                 Me("OnlySaveAlertedLogs") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+        Public Property DateOfLastEventColumnWidth() As Integer
+            Get
+                Return CType(Me("DateOfLastEventColumnWidth"),Integer)
+            End Get
+            Set
+                Me("DateOfLastEventColumnWidth") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property IgnoredWordsAndPhrasesColumnOrder() As String
+            Get
+                Return CType(Me("IgnoredWordsAndPhrasesColumnOrder"),String)
+            End Get
+            Set
+                Me("IgnoredWordsAndPhrasesColumnOrder") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property alertsColumnOrder() As String
+            Get
+                Return CType(Me("alertsColumnOrder"),String)
+            End Get
+            Set
+                Me("alertsColumnOrder") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property replacementsColumnOrder() As String
+            Get
+                Return CType(Me("replacementsColumnOrder"),String)
+            End Get
+            Set
+                Me("replacementsColumnOrder") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("100")>  _
+        Public Property ColSinceLastEventWidth() As Integer
+            Get
+                Return CType(Me("ColSinceLastEventWidth"),Integer)
+            End Get
+            Set
+                Me("ColSinceLastEventWidth") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

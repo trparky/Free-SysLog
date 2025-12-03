@@ -56,6 +56,10 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnResetHits = New System.Windows.Forms.Button()
         Me.txtComment = New System.Windows.Forms.TextBox()
         Me.lblCommentLabel = New System.Windows.Forms.Label()
+        Me.lblTotalHits = New System.Windows.Forms.Label()
+        Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.btnUpdateHits = New System.Windows.Forms.Button()
+        Me.colSinceLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -82,11 +86,12 @@ Partial Class IgnoredWordsAndPhrases
         '
         'IgnoredListView
         '
+        Me.IgnoredListView.AllowColumnReorder = True
         Me.IgnoredListView.AllowDrop = True
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated, Me.colDateOfLastEvent, Me.colSinceLastEvent})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -357,11 +362,43 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblCommentLabel.TabIndex = 50
         Me.lblCommentLabel.Text = "Comment"
         '
+        'lblTotalHits
+        '
+        Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblTotalHits.AutoSize = True
+        Me.lblTotalHits.Location = New System.Drawing.Point(592, 256)
+        Me.lblTotalHits.Name = "lblTotalHits"
+        Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
+        Me.lblTotalHits.TabIndex = 51
+        Me.lblTotalHits.Text = "Total Ignored Hits: 0"
+        '
+        'colDateOfLastEvent
+        '
+        Me.colDateOfLastEvent.Text = "Date of Last Event"
+        Me.colDateOfLastEvent.Width = 240
+        '
+        'btnUpdateHits
+        '
+        Me.btnUpdateHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnUpdateHits.Location = New System.Drawing.Point(407, 251)
+        Me.btnUpdateHits.Name = "btnUpdateHits"
+        Me.btnUpdateHits.Size = New System.Drawing.Size(179, 23)
+        Me.btnUpdateHits.TabIndex = 52
+        Me.btnUpdateHits.Text = "Update Hits and Last Events (F5)"
+        Me.btnUpdateHits.UseVisualStyleBackColor = True
+        '
+        'colSinceLastEvent
+        '
+        Me.colSinceLastEvent.Text = "Since Last Event"
+        Me.colSinceLastEvent.Width = 100
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1004, 437)
+        Me.Controls.Add(Me.btnUpdateHits)
+        Me.Controls.Add(Me.lblTotalHits)
         Me.Controls.Add(Me.ChkRemoteProcess)
         Me.Controls.Add(Me.btnDeleteDuringEditing)
         Me.Controls.Add(Me.BtnCancel)
@@ -427,4 +464,8 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents txtComment As TextBox
     Friend WithEvents lblCommentLabel As Label
     Friend WithEvents ResetHitsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents lblTotalHits As Label
+    Friend WithEvents colDateOfLastEvent As ColumnHeader
+    Friend WithEvents btnUpdateHits As Button
+    Friend WithEvents colSinceLastEvent As ColumnHeader
 End Class

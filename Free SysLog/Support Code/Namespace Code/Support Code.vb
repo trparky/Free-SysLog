@@ -51,7 +51,9 @@ Namespace SupportCode
         Public ReplacementsRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
+        Public IgnoredLastEvent As New ConcurrentDictionary(Of String, Date)
 
+        Public longNumberOfIgnoredLogs As Long = 0
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
         Public replacementsList As New ThreadSafetyLists.ThreadSafeReplacementsList
@@ -91,7 +93,6 @@ Namespace SupportCode
 
         Public allUniqueObjects As uniqueObjectsClass
         Public recentUniqueObjects As uniqueObjectsClass
-        Public ReadOnly recentUniqueObjectsLock As New Object()
         Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
 
         Public WriteOnly Property AskOpenExplorer As Boolean
@@ -107,6 +108,18 @@ Namespace SupportCode
         Public Const boolDebugBuild As Boolean = False
 #End If
 
+        Public Function TimespanToHMS(timeSpan As TimeSpan) As String
+            If timeSpan.TotalMilliseconds < 1 Then Return "0s"
+
+            Dim parts As New List(Of String)
+
+            If timeSpan.Hours > 0 Then parts.Add($"{timeSpan.Hours}h")
+            If timeSpan.Minutes > 0 Then parts.Add($"{timeSpan.Minutes}m")
+            If timeSpan.Seconds > 0 Then parts.Add($"{timeSpan.Seconds}s")
+
+            Return If(parts.Count > 0, String.Join(", ", parts), "0s")
+        End Function
+
         Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
             Try
                 Dim SpecializedStringCollection As New Specialized.StringCollection
@@ -121,6 +134,29 @@ Namespace SupportCode
             Catch ex As Exception
                 Return New Specialized.StringCollection
             End Try
+        End Function
+
+        Public Sub LoadColumnOrders(ByRef columns As ListView.ColumnHeaderCollection, strToLoadFrom As String)
+            Try
+                If String.IsNullOrWhiteSpace(strToLoadFrom) Then Exit Sub
+
+                Dim columnOrder As Integer() = Array.ConvertAll(strToLoadFrom.Split(","), Function(s As String) Integer.Parse(s))
+
+                For i As Integer = 0 To Math.Min(columnOrder.Length - 1, columns.Count - 1)
+                    columns(i).DisplayIndex = columnOrder(i)
+                Next
+            Catch
+            End Try
+        End Sub
+
+        Public Function SaveColumnOrders(ByRef columns As ListView.ColumnHeaderCollection) As String
+            Dim columnOrder As New List(Of Integer)
+
+            For i As Integer = 0 To columns.Count - 1
+                columnOrder.Add(columns(i).DisplayIndex)
+            Next
+
+            Return String.Join(",", columnOrder)
         End Function
 
         Public Sub SortByClickedColumn(ByRef ListView As ListView, intColumn As Integer, ByRef m_SortingColumn As ColumnHeader)
@@ -427,7 +463,7 @@ Namespace SupportCode
             ElseIf size > (2 ^ 50) And size <= (2 ^ 60) Then
                 result = $"{MyRoundingFunction(size / (2 ^ 50), shortRoundNumber)} PBs"
             ElseIf size > (2 ^ 60) And size <= (2 ^ 70) Then
-                result = $"{MyRoundingFunction(size / (2 ^ 50), shortRoundNumber)} EBs"
+                result = $"{MyRoundingFunction(size / (2 ^ 60), shortRoundNumber)} EBs"
             Else
                 result = "(None)"
             End If

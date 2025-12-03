@@ -3,6 +3,7 @@
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
     Public boolChanged As Boolean = False
+    Private boolColumnOrderChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Public strIgnoredPattern As String = Nothing
     Private draggedItem As ListViewItem
@@ -119,37 +120,79 @@ Public Class IgnoredWordsAndPhrases
         End If
     End Sub
 
+    Private Sub IgnoredListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles IgnoredListView.ColumnReordered
+        boolColumnOrderChanged = True
+    End Sub
+
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If boolChanged Then
-            ignoredList.Clear()
-
-            Dim ignoredClass As IgnoredClass
-            Dim listOfIgnoredRulesToBeSavedToSettings As New Specialized.StringCollection()
-
-            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                ignoredClass = New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment}
-                If ignoredClass.BoolEnabled Then ignoredList.Add(ignoredClass)
-                listOfIgnoredRulesToBeSavedToSettings.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
-            Next
-
-            ignoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
-
-            My.Settings.ignored2 = listOfIgnoredRulesToBeSavedToSettings
+        If boolColumnOrderChanged Then
+            My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveColumnOrders(IgnoredListView.Columns)
             My.Settings.Save()
         End If
+
+        If Not boolChanged Then Exit Sub
+
+        Dim newIgnoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
+        Dim tempIgnoredRules As New Specialized.StringCollection()
+
+        Try
+            Dim ignoredClass As IgnoredClass
+
+            For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+                ignoredClass = New IgnoredClass() With {
+                    .StrIgnore = item.SubItems(0).Text,
+                    .BoolCaseSensitive = item.BoolCaseSensitive,
+                    .BoolRegex = item.BoolRegex,
+                    .BoolEnabled = item.BoolEnabled,
+                    .IgnoreType = item.IgnoreType,
+                    .dateCreated = item.dateCreated,
+                    .strComment = item.strComment
+                }
+
+                If ignoredClass.BoolEnabled Then newIgnoredList.Add(ignoredClass)
+                tempIgnoredRules.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
+            Next
+
+            newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
+
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            ignoredList.Clear()
+            ignoredList.Merge(newIgnoredList.GetSnapshot())
+
+            My.Settings.ignored2 = tempIgnoredRules
+            My.Settings.Save()
+        Catch ex As Exception
+            SyncLock SupportCode.ParentForm.dataGridLockObject
+                SupportCode.ParentForm.Logs.Rows.Add(
+                    SyslogParser.MakeLocalDataGridRowEntry(
+                        $"Unable to save user preferences on ""Ignored Words and Phrases"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        SupportCode.ParentForm.Logs
+                    )
+                )
+
+                If SupportCode.ParentForm.ChkEnableAutoScroll.Checked Then SupportCode.ParentForm.Logs.FirstDisplayedScrollingRowIndex = SupportCode.ParentForm.Logs.Rows.Count - 1
+                SupportCode.ParentForm.NumberOfLogs.Text = $"Number of Log Entries: {SupportCode.ParentForm.Logs.Rows.Count:N0}"
+            End SyncLock
+        End Try
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
+        LoadColumnOrders(IgnoredListView.Columns, My.Settings.IgnoredWordsAndPhrasesColumnOrder)
+
         BtnCancel.Visible = False
         btnDeleteDuringEditing.Visible = False
         Location = VerifyWindowLocation(My.Settings.ignoredWordsLocation, Me)
         Dim MyIgnoredListViewItem As New List(Of MyIgnoredListViewItem)
 
+        Dim longTotalHits As Long = 0
+
         If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
             For Each strJSONString As String In My.Settings.ignored2
-                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem())
+                MyIgnoredListViewItem.Add(Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles).ToListViewItem(longTotalHits))
             Next
         End If
+
+        lblTotalHits.Text = $"Total Ignored Hits: {longTotalHits:N0}"
 
         IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
 
@@ -158,6 +201,8 @@ Public Class IgnoredWordsAndPhrases
         CaseSensitive.Width = My.Settings.colIgnoredCaseSensitive
         ColEnabled.Width = My.Settings.colIgnoredEnabled
         colDateCreated.Width = My.Settings.colIgnoredDateCreated
+        colDateOfLastEvent.Width = My.Settings.DateOfLastEventColumnWidth
+        colSinceLastEvent.Width = My.Settings.ColSinceLastEventWidth
 
         Size = My.Settings.ConfigureIgnoredSize
 
@@ -328,6 +373,8 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.colIgnoredCaseSensitive = CaseSensitive.Width
             My.Settings.colIgnoredEnabled = ColEnabled.Width
             My.Settings.colIgnoredDateCreated = colDateCreated.Width
+            My.Settings.DateOfLastEventColumnWidth = colDateOfLastEvent.Width
+            My.Settings.ColSinceLastEventWidth = colSinceLastEvent.Width
         End If
     End Sub
 
@@ -401,7 +448,11 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.Escape Then Close()
+        If e.KeyCode = Keys.Escape Then
+            Close()
+        ElseIf e.KeyCode = Keys.F5 Then
+            btnUpdateHits.PerformClick()
+        End If
     End Sub
 
     Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
@@ -473,7 +524,45 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
-        SortByClickedColumn(IgnoredListView, e.Column, m_SortingColumn)
+        SortByClickedColumnForIgnoredList(IgnoredListView, e.Column, m_SortingColumn)
+    End Sub
+
+    Private Sub SortByClickedColumnForIgnoredList(ByRef ListView As ListView, intColumn As Integer, ByRef m_SortingColumn As ColumnHeader)
+        ' Get the new sorting column.
+        Dim new_sorting_column As ColumnHeader = ListView.Columns(intColumn)
+
+        ' Figure out the new sorting order.
+        Dim sort_order As SortOrder
+        If m_SortingColumn Is Nothing Then
+            ' New column. Sort ascending.
+            sort_order = SortOrder.Ascending
+        Else
+            ' See if this is the same column.
+            If new_sorting_column.Equals(m_SortingColumn) Then
+                ' Same column. Switch the sort order.
+                If m_SortingColumn.Text.StartsWith("> ") Then
+                    sort_order = SortOrder.Descending
+                Else
+                    sort_order = SortOrder.Ascending
+                End If
+            Else
+                ' New column. Sort ascending.
+                sort_order = SortOrder.Ascending
+            End If
+
+            ' Remove the old sort indicator.
+            m_SortingColumn.Text = m_SortingColumn.Text.Substring(2)
+        End If
+
+        ' Display the new sort order.
+        m_SortingColumn = new_sorting_column
+        m_SortingColumn.Text = If(sort_order = SortOrder.Ascending, "> " & m_SortingColumn.Text, "< " & m_SortingColumn.Text)
+
+        ' Create a comparer.
+        ListView.ListViewItemSorter = New listViewSorter.IgnoredWordsAndPhrasesListViewComparer(intColumn, sort_order)
+
+        ' Sort.
+        ListView.Sort()
     End Sub
 
     Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
@@ -500,5 +589,34 @@ Public Class IgnoredWordsAndPhrases
                 End If
             Next
         End If
+    End Sub
+
+    Private Sub btnUpdateHits_Click(sender As Object, e As EventArgs) Handles btnUpdateHits.Click
+        Dim longTotalHits As Long = 0
+        Dim sinceLastEvent As TimeSpan
+
+        For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+            Dim intHits As Integer = 0
+            Dim dateOfLastEvent As Date = Date.MinValue
+
+            If IgnoredHits.TryGetValue(item.SubItems(0).Text, intHits) Then
+                item.SubItems(4).Text = intHits.ToString("N0")
+                longTotalHits += intHits
+            End If
+
+            If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
+                dateOfLastEvent = dateOfLastEvent.ToLocalTime
+                sinceLastEvent = Now.ToLocalTime - dateOfLastEvent
+                item.timeSpanOfLastOccurrence = sinceLastEvent
+                item.dateOfLastOccurrence = dateOfLastEvent
+                item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
+                item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
+                item.intHits = intHits
+            End If
+        Next
+
+        lblTotalHits.Text = $"Total Ignored Hits: {longTotalHits:N0}"
+
+        If IgnoredListView.ListViewItemSorter IsNot Nothing Then IgnoredListView.Sort()
     End Sub
 End Class

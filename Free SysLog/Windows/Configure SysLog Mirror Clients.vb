@@ -169,19 +169,43 @@ Public Class ConfigureSysLogMirrorClients
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        serversList.Clear()
-
-        Dim SysLogProxyServer As SysLogProxyServer
+        Dim newServerList As New ThreadSafetyLists.ThreadSafeProxyServerList
         Dim tempServer As New Specialized.StringCollection()
 
-        For Each item As ServerListViewItem In servers.Items
-            SysLogProxyServer = New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text}
-            If SysLogProxyServer.boolEnabled Then serversList.Add(SysLogProxyServer)
-            tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
-        Next
+        Try
+            Dim SysLogProxyServer As SysLogProxyServer
 
-        My.Settings.ServersToSendTo = tempServer
-        My.Settings.Save()
+            For Each item As ServerListViewItem In servers.Items
+                SysLogProxyServer = New SysLogProxyServer() With {
+                    .ip = item.SubItems(0).Text,
+                    .port = Integer.Parse(item.SubItems(1).Text),
+                    .boolEnabled = item.BoolEnabled,
+                    .name = item.SubItems(3).Text
+                }
+
+                If SysLogProxyServer.boolEnabled Then newServerList.Add(SysLogProxyServer)
+                tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
+            Next
+
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            serversList.Clear()
+            serversList.Merge(newServerList.GetSnapshot())
+
+            My.Settings.ServersToSendTo = tempServer
+            My.Settings.Save()
+        Catch ex As Exception
+            SyncLock SupportCode.ParentForm.dataGridLockObject
+                SupportCode.ParentForm.Logs.Rows.Add(
+                    SyslogParser.MakeLocalDataGridRowEntry(
+                        $"Unable to save user preferences on ""Configure Syslog Mirror Servers"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        SupportCode.ParentForm.Logs
+                    )
+                )
+
+                If SupportCode.ParentForm.ChkEnableAutoScroll.Checked Then SupportCode.ParentForm.Logs.FirstDisplayedScrollingRowIndex = SupportCode.ParentForm.Logs.Rows.Count - 1
+                SupportCode.ParentForm.NumberOfLogs.Text = $"Number of Log Entries: {SupportCode.ParentForm.Logs.Rows.Count:N0}"
+            End SyncLock
+        End Try
     End Sub
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening

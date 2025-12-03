@@ -6,6 +6,11 @@ Public Class Replacements
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
+    Private boolColumnOrderChanged As Boolean = False
+
+    Private Sub ReplacementsListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles ReplacementsListView.ColumnReordered
+        boolColumnOrderChanged = True
+    End Sub
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles ReplacementsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -122,6 +127,7 @@ Public Class Replacements
     End Sub
 
     Private Sub Replacements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LoadColumnOrders(ReplacementsListView.Columns, My.Settings.replacementsColumnOrder)
         BtnCancel.Visible = False
         Location = VerifyWindowLocation(My.Settings.replacementsLocation, Me)
         Dim listOfReplacementsToAdd As New List(Of MyReplacementsListViewItem)
@@ -146,23 +152,53 @@ Public Class Replacements
     End Sub
 
     Private Sub Replacements_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles Me.Closing
-        If boolChanged Then
-            replacementsList.Clear()
+        If boolColumnOrderChanged Then
+            My.Settings.replacementsColumnOrder = SaveColumnOrders(ReplacementsListView.Columns)
+            My.Settings.Save()
+        End If
 
+        If Not boolChanged Then Exit Sub
+
+        Dim newReplacementsList As New ThreadSafetyLists.ThreadSafeReplacementsList
+        Dim tempReplacements As New Specialized.StringCollection()
+
+        Try
             Dim replacementsClass As ReplacementsClass
-            Dim tempReplacements As New Specialized.StringCollection()
 
             For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
-                replacementsClass = New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled}
-                If replacementsClass.BoolEnabled Then replacementsList.Add(replacementsClass)
+                replacementsClass = New ReplacementsClass With {
+                    .BoolRegex = item.BoolRegex,
+                    .StrReplace = item.SubItems(0).Text,
+                    .StrReplaceWith = item.SubItems(1).Text,
+                    .BoolCaseSensitive = item.BoolCaseSensitive,
+                    .BoolEnabled = item.BoolEnabled
+                }
+
+                If replacementsClass.BoolEnabled Then newReplacementsList.Add(replacementsClass)
                 tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
             Next
 
-            replacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            newReplacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+
+            ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
+            replacementsList.Clear()
+            replacementsList.Merge(newReplacementsList.GetSnapshot())
 
             My.Settings.replacements = tempReplacements
             My.Settings.Save()
-        End If
+        Catch ex As Exception
+            SyncLock SupportCode.ParentForm.dataGridLockObject
+                SupportCode.ParentForm.Logs.Rows.Add(
+                    SyslogParser.MakeLocalDataGridRowEntry(
+                        $"Unable to save user preferences on ""Replacements"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        SupportCode.ParentForm.Logs
+                    )
+                )
+
+                If SupportCode.ParentForm.ChkEnableAutoScroll.Checked Then SupportCode.ParentForm.Logs.FirstDisplayedScrollingRowIndex = SupportCode.ParentForm.Logs.Rows.Count - 1
+                SupportCode.ParentForm.NumberOfLogs.Text = $"Number of Log Entries: {SupportCode.ParentForm.Logs.Rows.Count:N0}"
+            End SyncLock
+        End Try
     End Sub
 
     Private Sub ReplacementsListView_KeyUp(sender As Object, e As KeyEventArgs) Handles ReplacementsListView.KeyUp

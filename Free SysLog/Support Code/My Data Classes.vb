@@ -11,43 +11,43 @@ Public Class SavedData
     Public DateObject, ServerDate As Date
     Public BoolAlerted As Boolean = False
 
-    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView) As MyDataGridViewRow
-        Using MyDataGridViewRow As New MyDataGridViewRow
-            With MyDataGridViewRow
-                .CreateCells(dataGrid)
-                .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(time)
-                .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(logType), "", logType)
-                .Cells(ColumnIndex_IPAddress).Value = ip
-                .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(appName), "", appName)
-                .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(hostname), "", hostname)
-                .Cells(ColumnIndex_LogText).Value = log
-                .Cells(ColumnIndex_Alerted).Value = If(BoolAlerted, "Yes", "No")
-                .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
-                .Cells(ColumnIndex_ServerTime).Value = If(ServerDate = Date.MinValue, "", ToIso8601Format(ServerDate))
-                .DateObject = DateObject
-                .BoolAlerted = BoolAlerted
-                .RawLogData = rawLogData
-                .AlertText = alertText
-                .alertType = alertType
+    Public Function MakeDataGridRow(dataGrid As DataGridView) As MyDataGridViewRow
+        Dim MyDataGridViewRow As New MyDataGridViewRow
 
-                If My.Settings.font IsNot Nothing Then
-                    .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
-                    .Cells(ColumnIndex_LogType).Style.Font = My.Settings.font
-                    .Cells(ColumnIndex_IPAddress).Style.Font = My.Settings.font
-                    .Cells(ColumnIndex_RemoteProcess).Style.Font = My.Settings.font
-                    .Cells(ColumnIndex_Hostname).Style.Font = My.Settings.font
-                    .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
-                    .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
-                    .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
-                End If
+        With MyDataGridViewRow
+            .CreateCells(dataGrid)
+            .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(time)
+            .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(logType), "", logType)
+            .Cells(ColumnIndex_IPAddress).Value = ip
+            .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(appName), "", appName)
+            .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(hostname), "", hostname)
+            .Cells(ColumnIndex_LogText).Value = log
+            .Cells(ColumnIndex_Alerted).Value = If(BoolAlerted, "Yes", "No")
+            .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
+            .Cells(ColumnIndex_ServerTime).Value = If(ServerDate = Date.MinValue, "", ToIso8601Format(ServerDate))
+            .DateObject = DateObject
+            .BoolAlerted = BoolAlerted
+            .RawLogData = rawLogData
+            .AlertText = alertText
+            .alertType = alertType
 
-                .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
-            End With
+            If My.Settings.font IsNot Nothing Then
+                .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
+                .Cells(ColumnIndex_LogType).Style.Font = My.Settings.font
+                .Cells(ColumnIndex_IPAddress).Style.Font = My.Settings.font
+                .Cells(ColumnIndex_RemoteProcess).Style.Font = My.Settings.font
+                .Cells(ColumnIndex_Hostname).Style.Font = My.Settings.font
+                .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
+                .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
+                .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
+            End If
 
-            Return MyDataGridViewRow
-        End Using
+            .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+        End With
+
+        Return MyDataGridViewRow
     End Function
 End Class
 
@@ -76,42 +76,42 @@ Public Class AlertsHistory
     Public strTime, strAlertText, strIP, strLog, strRawLog As String
     Public alertType As AlertType
 
-    Public Function MakeDataGridRow(ByRef dataGrid As DataGridView) As AlertsHistoryDataGridViewRow
-        Using AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow
-            With AlertsHistoryDataGridViewRow
-                .CreateCells(dataGrid)
-                .Cells(0).Value = strTime
-                .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+    Public Function MakeDataGridRow(dataGrid As DataGridView) As AlertsHistoryDataGridViewRow
+        Dim AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow
 
-                If alertType = AlertType.ErrorMsg Then
-                    .Cells(1).Value = "Error"
-                ElseIf alertType = AlertType.Warning Then
-                    .Cells(1).Value = "Warning"
-                ElseIf alertType = AlertType.Info Then
-                    .Cells(1).Value = "Information"
-                Else
-                    .Cells(1).Value = ""
-                End If
+        With AlertsHistoryDataGridViewRow
+            .CreateCells(dataGrid)
+            .Cells(0).Value = strTime
+            .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
-                .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                .Cells(2).Value = strAlertText
+            If alertType = AlertType.ErrorMsg Then
+                .Cells(1).Value = "Error"
+            ElseIf alertType = AlertType.Warning Then
+                .Cells(1).Value = "Warning"
+            ElseIf alertType = AlertType.Info Then
+                .Cells(1).Value = "Information"
+            Else
+                .Cells(1).Value = ""
+            End If
 
-                If My.Settings.font IsNot Nothing Then
-                    .Cells(0).Style.Font = My.Settings.font
-                    .Cells(1).Style.Font = My.Settings.font
-                    .Cells(2).Style.Font = My.Settings.font
-                End If
+            .Cells(1).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Cells(2).Value = strAlertText
 
-                .strRawLog = strRawLog
-                .strIP = strIP
-                .strLog = strLog
-                .strTime = strTime
-                .strAlertText = strAlertText
-                .alertType = alertType
-            End With
+            If My.Settings.font IsNot Nothing Then
+                .Cells(0).Style.Font = My.Settings.font
+                .Cells(1).Style.Font = My.Settings.font
+                .Cells(2).Style.Font = My.Settings.font
+            End If
 
-            Return AlertsHistoryDataGridViewRow
-        End Using
+            .strRawLog = strRawLog
+            .strIP = strIP
+            .strLog = strLog
+            .strTime = strTime
+            .strAlertText = strAlertText
+            .alertType = alertType
+        End With
+
+        Return AlertsHistoryDataGridViewRow
     End Function
 End Class
 
@@ -122,6 +122,49 @@ Public Class IgnoredClass
     Public BoolEnabled As Boolean = True
     Public IgnoreType As IgnoreType = IgnoreType.MainLog
     Public dateCreated As Date
+
+    Public Function ToListViewItem(ByRef longTotalHits As Long) As MyIgnoredListViewItem
+        Dim intHits As Integer
+        Dim dateLastEvent As Date
+        Dim sinceLastEvent As TimeSpan
+
+        If Not IgnoredLastEvent.TryGetValue(StrIgnore, dateLastEvent) Then dateLastEvent = Date.MinValue
+        If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
+        longTotalHits += intHits
+
+        If dateCreated = Date.MinValue Then dateCreated = Date.Now
+
+        Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
+        listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
+        listViewItem.SubItems.Add(If(BoolCaseSensitive, "Yes", "No"))
+        listViewItem.SubItems.Add(If(BoolEnabled, "Yes", "No"))
+        listViewItem.SubItems.Add(If(BoolEnabled, intHits.ToString("N0"), ""))
+        listViewItem.SubItems.Add(If(IgnoreType = IgnoreType.MainLog, "Main Log Text", "Remote App"))
+        listViewItem.SubItems.Add(dateCreated.ToLongDateString)
+
+        If Not dateLastEvent.Equals(Date.MinValue) Then
+            dateLastEvent = dateLastEvent.ToLocalTime()
+            sinceLastEvent = Now.ToLocalTime - dateLastEvent
+            listViewItem.timeSpanOfLastOccurrence = sinceLastEvent
+            listViewItem.dateOfLastOccurrence = dateLastEvent
+            listViewItem.SubItems.Add($"{dateLastEvent.ToLongDateString} {dateLastEvent.ToLongTimeString}")
+            listViewItem.SubItems.Add(TimespanToHMS(sinceLastEvent))
+        Else
+            listViewItem.SubItems.Add("")
+            listViewItem.SubItems.Add("")
+        End If
+
+        listViewItem.BoolRegex = BoolRegex
+        listViewItem.BoolCaseSensitive = BoolCaseSensitive
+        listViewItem.BoolEnabled = BoolEnabled
+        listViewItem.IgnoreType = IgnoreType
+        listViewItem.dateCreated = dateCreated
+        listViewItem.strComment = strComment
+        listViewItem.intHits = intHits
+        If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
+        listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
+        Return listViewItem
+    End Function
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
         Dim intHits As Integer
@@ -142,6 +185,7 @@ Public Class IgnoredClass
         listViewItem.IgnoreType = IgnoreType
         listViewItem.dateCreated = dateCreated
         listViewItem.strComment = strComment
+        listViewItem.intHits = intHits
         If My.Settings.font IsNot Nothing Then listViewItem.Font = My.Settings.font
         listViewItem.BackColor = If(listViewItem.BoolEnabled, Color.LightGreen, Color.Pink)
         Return listViewItem

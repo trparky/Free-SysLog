@@ -1,7 +1,6 @@
 ﻿Namespace NotificationLimiter
     Public Module NotificationLimiter
-        Public lastNotificationTime As New Dictionary(Of String, Date)(StringComparison.OrdinalIgnoreCase)
-        Public lastNotificationTimeLockingObject As New Object()
+        Public lastNotificationTime As New Concurrent.ConcurrentDictionary(Of String, Date)(StringComparer.OrdinalIgnoreCase)
 
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
@@ -10,22 +9,20 @@
             ' Get the current time
             Dim currentTime As Date = Date.Now
 
-            SyncLock lastNotificationTimeLockingObject
-                ' Clean up old notification entries
-                CleanUpOldEntries(currentTime)
+            ' Clean up old notification entries
+            CleanUpOldEntries(currentTime)
 
-                ' Check if this message has been shown recently
-                If lastNotificationTime.ContainsKey(tipText) Then
-                    Dim lastTime As Date = lastNotificationTime(tipText)
-                    Dim timeSinceLastNotification As TimeSpan = currentTime - lastTime
+            ' Check if this message has been shown recently
+            If lastNotificationTime.ContainsKey(tipText) Then
+                Dim lastTime As Date = lastNotificationTime(tipText)
+                Dim timeSinceLastNotification As TimeSpan = currentTime - lastTime
 
-                    ' If the message was shown within the time limit, do not show it again
-                    If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Exit Sub
-                End If
+                ' If the message was shown within the time limit, do not show it again
+                If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Exit Sub
+            End If
 
-                ' Update the last shown time for this message
-                lastNotificationTime(tipText) = currentTime
-            End SyncLock
+            ' Update the last shown time for this message
+            lastNotificationTime(tipText) = currentTime
 
             SupportCode.ShowToastNotification(tipText, tipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alertType)
         End Sub
@@ -35,7 +32,7 @@
             Dim keysToRemove As List(Of String) = lastNotificationTime.Where(Function(kvp As KeyValuePair(Of String, Date)) (currentTime - kvp.Value).TotalMinutes > CleanupThresholdInMinutes).Select(Function(kvp As KeyValuePair(Of String, Date)) kvp.Key).ToList()
 
             For Each key As String In keysToRemove
-                lastNotificationTime.Remove(key)
+                lastNotificationTime.TryRemove(key, Nothing)
             Next
         End Sub
     End Module
