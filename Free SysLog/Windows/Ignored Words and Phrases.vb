@@ -128,6 +128,8 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        AutoRefreshTimer.Dispose()
+
         If boolColumnOrderChanged Then
             My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveColumnOrders(IgnoredListView.Columns)
             My.Settings.Save()
@@ -185,7 +187,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
-        If boolCurrentlyEditing Then Exit Sub
+        If boolCurrentlyEditing OrElse Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle Then Exit Sub
 
         ' Prevent re-entry if refresh takes longer than the interval
         AutoRefreshTimer.Stop()
