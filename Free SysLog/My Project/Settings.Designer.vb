@@ -1364,6 +1364,18 @@ Namespace My
                 Me("AutomaticStatRefreshOnIgnoredWordsAndPhrases") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases() As Boolean
+            Get
+                Return CType(Me("AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases"),Boolean)
+            End Get
+            Set
+                Me("AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

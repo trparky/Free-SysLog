@@ -33,6 +33,8 @@ Partial Class IgnoredWordsAndPhrases
         Me.colHits = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colTarget = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colDateCreated = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colSinceLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResetHitsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -57,11 +59,10 @@ Partial Class IgnoredWordsAndPhrases
         Me.txtComment = New System.Windows.Forms.TextBox()
         Me.lblCommentLabel = New System.Windows.Forms.Label()
         Me.lblTotalHits = New System.Windows.Forms.Label()
-        Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.btnUpdateHits = New System.Windows.Forms.Button()
         Me.ChkAutoRefresh = New System.Windows.Forms.CheckBox()
-        Me.colSinceLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ChkRefreshOnlyIfActive = New System.Windows.Forms.CheckBox()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -137,6 +138,16 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.colDateCreated.Text = "Date Created"
         Me.colDateCreated.Width = 180
+        '
+        'colDateOfLastEvent
+        '
+        Me.colDateOfLastEvent.Text = "Date of Last Event"
+        Me.colDateOfLastEvent.Width = 240
+        '
+        'colSinceLastEvent
+        '
+        Me.colSinceLastEvent.Text = "Since Last Event"
+        Me.colSinceLastEvent.Width = 100
         '
         'ListViewMenu
         '
@@ -368,16 +379,11 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblTotalHits.AutoSize = True
-        Me.lblTotalHits.Location = New System.Drawing.Point(691, 256)
+        Me.lblTotalHits.Location = New System.Drawing.Point(823, 256)
         Me.lblTotalHits.Name = "lblTotalHits"
         Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
         Me.lblTotalHits.TabIndex = 51
         Me.lblTotalHits.Text = "Total Ignored Hits: 0"
-        '
-        'colDateOfLastEvent
-        '
-        Me.colDateOfLastEvent.Text = "Date of Last Event"
-        Me.colDateOfLastEvent.Width = 240
         '
         'btnUpdateHits
         '
@@ -388,11 +394,6 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnUpdateHits.TabIndex = 52
         Me.btnUpdateHits.Text = "Update Hits and Last Events (F5)"
         Me.btnUpdateHits.UseVisualStyleBackColor = True
-        '
-        'colSinceLastEvent
-        '
-        Me.colSinceLastEvent.Text = "Since Last Event"
-        Me.colSinceLastEvent.Width = 100
         '
         'ChkAutoRefresh
         '
@@ -406,11 +407,23 @@ Partial Class IgnoredWordsAndPhrases
         Me.ToolTip.SetToolTip(Me.ChkAutoRefresh, "Enabling this makes it so that the data is refreshed every five seconds.")
         Me.ChkAutoRefresh.UseVisualStyleBackColor = True
         '
+        'ChkRefreshOnlyIfActive
+        '
+        Me.ChkRefreshOnlyIfActive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkRefreshOnlyIfActive.AutoSize = True
+        Me.ChkRefreshOnlyIfActive.Location = New System.Drawing.Point(686, 255)
+        Me.ChkRefreshOnlyIfActive.Name = "ChkRefreshOnlyIfActive"
+        Me.ChkRefreshOnlyIfActive.Size = New System.Drawing.Size(131, 17)
+        Me.ChkRefreshOnlyIfActive.TabIndex = 54
+        Me.ChkRefreshOnlyIfActive.Text = "Only If Active Window"
+        Me.ChkRefreshOnlyIfActive.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1118, 437)
+        Me.Controls.Add(Me.ChkRefreshOnlyIfActive)
         Me.Controls.Add(Me.ChkAutoRefresh)
         Me.Controls.Add(Me.btnUpdateHits)
         Me.Controls.Add(Me.lblTotalHits)
@@ -485,4 +498,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents colSinceLastEvent As ColumnHeader
     Friend WithEvents ChkAutoRefresh As CheckBox
     Friend WithEvents ToolTip As ToolTip
+    Friend WithEvents ChkRefreshOnlyIfActive As CheckBox
 End Class

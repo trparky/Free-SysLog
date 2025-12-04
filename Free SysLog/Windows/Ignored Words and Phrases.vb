@@ -187,7 +187,9 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
-        If boolCurrentlyEditing OrElse Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle Then Exit Sub
+        If boolCurrentlyEditing OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
+
+        Debug.WriteLine("Ignored Words and Phrases Auto-Refresh Triggered")
 
         ' Prevent re-entry if refresh takes longer than the interval
         AutoRefreshTimer.Stop()
@@ -230,6 +232,8 @@ Public Class IgnoredWordsAndPhrases
         colSinceLastEvent.Width = My.Settings.ColSinceLastEventWidth
 
         ChkAutoRefresh.Checked = My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases
+        ChkRefreshOnlyIfActive.Checked = My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases
+        ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
 
         InitializeAutoRefreshTimer()
 
@@ -674,5 +678,10 @@ Public Class IgnoredWordsAndPhrases
     Private Sub ChkAutoRefresh_Click(sender As Object, e As EventArgs) Handles ChkAutoRefresh.Click
         My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases = ChkAutoRefresh.Checked
         AutoRefreshTimer.Enabled = ChkAutoRefresh.Checked
+        ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
+    End Sub
+
+    Private Sub ChkRefreshOnlyIfActive_Click(sender As Object, e As EventArgs) Handles ChkRefreshOnlyIfActive.Click
+        My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases = ChkRefreshOnlyIfActive.Checked
     End Sub
 End Class

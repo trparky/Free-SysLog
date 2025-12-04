@@ -332,5 +332,8 @@
     <Setting Name="AutomaticStatRefreshOnIgnoredWordsAndPhrases" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
