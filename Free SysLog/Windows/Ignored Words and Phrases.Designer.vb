@@ -99,7 +99,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.HideSelection = False
         Me.IgnoredListView.Location = New System.Drawing.Point(12, 12)
         Me.IgnoredListView.Name = "IgnoredListView"
-        Me.IgnoredListView.Size = New System.Drawing.Size(950, 233)
+        Me.IgnoredListView.Size = New System.Drawing.Size(1064, 233)
         Me.IgnoredListView.TabIndex = 5
         Me.IgnoredListView.UseCompatibleStateImageBehavior = False
         Me.IgnoredListView.View = System.Windows.Forms.View.Details
@@ -181,7 +181,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnImport
         '
         Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnImport.Location = New System.Drawing.Point(917, 251)
+        Me.BtnImport.Location = New System.Drawing.Point(1031, 251)
         Me.BtnImport.Name = "BtnImport"
         Me.BtnImport.Size = New System.Drawing.Size(75, 23)
         Me.BtnImport.TabIndex = 11
@@ -191,7 +191,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnExport
         '
         Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnExport.Location = New System.Drawing.Point(836, 251)
+        Me.BtnExport.Location = New System.Drawing.Point(950, 251)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
         Me.BtnExport.TabIndex = 12
@@ -211,7 +211,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnDown
         '
         Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnDown.Location = New System.Drawing.Point(969, 222)
+        Me.BtnDown.Location = New System.Drawing.Point(1083, 222)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)
         Me.BtnDown.TabIndex = 19
@@ -221,7 +221,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnUp
         '
         Me.BtnUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnUp.Location = New System.Drawing.Point(968, 12)
+        Me.BtnUp.Location = New System.Drawing.Point(1082, 12)
         Me.BtnUp.Name = "BtnUp"
         Me.BtnUp.Size = New System.Drawing.Size(24, 23)
         Me.BtnUp.TabIndex = 18
@@ -235,7 +235,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.SeparatingLine.BackColor = System.Drawing.Color.Black
         Me.SeparatingLine.Location = New System.Drawing.Point(-1, 286)
         Me.SeparatingLine.Name = "SeparatingLine"
-        Me.SeparatingLine.Size = New System.Drawing.Size(1010, 1)
+        Me.SeparatingLine.Size = New System.Drawing.Size(1124, 1)
         Me.SeparatingLine.TabIndex = 26
         '
         'Label4
@@ -290,7 +290,7 @@ Partial Class IgnoredWordsAndPhrases
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TxtIgnored.Location = New System.Drawing.Point(61, 325)
         Me.TxtIgnored.Name = "TxtIgnored"
-        Me.TxtIgnored.Size = New System.Drawing.Size(932, 20)
+        Me.TxtIgnored.Size = New System.Drawing.Size(1046, 20)
         Me.TxtIgnored.TabIndex = 41
         '
         'Label1
@@ -351,7 +351,7 @@ Partial Class IgnoredWordsAndPhrases
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtComment.Location = New System.Drawing.Point(73, 374)
         Me.txtComment.Name = "txtComment"
-        Me.txtComment.Size = New System.Drawing.Size(919, 20)
+        Me.txtComment.Size = New System.Drawing.Size(1033, 20)
         Me.txtComment.TabIndex = 49
         '
         'lblCommentLabel
@@ -368,7 +368,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblTotalHits.AutoSize = True
-        Me.lblTotalHits.Location = New System.Drawing.Point(701, 256)
+        Me.lblTotalHits.Location = New System.Drawing.Point(691, 256)
         Me.lblTotalHits.Name = "lblTotalHits"
         Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
         Me.lblTotalHits.TabIndex = 51
@@ -410,7 +410,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1004, 437)
+        Me.ClientSize = New System.Drawing.Size(1118, 437)
         Me.Controls.Add(Me.ChkAutoRefresh)
         Me.Controls.Add(Me.btnUpdateHits)
         Me.Controls.Add(Me.lblTotalHits)
@@ -438,7 +438,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.Controls.Add(Me.lblCommentLabel)
         Me.Controls.Add(Me.txtComment)
         Me.KeyPreview = True
-        Me.MinimumSize = New System.Drawing.Size(815, 417)
+        Me.MinimumSize = New System.Drawing.Size(1134, 476)
         Me.Name = "IgnoredWordsAndPhrases"
         Me.Text = "Ignored Words and Phrases"
         Me.ListViewMenu.ResumeLayout(False)
