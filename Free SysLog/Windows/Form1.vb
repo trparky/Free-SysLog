@@ -1094,13 +1094,8 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
-        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
-
-            If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                IgnoredRegexCache.Clear()
-            End If
-        End Using
+        Dim IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+        IgnoredWordsAndPhrasesOrAlertsInstance.Show()
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
@@ -1224,13 +1219,8 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
-        Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            ReplacementsInstance.ShowDialog(Me)
-
-            If ReplacementsInstance.boolChanged Then
-                ReplacementsRegexCache.Clear()
-            End If
-        End Using
+        Dim ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+        ReplacementsInstance.Show()
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAlternatingColorToolStripMenuItem.Click
@@ -1550,13 +1540,8 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        Using Alerts As New Alerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            Alerts.ShowDialog(Me)
-
-            If Alerts.boolChanged Then
-                AlertsRegexCache.Clear()
-            End If
-        End Using
+        Dim Alerts As New Alerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+        Alerts.Show()
     End Sub
 
     Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
@@ -1567,7 +1552,7 @@ Public Class Form1
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
         Using Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
             Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            Alerts.ShowDialog(Me)
+            Alerts.Show()
         End Using
     End Sub
 
@@ -1662,10 +1647,8 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_Click(sender As Object, e As EventArgs) Handles ConfigureSysLogMirrorServers.Click
-        Using ConfigureSysLogMirrorClients As New ConfigureSysLogMirrorClients With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            ConfigureSysLogMirrorClients.ShowDialog(Me)
-            If ConfigureSysLogMirrorClients.boolSuccess Then MsgBox("Done", MsgBoxStyle.Information, Text)
-        End Using
+        Dim ConfigureSysLogMirrorClients As New ConfigureSysLogMirrorClients With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        ConfigureSysLogMirrorClients.Show()
     End Sub
 
     Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
@@ -1851,9 +1834,8 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
-        Using hostnames As New Hostnames() With {.Icon = Icon}
-            hostnames.ShowDialog()
-        End Using
+        Dim hostnames As New Hostnames() With {.Icon = Icon}
+        hostnames.Show()
     End Sub
 
     Private Sub ChangeFont_Click(sender As Object, e As EventArgs) Handles ChangeFont.Click

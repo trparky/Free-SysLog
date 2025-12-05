@@ -2,7 +2,7 @@
 
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
-    Public boolChanged As Boolean = False
+    Private boolChanged As Boolean = False
     Private boolColumnOrderChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Public strIgnoredPattern As String = Nothing
@@ -166,6 +166,8 @@ Public Class IgnoredWordsAndPhrases
 
             My.Settings.ignored2 = tempIgnoredRules
             My.Settings.Save()
+
+            IgnoredRegexCache.Clear()
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(

@@ -2,7 +2,7 @@
 
 Public Class Replacements
     Private boolDoneLoading As Boolean = False
-    Public boolChanged As Boolean = False
+    Private boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
@@ -186,6 +186,8 @@ Public Class Replacements
 
             My.Settings.replacements = tempReplacements
             My.Settings.Save()
+
+            ReplacementsRegexCache.Clear()
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(

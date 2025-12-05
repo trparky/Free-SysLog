@@ -3,7 +3,7 @@ Imports System.Net
 Imports Free_SysLog.SupportCode
 
 Public Class ConfigureSysLogMirrorClients
-    Public boolSuccess As Boolean = False
+    Private boolSuccess As Boolean = False
     Private boolEditMode As Boolean = False
     Private boolDoneLoading As Boolean = False
     Private draggedItem As ListViewItem
@@ -193,6 +193,8 @@ Public Class ConfigureSysLogMirrorClients
 
             My.Settings.ServersToSendTo = tempServer
             My.Settings.Save()
+
+            MsgBox("Done", MsgBoxStyle.Information, "Free SysLog Server")
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(

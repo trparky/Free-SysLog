@@ -526,10 +526,9 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        Using Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            Alerts.ShowDialog(Me)
-        End Using
+        Dim Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+        Alerts.Show()
     End Sub
 
     Private Sub Ignored_Logs_and_Search_Results_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
@@ -631,14 +630,9 @@ Public Class IgnoredLogsAndSearchResults
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
             Dim strIgnoredPattern As String = selectedRow.IgnoredPattern
 
-            Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-                IgnoredWordsAndPhrasesOrAlertsInstance.strIgnoredPattern = strIgnoredPattern
-                IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
-
-                If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                    IgnoredRegexCache.Clear()
-                End If
-            End Using
+            Dim IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            IgnoredWordsAndPhrasesOrAlertsInstance.strIgnoredPattern = strIgnoredPattern
+            IgnoredWordsAndPhrasesOrAlertsInstance.Show()
         End If
     End Sub
 
