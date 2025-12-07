@@ -651,22 +651,24 @@ Public Class IgnoredWordsAndPhrases
         IgnoredListView.BeginUpdate()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            intHits = 0
-            dateOfLastEvent = Date.MinValue
+            If item.BoolEnabled Then
+                intHits = 0
+                dateOfLastEvent = Date.MinValue
 
-            If IgnoredHits.TryGetValue(item.SubItems(0).Text, intHits) Then
-                item.SubItems(4).Text = intHits.ToString("N0")
-                longTotalHits += intHits
-            End If
+                If IgnoredHits.TryGetValue(item.SubItems(0).Text, intHits) Then
+                    item.SubItems(4).Text = intHits.ToString("N0")
+                    longTotalHits += intHits
+                End If
 
-            If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
-                dateOfLastEvent = dateOfLastEvent.ToLocalTime
-                sinceLastEvent = Now.ToLocalTime - dateOfLastEvent
-                item.timeSpanOfLastOccurrence = sinceLastEvent
-                item.dateOfLastOccurrence = dateOfLastEvent
-                item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
-                item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
-                item.intHits = intHits
+                If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
+                    dateOfLastEvent = dateOfLastEvent.ToLocalTime
+                    sinceLastEvent = Now.ToLocalTime - dateOfLastEvent
+                    item.timeSpanOfLastOccurrence = sinceLastEvent
+                    item.dateOfLastOccurrence = dateOfLastEvent
+                    item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
+                    item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
+                    item.intHits = intHits
+                End If
             End If
         Next
 
