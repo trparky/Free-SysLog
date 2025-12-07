@@ -645,12 +645,14 @@ Public Class IgnoredWordsAndPhrases
     Private Sub btnUpdateHits_Click(sender As Object, e As EventArgs) Handles btnUpdateHits.Click
         Dim longTotalHits As Long = 0
         Dim sinceLastEvent As TimeSpan
+        Dim intHits As Integer
+        Dim dateOfLastEvent As Date
 
         IgnoredListView.BeginUpdate()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            Dim intHits As Integer = 0
-            Dim dateOfLastEvent As Date = Date.MinValue
+            intHits = 0
+            dateOfLastEvent = Date.MinValue
 
             If IgnoredHits.TryGetValue(item.SubItems(0).Text, intHits) Then
                 item.SubItems(4).Text = intHits.ToString("N0")
