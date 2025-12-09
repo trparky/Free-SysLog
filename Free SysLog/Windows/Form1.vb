@@ -25,6 +25,8 @@ Public Class Form1
     Private boolServerRunning As Boolean = False
     Private boolTCPServerRunning As Boolean = False
     Private lastFirstDisplayedRowIndex As Integer = -1
+    Private processUptimeTimer As Timer
+    Private dateProcessStarted As Date = Process.GetCurrentProcess.StartTime.ToLocalTime
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -449,6 +451,14 @@ Public Class Form1
         End If
     End Sub
 
+    Private Function TimespanToDHM(ts As TimeSpan) As String
+        Dim days As Integer = ts.Days
+        Dim hours As Integer = ts.Hours
+        Dim minutes As Integer = ts.Minutes
+        Dim seconds As Integer = ts.Seconds
+        Return $"{days}d {hours}h {minutes}m {seconds}s"
+    End Function
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SupportCode.ParentForm = Me
 
@@ -474,6 +484,9 @@ Public Class Form1
         NotifyIcon.Text = "Free SysLog"
 
         LoadCheckboxSettings()
+
+        processUptimeTimer = New Timer() With {.Interval = 1000, .Enabled = True}
+        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Process Uptime: {TimespanToDHM(Now.ToLocalTime - dateProcessStarted.ToLocalTime)}"
 
         SetDoubleBufferingFlag(Logs)
 
@@ -960,6 +973,7 @@ Public Class Form1
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         WriteLogsToDisk()
+        processUptimeTimer.Dispose()
 
         If boolDoWeOwnTheMutex Then
             SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
