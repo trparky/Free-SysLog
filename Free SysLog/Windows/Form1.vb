@@ -486,7 +486,7 @@ Public Class Form1
         LoadCheckboxSettings()
 
         processUptimeTimer = New Timer() With {.Interval = 1000, .Enabled = True}
-        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Process Uptime: {TimespanToDHM(Now.ToLocalTime - dateProcessStarted.ToLocalTime)}"
+        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToDHM(Now.ToLocalTime - dateProcessStarted.ToLocalTime)}"
 
         SetDoubleBufferingFlag(Logs)
 

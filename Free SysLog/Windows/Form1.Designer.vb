@@ -985,7 +985,7 @@ Partial Class Form1
         '
         Me.lblProcessUptime.Name = "lblProcessUptime"
         Me.lblProcessUptime.Size = New System.Drawing.Size(92, 17)
-        Me.lblProcessUptime.Text = "Process Uptime:"
+        Me.lblProcessUptime.Text = "Program Uptime:"
         '
         'boxLimitBy
         '
