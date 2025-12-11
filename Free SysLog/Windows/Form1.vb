@@ -1072,7 +1072,7 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.ColumnHeaderMouseClick
-        If e.Button = MouseButtons.Left Then
+        If e.Button = MouseButtons.Left And e.ColumnIndex <> colDelete.Index Then
             Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
             intSortColumnIndex = e.ColumnIndex
 
