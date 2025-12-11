@@ -127,12 +127,13 @@ Public Class IgnoredClass
         Dim intHits As Integer
         Dim dateLastEvent As Date
         Dim sinceLastEvent As TimeSpan
+        Dim currentDate As Date = Now
 
         If Not IgnoredLastEvent.TryGetValue(StrIgnore, dateLastEvent) Then dateLastEvent = Date.MinValue
         If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
         longTotalHits += intHits
 
-        If dateCreated = Date.MinValue Then dateCreated = Date.Now
+        If dateCreated = Date.MinValue Then dateCreated = currentDate
 
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
@@ -143,11 +144,11 @@ Public Class IgnoredClass
         listViewItem.SubItems.Add(dateCreated.ToLongDateString)
 
         If Not dateLastEvent.Equals(Date.MinValue) Then
-            dateLastEvent = dateLastEvent.ToLocalTime()
-            sinceLastEvent = Now.ToLocalTime - dateLastEvent
+            dateLastEvent = dateLastEvent
+            sinceLastEvent = currentDate - dateLastEvent
             listViewItem.timeSpanOfLastOccurrence = sinceLastEvent
             listViewItem.dateOfLastOccurrence = dateLastEvent
-            listViewItem.SubItems.Add($"{dateLastEvent.ToLongDateString} {dateLastEvent.ToLongTimeString}")
+            listViewItem.SubItems.Add($"{dateLastEvent.ToLocalTime.ToLongDateString} {dateLastEvent.ToLocalTime.ToLongTimeString}")
             listViewItem.SubItems.Add(TimespanToHMS(sinceLastEvent))
         Else
             listViewItem.SubItems.Add("")

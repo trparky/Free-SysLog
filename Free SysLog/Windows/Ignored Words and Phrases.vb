@@ -639,6 +639,7 @@ Public Class IgnoredWordsAndPhrases
         Dim sinceLastEvent As TimeSpan
         Dim intHits As Integer
         Dim dateOfLastEvent As Date
+        Dim currentDate As Date = Now
 
         IgnoredListView.BeginUpdate()
 
@@ -653,11 +654,11 @@ Public Class IgnoredWordsAndPhrases
                 End If
 
                 If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
-                    dateOfLastEvent = dateOfLastEvent.ToLocalTime
-                    sinceLastEvent = Now.ToLocalTime - dateOfLastEvent
+                    dateOfLastEvent = dateOfLastEvent
+                    sinceLastEvent = currentDate - dateOfLastEvent
                     item.timeSpanOfLastOccurrence = sinceLastEvent
                     item.dateOfLastOccurrence = dateOfLastEvent
-                    item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
+                    item.SubItems(7).Text = $"{dateOfLastEvent.ToLocalTime.ToLongDateString} {dateOfLastEvent.ToLocalTime.ToLongTimeString}"
                     item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
                     item.intHits = intHits
                 End If
