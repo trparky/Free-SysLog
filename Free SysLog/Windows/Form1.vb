@@ -2128,6 +2128,20 @@ Public Class Form1
         My.Settings.OnlySaveAlertedLogs = OnlySaveAlertedLogs.Checked
     End Sub
 
+    Private Sub Logs_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles Logs.CellContentClick
+        If e.ColumnIndex = colDelete.Index AndAlso e.RowIndex >= 0 Then
+            Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Count(Function(row) CBool(row.Cells(colDelete.Index).Value))
+
+            If intNumberOfCheckedLogs = 0 Then
+                LblItemsSelected.Visible = False
+                LblItemsSelected.Text = Nothing
+            Else
+                LblItemsSelected.Visible = True
+                LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
+            End If
+        End If
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
