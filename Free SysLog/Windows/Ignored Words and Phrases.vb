@@ -630,15 +630,20 @@ Public Class IgnoredWordsAndPhrases
     Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) Then
+                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) And IgnoredLastEvent.TryRemove(item.SubItems(0).Text, Nothing) Then
                     item.SubItems(4).Text = "0"
+                    item.SubItems(7).Text = ""
+                    item.SubItems(8).Text = ""
                 End If
             Next
         Else
             IgnoredHits.Clear()
+            IgnoredLastEvent.Clear()
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                 item.SubItems(4).Text = "0"
+                item.SubItems(7).Text = ""
+                item.SubItems(8).Text = ""
             Next
         End If
     End Sub
@@ -646,8 +651,10 @@ Public Class IgnoredWordsAndPhrases
     Private Sub ResetHitsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetHitsToolStripMenuItem.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) Then
+                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) And IgnoredLastEvent.TryRemove(item.SubItems(0).Text, Nothing) Then
                     item.SubItems(4).Text = "0"
+                    item.SubItems(7).Text = ""
+                    item.SubItems(8).Text = ""
                 End If
             Next
         End If
