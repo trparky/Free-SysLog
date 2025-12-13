@@ -167,6 +167,11 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.ignored2 = tempIgnoredRules
             My.Settings.Save()
 
+            If My.Settings.saveIgnoredLogCount Then
+                IO.File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
+                IO.File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+            End If
+
             IgnoredRegexCache.Clear()
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject

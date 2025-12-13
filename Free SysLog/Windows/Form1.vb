@@ -975,6 +975,11 @@ Public Class Form1
         WriteLogsToDisk()
         processUptimeTimer.Dispose()
 
+        If My.Settings.saveIgnoredLogCount Then
+            File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
+            File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+        End If
+
         If boolDoWeOwnTheMutex Then
             SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
             If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
