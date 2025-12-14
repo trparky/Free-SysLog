@@ -136,6 +136,13 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.Save()
         End If
 
+        Try
+            If My.Settings.saveIgnoredLogCount Then
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+            End If
+        Catch ' Silently fail
+        End Try
+
         If Not boolChanged Then Exit Sub
 
         Dim newIgnoredList As New ThreadSafetyLists.ThreadSafeIgnoredList
@@ -167,10 +174,6 @@ Public Class IgnoredWordsAndPhrases
 
             My.Settings.ignored2 = tempIgnoredRules
             My.Settings.Save()
-
-            If My.Settings.saveIgnoredLogCount Then
-                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
-            End If
 
             IgnoredRegexCache.Clear()
         Catch ex As Exception
