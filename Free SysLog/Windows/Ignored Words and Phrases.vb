@@ -8,7 +8,7 @@ Public Class IgnoredWordsAndPhrases
     Public strIgnoredPattern As String = Nothing
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
-    Private AutoRefreshTimer, AutoStatSaveTimer As Timer
+    Private AutoRefreshTimer As Timer
     Private boolCurrentlyEditing As Boolean = False
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
@@ -129,7 +129,6 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         AutoRefreshTimer?.Dispose()
-        AutoStatSaveTimer?.Dispose()
 
         If boolColumnOrderChanged Then
             My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveColumnOrders(IgnoredListView.Columns)
@@ -192,19 +191,9 @@ Public Class IgnoredWordsAndPhrases
         End Try
     End Sub
 
-    Private Sub InitializeTimers()
+    Private Sub InitializeAutoRefreshTimer()
         AutoRefreshTimer = New Timer() With {.Interval = 5000, .Enabled = ChkAutoRefresh.Checked}
         AddHandler AutoRefreshTimer.Tick, AddressOf AutoRefreshTimer_Tick
-
-        If My.Settings.saveIgnoredLogCount Then
-            AutoStatSaveTimer = New Timer() With {.Interval = 60000 * 5, .Enabled = True}
-            AddHandler AutoStatSaveTimer.Tick, AddressOf AutoStatSaveTimer_Tick
-        End If
-    End Sub
-
-    Private Sub AutoStatSaveTimer_Tick(sender As Object, e As EventArgs)
-        NumberOfIgnoredLogs = longNumberOfIgnoredLogs
-        WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
@@ -246,7 +235,7 @@ Public Class IgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Checked = My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
 
-        InitializeTimers()
+        InitializeAutoRefreshTimer()
 
         Size = My.Settings.ConfigureIgnoredSize
 

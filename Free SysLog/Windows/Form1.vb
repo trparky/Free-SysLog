@@ -25,7 +25,7 @@ Public Class Form1
     Private boolServerRunning As Boolean = False
     Private boolTCPServerRunning As Boolean = False
     Private lastFirstDisplayedRowIndex As Integer = -1
-    Private processUptimeTimer As Timer
+    Private processUptimeTimer, AutoStatSaveTimer As Timer
     Private dateProcessStarted As Date = Process.GetCurrentProcess.StartTime.ToLocalTime
 
     Private HostNamesInstance As Hostnames
@@ -460,6 +460,11 @@ Public Class Form1
         Return $"{days}d {hours}h {minutes}m {seconds}s"
     End Function
 
+    Private Sub AutoStatSaveTimer_Tick(sender As Object, e As EventArgs)
+        NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+        WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         SupportCode.ParentForm = Me
 
@@ -519,6 +524,9 @@ Public Class Form1
         If My.Settings.saveIgnoredLogCount Then
             longNumberOfIgnoredLogs = NumberOfIgnoredLogs
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+
+            AutoStatSaveTimer = New Timer() With {.Interval = 60000 * 5, .Enabled = True}
+            AddHandler AutoStatSaveTimer.Tick, AddressOf AutoStatSaveTimer_Tick
         End If
 
         If My.Settings.font IsNot Nothing Then
@@ -974,6 +982,7 @@ Public Class Form1
         My.Settings.Save()
         WriteLogsToDisk()
         processUptimeTimer?.Dispose()
+        AutoStatSaveTimer?.Dispose()
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs
