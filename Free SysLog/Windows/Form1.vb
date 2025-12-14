@@ -975,13 +975,13 @@ Public Class Form1
             End SyncLock
         End If
 
-        If My.Settings.saveIgnoredLogCount Then My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         WriteLogsToDisk()
         processUptimeTimer.Dispose()
 
         If My.Settings.saveIgnoredLogCount Then
+            My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
             File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
             File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
         End If
