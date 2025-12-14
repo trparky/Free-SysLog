@@ -200,9 +200,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub AutoStatSaveTimer_Tick(sender As Object, e As EventArgs)
-        My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
-        My.Settings.Save()
-
+        NumberOfIgnoredLogs = longNumberOfIgnoredLogs
         IO.File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
         IO.File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
     End Sub

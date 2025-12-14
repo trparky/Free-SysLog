@@ -73,6 +73,7 @@ Namespace SupportCode
         Public strPathToConfigBackupFile As String = IO.Path.Combine(strPathToDataFolder, "config_backup.json")
         Public strPathToIgnoredHitsFile As String = IO.Path.Combine(strPathToDataFolder, "IgnoredHits.json")
         Public strPathToIgnoredLastEventFile As String = IO.Path.Combine(strPathToDataFolder, "IgnoredLastEvent.json")
+        Public strPathToNumberOfIgnoredLogsFile As String = IO.Path.Combine(strPathToDataFolder, "NumberOfIgnoredLogs.json")
         Public Const strProxiedString As String = "proxied|"
         Public Const strQuote As String = Chr(34)
         Public Const strViewLog As String = "viewlog"
@@ -121,6 +122,24 @@ Namespace SupportCode
 
             Return If(parts.Count > 0, String.Join(", ", parts), "0s")
         End Function
+
+        Public Property NumberOfIgnoredLogs As Long
+            Get
+                If Not IO.File.Exists(strPathToNumberOfIgnoredLogsFile) Then Return 0
+
+                Dim strFileData As String = IO.File.ReadAllText(strPathToNumberOfIgnoredLogsFile)
+                Dim longResult As Long = 0
+
+                If Long.TryParse(strFileData, longResult) Then
+                    Return longResult
+                Else
+                    Return 0
+                End If
+            End Get
+            Set(value As Long)
+                IO.File.WriteAllText(strPathToNumberOfIgnoredLogsFile, value.ToString)
+            End Set
+        End Property
 
         Public Sub SetDoubleBufferingFlag(control As Control)
             If control Is Nothing Then Exit Sub

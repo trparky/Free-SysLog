@@ -522,7 +522,7 @@ Public Class Form1
         LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
 
         If My.Settings.saveIgnoredLogCount Then
-            longNumberOfIgnoredLogs = My.Settings.ignoredLogCount
+            longNumberOfIgnoredLogs = NumberOfIgnoredLogs
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         End If
 
@@ -981,7 +981,7 @@ Public Class Form1
         processUptimeTimer.Dispose()
 
         If My.Settings.saveIgnoredLogCount Then
-            My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
+            NumberOfIgnoredLogs = longNumberOfIgnoredLogs
             File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
             File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
         End If
