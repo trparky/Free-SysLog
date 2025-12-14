@@ -126,13 +126,23 @@ Namespace SupportCode
         Public Sub WriteFileAtomically(path As String, contents As String)
             Dim tmpPath As String = path & ".tmp"
 
-            IO.File.WriteAllText(tmpPath, contents)
+            Try
+                IO.File.WriteAllText(tmpPath, contents)
 
-            If IO.File.Exists(path) Then
-                IO.File.Replace(tmpPath, path, Nothing)
-            Else
-                IO.File.Move(tmpPath, path)
-            End If
+                If IO.File.Exists(path) Then
+                    IO.File.Replace(tmpPath, path, Nothing)
+                Else
+                    IO.File.Move(tmpPath, path)
+                End If
+            Catch
+                ' Fail silently
+            Finally
+                Try
+                    If IO.File.Exists(tmpPath) Then IO.File.Delete(tmpPath)
+                Catch
+                    ' Fail silently
+                End Try
+            End Try
         End Sub
 
         Public Property NumberOfIgnoredLogs As Long
