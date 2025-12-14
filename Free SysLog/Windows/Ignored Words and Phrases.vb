@@ -138,6 +138,7 @@ Public Class IgnoredWordsAndPhrases
 
         Try
             If My.Settings.saveIgnoredLogCount Then
+                NumberOfIgnoredLogs = longNumberOfIgnoredLogs
                 WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
             End If
         Catch ' Silently fail
