@@ -6,6 +6,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports Microsoft.Toolkit.Uwp.Notifications
 Imports System.Runtime.InteropServices
+Imports System.IO
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -67,13 +68,13 @@ Namespace SupportCode
         Public boolDoWeOwnTheMutex As Boolean = False
         Public JSONDecoderSettingsForLogFiles As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore}
         Public JSONDecoderSettingsForSettingsFiles As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error}
-        Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
-        Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
-        Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
-        Public strPathToConfigBackupFile As String = IO.Path.Combine(strPathToDataFolder, "config_backup.json")
-        Public strPathToIgnoredHitsFile As String = IO.Path.Combine(strPathToDataFolder, "IgnoredHits.json")
-        Public strPathToIgnoredLastEventFile As String = IO.Path.Combine(strPathToDataFolder, "IgnoredLastEvent.json")
-        Public strPathToNumberOfIgnoredLogsFile As String = IO.Path.Combine(strPathToDataFolder, "NumberOfIgnoredLogs.json")
+        Public strPathToDataFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
+        Public strPathToDataBackupFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
+        Public strPathToDataFile As String = Path.Combine(strPathToDataFolder, "log.json")
+        Public strPathToConfigBackupFile As String = Path.Combine(strPathToDataFolder, "config_backup.json")
+        Public strPathToIgnoredHitsFile As String = Path.Combine(strPathToDataFolder, "IgnoredHits.json")
+        Public strPathToIgnoredLastEventFile As String = Path.Combine(strPathToDataFolder, "IgnoredLastEvent.json")
+        Public strPathToNumberOfIgnoredLogsFile As String = Path.Combine(strPathToDataFolder, "NumberOfIgnoredLogs.json")
         Public Const strProxiedString As String = "proxied|"
         Public Const strQuote As String = Chr(34)
         Public Const strViewLog As String = "viewlog"
@@ -127,18 +128,18 @@ Namespace SupportCode
             Dim tmpPath As String = path & ".tmp"
 
             Try
-                IO.File.WriteAllText(tmpPath, contents)
+                File.WriteAllText(tmpPath, contents)
 
-                If IO.File.Exists(path) Then
-                    IO.File.Replace(tmpPath, path, Nothing)
+                If File.Exists(path) Then
+                    File.Replace(tmpPath, path, Nothing)
                 Else
-                    IO.File.Move(tmpPath, path)
+                    File.Move(tmpPath, path)
                 End If
             Catch
                 ' Fail silently
             Finally
                 Try
-                    If IO.File.Exists(tmpPath) Then IO.File.Delete(tmpPath)
+                    If File.Exists(tmpPath) Then File.Delete(tmpPath)
                 Catch
                     ' Fail silently
                 End Try
@@ -147,9 +148,9 @@ Namespace SupportCode
 
         Public Property NumberOfIgnoredLogs As Long
             Get
-                If Not IO.File.Exists(strPathToNumberOfIgnoredLogsFile) Then Return 0
+                If Not File.Exists(strPathToNumberOfIgnoredLogsFile) Then Return 0
 
-                Dim strFileData As String = IO.File.ReadAllText(strPathToNumberOfIgnoredLogsFile)
+                Dim strFileData As String = File.ReadAllText(strPathToNumberOfIgnoredLogsFile)
                 Dim longResult As Long = 0
 
                 If Long.TryParse(strFileData, longResult) Then
@@ -406,11 +407,11 @@ Namespace SupportCode
             notification.SetToastDuration(If(My.Settings.NotificationLength = 0, ToastDuration.Short, ToastDuration.Long))
 
             If tipIcon = ToolTipIcon.Error Then
-                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
             ElseIf tipIcon = ToolTipIcon.Warning Then
-                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
             ElseIf tipIcon = ToolTipIcon.Info Then
-                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
             End If
 
             If My.Settings.IncludeButtonsOnNotifications Then
@@ -423,7 +424,7 @@ Namespace SupportCode
                 notification.AddArgument("action", strOpenSysLog)
             End If
 
-            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
+            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
 
             notification.Show()
         End Sub
@@ -631,7 +632,7 @@ Namespace SupportCode
         End Function
 
         Public Sub SelectFileInWindowsExplorer(strFullPath As String)
-            If Not String.IsNullOrEmpty(strFullPath) AndAlso IO.File.Exists(strFullPath) Then
+            If Not String.IsNullOrEmpty(strFullPath) AndAlso File.Exists(strFullPath) Then
                 Dim pidlList As IntPtr = NativeMethod.NativeMethods.ILCreateFromPathW(strFullPath)
 
                 If Not pidlList.Equals(IntPtr.Zero) Then
