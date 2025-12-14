@@ -169,8 +169,7 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.Save()
 
             If My.Settings.saveIgnoredLogCount Then
-                WriteFileAtomically(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
-                WriteFileAtomically(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
             End If
 
             IgnoredRegexCache.Clear()
@@ -201,8 +200,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub AutoStatSaveTimer_Tick(sender As Object, e As EventArgs)
         NumberOfIgnoredLogs = longNumberOfIgnoredLogs
-        WriteFileAtomically(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
-        WriteFileAtomically(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+        WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
@@ -628,15 +626,14 @@ Public Class IgnoredWordsAndPhrases
     Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) And IgnoredLastEvent.TryRemove(item.SubItems(0).Text, Nothing) Then
+                If IgnoredStats.TryRemove(item.SubItems(0).Text, Nothing) Then
                     item.SubItems(4).Text = "0"
                     item.SubItems(7).Text = ""
                     item.SubItems(8).Text = ""
                 End If
             Next
         Else
-            IgnoredHits.Clear()
-            IgnoredLastEvent.Clear()
+            IgnoredStats.Clear()
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                 item.SubItems(4).Text = "0"
@@ -649,7 +646,7 @@ Public Class IgnoredWordsAndPhrases
     Private Sub ResetHitsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetHitsToolStripMenuItem.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) And IgnoredLastEvent.TryRemove(item.SubItems(0).Text, Nothing) Then
+                If IgnoredStats.TryRemove(item.SubItems(0).Text, Nothing) Then
                     item.SubItems(4).Text = "0"
                     item.SubItems(7).Text = ""
                     item.SubItems(8).Text = ""
@@ -664,27 +661,35 @@ Public Class IgnoredWordsAndPhrases
         Dim intHits As Integer
         Dim dateOfLastEvent As Date
         Dim currentDate As Date = Now
+        Dim IgnoredStatsEntry As IgnoredStatsEntry
 
         IgnoredListView.BeginUpdate()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
             If item.BoolEnabled Then
+                IgnoredStatsEntry = Nothing
                 intHits = 0
                 dateOfLastEvent = Date.MinValue
 
-                If IgnoredHits.TryGetValue(item.SubItems(0).Text, intHits) Then
-                    item.SubItems(4).Text = intHits.ToString("N0")
-                    longTotalHits += intHits
-                End If
+                If IgnoredStats.TryGetValue(item.SubItems(0).Text, IgnoredStatsEntry) Then
+                    intHits = IgnoredStatsEntry.Hits
+                    dateOfLastEvent = IgnoredStatsEntry.LastEvent
 
-                If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
-                    dateOfLastEvent = dateOfLastEvent
-                    sinceLastEvent = currentDate - dateOfLastEvent
-                    item.timeSpanOfLastOccurrence = sinceLastEvent
-                    item.dateOfLastOccurrence = dateOfLastEvent
-                    item.SubItems(7).Text = $"{dateOfLastEvent.ToLocalTime.ToLongDateString} {dateOfLastEvent.ToLocalTime.ToLongTimeString}"
-                    item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
+                    longTotalHits += intHits
+
+                    item.SubItems(4).Text = intHits.ToString("N0")
                     item.intHits = intHits
+
+                    If dateOfLastEvent <> Date.MinValue Then
+                        sinceLastEvent = currentDate - dateOfLastEvent
+                        item.timeSpanOfLastOccurrence = sinceLastEvent
+                        item.dateOfLastOccurrence = dateOfLastEvent
+                        item.SubItems(7).Text = $"{dateOfLastEvent.ToLocalTime.ToLongDateString} {dateOfLastEvent.ToLocalTime.ToLongTimeString}"
+                        item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
+                    Else
+                        item.SubItems(7).Text = ""
+                        item.SubItems(8).Text = ""
+                    End If
                 End If
             End If
         Next

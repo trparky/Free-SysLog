@@ -81,14 +81,8 @@ Namespace My
             allUniqueObjects = LoadUniqueLogTypesAndProcesses(True)
             recentUniqueObjects = LoadUniqueLogTypesAndProcesses(False)
 
-            If My.Settings.saveIgnoredLogCount Then
-                If IO.File.Exists(strPathToIgnoredHitsFile) Then
-                    IgnoredHits = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Concurrent.ConcurrentDictionary(Of String, Integer))(IO.File.ReadAllText(strPathToIgnoredHitsFile), JSONDecoderSettingsForSettingsFiles)
-                End If
-
-                If IO.File.Exists(strPathToIgnoredLastEventFile) Then
-                    IgnoredLastEvent = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Concurrent.ConcurrentDictionary(Of String, Date))(IO.File.ReadAllText(strPathToIgnoredLastEventFile), JSONDecoderSettingsForSettingsFiles)
-                End If
+            If My.Settings.saveIgnoredLogCount AndAlso IO.File.Exists(strPathToIgnoredStatsFile) Then
+                IgnoredStats = Newtonsoft.Json.JsonConvert.DeserializeObject(Of Concurrent.ConcurrentDictionary(Of String, IgnoredStatsEntry))(IO.File.ReadAllText(strPathToIgnoredStatsFile), JSONDecoderSettingsForSettingsFiles)
             End If
         End Sub
 

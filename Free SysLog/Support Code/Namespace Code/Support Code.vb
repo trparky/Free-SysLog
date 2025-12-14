@@ -45,14 +45,18 @@ Namespace SupportCode
         End Sub
     End Class
 
+    Public Class IgnoredStatsEntry
+        Public Property Hits As Long
+        Public Property LastEvent As Date
+    End Class
+
     Module SupportCode
         Public ParentForm As Form1
 
         Public AlertsRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public ReplacementsRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
-        Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
-        Public IgnoredLastEvent As New ConcurrentDictionary(Of String, Date)
+        Public IgnoredStats As New ConcurrentDictionary(Of String, IgnoredStatsEntry)
 
         Public longNumberOfIgnoredLogs As Long = 0
         Public boolIsProgrammaticScroll As Boolean = False
@@ -72,8 +76,7 @@ Namespace SupportCode
         Public strPathToDataBackupFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
         Public strPathToDataFile As String = Path.Combine(strPathToDataFolder, "log.json")
         Public strPathToConfigBackupFile As String = Path.Combine(strPathToDataFolder, "config_backup.json")
-        Public strPathToIgnoredHitsFile As String = Path.Combine(strPathToDataFolder, "IgnoredHits.json")
-        Public strPathToIgnoredLastEventFile As String = Path.Combine(strPathToDataFolder, "IgnoredLastEvent.json")
+        Public strPathToIgnoredStatsFile As String = Path.Combine(strPathToDataFolder, "IgnoredStats.json")
         Public strPathToNumberOfIgnoredLogsFile As String = Path.Combine(strPathToDataFolder, "NumberOfIgnoredLogs.json")
         Public Const strProxiedString As String = "proxied|"
         Public Const strQuote As String = Chr(34)

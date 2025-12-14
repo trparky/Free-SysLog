@@ -977,8 +977,7 @@ Public Class Form1
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs
-            WriteFileAtomically(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
-            WriteFileAtomically(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
         End If
 
         If boolDoWeOwnTheMutex Then
@@ -1251,8 +1250,7 @@ Public Class Form1
     End Sub
 
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
-        IgnoredLastEvent.Clear()
-        IgnoredHits.Clear()
+        IgnoredStats.Clear()
         longNumberOfIgnoredLogs = 0
         LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
     End Sub
