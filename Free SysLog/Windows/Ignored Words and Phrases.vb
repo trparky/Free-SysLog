@@ -169,8 +169,8 @@ Public Class IgnoredWordsAndPhrases
             My.Settings.Save()
 
             If My.Settings.saveIgnoredLogCount Then
-                IO.File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
-                IO.File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+                WriteFileAtomically(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
+                WriteFileAtomically(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
             End If
 
             IgnoredRegexCache.Clear()
@@ -201,8 +201,8 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub AutoStatSaveTimer_Tick(sender As Object, e As EventArgs)
         NumberOfIgnoredLogs = longNumberOfIgnoredLogs
-        IO.File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
-        IO.File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+        WriteFileAtomically(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
+        WriteFileAtomically(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
@@ -446,7 +446,7 @@ Public Class IgnoredWordsAndPhrases
                 listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment})
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer()

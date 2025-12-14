@@ -982,8 +982,8 @@ Public Class Form1
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs
-            File.WriteAllText(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
-            File.WriteAllText(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(strPathToIgnoredHitsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredHits, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(strPathToIgnoredLastEventFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredLastEvent, Newtonsoft.Json.Formatting.Indented))
         End If
 
         If boolDoWeOwnTheMutex Then

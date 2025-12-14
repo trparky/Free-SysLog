@@ -203,7 +203,7 @@ Public Class Hostnames
                 stringCollection.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New CustomHostname() With {.ip = item.SubItems(0).Text, .deviceName = item.SubItems(1).Text}))
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(My.Settings.hostnames, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(My.Settings.hostnames, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer()

@@ -123,6 +123,18 @@ Namespace SupportCode
             Return If(parts.Count > 0, String.Join(", ", parts), "0s")
         End Function
 
+        Public Sub WriteFileAtomically(path As String, contents As String)
+            Dim tmpPath As String = path & ".tmp"
+
+            IO.File.WriteAllText(tmpPath, contents)
+
+            If IO.File.Exists(path) Then
+                IO.File.Replace(tmpPath, path, Nothing)
+            Else
+                IO.File.Move(tmpPath, path)
+            End If
+        End Sub
+
         Public Property NumberOfIgnoredLogs As Long
             Get
                 If Not IO.File.Exists(strPathToNumberOfIgnoredLogsFile) Then Return 0
@@ -137,7 +149,7 @@ Namespace SupportCode
                 End If
             End Get
             Set(value As Long)
-                IO.File.WriteAllText(strPathToNumberOfIgnoredLogsFile, value.ToString)
+                WriteFileAtomically(strPathToNumberOfIgnoredLogsFile, value.ToString)
             End Set
         End Property
 
