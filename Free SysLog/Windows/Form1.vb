@@ -973,7 +973,7 @@ Public Class Form1
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         WriteLogsToDisk()
-        processUptimeTimer.Dispose()
+        processUptimeTimer?.Dispose()
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs
