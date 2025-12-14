@@ -161,12 +161,7 @@ Public Class Form1
                     End If
                 Next
 
-                Using fileStream As New StreamWriter(strPathToDataFile & ".new")
-                    fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
-                End Using
-
-                File.Delete(strPathToDataFile)
-                File.Move(strPathToDataFile & ".new", strPathToDataFile)
+                WriteFileAtomically(strPathToDataFile, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
             Catch ex As Exception
                 MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption and loss.", MsgBoxStyle.Critical, Text)
                 Process.GetCurrentProcess.Kill()
@@ -699,7 +694,7 @@ Public Class Form1
             File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
         End If
 
-        File.WriteAllText(strPathToDataFile, "[]")
+        WriteFileAtomically(strPathToDataFile, "[]")
         LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
 
         SyncLock dataGridLockObject
