@@ -1118,25 +1118,35 @@ Public Class Form1
         Logs.ResumeLayout()
     End Sub
 
-    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
-        If IgnoredWordsAndPhrasesOrAlertsInstance IsNot Nothing AndAlso Not IgnoredWordsAndPhrasesOrAlertsInstance.IsDisposed Then
-            IgnoredWordsAndPhrasesOrAlertsInstance.WindowState = FormWindowState.Normal
-            IgnoredWordsAndPhrasesOrAlertsInstance.BringToFront()
+    Public Sub ShowSingleInstanceWindow(Of T As {Form, New})(ByRef instance As T, ownerIcon As Icon)
+        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
+            instance.WindowState = FormWindowState.Normal
+            instance.BringToFront()
+            instance.Activate()
         Else
-            IgnoredWordsAndPhrasesOrAlertsInstance = New IgnoredWordsAndPhrases() With {.Icon = Icon}
-            IgnoredWordsAndPhrasesOrAlertsInstance.Show()
+            instance = New T() With {.Icon = ownerIcon}
+            instance.Show()
         End If
+    End Sub
+
+    Public Sub ShowSingleInstanceWindow(Of T As Form)(ByRef instance As T, createForm As Func(Of T))
+        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
+            instance.WindowState = FormWindowState.Normal
+            instance.BringToFront()
+            instance.Activate()
+        Else
+            instance = createForm()
+            instance.Show()
+        End If
+    End Sub
+
+    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
+        ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Me.Icon)
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-            If IgnoredLogsAndSearchResultsInstance IsNot Nothing AndAlso Not IgnoredLogsAndSearchResultsInstance.IsDisposed Then
-                IgnoredWordsAndPhrasesOrAlertsInstance.WindowState = FormWindowState.Normal
-                IgnoredLogsAndSearchResultsInstance.BringToFront()
-            Else
-                IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.Icon = Icon}
-                IgnoredLogsAndSearchResultsInstance.Show()
-            End If
+            ShowSingleInstanceWindow(IgnoredLogsAndSearchResultsInstance, Function() New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.Icon = Icon})
 
             IgnoredLogsAndSearchResultsInstance.MainProgramForm = Me
             IgnoredLogsAndSearchResultsInstance.Text = "Ignored Logs"
@@ -1253,13 +1263,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
-        If ReplacementsInstance IsNot Nothing AndAlso Not ReplacementsInstance.IsDisposed Then
-            ReplacementsInstance.WindowState = FormWindowState.Normal
-            ReplacementsInstance.BringToFront()
-        Else
-            ReplacementsInstance = New Replacements() With {.Icon = Icon}
-            ReplacementsInstance.Show()
-        End If
+        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAlternatingColorToolStripMenuItem.Click
@@ -1579,13 +1583,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        If AlertsInstance IsNot Nothing AndAlso Not AlertsInstance.IsDisposed Then
-            AlertsInstance.WindowState = FormWindowState.Normal
-            AlertsInstance.BringToFront()
-        Else
-            AlertsInstance = New Alerts() With {.Icon = Icon}
-            AlertsInstance.Show()
-        End If
+        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
     End Sub
 
     Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
@@ -1594,14 +1592,7 @@ Public Class Form1
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        If AlertsInstance IsNot Nothing AndAlso Not AlertsInstance.IsDisposed Then
-            AlertsInstance.WindowState = FormWindowState.Normal
-            AlertsInstance.BringToFront()
-        Else
-            AlertsInstance = New Alerts With {.Icon = Icon}
-            AlertsInstance.Show()
-        End If
-
+        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
         AlertsInstance.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
@@ -1664,13 +1655,7 @@ Public Class Form1
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
         If Logs.SelectedRows.Count > 0 Then
-            If IgnoredWordsAndPhrasesOrAlertsInstance IsNot Nothing AndAlso Not IgnoredWordsAndPhrasesOrAlertsInstance.IsDisposed Then
-                IgnoredWordsAndPhrasesOrAlertsInstance.WindowState = FormWindowState.Normal
-                IgnoredWordsAndPhrasesOrAlertsInstance.BringToFront()
-            Else
-                IgnoredWordsAndPhrasesOrAlertsInstance = New IgnoredWordsAndPhrases() With {.Icon = Icon}
-                IgnoredWordsAndPhrasesOrAlertsInstance.Show()
-            End If
+            ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
 
             Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
             If myItem IsNot Nothing Then IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
@@ -1678,14 +1663,7 @@ Public Class Form1
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        If ReplacementsInstance IsNot Nothing AndAlso Not ReplacementsInstance.IsDisposed Then
-            ReplacementsInstance.WindowState = FormWindowState.Normal
-            ReplacementsInstance.BringToFront()
-        Else
-            ReplacementsInstance = New Replacements With {.Icon = Icon}
-            ReplacementsInstance.Show()
-        End If
-
+        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
         ReplacementsInstance.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
@@ -1703,13 +1681,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_Click(sender As Object, e As EventArgs) Handles ConfigureSysLogMirrorServers.Click
-        If ConfigureSysLogMirrorClientsInstance IsNot Nothing AndAlso Not ConfigureSysLogMirrorClientsInstance.IsDisposed Then
-            ConfigureSysLogMirrorClientsInstance.WindowState = FormWindowState.Normal
-            ConfigureSysLogMirrorClientsInstance.BringToFront()
-        Else
-            ConfigureSysLogMirrorClientsInstance = New ConfigureSysLogMirrorClients() With {.Icon = Icon}
-            ConfigureSysLogMirrorClientsInstance.Show()
-        End If
+        ShowSingleInstanceWindow(Of ConfigureSysLogMirrorClients)(ConfigureSysLogMirrorClientsInstance, Icon)
     End Sub
 
     Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
@@ -1895,13 +1867,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
-        If HostNamesInstance IsNot Nothing AndAlso Not HostNamesInstance.IsDisposed Then
-            HostNamesInstance.WindowState = FormWindowState.Normal
-            HostNamesInstance.BringToFront()
-        Else
-            HostNamesInstance = New Hostnames() With {.Icon = Icon}
-            HostNamesInstance.Show()
-        End If
+        ShowSingleInstanceWindow(Of Hostnames)(HostNamesInstance, Icon)
     End Sub
 
     Private Sub ChangeFont_Click(sender As Object, e As EventArgs) Handles ChangeFont.Click
