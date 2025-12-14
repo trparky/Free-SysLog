@@ -628,6 +628,8 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
+        longNumberOfIgnoredLogs = 0
+
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
                 If IgnoredStats.TryRemove(item.SubItems(0).Text, Nothing) Then
