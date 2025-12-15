@@ -52,7 +52,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Any(Function(item As MyIgnoredListViewItem)
-                                                                            Return item.SubItems(0).Text.Equals(strIgnored, StringComparison.OrdinalIgnoreCase)
+                                                                            Return item.SubItems(Ignored.Index).Text.Equals(strIgnored, StringComparison.OrdinalIgnoreCase)
                                                                         End Function)
     End Function
 
@@ -67,11 +67,11 @@ Public Class IgnoredWordsAndPhrases
                 Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
                 With selectedItemObject
-                    .SubItems(0).Text = TxtIgnored.Text
-                    .SubItems(1).Text = If(ChkRegex.Checked, "Yes", "No")
-                    .SubItems(2).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
-                    .SubItems(3).Text = If(ChkEnabled.Checked, "Yes", "No")
-                    .SubItems(5).Text = If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text")
+                    .SubItems(Ignored.Index).Text = TxtIgnored.Text
+                    .SubItems(Regex.Index).Text = If(ChkRegex.Checked, "Yes", "No")
+                    .SubItems(CaseSensitive.Index).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
+                    .SubItems(ColEnabled.Index).Text = If(ChkEnabled.Checked, "Yes", "No")
+                    .SubItems(colTarget.Index).Text = If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text")
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
@@ -81,7 +81,7 @@ Public Class IgnoredWordsAndPhrases
 
                     If .dateCreated = Date.MinValue Then ' Just in case it was never set
                         .dateCreated = Date.Now
-                        .SubItems(6).Text = Date.Now.ToLongDateString
+                        .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
                     End If
                 End With
 
@@ -153,7 +153,7 @@ Public Class IgnoredWordsAndPhrases
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                 ignoredClass = New IgnoredClass() With {
-                    .StrIgnore = item.SubItems(0).Text,
+                    .StrIgnore = item.SubItems(Ignored.Index).Text,
                     .BoolCaseSensitive = item.BoolCaseSensitive,
                     .BoolRegex = item.BoolRegex,
                     .BoolEnabled = item.BoolEnabled,
@@ -243,7 +243,7 @@ Public Class IgnoredWordsAndPhrases
 
         If Not String.IsNullOrWhiteSpace(strIgnoredPattern) AndAlso CheckForExistingItem(strIgnoredPattern) Then
             For Each item As ListViewItem In IgnoredListView.Items
-                If item.SubItems(0).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
+                If item.SubItems(Ignored.Index).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
                     item.Selected = True
                     btnDeleteDuringEditing.Visible = True
                     IgnoredListView.Refresh()
@@ -316,7 +316,7 @@ Public Class IgnoredWordsAndPhrases
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
             ChkRemoteProcess.Checked = selectedItemObject.IgnoreType <> IgnoreType.MainLog
-            TxtIgnored.Text = selectedItemObject.SubItems(0).Text
+            TxtIgnored.Text = selectedItemObject.SubItems(Ignored.Index).Text
             ChkRegex.Checked = selectedItemObject.BoolRegex
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
@@ -373,12 +373,12 @@ Public Class IgnoredWordsAndPhrases
             If selectedItem.BoolEnabled Then
                 selectedItem.BackColor = Color.Pink
                 selectedItem.BoolEnabled = False
-                selectedItem.SubItems(3).Text = "No"
+                selectedItem.SubItems(ColEnabled.Index).Text = "No"
                 BtnEnableDisable.Text = "Enable"
             Else
                 selectedItem.BackColor = Color.LightGreen
                 selectedItem.BoolEnabled = True
-                selectedItem.SubItems(3).Text = "Yes"
+                selectedItem.SubItems(ColEnabled.Index).Text = "Yes"
                 BtnEnableDisable.Text = "Disable"
             End If
         Else
@@ -386,11 +386,11 @@ Public Class IgnoredWordsAndPhrases
                 If item.BoolEnabled Then
                     item.BackColor = Color.Pink
                     item.BoolEnabled = False
-                    item.SubItems(3).Text = "No"
+                    item.SubItems(ColEnabled.Index).Text = "No"
                 Else
                     item.BackColor = Color.LightGreen
                     item.BoolEnabled = True
-                    item.SubItems(3).Text = "Yes"
+                    item.SubItems(ColEnabled.Index).Text = "Yes"
                 End If
             Next
         End If
@@ -434,7 +434,7 @@ Public Class IgnoredWordsAndPhrases
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment})
+                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(Ignored.Index).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment})
             Next
 
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
@@ -621,19 +621,19 @@ Public Class IgnoredWordsAndPhrases
 
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredStats.TryRemove(item.SubItems(0).Text, Nothing) Then
-                    item.SubItems(4).Text = "0"
-                    item.SubItems(7).Text = ""
-                    item.SubItems(8).Text = ""
+                If IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing) Then
+                    item.SubItems(colHits.Index).Text = "0"
+                    item.SubItems(colDateOfLastEvent.Index).Text = ""
+                    item.SubItems(colSinceLastEvent.Index).Text = ""
                 End If
             Next
         Else
             IgnoredStats.Clear()
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                item.SubItems(4).Text = "0"
-                item.SubItems(7).Text = ""
-                item.SubItems(8).Text = ""
+                item.SubItems(colHits.Index).Text = "0"
+                item.SubItems(colDateOfLastEvent.Index).Text = ""
+                item.SubItems(colSinceLastEvent.Index).Text = ""
             Next
         End If
     End Sub
@@ -641,10 +641,10 @@ Public Class IgnoredWordsAndPhrases
     Private Sub ResetHitsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetHitsToolStripMenuItem.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredStats.TryRemove(item.SubItems(0).Text, Nothing) Then
-                    item.SubItems(4).Text = "0"
-                    item.SubItems(7).Text = ""
-                    item.SubItems(8).Text = ""
+                If IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing) Then
+                    item.SubItems(colHits.Index).Text = "0"
+                    item.SubItems(colDateOfLastEvent.Index).Text = ""
+                    item.SubItems(colSinceLastEvent.Index).Text = ""
                 End If
             Next
         End If
@@ -666,24 +666,24 @@ Public Class IgnoredWordsAndPhrases
                 intHits = 0
                 dateOfLastEvent = Date.MinValue
 
-                If IgnoredStats.TryGetValue(item.SubItems(0).Text, IgnoredStatsEntry) Then
+                If IgnoredStats.TryGetValue(item.SubItems(Ignored.Index).Text, IgnoredStatsEntry) Then
                     intHits = IgnoredStatsEntry.Hits
                     dateOfLastEvent = IgnoredStatsEntry.LastEvent
 
                     longTotalHits += intHits
 
-                    item.SubItems(4).Text = intHits.ToString("N0")
+                    item.SubItems(colHits.Index).Text = intHits.ToString("N0")
                     item.intHits = intHits
 
                     If dateOfLastEvent <> Date.MinValue Then
                         sinceLastEvent = currentDate - dateOfLastEvent
                         item.timeSpanOfLastOccurrence = sinceLastEvent
                         item.dateOfLastOccurrence = dateOfLastEvent
-                        item.SubItems(7).Text = $"{dateOfLastEvent.ToLocalTime.ToLongDateString} {dateOfLastEvent.ToLocalTime.ToLongTimeString}"
-                        item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
+                        item.SubItems(colDateOfLastEvent.Index).Text = $"{dateOfLastEvent.ToLocalTime.ToLongDateString} {dateOfLastEvent.ToLocalTime.ToLongTimeString}"
+                        item.SubItems(colSinceLastEvent.Index).Text = TimespanToHMS(sinceLastEvent)
                     Else
-                        item.SubItems(7).Text = ""
-                        item.SubItems(8).Text = ""
+                        item.SubItems(colDateOfLastEvent.Index).Text = ""
+                        item.SubItems(colSinceLastEvent.Index).Text = ""
                     End If
                 End If
             End If
