@@ -1,4 +1,5 @@
 ﻿Imports Free_SysLog.SupportCode
+Imports Windows.UI.Xaml.Controls.Primitives
 
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
@@ -374,12 +375,21 @@ Public Class IgnoredWordsAndPhrases
                 selectedItem.BackColor = Color.Pink
                 selectedItem.BoolEnabled = False
                 selectedItem.SubItems(ColEnabled.Index).Text = "No"
+                selectedItem.SubItems(colHits.Index).Text = ""
+                selectedItem.SubItems(colDateOfLastEvent.Index).Text = ""
+                selectedItem.SubItems(colSinceLastEvent.Index).Text = ""
+                selectedItem.intHits = 0
+                selectedItem.dateOfLastOccurrence = Date.MinValue
+                selectedItem.timeSpanOfLastOccurrence = TimeSpan.MinValue
+                IgnoredStats.TryRemove(selectedItem.SubItems(Ignored.Index).Text, Nothing)
                 BtnEnableDisable.Text = "Enable"
             Else
                 selectedItem.BackColor = Color.LightGreen
                 selectedItem.BoolEnabled = True
                 selectedItem.SubItems(ColEnabled.Index).Text = "Yes"
                 BtnEnableDisable.Text = "Disable"
+                selectedItem.SubItems(colHits.Index).Text = "0"
+                selectedItem.intHits = 0
             End If
         Else
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
@@ -387,10 +397,19 @@ Public Class IgnoredWordsAndPhrases
                     item.BackColor = Color.Pink
                     item.BoolEnabled = False
                     item.SubItems(ColEnabled.Index).Text = "No"
+                    item.SubItems(colHits.Index).Text = ""
+                    item.SubItems(colDateOfLastEvent.Index).Text = ""
+                    item.SubItems(colSinceLastEvent.Index).Text = ""
+                    item.intHits = 0
+                    item.dateOfLastOccurrence = Date.MinValue
+                    item.timeSpanOfLastOccurrence = TimeSpan.MinValue
+                    IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing)
                 Else
                     item.BackColor = Color.LightGreen
                     item.BoolEnabled = True
                     item.SubItems(ColEnabled.Index).Text = "Yes"
+                    item.SubItems(colHits.Index).Text = "0"
+                    item.intHits = 0
                 End If
             Next
         End If
