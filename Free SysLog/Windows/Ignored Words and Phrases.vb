@@ -12,6 +12,7 @@ Public Class IgnoredWordsAndPhrases
     Private AutoRefreshTimer As Timer
     Private boolCurrentlyEditing As Boolean = False
     Private boolF1KeyDown As Boolean = False
+    Private Const strWindowTitle As String = "Ignored Words and Phrases"
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -122,6 +123,8 @@ Public Class IgnoredWordsAndPhrases
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
             ChkRemoteProcess.Checked = False
+
+            Text = $"{strWindowTitle} — Auto Refresh Enabled"
         End If
     End Sub
 
@@ -237,6 +240,8 @@ Public Class IgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Checked = My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
 
+        Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
+
         InitializeAutoRefreshTimer()
 
         Size = My.Settings.ConfigureIgnoredSize
@@ -314,6 +319,8 @@ Public Class IgnoredWordsAndPhrases
             boolEditMode = True
             BtnAdd.Text = "Save"
             Label4.Text = "Edit Ignored Words and Phrases"
+
+            Text = $"{strWindowTitle} — Auto Refresh Paused"
 
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
@@ -516,6 +523,7 @@ Public Class IgnoredWordsAndPhrases
         If e.KeyCode = Keys.F1 Then
             boolF1KeyDown = True
             ChkAutoRefresh.Enabled = False
+            Text = $"{strWindowTitle} — Auto Refresh Paused"
         End If
     End Sub
 
@@ -527,6 +535,7 @@ Public Class IgnoredWordsAndPhrases
         ElseIf e.KeyCode = Keys.F1 Then
             boolF1KeyDown = False
             ChkAutoRefresh.Enabled = True
+            Text = $"{strWindowTitle} — Auto Refresh Enabled"
         End If
     End Sub
 
@@ -588,6 +597,8 @@ Public Class IgnoredWordsAndPhrases
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
         boolCurrentlyEditing = False
+
+        Text = $"{strWindowTitle} — Auto Refresh Enabled"
     End Sub
 
     Private Sub btnDeleteDuringEditing_Click(sender As Object, e As EventArgs) Handles btnDeleteDuringEditing.Click
@@ -730,6 +741,7 @@ Public Class IgnoredWordsAndPhrases
         My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases = ChkAutoRefresh.Checked
         AutoRefreshTimer.Enabled = ChkAutoRefresh.Checked
         ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
+        Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
     End Sub
 
     Private Sub ChkRefreshOnlyIfActive_Click(sender As Object, e As EventArgs) Handles ChkRefreshOnlyIfActive.Click
