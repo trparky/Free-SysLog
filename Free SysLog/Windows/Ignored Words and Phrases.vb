@@ -98,6 +98,21 @@ Public Class IgnoredWordsAndPhrases
                 		.SubItems(colSinceLastEvent.Index).Text = ""
                 		.intHits = 0
 	                End If
+
+	                If .BoolEnabled Then
+	                    .BackColor = Color.LightGreen
+	                    .SubItems(colHits.Index).Text = "0"
+	                    .intHits = 0
+	                Else
+	                    .BackColor = Color.Pink
+	                    .SubItems(colHits.Index).Text = ""
+	                    .SubItems(colDateOfLastEvent.Index).Text = ""
+	                    .SubItems(colSinceLastEvent.Index).Text = ""
+	                    .intHits = 0
+	                    .dateOfLastOccurrence = Date.MinValue
+	                    .timeSpanOfLastOccurrence = TimeSpan.MinValue
+                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
+                    End If
                 End With
 
                 IgnoredListView.Enabled = True
