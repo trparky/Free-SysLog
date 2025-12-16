@@ -130,11 +130,13 @@ Namespace ThreadSafetyLists
             End SyncLock
         End Sub
 
-        Public Sub Merge(items As IEnumerable(Of T))
+		Public Sub Merge(items As IEnumerable(Of T))
+            Dim snapshot As List(Of T) = items.ToList()
+
             SyncLock _lock
-                _list.AddRange(items)
-            End SyncLock
-        End Sub
+				_list.AddRange(snapshot)
+			End SyncLock
+		End Sub
 
         Public Sub Clear()
             SyncLock _lock
