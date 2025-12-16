@@ -13,6 +13,7 @@ Public Class IgnoredWordsAndPhrases
     Private boolCurrentlyEditing As Boolean = False
     Private boolF1KeyDown As Boolean = False
     Private Const strWindowTitle As String = "Ignored Words and Phrases"
+    Private strOldRuleText As String
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -86,6 +87,17 @@ Public Class IgnoredWordsAndPhrases
                         .dateCreated = Date.Now
                         .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
                     End If
+
+	                If Not strOldRuleText.Equals(TxtIgnored.Text, StringComparison.OrdinalIgnoreCase) Then
+                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
+                        .intHits = 0
+                		.dateOfLastOccurrence = Date.MinValue
+                		.timeSpanOfLastOccurrence = TimeSpan.MinValue
+                		.SubItems(colHits.Index).Text = "0"
+                		.SubItems(colDateOfLastEvent.Index).Text = ""
+                		.SubItems(colSinceLastEvent.Index).Text = ""
+                		.intHits = 0
+	                End If
                 End With
 
                 IgnoredListView.Enabled = True
@@ -123,6 +135,7 @@ Public Class IgnoredWordsAndPhrases
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
             ChkRemoteProcess.Checked = False
+            strOldRuleText = Nothing
 
             Text = $"{strWindowTitle} — Auto Refresh Enabled"
         End If
@@ -330,6 +343,8 @@ Public Class IgnoredWordsAndPhrases
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
             txtComment.Text = selectedItemObject.strComment
+
+            strOldRuleText = selectedItemObject.SubItems(Ignored.Index).Text
         End If
     End Sub
 
