@@ -913,9 +913,9 @@ Partial Class Form1
         Me.SaveIgnoredLogCount.Name = "SaveIgnoredLogCount"
         Me.SaveIgnoredLogCount.Size = New System.Drawing.Size(319, 22)
         Me.SaveIgnoredLogCount.Text = "Save Ignored Log Count"
-        Me.SaveIgnoredLogCount.ToolTipText = "In case you want to reach a very high number without having" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to keep the program " &
-    "running for a very long time. This is" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "more for the funzies, if you know what I " &
-    "mean."
+        Me.SaveIgnoredLogCount.ToolTipText = "Saves the ignored log count and ignored rule stat data to disk for historical ana" &
+    "lysis." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Before it was for the funzies, now this can be an incredible tool to hel" &
+    "p you fine tune rules."
         '
         'CreateIgnoredLogToolStripMenuItem
         '
