@@ -11,6 +11,7 @@ Public Class IgnoredWordsAndPhrases
     Private m_SortingColumn As ColumnHeader
     Private AutoRefreshTimer As Timer
     Private boolCurrentlyEditing As Boolean = False
+    Private boolF1KeyDown As Boolean = False
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -198,7 +199,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
-        If boolCurrentlyEditing OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
+        If boolCurrentlyEditing Or boolF1KeyDown OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
         btnUpdateHits.PerformClick()
     End Sub
 
@@ -511,11 +512,21 @@ Public Class IgnoredWordsAndPhrases
         End If
     End Sub
 
+    Private Sub IgnoredWordsAndPhrases_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.F1 Then
+            boolF1KeyDown = True
+            ChkAutoRefresh.Enabled = False
+        End If
+    End Sub
+
     Private Sub IgnoredWordsAndPhrases_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.Escape Then
             Close()
         ElseIf e.KeyCode = Keys.F5 Then
             btnUpdateHits.PerformClick()
+        ElseIf e.KeyCode = Keys.F1 Then
+            boolF1KeyDown = False
+            ChkAutoRefresh.Enabled = True
         End If
     End Sub
 
