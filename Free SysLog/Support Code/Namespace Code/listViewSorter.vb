@@ -159,6 +159,19 @@
                 ' If both are enabled, sort by dateOfLastOccurrence
                 Return If(soSortOrder = SortOrder.Ascending, hits1.CompareTo(hits2), hits2.CompareTo(hits1))
             Else
+                Dim item1 As MyIgnoredListViewItem = DirectCast(lvFirstListView, MyIgnoredListViewItem)
+                Dim item2 As MyIgnoredListViewItem = DirectCast(lvSecondListView, MyIgnoredListViewItem)
+
+                Dim enabled1 As Boolean = item1.BoolEnabled
+                Dim enabled2 As Boolean = item2.BoolEnabled
+
+                ' Always keep enabled items above disabled items (independent of sort order)
+                If enabled1 AndAlso Not enabled2 Then Return -1     ' item1 first
+                If Not enabled1 AndAlso enabled2 Then Return 1      ' item2 first
+
+                ' If both disabled, don't change their relative order
+                If Not enabled1 AndAlso Not enabled2 Then Return 0
+
                 ' Compare them.
                 If Double.TryParse(strFirstString, dbl1) And Double.TryParse(strSecondString, dbl2) Then
                     Return If(soSortOrder = SortOrder.Ascending, dbl1.CompareTo(dbl2), dbl2.CompareTo(dbl1))
