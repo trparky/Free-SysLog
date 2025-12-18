@@ -299,9 +299,11 @@ Public Class IgnoredWordsAndPhrases
 
         If IgnoredListView.SelectedItems.Count > 0 Then
             If IgnoredListView.SelectedItems.Count = 1 Then
+                IgnoredStats.TryRemove(IgnoredListView.SelectedItems(0).SubItems(Ignored.Index).Text, Nothing)
                 IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
             Else
                 For i As Integer = IgnoredListView.SelectedItems.Count - 1 To 0 Step -1
+                    IgnoredStats.TryRemove(IgnoredListView.SelectedItems(i).SubItems(Ignored.Index).Text, Nothing)
                     IgnoredListView.SelectedItems(i).Remove()
                 Next
             End If
@@ -632,6 +634,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub btnDeleteDuringEditing_Click(sender As Object, e As EventArgs) Handles btnDeleteDuringEditing.Click
+        IgnoredStats.TryRemove(IgnoredListView.SelectedItems(0).SubItems(Ignored.Index).Text, Nothing)
         IgnoredListView.SelectedItems(0).Remove()
         IgnoredListView.Enabled = True
         BtnAdd.Text = "Add"
