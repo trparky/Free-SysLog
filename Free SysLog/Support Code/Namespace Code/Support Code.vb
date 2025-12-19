@@ -126,7 +126,7 @@ Namespace SupportCode
             If timeSpan.Minutes > 0 Then parts.Add($"{timeSpan.Minutes}m")
             If timeSpan.Seconds > 0 Then parts.Add($"{timeSpan.Seconds}s")
 
-            Return If(parts.Count > 0, String.Join(", ", parts), "0s")
+            Return String.Join(", ", parts)
         End Function
 
         Public Sub WriteFileAtomically(path As String, contents As String)
