@@ -124,6 +124,18 @@ Namespace ThreadSafetyLists
         Private ReadOnly _list As New List(Of T)
         Private ReadOnly _lock As New Object()
 
+        Public Function Count() As Integer
+            SyncLock _lock
+                Return _list.Count
+            End SyncLock
+        End Function
+
+        Public Function Any() As Boolean
+            SyncLock _lock
+                Return _list.Any()
+            End SyncLock
+        End Function
+
         Public Sub Add(item As T)
             SyncLock _lock
                 _list.Add(item)
