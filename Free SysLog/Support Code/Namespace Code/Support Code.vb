@@ -121,6 +121,7 @@ Namespace SupportCode
 
             Dim parts As New List(Of String)
 
+            If timeSpan.Days > 0 Then parts.Add($"{timeSpan.Days}d")
             If timeSpan.Hours > 0 Then parts.Add($"{timeSpan.Hours}h")
             If timeSpan.Minutes > 0 Then parts.Add($"{timeSpan.Minutes}m")
             If timeSpan.Seconds > 0 Then parts.Add($"{timeSpan.Seconds}s")
