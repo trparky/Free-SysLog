@@ -452,14 +452,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Function TimespanToDHM(ts As TimeSpan) As String
-        Dim days As Integer = ts.Days
-        Dim hours As Integer = ts.Hours
-        Dim minutes As Integer = ts.Minutes
-        Dim seconds As Integer = ts.Seconds
-        Return $"{days}d {hours}h {minutes}m {seconds}s"
-    End Function
-
     Private Sub AutoStatSaveTimer_Tick(sender As Object, e As EventArgs)
         NumberOfIgnoredLogs = longNumberOfIgnoredLogs
         WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
@@ -492,7 +484,7 @@ Public Class Form1
         LoadCheckboxSettings()
 
         processUptimeTimer = New Timer() With {.Interval = 1000, .Enabled = True}
-        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToDHM(Now.ToLocalTime - dateProcessStarted.ToLocalTime)}"
+        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now.ToLocalTime - dateProcessStarted.ToLocalTime)}"
 
         SetDoubleBufferingFlag(Logs)
 
