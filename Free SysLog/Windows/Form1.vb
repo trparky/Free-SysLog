@@ -1139,7 +1139,7 @@ Public Class Form1
 
             IgnoredLogsAndSearchResultsInstance.MainProgramForm = Me
             IgnoredLogsAndSearchResultsInstance.Text = "Ignored Logs"
-            IgnoredLogsAndSearchResultsInstance.LogsToBeDisplayed = IgnoredLogs
+            IgnoredLogsAndSearchResultsInstance.LogsToBeDisplayed = IgnoredLogs.GetSnapshot()
             IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         End SyncLock
     End Sub
@@ -1151,7 +1151,7 @@ Public Class Form1
                     item.Dispose()
                 Next
 
-                    IgnoredLogs.Clear()
+                IgnoredLogs.Clear()
 
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
@@ -1187,7 +1187,7 @@ Public Class Form1
         longNumberOfIgnoredLogs = 0
 
         If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
-                IgnoredLogs.Clear()
+            IgnoredLogs.Clear()
 
             LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         End If
