@@ -117,6 +117,7 @@ Namespace SupportCode
 
         Public Function TimespanToHMS(timeSpan As TimeSpan) As String
             If timeSpan.TotalMilliseconds < 1 Then Return "0s"
+            If timeSpan < TimeSpan.Zero Then timeSpan = timeSpan.Duration()
 
             Dim parts As New List(Of String)
 
