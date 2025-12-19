@@ -492,7 +492,6 @@ Namespace SyslogParser
                                                                                  )
                         NewIgnoredItem.IgnoredPattern = strIgnoredPattern
 
-                        SyncLock ParentForm.IgnoredLogsLockingObject
                             If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
                                 ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                             Else
@@ -509,7 +508,6 @@ Namespace SyslogParser
                                 ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
                                 ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
                             End If
-                        End SyncLock
 
                         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
                             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)

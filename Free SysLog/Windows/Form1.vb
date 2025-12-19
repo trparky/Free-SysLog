@@ -9,12 +9,12 @@ Imports System.Configuration
 Imports Free_SysLog.SupportCode
 Imports Microsoft.Toolkit.Uwp.Notifications
 Imports Free_SysLog.SyslogTcpServer.SyslogTcpServer
+Imports Free_SysLog.ThreadSafetyLists
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
-    Public IgnoredLogs As New List(Of MyDataGridViewRow)
-    Public IgnoredLogsLockingObject As New Object
+    Public IgnoredLogs As New ThreadSafeList(Of MyDataGridViewRow)
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
@@ -1147,13 +1147,11 @@ Public Class Form1
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
         If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             SyncLock IgnoredLogsLockObject
-                For Each item As MyDataGridViewRow In IgnoredLogs
+                For Each item As MyDataGridViewRow In IgnoredLogs.GetSnapshot()
                     item.Dispose()
                 Next
 
-                SyncLock IgnoredLogsLockingObject
                     IgnoredLogs.Clear()
-                End SyncLock
 
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
@@ -1189,9 +1187,7 @@ Public Class Form1
         longNumberOfIgnoredLogs = 0
 
         If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
-            SyncLock IgnoredLogsLockingObject
                 IgnoredLogs.Clear()
-            End SyncLock
 
             LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         End If
