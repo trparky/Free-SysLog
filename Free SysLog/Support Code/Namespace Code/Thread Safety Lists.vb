@@ -136,6 +136,14 @@ Namespace ThreadSafetyLists
             End SyncLock
         End Function
 
+        Public Function TryRemoveAt(index As Integer) As Boolean
+            SyncLock _lock
+                If index < 0 OrElse index >= _list.Count Then Return False
+                _list.RemoveAt(index)
+                Return True
+            End SyncLock
+        End Function
+
         Public Sub Add(item As T)
             SyncLock _lock
                 _list.Add(item)

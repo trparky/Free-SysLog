@@ -492,22 +492,22 @@ Namespace SyslogParser
                                                                                  )
                         NewIgnoredItem.IgnoredPattern = strIgnoredPattern
 
-                            If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                        If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
                                 ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                             Else
                                 While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                                    ParentForm.IgnoredLogs.RemoveAt(0)
+                                    ParentForm.IgnoredLogs.TryRemoveAt(0)
                                 End While
 
                                 ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                             End If
 
-                            If My.Settings.recordIgnoredLogs Then
-                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
-                            Else
-                                ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
-                            End If
+                        If My.Settings.recordIgnoredLogs Then
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
+                        Else
+                            ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                        End If
 
                         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
                             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)
