@@ -2,7 +2,7 @@
 
 Public Class Alerts
     Private boolDoneLoading As Boolean = False
-    Public boolChanged As Boolean = False
+    Private boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
@@ -320,6 +320,8 @@ Public Class Alerts
 
             My.Settings.alerts = tempAlerts
             My.Settings.Save()
+
+            AlertsRegexCache.Clear()
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(
@@ -400,7 +402,7 @@ Public Class Alerts
                 listOfAlertsClass.Add(New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled, .BoolLimited = item.BoolLimited})
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfAlertsClass, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfAlertsClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer()

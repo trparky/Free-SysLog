@@ -6,6 +6,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports Microsoft.Toolkit.Uwp.Notifications
 Imports System.Runtime.InteropServices
+Imports System.IO
 
 Namespace SupportCode
     Public Enum IgnoreOrSearchWindowDisplayMode As Byte
@@ -44,14 +45,18 @@ Namespace SupportCode
         End Sub
     End Class
 
+    Public Class IgnoredStatsEntry
+        Public Property Hits As Long
+        Public Property LastEvent As Date
+    End Class
+
     Module SupportCode
         Public ParentForm As Form1
 
         Public AlertsRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public ReplacementsRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
-        Public IgnoredHits As New ConcurrentDictionary(Of String, Integer)
-        Public IgnoredLastEvent As New ConcurrentDictionary(Of String, Date)
+        Public IgnoredStats As New ConcurrentDictionary(Of String, IgnoredStatsEntry)
 
         Public longNumberOfIgnoredLogs As Long = 0
         Public boolIsProgrammaticScroll As Boolean = False
@@ -67,10 +72,12 @@ Namespace SupportCode
         Public boolDoWeOwnTheMutex As Boolean = False
         Public JSONDecoderSettingsForLogFiles As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore}
         Public JSONDecoderSettingsForSettingsFiles As New Newtonsoft.Json.JsonSerializerSettings With {.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Error}
-        Public strPathToDataFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
-        Public strPathToDataBackupFolder As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
-        Public strPathToDataFile As String = IO.Path.Combine(strPathToDataFolder, "log.json")
-        Public strPathToConfigBackupFile As String = IO.Path.Combine(strPathToDataFolder, "config_backup.json")
+        Public strPathToDataFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog")
+        Public strPathToDataBackupFolder As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Free SysLog", "Backup")
+        Public strPathToDataFile As String = Path.Combine(strPathToDataFolder, "log.json")
+        Public strPathToConfigBackupFile As String = Path.Combine(strPathToDataFolder, "config_backup.json")
+        Public strPathToIgnoredStatsFile As String = Path.Combine(strPathToDataFolder, "IgnoredStats.json")
+        Public strPathToNumberOfIgnoredLogsFile As String = Path.Combine(strPathToDataFolder, "NumberOfIgnoredLogs.json")
         Public Const strProxiedString As String = "proxied|"
         Public Const strQuote As String = Chr(34)
         Public Const strViewLog As String = "viewlog"
@@ -108,22 +115,71 @@ Namespace SupportCode
         Public Const boolDebugBuild As Boolean = False
 #End If
 
-        Public Function TimespanToHMS(timeSpan As TimeSpan) As String
+        Public Function TimespanToHMS(timeSpan As TimeSpan, Optional boolUseCommas As Boolean = True) As String
             If timeSpan.TotalMilliseconds < 1 Then Return "0s"
+            If timeSpan < TimeSpan.Zero Then timeSpan = timeSpan.Duration()
 
             Dim parts As New List(Of String)
 
+            If timeSpan.Days > 0 Then parts.Add($"{timeSpan.Days}d")
             If timeSpan.Hours > 0 Then parts.Add($"{timeSpan.Hours}h")
             If timeSpan.Minutes > 0 Then parts.Add($"{timeSpan.Minutes}m")
             If timeSpan.Seconds > 0 Then parts.Add($"{timeSpan.Seconds}s")
 
-            Return If(parts.Count > 0, String.Join(", ", parts), "0s")
+            If parts.Count() = 0 Then parts.Add($"{timeSpan.Milliseconds}ms")
+
+            If boolUseCommas Then
+                Return String.Join(", ", parts)
+            Else
+                Return String.Join(" ", parts)
+            End If
         End Function
 
-        Public Sub SetDoubleBufferingFlag(guiObject As Object)
-            Dim flags As Reflection.BindingFlags = Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or Reflection.BindingFlags.SetProperty
-            Dim propInfo As Reflection.PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
-            propInfo?.SetValue(guiObject, True, Nothing)
+        Public Sub WriteFileAtomically(path As String, contents As String)
+            Dim tmpPath As String = path & ".tmp"
+
+            Try
+                File.WriteAllText(tmpPath, contents)
+
+                If File.Exists(path) Then
+                    File.Replace(tmpPath, path, Nothing)
+                Else
+                    File.Move(tmpPath, path)
+                End If
+            Catch
+                ' Fail silently
+            Finally
+                Try
+                    If File.Exists(tmpPath) Then File.Delete(tmpPath)
+                Catch
+                    ' Fail silently
+                End Try
+            End Try
+        End Sub
+
+        Public Property NumberOfIgnoredLogs As Long
+            Get
+                If Not File.Exists(strPathToNumberOfIgnoredLogsFile) Then Return 0
+
+                Dim strFileData As String = File.ReadAllText(strPathToNumberOfIgnoredLogsFile)
+                Dim longResult As Long = 0
+
+                If Long.TryParse(strFileData, longResult) Then
+                    Return longResult
+                Else
+                    Return 0
+                End If
+            End Get
+            Set(value As Long)
+                WriteFileAtomically(strPathToNumberOfIgnoredLogsFile, value.ToString)
+            End Set
+        End Property
+
+        Public Sub SetDoubleBufferingFlag(control As Control)
+            If control Is Nothing Then Exit Sub
+            Dim flags As Reflection.BindingFlags = Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance
+            Dim propInfo As Reflection.PropertyInfo = control.GetType().GetProperty("DoubleBuffered", flags)
+            propInfo?.SetValue(control, True, Nothing)
         End Sub
 
         Public Function SaveColumnOrders(columns As DataGridViewColumnCollection) As Specialized.StringCollection
@@ -362,11 +418,11 @@ Namespace SupportCode
             notification.SetToastDuration(If(My.Settings.NotificationLength = 0, ToastDuration.Short, ToastDuration.Long))
 
             If tipIcon = ToolTipIcon.Error Then
-                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error.png")
             ElseIf tipIcon = ToolTipIcon.Warning Then
-                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "warning.png")
             ElseIf tipIcon = ToolTipIcon.Info Then
-                strIconPath = IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
+                strIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "info.png")
             End If
 
             If My.Settings.IncludeButtonsOnNotifications Then
@@ -379,7 +435,7 @@ Namespace SupportCode
                 notification.AddArgument("action", strOpenSysLog)
             End If
 
-            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso IO.File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
+            If Not String.IsNullOrWhiteSpace(strIconPath) AndAlso File.Exists(strIconPath) Then notification.AddAppLogoOverride(New Uri(strIconPath), ToastGenericAppLogoCrop.Circle)
 
             notification.Show()
         End Sub
@@ -587,7 +643,7 @@ Namespace SupportCode
         End Function
 
         Public Sub SelectFileInWindowsExplorer(strFullPath As String)
-            If Not String.IsNullOrEmpty(strFullPath) AndAlso IO.File.Exists(strFullPath) Then
+            If Not String.IsNullOrEmpty(strFullPath) AndAlso File.Exists(strFullPath) Then
                 Dim pidlList As IntPtr = NativeMethod.NativeMethods.ILCreateFromPathW(strFullPath)
 
                 If Not pidlList.Equals(IntPtr.Zero) Then

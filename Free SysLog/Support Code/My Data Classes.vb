@@ -127,12 +127,20 @@ Public Class IgnoredClass
         Dim intHits As Integer
         Dim dateLastEvent As Date
         Dim sinceLastEvent As TimeSpan
+        Dim currentDate As Date = Now
+        Dim IgnoredStatsEntry As IgnoredStatsEntry = Nothing
 
-        If Not IgnoredLastEvent.TryGetValue(StrIgnore, dateLastEvent) Then dateLastEvent = Date.MinValue
-        If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
+        If Not IgnoredStats.TryGetValue(StrIgnore, IgnoredStatsEntry) Then
+            dateLastEvent = Date.MinValue
+            intHits = 0
+        Else
+            dateLastEvent = IgnoredStatsEntry.LastEvent
+            intHits = IgnoredStatsEntry.Hits
+        End If
+
         longTotalHits += intHits
 
-        If dateCreated = Date.MinValue Then dateCreated = Date.Now
+        If dateCreated = Date.MinValue Then dateCreated = currentDate
 
         Dim listViewItem As New MyIgnoredListViewItem(StrIgnore)
         listViewItem.SubItems.Add(If(BoolRegex, "Yes", "No"))
@@ -143,11 +151,11 @@ Public Class IgnoredClass
         listViewItem.SubItems.Add(dateCreated.ToLongDateString)
 
         If Not dateLastEvent.Equals(Date.MinValue) Then
-            dateLastEvent = dateLastEvent.ToLocalTime()
-            sinceLastEvent = Now.ToLocalTime - dateLastEvent
+            dateLastEvent = dateLastEvent
+            sinceLastEvent = currentDate - dateLastEvent
             listViewItem.timeSpanOfLastOccurrence = sinceLastEvent
             listViewItem.dateOfLastOccurrence = dateLastEvent
-            listViewItem.SubItems.Add($"{dateLastEvent.ToLongDateString} {dateLastEvent.ToLongTimeString}")
+            listViewItem.SubItems.Add($"{dateLastEvent.ToLocalTime.ToLongDateString} {dateLastEvent.ToLocalTime.ToLongTimeString}")
             listViewItem.SubItems.Add(TimespanToHMS(sinceLastEvent))
         Else
             listViewItem.SubItems.Add("")
@@ -168,7 +176,9 @@ Public Class IgnoredClass
 
     Public Function ToListViewItem() As MyIgnoredListViewItem
         Dim intHits As Integer
-        If Not IgnoredHits.TryGetValue(StrIgnore, intHits) Then intHits = 0
+        Dim IgnoredStatsEntry As IgnoredStatsEntry = Nothing
+
+        intHits = If(IgnoredStats.TryGetValue(StrIgnore, IgnoredStatsEntry), IgnoredStatsEntry.Hits, 0)
 
         If dateCreated = Date.MinValue Then dateCreated = Date.Now
 

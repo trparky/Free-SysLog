@@ -63,17 +63,20 @@
             Dim lvSecondListView As ListViewItem = lvInputSecondListView
             Dim lvFirstListViewType As Type = lvFirstListView.GetType
             Dim lvSecondListViewType As Type = lvSecondListView.GetType
+            Dim enabled1, enabled2, bothZeroHits As Boolean
+            Dim hits1, hits2 As Integer
+            Dim item1, item2 As MyIgnoredListViewItem
 
             ' Get the sub-item values.
             strFirstString = If(lvFirstListView.SubItems.Count <= intColumnNumber, "", lvFirstListView.SubItems(intColumnNumber).Text)
             strSecondString = If(lvSecondListView.SubItems.Count <= intColumnNumber, "", lvSecondListView.SubItems(intColumnNumber).Text)
 
             If intColumnNumber = 8 AndAlso TypeOf lvFirstListView Is MyIgnoredListViewItem AndAlso TypeOf lvSecondListView Is MyIgnoredListViewItem Then
-                Dim item1 As MyIgnoredListViewItem = DirectCast(lvFirstListView, MyIgnoredListViewItem)
-                Dim item2 As MyIgnoredListViewItem = DirectCast(lvSecondListView, MyIgnoredListViewItem)
+                item1 = DirectCast(lvFirstListView, MyIgnoredListViewItem)
+                item2 = DirectCast(lvSecondListView, MyIgnoredListViewItem)
 
-                Dim enabled1 As Boolean = item1.BoolEnabled
-                Dim enabled2 As Boolean = item2.BoolEnabled
+                enabled1 = item1.BoolEnabled
+                enabled2 = item2.BoolEnabled
 
                 ' Always keep enabled items above disabled items (independent of sort order)
                 If enabled1 AndAlso Not enabled2 Then Return -1     ' item1 first
@@ -83,10 +86,10 @@
                 If Not enabled1 AndAlso Not enabled2 Then Return 0
 
                 ' --- Now compare ENABLED items by hits first ---
-                Dim hits1 As Integer = item1.intHits
-                Dim hits2 As Integer = item2.intHits
+                hits1 = item1.intHits
+                hits2 = item2.intHits
 
-                Dim bothZeroHits As Boolean = hits1 = 0 AndAlso hits2 = 0
+                bothZeroHits = hits1 = 0 AndAlso hits2 = 0
 
                 ' Enabled items with hits > 0 should sort ahead of hits = 0
                 If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
@@ -101,11 +104,11 @@
 
                 Return If(soSortOrder = SortOrder.Ascending, timeSpan1.CompareTo(timeSpan2), timeSpan2.CompareTo(timeSpan1))
             ElseIf intColumnNumber = 7 AndAlso TypeOf lvFirstListView Is MyIgnoredListViewItem AndAlso TypeOf lvSecondListView Is MyIgnoredListViewItem Then
-                Dim item1 As MyIgnoredListViewItem = DirectCast(lvFirstListView, MyIgnoredListViewItem)
-                Dim item2 As MyIgnoredListViewItem = DirectCast(lvSecondListView, MyIgnoredListViewItem)
+                item1 = DirectCast(lvFirstListView, MyIgnoredListViewItem)
+                item2 = DirectCast(lvSecondListView, MyIgnoredListViewItem)
 
-                Dim enabled1 As Boolean = item1.BoolEnabled
-                Dim enabled2 As Boolean = item2.BoolEnabled
+                enabled1 = item1.BoolEnabled
+                enabled2 = item2.BoolEnabled
 
                 ' Always keep enabled items above disabled items (independent of sort order)
                 If enabled1 AndAlso Not enabled2 Then Return -1     ' item1 first
@@ -115,10 +118,10 @@
                 If Not enabled1 AndAlso Not enabled2 Then Return 0
 
                 ' --- Now compare ENABLED items by hits first ---
-                Dim hits1 As Integer = item1.intHits
-                Dim hits2 As Integer = item2.intHits
+                hits1 = item1.intHits
+                hits2 = item2.intHits
 
-                Dim bothZeroHits As Boolean = hits1 = 0 AndAlso hits2 = 0
+                bothZeroHits = hits1 = 0 AndAlso hits2 = 0
 
                 ' Enabled items with hits > 0 should sort ahead of hits = 0
                 If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
@@ -130,11 +133,11 @@
                 ' If both are enabled, sort by dateOfLastOccurrence
                 Return If(soSortOrder = SortOrder.Ascending, item1.dateOfLastOccurrence.CompareTo(item2.dateOfLastOccurrence), item2.dateOfLastOccurrence.CompareTo(item1.dateOfLastOccurrence))
             ElseIf intColumnNumber = 4 AndAlso TypeOf lvFirstListView Is MyIgnoredListViewItem AndAlso TypeOf lvSecondListView Is MyIgnoredListViewItem Then
-                Dim item1 As MyIgnoredListViewItem = DirectCast(lvFirstListView, MyIgnoredListViewItem)
-                Dim item2 As MyIgnoredListViewItem = DirectCast(lvSecondListView, MyIgnoredListViewItem)
+                item1 = DirectCast(lvFirstListView, MyIgnoredListViewItem)
+                item2 = DirectCast(lvSecondListView, MyIgnoredListViewItem)
 
-                Dim enabled1 As Boolean = item1.BoolEnabled
-                Dim enabled2 As Boolean = item2.BoolEnabled
+                enabled1 = item1.BoolEnabled
+                enabled2 = item2.BoolEnabled
 
                 ' Always keep enabled items above disabled items (independent of sort order)
                 If enabled1 AndAlso Not enabled2 Then Return -1     ' item1 first
@@ -144,10 +147,10 @@
                 If Not enabled1 AndAlso Not enabled2 Then Return 0
 
                 ' --- Now compare ENABLED items by hits first ---
-                Dim hits1 As Integer = item1.intHits
-                Dim hits2 As Integer = item2.intHits
+                hits1 = item1.intHits
+                hits2 = item2.intHits
 
-                Dim bothZeroHits As Boolean = hits1 = 0 AndAlso hits2 = 0
+                bothZeroHits = hits1 = 0 AndAlso hits2 = 0
 
                 ' Enabled items with hits > 0 should sort ahead of hits = 0
                 If hits1 = 0 AndAlso hits2 <> 0 Then Return 1    ' item1 goes below
@@ -159,6 +162,19 @@
                 ' If both are enabled, sort by dateOfLastOccurrence
                 Return If(soSortOrder = SortOrder.Ascending, hits1.CompareTo(hits2), hits2.CompareTo(hits1))
             Else
+                item1 = DirectCast(lvFirstListView, MyIgnoredListViewItem)
+                item2 = DirectCast(lvSecondListView, MyIgnoredListViewItem)
+
+                enabled1 = item1.BoolEnabled
+                enabled2 = item2.BoolEnabled
+
+                ' Always keep enabled items above disabled items (independent of sort order)
+                If enabled1 AndAlso Not enabled2 Then Return -1     ' item1 first
+                If Not enabled1 AndAlso enabled2 Then Return 1      ' item2 first
+
+                ' If both disabled, don't change their relative order
+                If Not enabled1 AndAlso Not enabled2 Then Return 0
+
                 ' Compare them.
                 If Double.TryParse(strFirstString, dbl1) And Double.TryParse(strSecondString, dbl2) Then
                     Return If(soSortOrder = SortOrder.Ascending, dbl1.CompareTo(dbl2), dbl2.CompareTo(dbl1))

@@ -40,6 +40,10 @@ Namespace NativeMethod
         <DllImport("iphlpapi.dll", SetLastError:=True)>
         Public Shared Function GetExtendedUdpTable(pUdpTable As IntPtr, ByRef dwOutBufLen As Integer, sort As Boolean, ipVersion As Integer, tableClass As UDP_TABLE_CLASS, reserved As Integer) As UInteger
         End Function
+
+        <DllImport("user32.dll")>
+        Public Shared Function GetForegroundWindow() As IntPtr
+        End Function
     End Class
 
     Module APIs

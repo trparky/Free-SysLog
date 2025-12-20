@@ -124,17 +124,39 @@ Namespace ThreadSafetyLists
         Private ReadOnly _list As New List(Of T)
         Private ReadOnly _lock As New Object()
 
+        Public Function Count() As Integer
+            SyncLock _lock
+                Return _list.Count
+            End SyncLock
+        End Function
+
+        Public Function Any() As Boolean
+            SyncLock _lock
+                Return _list.Any()
+            End SyncLock
+        End Function
+
+        Public Function TryRemoveAt(index As Integer) As Boolean
+            SyncLock _lock
+                If index < 0 OrElse index >= _list.Count Then Return False
+                _list.RemoveAt(index)
+                Return True
+            End SyncLock
+        End Function
+
         Public Sub Add(item As T)
             SyncLock _lock
                 _list.Add(item)
             End SyncLock
         End Sub
 
-        Public Sub Merge(items As IEnumerable(Of T))
+		Public Sub Merge(items As IEnumerable(Of T))
+            Dim snapshot As List(Of T) = items.ToList()
+
             SyncLock _lock
-                _list.AddRange(items)
-            End SyncLock
-        End Sub
+				_list.AddRange(snapshot)
+			End SyncLock
+		End Sub
 
         Public Sub Clear()
             SyncLock _lock

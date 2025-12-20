@@ -9,12 +9,12 @@ Imports System.Configuration
 Imports Free_SysLog.SupportCode
 Imports Microsoft.Toolkit.Uwp.Notifications
 Imports Free_SysLog.SyslogTcpServer.SyslogTcpServer
+Imports Free_SysLog.ThreadSafetyLists
 
 Public Class Form1
     Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
-    Public IgnoredLogs As New List(Of MyDataGridViewRow)
-    Public IgnoredLogsLockingObject As New Object
+    Public IgnoredLogs As New ThreadSafeList(Of MyDataGridViewRow)
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
@@ -25,6 +25,14 @@ Public Class Form1
     Private boolServerRunning As Boolean = False
     Private boolTCPServerRunning As Boolean = False
     Private lastFirstDisplayedRowIndex As Integer = -1
+    Private processUptimeTimer As Timer
+    Private dateProcessStarted As Date = Process.GetCurrentProcess.StartTime
+
+    Private HostNamesInstance As Hostnames
+    Private IgnoredWordsAndPhrasesOrAlertsInstance As IgnoredWordsAndPhrases
+    Private ReplacementsInstance As Replacements
+    Private AlertsInstance As Alerts
+    Private ConfigureSysLogMirrorClientsInstance As ConfigureSysLogMirrorClients
 
 #Region "--== Midnight Timer Code ==--"
     ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
@@ -153,12 +161,10 @@ Public Class Form1
                     End If
                 Next
 
-                Using fileStream As New StreamWriter(strPathToDataFile & ".new")
-                    fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
-                End Using
+                WriteFileAtomically(strPathToDataFile, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
 
-                File.Delete(strPathToDataFile)
-                File.Move(strPathToDataFile & ".new", strPathToDataFile)
+                NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
             Catch ex As Exception
                 MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption and loss.", MsgBoxStyle.Critical, Text)
                 Process.GetCurrentProcess.Kill()
@@ -475,6 +481,9 @@ Public Class Form1
 
         LoadCheckboxSettings()
 
+        processUptimeTimer = New Timer() With {.Interval = 1000, .Enabled = True}
+        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now - dateProcessStarted, False)}"
+
         SetDoubleBufferingFlag(Logs)
 
         Logs.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
@@ -503,7 +512,7 @@ Public Class Form1
         LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
 
         If My.Settings.saveIgnoredLogCount Then
-            longNumberOfIgnoredLogs = My.Settings.ignoredLogCount
+            longNumberOfIgnoredLogs = NumberOfIgnoredLogs
             LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
         End If
 
@@ -680,7 +689,7 @@ Public Class Form1
             File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
         End If
 
-        File.WriteAllText(strPathToDataFile, "[]")
+        WriteFileAtomically(strPathToDataFile, "[]")
         LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
 
         SyncLock dataGridLockObject
@@ -956,10 +965,15 @@ Public Class Form1
             End SyncLock
         End If
 
-        If My.Settings.saveIgnoredLogCount Then My.Settings.ignoredLogCount = longNumberOfIgnoredLogs
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         WriteLogsToDisk()
+        processUptimeTimer?.Dispose()
+
+        If My.Settings.saveIgnoredLogCount Then
+            NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+            WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+        End If
 
         If boolDoWeOwnTheMutex Then
             SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
@@ -1058,7 +1072,7 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles Logs.ColumnHeaderMouseClick
-        If e.Button = MouseButtons.Left Then
+        If e.Button = MouseButtons.Left And e.ColumnIndex <> colDelete.Index Then
             Dim column As DataGridViewColumn = Logs.Columns(e.ColumnIndex)
             intSortColumnIndex = e.ColumnIndex
 
@@ -1093,39 +1107,51 @@ Public Class Form1
         Logs.ResumeLayout()
     End Sub
 
-    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
-        Using IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            IgnoredWordsAndPhrasesOrAlertsInstance.ShowDialog(Me)
+    Public Sub ShowSingleInstanceWindow(Of T As {Form, New})(ByRef instance As T, ownerIcon As Icon)
+        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
+            instance.WindowState = FormWindowState.Normal
+            instance.BringToFront()
+            instance.Activate()
+        Else
+            instance = New T() With {.Icon = ownerIcon}
+            instance.Show()
+        End If
+    End Sub
 
-            If IgnoredWordsAndPhrasesOrAlertsInstance.boolChanged Then
-                IgnoredRegexCache.Clear()
-            End If
-        End Using
+    Public Sub ShowSingleInstanceWindow(Of T As Form)(ByRef instance As T, createForm As Func(Of T))
+        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
+            instance.WindowState = FormWindowState.Normal
+            instance.BringToFront()
+            instance.Activate()
+        Else
+            instance = createForm()
+            instance.Show()
+        End If
+    End Sub
+
+    Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
+        ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Me.Icon)
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-            If IgnoredLogsAndSearchResultsInstance Is Nothing Then
-                IgnoredLogsAndSearchResultsInstance = New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = IgnoredLogs, .Text = "Ignored Logs"}
-                IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
-                IgnoredLogsAndSearchResultsInstance.Show()
-            Else
-                IgnoredLogsAndSearchResultsInstance.WindowState = FormWindowState.Normal
-                IgnoredLogsAndSearchResultsInstance.BringToFront()
-            End If
+            ShowSingleInstanceWindow(IgnoredLogsAndSearchResultsInstance, Function() New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.Icon = Icon})
+
+            IgnoredLogsAndSearchResultsInstance.MainProgramForm = Me
+            IgnoredLogsAndSearchResultsInstance.Text = "Ignored Logs"
+            IgnoredLogsAndSearchResultsInstance.LogsToBeDisplayed = IgnoredLogs.GetSnapshot()
+            IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
         End SyncLock
     End Sub
 
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
         If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             SyncLock IgnoredLogsLockObject
-                For Each item As MyDataGridViewRow In IgnoredLogs
+                For Each item As MyDataGridViewRow In IgnoredLogs.GetSnapshot()
                     item.Dispose()
                 Next
 
-                SyncLock IgnoredLogsLockingObject
-                    IgnoredLogs.Clear()
-                End SyncLock
+                IgnoredLogs.Clear()
 
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
@@ -1161,9 +1187,7 @@ Public Class Form1
         longNumberOfIgnoredLogs = 0
 
         If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
-            SyncLock IgnoredLogsLockingObject
-                IgnoredLogs.Clear()
-            End SyncLock
+            IgnoredLogs.Clear()
 
             LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
         End If
@@ -1217,20 +1241,13 @@ Public Class Form1
     End Sub
 
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
-        IgnoredLastEvent.Clear()
-        IgnoredHits.Clear()
+        IgnoredStats.Clear()
         longNumberOfIgnoredLogs = 0
         LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
-        Using ReplacementsInstance As New Replacements With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            ReplacementsInstance.ShowDialog(Me)
-
-            If ReplacementsInstance.boolChanged Then
-                ReplacementsRegexCache.Clear()
-            End If
-        End Using
+        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAlternatingColorToolStripMenuItem.Click
@@ -1550,13 +1567,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        Using Alerts As New Alerts With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            Alerts.ShowDialog(Me)
-
-            If Alerts.boolChanged Then
-                AlertsRegexCache.Clear()
-            End If
-        End Using
+        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
     End Sub
 
     Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
@@ -1565,10 +1576,8 @@ Public Class Form1
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        Using Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            Alerts.ShowDialog(Me)
-        End Using
+        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
+        AlertsInstance.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
@@ -1630,22 +1639,16 @@ Public Class Form1
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
         If Logs.SelectedRows.Count > 0 Then
-            Using Ignored As New IgnoredWordsAndPhrases With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-                Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
 
-                If myItem IsNot Nothing Then
-                    Ignored.TxtIgnored.Text = myItem.RawLogData
-                    Ignored.ShowDialog(Me)
-                End If
-            End Using
+            Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            If myItem IsNot Nothing Then IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
         End If
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        Using Replacements As New Replacements With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            Replacements.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
-            Replacements.ShowDialog(Me)
-        End Using
+        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
+        ReplacementsInstance.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
     Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
@@ -1662,10 +1665,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_Click(sender As Object, e As EventArgs) Handles ConfigureSysLogMirrorServers.Click
-        Using ConfigureSysLogMirrorClients As New ConfigureSysLogMirrorClients With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
-            ConfigureSysLogMirrorClients.ShowDialog(Me)
-            If ConfigureSysLogMirrorClients.boolSuccess Then MsgBox("Done", MsgBoxStyle.Information, Text)
-        End Using
+        ShowSingleInstanceWindow(Of ConfigureSysLogMirrorClients)(ConfigureSysLogMirrorClientsInstance, Icon)
     End Sub
 
     Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
@@ -1851,9 +1851,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
-        Using hostnames As New Hostnames() With {.Icon = Icon}
-            hostnames.ShowDialog()
-        End Using
+        ShowSingleInstanceWindow(Of Hostnames)(HostNamesInstance, Icon)
     End Sub
 
     Private Sub ChangeFont_Click(sender As Object, e As EventArgs) Handles ChangeFont.Click
@@ -2130,6 +2128,20 @@ Public Class Form1
 
     Private Sub OnlySaveAlertedLogs_Click(sender As Object, e As EventArgs) Handles OnlySaveAlertedLogs.Click
         My.Settings.OnlySaveAlertedLogs = OnlySaveAlertedLogs.Checked
+    End Sub
+
+    Private Sub Logs_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles Logs.CellContentClick
+        If e.ColumnIndex = colDelete.Index AndAlso e.RowIndex >= 0 Then
+            Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Count(Function(row) CBool(row.Cells(colDelete.Index).Value))
+
+            If intNumberOfCheckedLogs = 0 Then
+                LblItemsSelected.Visible = False
+                LblItemsSelected.Text = Nothing
+            Else
+                LblItemsSelected.Visible = True
+                LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
+            End If
+        End If
     End Sub
 
 #Region "-- SysLog Server Code --"

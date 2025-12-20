@@ -407,8 +407,13 @@ Namespace SyslogParser
                                                                                            If Not matchFound Then
                                                                                                _strIgnoredPattern = strRegexPattern
                                                                                                matchFound = True
-                                                                                               IgnoredHits.AddOrUpdate(strRegexPattern, 1, Function(key As String, oldValue As Integer) oldValue + 1)
-                                                                                               IgnoredLastEvent.AddOrUpdate(strRegexPattern, Date.Now, Function(key As String, oldValue As Date) Date.Now)
+
+                                                                                               IgnoredStats.AddOrUpdate(strRegexPattern, Function(key As String) New IgnoredStatsEntry With {.Hits = 1, .LastEvent = Now}, Function(key As String, oldValue As IgnoredStatsEntry)
+                                                                                                                                                                                                                               oldValue.Hits += 1
+                                                                                                                                                                                                                               oldValue.LastEvent = Now
+                                                                                                                                                                                                                               Return oldValue
+                                                                                                                                                                                                                           End Function)
+
                                                                                                state.Stop()
                                                                                                If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(longNumberOfIgnoredLogs))
                                                                                            End If
@@ -487,24 +492,22 @@ Namespace SyslogParser
                                                                                  )
                         NewIgnoredItem.IgnoredPattern = strIgnoredPattern
 
-                        SyncLock ParentForm.IgnoredLogsLockingObject
-                            If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                        If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
                                 ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                             Else
                                 While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                                    ParentForm.IgnoredLogs.RemoveAt(0)
+                                    ParentForm.IgnoredLogs.TryRemoveAt(0)
                                 End While
 
                                 ParentForm.IgnoredLogs.Add(NewIgnoredItem)
                             End If
 
-                            If My.Settings.recordIgnoredLogs Then
-                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
-                            Else
-                                ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                                ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
-                            End If
-                        End SyncLock
+                        If My.Settings.recordIgnoredLogs Then
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
+                        Else
+                            ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                        End If
 
                         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
                             If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)

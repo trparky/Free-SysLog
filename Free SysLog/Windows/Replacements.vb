@@ -2,7 +2,7 @@
 
 Public Class Replacements
     Private boolDoneLoading As Boolean = False
-    Public boolChanged As Boolean = False
+    Private boolChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
@@ -186,6 +186,8 @@ Public Class Replacements
 
             My.Settings.replacements = tempReplacements
             My.Settings.Save()
+
+            ReplacementsRegexCache.Clear()
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(
@@ -332,7 +334,7 @@ Public Class Replacements
                 listOfReplacementsClass.Add(New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled})
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer()

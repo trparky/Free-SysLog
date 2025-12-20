@@ -13,10 +13,22 @@
 
     Private Sub BtnSave_Click(sender As Object, e As EventArgs) Handles BtnSave.Click
         If Integer.TryParse(TxtSetting.Text, intResult) Then
+            If intResult < intMin OrElse intResult > intMax Then
+                MsgBox($"Please enter a number between {intMin} and {intMax}.", MsgBoxStyle.Critical, Text)
+
+                TxtSetting.SelectAll()
+                TxtSetting.Focus()
+
+                Exit Sub
+            End If
+
             DialogResult = DialogResult.OK
             Close()
         Else
             MsgBox("Invalid user input!", MsgBoxStyle.Critical, Text)
+
+            TxtSetting.SelectAll()
+            TxtSetting.Focus()
         End If
     End Sub
 
@@ -50,8 +62,24 @@
             DialogResult = DialogResult.Cancel
             Close()
         ElseIf e.KeyData = Keys.Enter Then
-            DialogResult = DialogResult.OK
-            Close()
+            If Integer.TryParse(TxtSetting.Text, intResult) Then
+                If intResult < intMin OrElse intResult > intMax Then
+                    MsgBox($"Please enter a number between {intMin} and {intMax}.", MsgBoxStyle.Critical, Text)
+
+                    TxtSetting.SelectAll()
+                    TxtSetting.Focus()
+
+                    Exit Sub
+                End If
+
+                DialogResult = DialogResult.OK
+                Close()
+            Else
+                MsgBox("Invalid user input!", MsgBoxStyle.Critical, Text)
+
+                TxtSetting.SelectAll()
+                TxtSetting.Focus()
+            End If
         End If
     End Sub
 End Class

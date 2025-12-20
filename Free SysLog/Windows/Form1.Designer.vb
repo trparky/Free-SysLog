@@ -142,6 +142,7 @@ Partial Class Form1
         Me.ReOpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
+        Me.lblProcessUptime = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.colDelete = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.StatusStrip.SuspendLayout()
@@ -241,7 +242,7 @@ Partial Class Form1
         '
         'StatusStrip
         '
-        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs, Me.LblAutoScrollStatus})
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs, Me.LblAutoScrollStatus, Me.lblProcessUptime})
         Me.StatusStrip.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip.Name = "StatusStrip"
         Me.StatusStrip.Size = New System.Drawing.Size(1175, 22)
@@ -286,6 +287,7 @@ Partial Class Form1
         '
         'LblAutoScrollStatus
         '
+        Me.LblAutoScrollStatus.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.LblAutoScrollStatus.Name = "LblAutoScrollStatus"
         Me.LblAutoScrollStatus.Size = New System.Drawing.Size(200, 17)
         Me.LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
@@ -911,9 +913,9 @@ Partial Class Form1
         Me.SaveIgnoredLogCount.Name = "SaveIgnoredLogCount"
         Me.SaveIgnoredLogCount.Size = New System.Drawing.Size(319, 22)
         Me.SaveIgnoredLogCount.Text = "Save Ignored Log Count"
-        Me.SaveIgnoredLogCount.ToolTipText = "In case you want to reach a very high number without having" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to keep the program " &
-    "running for a very long time. This is" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "more for the funzies, if you know what I " &
-    "mean."
+        Me.SaveIgnoredLogCount.ToolTipText = "Saves the ignored log count and ignored rule stat data to disk for historical ana" &
+    "lysis." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Before it was for the funzies, now this can be an incredible tool to hel" &
+    "p you fine tune rules."
         '
         'CreateIgnoredLogToolStripMenuItem
         '
@@ -978,6 +980,12 @@ Partial Class Form1
         Me.boxLimiter.Size = New System.Drawing.Size(250, 21)
         Me.boxLimiter.Sorted = True
         Me.boxLimiter.TabIndex = 44
+        '
+        'lblProcessUptime
+        '
+        Me.lblProcessUptime.Name = "lblProcessUptime"
+        Me.lblProcessUptime.Size = New System.Drawing.Size(92, 17)
+        Me.lblProcessUptime.Text = "Program Uptime:"
         '
         'boxLimitBy
         '
@@ -1152,4 +1160,5 @@ Partial Class Form1
     Friend WithEvents lblLimitBy As Label
     Friend WithEvents btnShowLimit As Button
     Friend WithEvents colDelete As DataGridViewCheckBoxColumn
+    Friend WithEvents lblProcessUptime As ToolStripStatusLabel
 End Class

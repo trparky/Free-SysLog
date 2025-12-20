@@ -1,13 +1,19 @@
 ﻿Imports Free_SysLog.SupportCode
+Imports Windows.UI.Xaml.Controls.Primitives
 
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
-    Public boolChanged As Boolean = False
+    Private boolChanged As Boolean = False
     Private boolColumnOrderChanged As Boolean = False
     Private boolEditMode As Boolean = False
     Public strIgnoredPattern As String = Nothing
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
+    Private AutoRefreshTimer As Timer
+    Private boolCurrentlyEditing As Boolean = False
+    Private boolF1KeyDown As Boolean = False
+    Private Const strWindowTitle As String = "Ignored Words and Phrases"
+    Private strOldRuleText As String
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -50,7 +56,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Function CheckForExistingItem(strIgnored As String) As Boolean
         Return IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Any(Function(item As MyIgnoredListViewItem)
-                                                                            Return item.SubItems(0).Text.Equals(strIgnored, StringComparison.OrdinalIgnoreCase)
+                                                                            Return item.SubItems(Ignored.Index).Text.Equals(strIgnored, StringComparison.OrdinalIgnoreCase)
                                                                         End Function)
     End Function
 
@@ -65,11 +71,11 @@ Public Class IgnoredWordsAndPhrases
                 Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
                 With selectedItemObject
-                    .SubItems(0).Text = TxtIgnored.Text
-                    .SubItems(1).Text = If(ChkRegex.Checked, "Yes", "No")
-                    .SubItems(2).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
-                    .SubItems(3).Text = If(ChkEnabled.Checked, "Yes", "No")
-                    .SubItems(5).Text = If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text")
+                    .SubItems(Ignored.Index).Text = TxtIgnored.Text
+                    .SubItems(Regex.Index).Text = If(ChkRegex.Checked, "Yes", "No")
+                    .SubItems(CaseSensitive.Index).Text = If(ChkCaseSensitive.Checked, "Yes", "No")
+                    .SubItems(ColEnabled.Index).Text = If(ChkEnabled.Checked, "Yes", "No")
+                    .SubItems(colTarget.Index).Text = If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text")
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
                     .BoolEnabled = ChkEnabled.Checked
                     .BoolRegex = ChkRegex.Checked
@@ -79,13 +85,40 @@ Public Class IgnoredWordsAndPhrases
 
                     If .dateCreated = Date.MinValue Then ' Just in case it was never set
                         .dateCreated = Date.Now
-                        .SubItems(6).Text = Date.Now.ToLongDateString
+                        .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
+                    End If
+
+	                If Not strOldRuleText.Equals(TxtIgnored.Text, StringComparison.OrdinalIgnoreCase) Then
+                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
+                        .intHits = 0
+                		.dateOfLastOccurrence = Date.MinValue
+                		.timeSpanOfLastOccurrence = TimeSpan.MinValue
+                		.SubItems(colHits.Index).Text = "0"
+                		.SubItems(colDateOfLastEvent.Index).Text = ""
+                		.SubItems(colSinceLastEvent.Index).Text = ""
+                		.intHits = 0
+	                End If
+
+	                If .BoolEnabled Then
+	                    .BackColor = Color.LightGreen
+	                    .SubItems(colHits.Index).Text = "0"
+	                    .intHits = 0
+	                Else
+	                    .BackColor = Color.Pink
+	                    .SubItems(colHits.Index).Text = ""
+	                    .SubItems(colDateOfLastEvent.Index).Text = ""
+	                    .SubItems(colSinceLastEvent.Index).Text = ""
+	                    .intHits = 0
+	                    .dateOfLastOccurrence = Date.MinValue
+	                    .timeSpanOfLastOccurrence = TimeSpan.MinValue
+                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
                     End If
                 End With
 
                 IgnoredListView.Enabled = True
                 BtnAdd.Text = "Add"
                 Label4.Text = "Add Ignored Words and Phrases"
+                boolCurrentlyEditing = False
             Else
                 Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
 
@@ -117,6 +150,9 @@ Public Class IgnoredWordsAndPhrases
             ChkRegex.Checked = False
             ChkEnabled.Checked = True
             ChkRemoteProcess.Checked = False
+            strOldRuleText = Nothing
+
+            Text = $"{strWindowTitle} — Auto Refresh Enabled"
         End If
     End Sub
 
@@ -125,10 +161,20 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        AutoRefreshTimer?.Dispose()
+
         If boolColumnOrderChanged Then
             My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveColumnOrders(IgnoredListView.Columns)
             My.Settings.Save()
         End If
+
+        Try
+            If My.Settings.saveIgnoredLogCount Then
+                NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+            End If
+        Catch ' Silently fail
+        End Try
 
         If Not boolChanged Then Exit Sub
 
@@ -140,7 +186,7 @@ Public Class IgnoredWordsAndPhrases
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                 ignoredClass = New IgnoredClass() With {
-                    .StrIgnore = item.SubItems(0).Text,
+                    .StrIgnore = item.SubItems(Ignored.Index).Text,
                     .BoolCaseSensitive = item.BoolCaseSensitive,
                     .BoolRegex = item.BoolRegex,
                     .BoolEnabled = item.BoolEnabled,
@@ -161,6 +207,8 @@ Public Class IgnoredWordsAndPhrases
 
             My.Settings.ignored2 = tempIgnoredRules
             My.Settings.Save()
+
+            IgnoredRegexCache.Clear()
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(
@@ -174,6 +222,16 @@ Public Class IgnoredWordsAndPhrases
                 SupportCode.ParentForm.NumberOfLogs.Text = $"Number of Log Entries: {SupportCode.ParentForm.Logs.Rows.Count:N0}"
             End SyncLock
         End Try
+    End Sub
+
+    Private Sub InitializeAutoRefreshTimer()
+        AutoRefreshTimer = New Timer() With {.Interval = 5000, .Enabled = ChkAutoRefresh.Checked}
+        AddHandler AutoRefreshTimer.Tick, AddressOf AutoRefreshTimer_Tick
+    End Sub
+
+    Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
+        If boolCurrentlyEditing Or boolF1KeyDown OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
+        btnUpdateHits.PerformClick()
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -206,13 +264,21 @@ Public Class IgnoredWordsAndPhrases
         colDateOfLastEvent.Width = My.Settings.DateOfLastEventColumnWidth
         colSinceLastEvent.Width = My.Settings.ColSinceLastEventWidth
 
+        ChkAutoRefresh.Checked = My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases
+        ChkRefreshOnlyIfActive.Checked = My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases
+        ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
+
+        Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
+
+        InitializeAutoRefreshTimer()
+
         Size = My.Settings.ConfigureIgnoredSize
 
         boolDoneLoading = True
 
         If Not String.IsNullOrWhiteSpace(strIgnoredPattern) AndAlso CheckForExistingItem(strIgnoredPattern) Then
             For Each item As ListViewItem In IgnoredListView.Items
-                If item.SubItems(0).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
+                If item.SubItems(Ignored.Index).Text.Equals(strIgnoredPattern, StringComparison.OrdinalIgnoreCase) Then
                     item.Selected = True
                     btnDeleteDuringEditing.Visible = True
                     IgnoredListView.Refresh()
@@ -229,11 +295,15 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles BtnDelete.Click
+        boolCurrentlyEditing = True
+
         If IgnoredListView.SelectedItems.Count > 0 Then
             If IgnoredListView.SelectedItems.Count = 1 Then
+                IgnoredStats.TryRemove(IgnoredListView.SelectedItems(0).SubItems(Ignored.Index).Text, Nothing)
                 IgnoredListView.Items.Remove(IgnoredListView.SelectedItems(0))
             Else
                 For i As Integer = IgnoredListView.SelectedItems.Count - 1 To 0 Step -1
+                    IgnoredStats.TryRemove(IgnoredListView.SelectedItems(i).SubItems(Ignored.Index).Text, Nothing)
                     IgnoredListView.SelectedItems(i).Remove()
                 Next
             End If
@@ -242,6 +312,8 @@ Public Class IgnoredWordsAndPhrases
             BtnEdit.Enabled = False
             boolChanged = True
         End If
+
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub IgnoredListView_Click(sender As Object, e As EventArgs) Handles IgnoredListView.Click
@@ -271,20 +343,25 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub EditItem()
         If IgnoredListView.SelectedItems.Count > 0 Then
+            boolCurrentlyEditing = True
             BtnCancel.Visible = True
             IgnoredListView.Enabled = False
             boolEditMode = True
             BtnAdd.Text = "Save"
             Label4.Text = "Edit Ignored Words and Phrases"
 
+            Text = $"{strWindowTitle} — Auto Refresh Paused"
+
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
             ChkRemoteProcess.Checked = selectedItemObject.IgnoreType <> IgnoreType.MainLog
-            TxtIgnored.Text = selectedItemObject.SubItems(0).Text
+            TxtIgnored.Text = selectedItemObject.SubItems(Ignored.Index).Text
             ChkRegex.Checked = selectedItemObject.BoolRegex
             ChkCaseSensitive.Checked = selectedItemObject.BoolCaseSensitive
             ChkEnabled.Checked = selectedItemObject.BoolEnabled
             txtComment.Text = selectedItemObject.strComment
+
+            strOldRuleText = selectedItemObject.SubItems(Ignored.Index).Text
         End If
     End Sub
 
@@ -329,35 +406,56 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub DisableEnableItem()
+        boolCurrentlyEditing = True
+
         If IgnoredListView.SelectedItems.Count = 1 Then
             Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
 
             If selectedItem.BoolEnabled Then
                 selectedItem.BackColor = Color.Pink
                 selectedItem.BoolEnabled = False
-                selectedItem.SubItems(3).Text = "No"
+                selectedItem.SubItems(ColEnabled.Index).Text = "No"
+                selectedItem.SubItems(colHits.Index).Text = ""
+                selectedItem.SubItems(colDateOfLastEvent.Index).Text = ""
+                selectedItem.SubItems(colSinceLastEvent.Index).Text = ""
+                selectedItem.intHits = 0
+                selectedItem.dateOfLastOccurrence = Date.MinValue
+                selectedItem.timeSpanOfLastOccurrence = TimeSpan.MinValue
+                IgnoredStats.TryRemove(selectedItem.SubItems(Ignored.Index).Text, Nothing)
                 BtnEnableDisable.Text = "Enable"
             Else
                 selectedItem.BackColor = Color.LightGreen
                 selectedItem.BoolEnabled = True
-                selectedItem.SubItems(3).Text = "Yes"
+                selectedItem.SubItems(ColEnabled.Index).Text = "Yes"
                 BtnEnableDisable.Text = "Disable"
+                selectedItem.SubItems(colHits.Index).Text = "0"
+                selectedItem.intHits = 0
             End If
         Else
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
                 If item.BoolEnabled Then
                     item.BackColor = Color.Pink
                     item.BoolEnabled = False
-                    item.SubItems(3).Text = "No"
+                    item.SubItems(ColEnabled.Index).Text = "No"
+                    item.SubItems(colHits.Index).Text = ""
+                    item.SubItems(colDateOfLastEvent.Index).Text = ""
+                    item.SubItems(colSinceLastEvent.Index).Text = ""
+                    item.intHits = 0
+                    item.dateOfLastOccurrence = Date.MinValue
+                    item.timeSpanOfLastOccurrence = TimeSpan.MinValue
+                    IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing)
                 Else
                     item.BackColor = Color.LightGreen
                     item.BoolEnabled = True
-                    item.SubItems(3).Text = "Yes"
+                    item.SubItems(ColEnabled.Index).Text = "Yes"
+                    item.SubItems(colHits.Index).Text = "0"
+                    item.intHits = 0
                 End If
             Next
         End If
 
         boolChanged = True
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub BtnEnableDisable_Click(sender As Object, e As EventArgs) Handles BtnEnableDisable.Click
@@ -395,10 +493,10 @@ Public Class IgnoredWordsAndPhrases
 
         If saveFileDialog.ShowDialog() = DialogResult.OK Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(0).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment})
+                listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(Ignored.Index).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment})
             Next
 
-            IO.File.WriteAllText(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
+            WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer()
@@ -424,6 +522,8 @@ Public Class IgnoredWordsAndPhrases
         Dim listOfIgnoredClass As New List(Of IgnoredClass)
 
         If openFileDialog.ShowDialog() = DialogResult.OK Then
+            boolCurrentlyEditing = True
+
             Try
                 listOfIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of IgnoredClass))(IO.File.ReadAllText(openFileDialog.FileName), JSONDecoderSettingsForLogFiles)
 
@@ -445,7 +545,17 @@ Public Class IgnoredWordsAndPhrases
                 boolChanged = True
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
+            Finally
+                boolCurrentlyEditing = False
             End Try
+        End If
+    End Sub
+
+    Private Sub IgnoredWordsAndPhrases_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.F1 Then
+            boolF1KeyDown = True
+            ChkAutoRefresh.Enabled = False
+            Text = $"{strWindowTitle} — Auto Refresh Paused"
         End If
     End Sub
 
@@ -454,6 +564,10 @@ Public Class IgnoredWordsAndPhrases
             Close()
         ElseIf e.KeyCode = Keys.F5 Then
             btnUpdateHits.PerformClick()
+        ElseIf e.KeyCode = Keys.F1 Then
+            boolF1KeyDown = False
+            ChkAutoRefresh.Enabled = True
+            Text = $"{strWindowTitle} — Auto Refresh Enabled"
         End If
     End Sub
 
@@ -466,6 +580,7 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub BtnUp_Click(sender As Object, e As EventArgs) Handles BtnUp.Click
         If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        boolCurrentlyEditing = True
         Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
 
         ' Ensure the item is not already at the top
@@ -479,10 +594,12 @@ Public Class IgnoredWordsAndPhrases
 
         BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
         BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub BtnDown_Click(sender As Object, e As EventArgs) Handles BtnDown.Click
         If IgnoredListView.SelectedItems.Count = 0 Then Return ' No item selected
+        boolCurrentlyEditing = True
         Dim selectedIndex As Integer = IgnoredListView.SelectedIndices(0)
 
         ' Ensure the item is not already at the bottom
@@ -496,6 +613,7 @@ Public Class IgnoredWordsAndPhrases
 
         BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
         BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles BtnCancel.Click
@@ -510,9 +628,13 @@ Public Class IgnoredWordsAndPhrases
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
+        boolCurrentlyEditing = False
+
+        Text = $"{strWindowTitle} — Auto Refresh Enabled"
     End Sub
 
     Private Sub btnDeleteDuringEditing_Click(sender As Object, e As EventArgs) Handles btnDeleteDuringEditing.Click
+        IgnoredStats.TryRemove(IgnoredListView.SelectedItems(0).SubItems(Ignored.Index).Text, Nothing)
         IgnoredListView.SelectedItems(0).Remove()
         IgnoredListView.Enabled = True
         BtnAdd.Text = "Add"
@@ -523,6 +645,7 @@ Public Class IgnoredWordsAndPhrases
         ChkCaseSensitive.Checked = False
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
+        boolCurrentlyEditing = False
     End Sub
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
@@ -568,17 +691,23 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
+        longNumberOfIgnoredLogs = 0
+
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) Then
-                    item.SubItems(4).Text = "0"
+                If IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing) Then
+                    item.SubItems(colHits.Index).Text = "0"
+                    item.SubItems(colDateOfLastEvent.Index).Text = ""
+                    item.SubItems(colSinceLastEvent.Index).Text = ""
                 End If
             Next
         Else
-            IgnoredHits.Clear()
+            IgnoredStats.Clear()
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-                item.SubItems(4).Text = "0"
+                item.SubItems(colHits.Index).Text = "0"
+                item.SubItems(colDateOfLastEvent.Index).Text = ""
+                item.SubItems(colSinceLastEvent.Index).Text = ""
             Next
         End If
     End Sub
@@ -586,8 +715,10 @@ Public Class IgnoredWordsAndPhrases
     Private Sub ResetHitsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetHitsToolStripMenuItem.Click
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
-                If IgnoredHits.TryRemove(item.SubItems(0).Text, Nothing) Then
-                    item.SubItems(4).Text = "0"
+                If IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing) Then
+                    item.SubItems(colHits.Index).Text = "0"
+                    item.SubItems(colDateOfLastEvent.Index).Text = ""
+                    item.SubItems(colSinceLastEvent.Index).Text = ""
                 End If
             Next
         End If
@@ -596,26 +727,39 @@ Public Class IgnoredWordsAndPhrases
     Private Sub btnUpdateHits_Click(sender As Object, e As EventArgs) Handles btnUpdateHits.Click
         Dim longTotalHits As Long = 0
         Dim sinceLastEvent As TimeSpan
+        Dim intHits As Integer
+        Dim dateOfLastEvent As Date
+        Dim currentDate As Date = Now
+        Dim IgnoredStatsEntry As IgnoredStatsEntry
 
         IgnoredListView.BeginUpdate()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
-            Dim intHits As Integer = 0
-            Dim dateOfLastEvent As Date = Date.MinValue
+            If item.BoolEnabled Then
+                IgnoredStatsEntry = Nothing
+                intHits = 0
+                dateOfLastEvent = Date.MinValue
 
-            If IgnoredHits.TryGetValue(item.SubItems(0).Text, intHits) Then
-                item.SubItems(4).Text = intHits.ToString("N0")
-                longTotalHits += intHits
-            End If
+                If IgnoredStats.TryGetValue(item.SubItems(Ignored.Index).Text, IgnoredStatsEntry) Then
+                    intHits = IgnoredStatsEntry.Hits
+                    dateOfLastEvent = IgnoredStatsEntry.LastEvent
 
-            If IgnoredLastEvent.TryGetValue(item.SubItems(0).Text, dateOfLastEvent) Then
-                dateOfLastEvent = dateOfLastEvent.ToLocalTime
-                sinceLastEvent = Now.ToLocalTime - dateOfLastEvent
-                item.timeSpanOfLastOccurrence = sinceLastEvent
-                item.dateOfLastOccurrence = dateOfLastEvent
-                item.SubItems(7).Text = $"{dateOfLastEvent.ToLongDateString} {dateOfLastEvent.ToLongTimeString}"
-                item.SubItems(8).Text = TimespanToHMS(sinceLastEvent)
-                item.intHits = intHits
+                    longTotalHits += intHits
+
+                    item.SubItems(colHits.Index).Text = intHits.ToString("N0")
+                    item.intHits = intHits
+
+                    If dateOfLastEvent <> Date.MinValue Then
+                        sinceLastEvent = currentDate - dateOfLastEvent
+                        item.timeSpanOfLastOccurrence = sinceLastEvent
+                        item.dateOfLastOccurrence = dateOfLastEvent
+                        item.SubItems(colDateOfLastEvent.Index).Text = $"{dateOfLastEvent.ToLocalTime.ToLongDateString} {dateOfLastEvent.ToLocalTime.ToLongTimeString}"
+                        item.SubItems(colSinceLastEvent.Index).Text = TimespanToHMS(sinceLastEvent)
+                    Else
+                        item.SubItems(colDateOfLastEvent.Index).Text = ""
+                        item.SubItems(colSinceLastEvent.Index).Text = ""
+                    End If
+                End If
             End If
         Next
 
@@ -624,5 +768,16 @@ Public Class IgnoredWordsAndPhrases
         If IgnoredListView.ListViewItemSorter IsNot Nothing Then IgnoredListView.Sort()
 
         IgnoredListView.EndUpdate()
+    End Sub
+
+    Private Sub ChkAutoRefresh_Click(sender As Object, e As EventArgs) Handles ChkAutoRefresh.Click
+        My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases = ChkAutoRefresh.Checked
+        AutoRefreshTimer.Enabled = ChkAutoRefresh.Checked
+        ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
+        Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
+    End Sub
+
+    Private Sub ChkRefreshOnlyIfActive_Click(sender As Object, e As EventArgs) Handles ChkRefreshOnlyIfActive.Click
+        My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases = ChkRefreshOnlyIfActive.Checked
     End Sub
 End Class
