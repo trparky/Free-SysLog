@@ -26,7 +26,7 @@ Public Class Form1
     Private boolTCPServerRunning As Boolean = False
     Private lastFirstDisplayedRowIndex As Integer = -1
     Private processUptimeTimer As Timer
-    Private dateProcessStarted As Date = Process.GetCurrentProcess.StartTime.ToLocalTime
+    Private dateProcessStarted As Date = Process.GetCurrentProcess.StartTime
 
     Private HostNamesInstance As Hostnames
     Private IgnoredWordsAndPhrasesOrAlertsInstance As IgnoredWordsAndPhrases
@@ -482,7 +482,7 @@ Public Class Form1
         LoadCheckboxSettings()
 
         processUptimeTimer = New Timer() With {.Interval = 1000, .Enabled = True}
-        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now.ToLocalTime - dateProcessStarted.ToLocalTime)}"
+        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now - dateProcessStarted)}"
 
         SetDoubleBufferingFlag(Logs)
 
