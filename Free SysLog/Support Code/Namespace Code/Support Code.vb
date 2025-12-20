@@ -126,6 +126,8 @@ Namespace SupportCode
             If timeSpan.Minutes > 0 Then parts.Add($"{timeSpan.Minutes}m")
             If timeSpan.Seconds > 0 Then parts.Add($"{timeSpan.Seconds}s")
 
+            If parts.Count() = 0 Then parts.Add($"{timeSpan.Milliseconds}ms")
+
             Return String.Join(", ", parts)
         End Function
 
