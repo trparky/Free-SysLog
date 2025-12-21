@@ -1617,6 +1617,8 @@ Public Class Form1
                     End If
                 End If
             End Using
+        Else
+            MsgBox("This instance doesn't own the mutex lock for Free Syslog, thus this function is disabled.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
