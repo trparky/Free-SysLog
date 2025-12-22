@@ -335,5 +335,8 @@
     <Setting Name="AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="IncludeCommasInDHMS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
