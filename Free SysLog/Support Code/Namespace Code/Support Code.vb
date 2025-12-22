@@ -115,7 +115,7 @@ Namespace SupportCode
         Public Const boolDebugBuild As Boolean = False
 #End If
 
-        Public Function TimespanToHMS(timeSpan As TimeSpan, Optional boolUseCommas As Boolean = True) As String
+        Public Function TimespanToHMS(timeSpan As TimeSpan) As String
             If timeSpan.TotalMilliseconds < 1 Then Return "0s"
             If timeSpan < TimeSpan.Zero Then timeSpan = timeSpan.Duration()
 
@@ -128,7 +128,7 @@ Namespace SupportCode
 
             If parts.Count() = 0 Then parts.Add($"{timeSpan.Milliseconds}ms")
 
-            If boolUseCommas Then
+            If My.Settings.IncludeCommasInDHMS Then
                 Return String.Join(", ", parts)
             Else
                 Return String.Join(" ", parts)

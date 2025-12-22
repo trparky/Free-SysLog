@@ -327,6 +327,7 @@ Public Class Form1
         ConfirmDelete.Checked = My.Settings.ConfirmDelete
         ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
         ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
+        IncludeCommasInDHMS.Checked = My.Settings.IncludeCommasInDHMS
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -482,7 +483,7 @@ Public Class Form1
         LoadCheckboxSettings()
 
         processUptimeTimer = New Timer() With {.Interval = 1000, .Enabled = True}
-        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now - dateProcessStarted, False)}"
+        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now - dateProcessStarted)}"
 
         SetDoubleBufferingFlag(Logs)
 
@@ -2144,6 +2145,10 @@ Public Class Form1
                 LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
             End If
         End If
+    End Sub
+
+    Private Sub IncludeCommasInDHMS_Click(sender As Object, e As EventArgs) Handles IncludeCommasInDHMS.Click
+        My.Settings.IncludeCommasInDHMS = IncludeCommasInDHMS.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

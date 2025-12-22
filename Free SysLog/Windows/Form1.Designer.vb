@@ -101,6 +101,7 @@ Partial Class Form1
         Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.IncludeButtonsOnNotifications = New System.Windows.Forms.ToolStripMenuItem()
+        Me.IncludeCommasInDHMS = New System.Windows.Forms.ToolStripMenuItem()
         Me.IPv6Support = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -483,7 +484,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ColumnControls, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.IncludeCommasInDHMS, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -716,6 +717,14 @@ Partial Class Form1
         Me.IncludeButtonsOnNotifications.Name = "IncludeButtonsOnNotifications"
         Me.IncludeButtonsOnNotifications.Size = New System.Drawing.Size(319, 22)
         Me.IncludeButtonsOnNotifications.Text = "Include Buttons on Notifications"
+        '
+        'IncludeCommasInDHMS
+        '
+        Me.IncludeCommasInDHMS.CheckOnClick = True
+        Me.IncludeCommasInDHMS.Name = "IncludeCommasInDHMS"
+        Me.IncludeCommasInDHMS.Size = New System.Drawing.Size(319, 22)
+        Me.IncludeCommasInDHMS.Text = "Include Commas in DHMS Strings"
+        Me.IncludeCommasInDHMS.ToolTipText = "Changes how DHMS strings are shown." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & """d, h, m, s"" or ""d h m s"""
         '
         'IPv6Support
         '
@@ -1105,6 +1114,7 @@ Partial Class Form1
     Friend WithEvents ToolStripMenuSeparator As ToolStripSeparator
     Friend WithEvents ImportExportSettingsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents IncludeButtonsOnNotifications As ToolStripMenuItem
+    Friend WithEvents IncludeCommasInDHMS As ToolStripMenuItem
     Friend WithEvents IPv6Support As ToolStripMenuItem
     Friend WithEvents ExportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportToolStripMenuItem As ToolStripMenuItem
