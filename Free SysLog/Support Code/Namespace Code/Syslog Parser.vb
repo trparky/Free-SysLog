@@ -281,6 +281,7 @@ Namespace SyslogParser
                     Dim strAlertText As String = Nothing
                     Dim AlertType As AlertType = AlertType.None
                     Dim strIgnoredPattern As String = Nothing
+                    Dim boolRecordIgnoredLog As Boolean = False
 
                     If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then
                         strRawLogText = ProcessReplacements(strRawLogText)
@@ -315,13 +316,13 @@ Namespace SyslogParser
                     ' Step 3: Handle the ignored logs and alerts
                     If Not My.Settings.ProcessReplacementsInSyslogDataFirst Then
                         If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
-                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
+                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
 
                         If replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then message = ProcessReplacements(message)
                     Else
                         If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
-                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern)
+                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
                     End If
 
@@ -355,7 +356,7 @@ Namespace SyslogParser
 
                     ' Step 4: Add to log list, separating header and message
                     If Not My.Settings.OnlySaveAlertedLogs OrElse boolAlerted Then
-                        AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern)
+                        AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog)
                     End If
                 End If
             Catch ex As Exception
@@ -375,11 +376,12 @@ Namespace SyslogParser
             End If
         End Function
 
-        Private Function ProcessIgnoredLogPreferences(message As String, remoteProcess As String, ByRef strIgnoredPattern As String) As Boolean
+        Private Function ProcessIgnoredLogPreferences(message As String, remoteProcess As String, ByRef strIgnoredPattern As String, ByRef boolRecordIgnoredLog As Boolean) As Boolean
             Dim strFailedPattern As String = Nothing
             Dim matchFound As Boolean = False
             Dim _strIgnoredPattern As String = Nothing
             Dim parallelOptions As New ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
+            Dim boolInternalRecordLog As Boolean = False
 
             Try
                 ' Use a thread-safe flag to stop Parallel.ForEach as soon as a match is found.
@@ -408,6 +410,8 @@ Namespace SyslogParser
                                                                                                _strIgnoredPattern = strRegexPattern
                                                                                                matchFound = True
 
+                                                                                               boolInternalRecordLog = ignoredClassInstance.BoolRecordLog
+
                                                                                                IgnoredStats.AddOrUpdate(strRegexPattern, Function(key As String) New IgnoredStatsEntry With {.Hits = 1, .LastEvent = Now}, Function(key As String, oldValue As IgnoredStatsEntry)
                                                                                                                                                                                                                                oldValue.Hits += 1
                                                                                                                                                                                                                                oldValue.LastEvent = Now
@@ -423,6 +427,7 @@ Namespace SyslogParser
                                                                            End Sub)
 
                 If matchFound Then strIgnoredPattern = _strIgnoredPattern
+                boolRecordIgnoredLog = boolInternalRecordLog
                 Return matchFound
             Catch ex As Exception
                 AddToLogList(Nothing, $"{strQuote}{strFailedPattern}{strQuote} failed to be processed.")
@@ -430,7 +435,7 @@ Namespace SyslogParser
             End Try
         End Function
 
-        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String)
+        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
@@ -474,7 +479,7 @@ Namespace SyslogParser
                                       ParentForm.SelectLatestLogEntry()
                                   End Sub)
             ElseIf boolIgnored Then
-                If ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Then
+                If ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Or boolRecordIgnoredLog Then
                     SyncLock ParentForm.IgnoredLogsLockObject
                         Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
                                                                                   dateObject:=currentDate,
@@ -493,14 +498,14 @@ Namespace SyslogParser
                         NewIgnoredItem.IgnoredPattern = strIgnoredPattern
 
                         If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
-                                ParentForm.IgnoredLogs.Add(NewIgnoredItem)
-                            Else
-                                While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                                    ParentForm.IgnoredLogs.TryRemoveAt(0)
-                                End While
+                            ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                        Else
+                            While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                                ParentForm.IgnoredLogs.TryRemoveAt(0)
+                            End While
 
-                                ParentForm.IgnoredLogs.Add(NewIgnoredItem)
-                            End If
+                            ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                        End If
 
                         If My.Settings.recordIgnoredLogs Then
                             ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
