@@ -1136,12 +1136,16 @@ Public Class Form1
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-            ShowSingleInstanceWindow(IgnoredLogsAndSearchResultsInstance, Function() New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.Icon = Icon})
+            ShowSingleInstanceWindow(IgnoredLogsAndSearchResultsInstance, Function()
+                                                                              Dim instanceToBeReturned As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.Icon = Icon}
 
-            IgnoredLogsAndSearchResultsInstance.MainProgramForm = Me
-            IgnoredLogsAndSearchResultsInstance.Text = "Ignored Logs"
-            IgnoredLogsAndSearchResultsInstance.LogsToBeDisplayed = IgnoredLogs.GetSnapshot()
-            IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+                                                                              instanceToBeReturned.MainProgramForm = Me
+                                                                              instanceToBeReturned.Text = "Ignored Logs"
+                                                                              instanceToBeReturned.LogsToBeDisplayed = IgnoredLogs.GetSnapshot()
+                                                                              instanceToBeReturned.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+
+                                                                              Return instanceToBeReturned
+                                                                          End Function)
         End SyncLock
     End Sub
 
@@ -1988,6 +1992,7 @@ Public Class Form1
     Private Sub LogFunctionsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles LogFunctionsToolStripMenuItem.DropDownOpening
         SyncLock dataGridLockObject
             AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
+            IgnoredLogsToolStripMenuItem.Visible = IgnoredLogs.Count > 0
         End SyncLock
     End Sub
 

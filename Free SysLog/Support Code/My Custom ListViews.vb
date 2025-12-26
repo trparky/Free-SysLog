@@ -23,6 +23,7 @@ Public Class MyIgnoredListViewItem
     Public Property BoolRegex As Boolean
     Public Property BoolCaseSensitive As Boolean
     Public Property BoolEnabled As Boolean
+    Public Property BoolRecordLog As Boolean
     Public Property IgnoreType As IgnoreType
     Public Property timeSpanOfLastOccurrence As TimeSpan
     Public Property dateOfLastOccurrence As Date

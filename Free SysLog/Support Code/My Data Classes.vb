@@ -118,6 +118,7 @@ End Class
 Public Class IgnoredClass
     Public BoolRegex As Boolean
     Public BoolCaseSensitive As Boolean
+    Public BoolRecordLog As Boolean
     Public StrIgnore, strComment As String
     Public BoolEnabled As Boolean = True
     Public IgnoreType As IgnoreType = IgnoreType.MainLog
@@ -162,9 +163,12 @@ Public Class IgnoredClass
             listViewItem.SubItems.Add("")
         End If
 
+        listViewItem.SubItems.Add(If(BoolRecordLog, "Yes", "No"))
+
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
+        listViewItem.BoolRecordLog = BoolRecordLog
         listViewItem.IgnoreType = IgnoreType
         listViewItem.dateCreated = dateCreated
         listViewItem.strComment = strComment
@@ -192,6 +196,7 @@ Public Class IgnoredClass
         listViewItem.BoolRegex = BoolRegex
         listViewItem.BoolCaseSensitive = BoolCaseSensitive
         listViewItem.BoolEnabled = BoolEnabled
+        listViewItem.BoolRecordLog = BoolRecordLog
         listViewItem.IgnoreType = IgnoreType
         listViewItem.dateCreated = dateCreated
         listViewItem.strComment = strComment
