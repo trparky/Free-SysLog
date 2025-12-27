@@ -225,6 +225,7 @@ Public Class IgnoredWordsAndPhrases
             Next
 
             newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             ignoredList.Clear()

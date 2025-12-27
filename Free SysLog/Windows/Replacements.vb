@@ -179,6 +179,7 @@ Public Class Replacements
             Next
 
             newReplacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            newReplacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             replacementsList.Clear()

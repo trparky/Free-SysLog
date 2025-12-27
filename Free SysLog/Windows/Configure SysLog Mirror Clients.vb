@@ -187,6 +187,8 @@ Public Class ConfigureSysLogMirrorClients
                 tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
             Next
 
+            serversList.Sort(Function(x As SysLogProxyServer, y As SysLogProxyServer) y.boolEnabled.CompareTo(x.boolEnabled))
+
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             serversList.Clear()
             serversList.Merge(newServerList.GetSnapshot())

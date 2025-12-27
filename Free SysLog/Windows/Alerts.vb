@@ -313,6 +313,7 @@ Public Class Alerts
             Next
 
             newAlertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            newAlertsList.Sort(Function(x As AlertsClass, y As AlertsClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             alertsList.Clear()
