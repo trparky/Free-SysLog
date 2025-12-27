@@ -54,16 +54,17 @@ Namespace DataHandling
                         End If
                     Next
 
-                    Using fileStream As New StreamWriter(saveFileDialog.FileName)
-                        If fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) Then
+                    If fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) Then
+                        Using memoryStream As New MemoryStream
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
-                            xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
-                        ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
-                        ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(csvStringBuilder.ToString.Trim)
-                        End If
-                    End Using
+                            xmlSerializerObject.Serialize(memoryStream, collectionOfSavedData)
+                            WriteFileAtomically(saveFileDialog.FileName, memoryStream.ToArray())
+                        End Using
+                    ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
+                        WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
+                    ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                        WriteFileAtomically(saveFileDialog.FileName, csvStringBuilder.ToString.Trim)
+                    End If
 
                     If My.Settings.AskOpenExplorer Then
                         Using OpenExplorer As New OpenExplorer()
@@ -135,16 +136,17 @@ Namespace DataHandling
                         End If
                     Next
 
-                    Using fileStream As New StreamWriter(saveFileDialog.FileName)
-                        If fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) Then
+                    If fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) Then
+                        Using memoryStream As New MemoryStream
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
-                            xmlSerializerObject.Serialize(fileStream, collectionOfSavedData)
-                        ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
-                        ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
-                            fileStream.Write(csvStringBuilder.ToString.Trim)
-                        End If
-                    End Using
+                            xmlSerializerObject.Serialize(memoryStream, collectionOfSavedData)
+                            WriteFileAtomically(saveFileDialog.FileName, memoryStream.ToArray())
+                        End Using
+                    ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
+                        WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
+                    ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                        WriteFileAtomically(saveFileDialog.FileName, csvStringBuilder.ToString.Trim)
+                    End If
 
                     If My.Settings.AskOpenExplorer Then
                         Using OpenExplorer As New OpenExplorer()

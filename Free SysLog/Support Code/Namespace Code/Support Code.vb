@@ -135,6 +135,28 @@ Namespace SupportCode
             End If
         End Function
 
+        Public Sub WriteFileAtomically(path As String, contents As Byte())
+            Dim tmpPath As String = path & ".tmp"
+
+            Try
+                File.WriteAllBytes(tmpPath, contents)
+
+                If File.Exists(path) Then
+                    File.Replace(tmpPath, path, Nothing)
+                Else
+                    File.Move(tmpPath, path)
+                End If
+            Catch
+                ' Fail silently
+            Finally
+                Try
+                    If File.Exists(tmpPath) Then File.Delete(tmpPath)
+                Catch
+                    ' Fail silently
+                End Try
+            End Try
+        End Sub
+
         Public Sub WriteFileAtomically(path As String, contents As String)
             Dim tmpPath As String = path & ".tmp"
 
