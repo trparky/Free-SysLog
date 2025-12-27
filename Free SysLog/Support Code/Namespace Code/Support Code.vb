@@ -139,7 +139,7 @@ Namespace SupportCode
             Dim tmpPath As String = path & ".tmp"
 
             Try
-                File.WriteAllText(tmpPath, contents)
+                File.WriteAllText(tmpPath, contents, Encoding.UTF8)
 
                 If File.Exists(path) Then
                     File.Replace(tmpPath, path, Nothing)
