@@ -224,8 +224,7 @@ Public Class IgnoredWordsAndPhrases
                 tempIgnoredRules.Add(Newtonsoft.Json.JsonConvert.SerializeObject(ignoredClass))
             Next
 
-            newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
-            newIgnoredList.Sort(Function(x As IgnoredClass, y As IgnoredClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
+            newIgnoredList.OrderByDescending(Function(i As IgnoredClass) i.BoolEnabled).ThenBy(Function(i As IgnoredClass) i.BoolRegex)
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             ignoredList.Clear()
@@ -533,8 +532,7 @@ Public Class IgnoredWordsAndPhrases
                 listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(Ignored.Index).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment, .BoolRecordLog = item.BoolRecordLog})
             Next
 
-            listOfIgnoredClass.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
-            listOfIgnoredClass.Sort(Function(x As IgnoredClass, y As IgnoredClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
+            listOfIgnoredClass.OrderByDescending(Function(i As IgnoredClass) i.BoolEnabled).ThenBy(Function(i As IgnoredClass) i.BoolRegex)
 
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
 

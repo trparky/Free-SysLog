@@ -124,6 +124,24 @@ Namespace ThreadSafetyLists
         Private ReadOnly _list As New List(Of T)
         Private ReadOnly _lock As New Object()
 
+        Public Function OrderByDescending(Of TKey)(keySelector As Func(Of T, TKey)) As IOrderedEnumerable(Of T)
+            SyncLock _lock
+                Return _list.OrderByDescending(keySelector)
+            End SyncLock
+        End Function
+
+        Public Function OrderByAscending(Of TKey)(keySelector As Func(Of T, TKey)) As IOrderedEnumerable(Of T)
+            SyncLock _lock
+                Return _list.OrderBy(keySelector)
+            End SyncLock
+        End Function
+
+        Public Function ThenBy(Of TKey)(keySelector As Func(Of T, TKey)) As List(Of T)
+            SyncLock _lock
+                Return _list.OrderBy(keySelector)
+            End SyncLock
+        End Function
+
         Public Function Count() As Integer
             SyncLock _lock
                 Return _list.Count
