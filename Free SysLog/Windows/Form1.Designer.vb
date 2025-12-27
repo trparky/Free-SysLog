@@ -833,8 +833,8 @@ Partial Class Form1
         'DonationStripMenuItem
         '
         Me.DonationStripMenuItem.Name = "DonationStripMenuItem"
-        Me.DonationStripMenuItem.Size = New System.Drawing.Size(113, 20)
-        Me.DonationStripMenuItem.Text = "Donate via PayPal"
+        Me.DonationStripMenuItem.Size = New System.Drawing.Size(177, 20)
+        Me.DonationStripMenuItem.Text = "Donate to me via ""Buy Me A Coffee"""
         '
         'StopServerStripMenuItem
         '
