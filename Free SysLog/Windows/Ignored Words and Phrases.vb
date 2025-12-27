@@ -787,7 +787,7 @@ Public Class IgnoredWordsAndPhrases
                         sinceLastEvent = currentDate - dateOfLastEvent
                         item.timeSpanOfLastOccurrence = sinceLastEvent
                         item.dateOfLastOccurrence = dateOfLastEvent
-                        item.SubItems(colDateOfLastEvent.Index).Text = $"{dateOfLastEvent.ToLocalTime.ToLongDateString} {dateOfLastEvent.ToLocalTime.ToLongTimeString}"
+                        item.SubItems(colDateOfLastEvent.Index).Text = $"{dateOfLastEvent.ToLocalTime:D} {dateOfLastEvent.ToLocalTime:T}"
                         item.SubItems(colSinceLastEvent.Index).Text = TimespanToHMS(sinceLastEvent)
                     Else
                         item.SubItems(colDateOfLastEvent.Index).Text = ""
