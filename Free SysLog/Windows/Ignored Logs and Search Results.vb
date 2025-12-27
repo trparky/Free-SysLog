@@ -347,7 +347,7 @@ Public Class IgnoredLogsAndSearchResults
                     Else
                         savedData = New SavedData With {
                                                     .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                    .ServerDate = myItem.Cells(ColumnIndex_ServerTime).Value,
+                                                    .ServerDate = myItem.ServerDate,
                                                     .logType = myItem.Cells(ColumnIndex_LogType).Value,
                                                     .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
                                                     .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
@@ -630,8 +630,7 @@ Public Class IgnoredLogsAndSearchResults
             Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
             Dim strIgnoredPattern As String = selectedRow.IgnoredPattern
 
-            Dim IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-            IgnoredWordsAndPhrasesOrAlertsInstance.strIgnoredPattern = strIgnoredPattern
+            Dim IgnoredWordsAndPhrasesOrAlertsInstance As New IgnoredWordsAndPhrases With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .strIgnoredPattern = strIgnoredPattern}
             IgnoredWordsAndPhrasesOrAlertsInstance.Show()
         End If
     End Sub
