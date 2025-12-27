@@ -147,9 +147,11 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
                     .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
                     .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
-                    .SubItems.Add("0")
                     .SubItems.Add(If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text"))
                     .SubItems.Add(Date.Now.ToLongDateString)
+                    .SubItems.Add("")
+                    .SubItems.Add("0")
+                    .SubItems.Add("")
                     .SubItems.Add(If(ChkRecord.Checked, "Yes", "No"))
                     .BoolRegex = ChkRegex.Checked
                     .BoolCaseSensitive = ChkCaseSensitive.Checked
