@@ -15,6 +15,10 @@ Public Class IgnoredWordsAndPhrases
     Private Const strWindowTitle As String = "Ignored Words and Phrases"
     Private strOldRuleText As String
 
+    Private Sub ListViewMenu_Closed(sender As Object, e As ToolStripDropDownClosedEventArgs) Handles ListViewMenu.Closed
+        boolCurrentlyEditing = False
+    End Sub
+
     Private Property boolCurrentlyEditing As Boolean
         Get
             Return _boolCurrentlyEditing
@@ -105,29 +109,29 @@ Public Class IgnoredWordsAndPhrases
                         .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
                     End If
 
-	                If Not strOldRuleText.Equals(TxtIgnored.Text, StringComparison.OrdinalIgnoreCase) Then
+                    If Not strOldRuleText.Equals(TxtIgnored.Text, StringComparison.OrdinalIgnoreCase) Then
                         IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
                         .intHits = 0
-                		.dateOfLastOccurrence = Date.MinValue
-                		.timeSpanOfLastOccurrence = TimeSpan.MinValue
-                		.SubItems(colHits.Index).Text = "0"
-                		.SubItems(colDateOfLastEvent.Index).Text = ""
-                		.SubItems(colSinceLastEvent.Index).Text = ""
-                		.intHits = 0
-	                End If
+                        .dateOfLastOccurrence = Date.MinValue
+                        .timeSpanOfLastOccurrence = TimeSpan.MinValue
+                        .SubItems(colHits.Index).Text = "0"
+                        .SubItems(colDateOfLastEvent.Index).Text = ""
+                        .SubItems(colSinceLastEvent.Index).Text = ""
+                        .intHits = 0
+                    End If
 
-	                If .BoolEnabled Then
-	                    .BackColor = Color.LightGreen
-	                    .SubItems(colHits.Index).Text = "0"
-	                    .intHits = 0
-	                Else
-	                    .BackColor = Color.Pink
-	                    .SubItems(colHits.Index).Text = ""
-	                    .SubItems(colDateOfLastEvent.Index).Text = ""
-	                    .SubItems(colSinceLastEvent.Index).Text = ""
-	                    .intHits = 0
-	                    .dateOfLastOccurrence = Date.MinValue
-	                    .timeSpanOfLastOccurrence = TimeSpan.MinValue
+                    If .BoolEnabled Then
+                        .BackColor = Color.LightGreen
+                        .SubItems(colHits.Index).Text = "0"
+                        .intHits = 0
+                    Else
+                        .BackColor = Color.Pink
+                        .SubItems(colHits.Index).Text = ""
+                        .SubItems(colDateOfLastEvent.Index).Text = ""
+                        .SubItems(colSinceLastEvent.Index).Text = ""
+                        .intHits = 0
+                        .dateOfLastOccurrence = Date.MinValue
+                        .timeSpanOfLastOccurrence = TimeSpan.MinValue
                         IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
                     End If
                 End With
@@ -399,6 +403,8 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub ListViewMenu_Opening(sender As Object, e As ComponentModel.CancelEventArgs) Handles ListViewMenu.Opening
+        boolCurrentlyEditing = True
+
         ' Default visibility settings
         EnableDisableToolStripMenuItem.Visible = False
         ResetHitsToolStripMenuItem.Visible = False
