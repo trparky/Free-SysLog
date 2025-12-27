@@ -479,7 +479,7 @@ Namespace SyslogParser
                                       ParentForm.SelectLatestLogEntry()
                                   End Sub)
             ElseIf boolIgnored Then
-                If ParentForm.ChkEnableRecordingOfIgnoredLogs.Checked Or boolRecordIgnoredLog Then
+                If My.Settings.recordIgnoredLogs Or boolRecordIgnoredLog Then
                     SyncLock ParentForm.IgnoredLogsLockObject
                         Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
                                                                                   dateObject:=currentDate,
