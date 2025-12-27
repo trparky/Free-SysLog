@@ -19,7 +19,7 @@ Public Class Form1
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
     Public ReadOnly IgnoredLogsLockObject As New Object
-    Private Const strPayPal As String = "https://paypal.me/trparky"
+    Private Const strBuyMeACoffee As String = "https://buymeacoffee.com/trparky"
     Private serverThread As Threading.Thread
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
     Private boolServerRunning As Boolean = False
@@ -1543,7 +1543,7 @@ Public Class Form1
     End Sub
 
     Private Sub DonationStripMenuItem_Click(sender As Object, e As EventArgs) Handles DonationStripMenuItem.Click
-        Process.Start(strPayPal)
+        Process.Start(New ProcessStartInfo(strBuyMeACoffee) With {.UseShellExecute = True})
     End Sub
 
     Private Sub StopServerStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopServerStripMenuItem.Click
