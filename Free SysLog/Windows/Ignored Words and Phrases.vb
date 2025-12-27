@@ -532,6 +532,9 @@ Public Class IgnoredWordsAndPhrases
                 listOfIgnoredClass.Add(New IgnoredClass() With {.StrIgnore = item.SubItems(Ignored.Index).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .BoolEnabled = item.BoolEnabled, .IgnoreType = item.IgnoreType, .dateCreated = item.dateCreated, .strComment = item.strComment, .BoolRecordLog = item.BoolRecordLog})
             Next
 
+            listOfIgnoredClass.Sort(Function(x As IgnoredClass, y As IgnoredClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            listOfIgnoredClass.Sort(Function(x As IgnoredClass, y As IgnoredClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
+
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfIgnoredClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then

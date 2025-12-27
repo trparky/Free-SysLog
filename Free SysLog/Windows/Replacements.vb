@@ -334,6 +334,9 @@ Public Class Replacements
                 listOfReplacementsClass.Add(New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled})
             Next
 
+            listOfReplacementsClass.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            listOfReplacementsClass.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
+
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then

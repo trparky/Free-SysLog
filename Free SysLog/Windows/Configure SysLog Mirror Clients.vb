@@ -247,6 +247,8 @@ Public Class ConfigureSysLogMirrorClients
                 listOfSysLogProxyServer.Add(New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text})
             Next
 
+            listOfSysLogProxyServer.Sort(Function(x As SysLogProxyServer, y As SysLogProxyServer) y.boolEnabled.CompareTo(x.boolEnabled))
+
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then

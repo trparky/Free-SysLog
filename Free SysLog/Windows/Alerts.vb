@@ -402,6 +402,9 @@ Public Class Alerts
                 listOfAlertsClass.Add(New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled, .BoolLimited = item.BoolLimited})
             Next
 
+            listOfAlertsClass.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            listOfAlertsClass.Sort(Function(x As AlertsClass, y As AlertsClass) y.BoolEnabled.CompareTo(x.BoolEnabled))
+
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfAlertsClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
