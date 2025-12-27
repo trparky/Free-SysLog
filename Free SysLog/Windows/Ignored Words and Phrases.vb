@@ -10,10 +10,25 @@ Public Class IgnoredWordsAndPhrases
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
     Private AutoRefreshTimer As Timer
-    Private boolCurrentlyEditing As Boolean = False
+    Private _boolCurrentlyEditing As Boolean = False
     Private boolF1KeyDown As Boolean = False
     Private Const strWindowTitle As String = "Ignored Words and Phrases"
     Private strOldRuleText As String
+
+    Private Property boolCurrentlyEditing As Boolean
+        Get
+            Return _boolCurrentlyEditing
+        End Get
+        Set(value As Boolean)
+            _boolCurrentlyEditing = value
+
+            If value Then
+                Text = $"{strWindowTitle} — Auto Refresh Paused"
+            Else
+                Text = $"{strWindowTitle} — Auto Refresh Enabled"
+            End If
+        End Set
+    End Property
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles IgnoredListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -156,8 +171,6 @@ Public Class IgnoredWordsAndPhrases
             ChkRemoteProcess.Checked = False
             ChkRecord.Checked = False
             strOldRuleText = Nothing
-
-            Text = $"{strWindowTitle} — Auto Refresh Enabled"
         End If
     End Sub
 
@@ -236,7 +249,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
-        If boolCurrentlyEditing Or boolF1KeyDown OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
+        If _boolCurrentlyEditing Or boolF1KeyDown OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
         btnUpdateHits.PerformClick()
     End Sub
 
@@ -355,8 +368,6 @@ Public Class IgnoredWordsAndPhrases
             boolEditMode = True
             BtnAdd.Text = "Save"
             Label4.Text = "Edit Ignored Words and Phrases"
-
-            Text = $"{strWindowTitle} — Auto Refresh Paused"
 
             Dim selectedItemObject As MyIgnoredListViewItem = DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
 
@@ -646,8 +657,6 @@ Public Class IgnoredWordsAndPhrases
         ChkEnabled.Checked = True
         BtnCancel.Visible = False
         boolCurrentlyEditing = False
-
-        Text = $"{strWindowTitle} — Auto Refresh Enabled"
     End Sub
 
     Private Sub btnDeleteDuringEditing_Click(sender As Object, e As EventArgs) Handles btnDeleteDuringEditing.Click
