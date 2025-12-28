@@ -57,6 +57,7 @@ Partial Class ViewLogBackups
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
+        Me.ShowInWindowsExplorerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.FileList, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -112,32 +113,32 @@ Partial Class ViewLogBackups
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.UnhideToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(147, 92)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 136)
         '
         'DeleteToolStripMenuItem
         '
         Me.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
-        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
+        Me.DeleteToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.DeleteToolStripMenuItem.Text = "&Delete"
         '
         'ViewToolStripMenuItem
         '
         Me.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
-        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
+        Me.ViewToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.ViewToolStripMenuItem.Text = "&View"
         '
         'HideToolStripMenuItem
         '
         Me.HideToolStripMenuItem.Name = "HideToolStripMenuItem"
-        Me.HideToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
+        Me.HideToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.HideToolStripMenuItem.Text = "Hide"
         '
         'UnhideToolStripMenuItem
         '
         Me.UnhideToolStripMenuItem.Name = "UnhideToolStripMenuItem"
-        Me.UnhideToolStripMenuItem.Size = New System.Drawing.Size(146, 22)
+        Me.UnhideToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.UnhideToolStripMenuItem.Text = "Unhide/Show"
         '
         'BtnView
@@ -365,6 +366,12 @@ Partial Class ViewLogBackups
         Me.btnViewLogsWithLimits.Text = "View All with Limits"
         Me.btnViewLogsWithLimits.UseVisualStyleBackColor = True
         '
+        'ShowInWindowsExplorerToolStripMenuItem
+        '
+        Me.ShowInWindowsExplorerToolStripMenuItem.Name = "ShowInWindowsExplorerToolStripMenuItem"
+        Me.ShowInWindowsExplorerToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
+        Me.ShowInWindowsExplorerToolStripMenuItem.Text = "Show in Windows Explorer"
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -437,4 +444,5 @@ Partial Class ViewLogBackups
     Friend WithEvents boxLimitBy As ComboBox
     Friend WithEvents boxLimiter As ComboBox
     Friend WithEvents btnViewLogsWithLimits As Button
+    Friend WithEvents ShowInWindowsExplorerToolStripMenuItem As ToolStripMenuItem
 End Class
