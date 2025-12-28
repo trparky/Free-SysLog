@@ -1250,6 +1250,11 @@ Public Class Form1
         IgnoredStats.Clear()
         longNumberOfIgnoredLogs = 0
         LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+
+        If My.Settings.saveIgnoredLogCount Then
+            NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+            WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+        End If
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
