@@ -429,6 +429,7 @@ Public Class ViewLogBackups
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
         If FileList.SelectedRows.Count > 0 Then
             DeleteToolStripMenuItem.Enabled = True
+            ShowInWindowsExplorerToolStripMenuItem.Visible = True
             ViewToolStripMenuItem.Enabled = FileList.SelectedRows.Count <= 1
 
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
@@ -443,6 +444,7 @@ Public Class ViewLogBackups
         Else
             DeleteToolStripMenuItem.Enabled = False
             ViewToolStripMenuItem.Enabled = False
+            ShowInWindowsExplorerToolStripMenuItem.Visible = False
         End If
     End Sub
 
@@ -705,5 +707,9 @@ Public Class ViewLogBackups
                                               End Sub
 
         worker.RunWorkerAsync()
+    End Sub
+
+    Private Sub ShowInWindowsExplorerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowInWindowsExplorerToolStripMenuItem.Click
+        SelectFileInWindowsExplorer(Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value))
     End Sub
 End Class
