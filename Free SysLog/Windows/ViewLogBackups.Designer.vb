@@ -58,6 +58,7 @@ Partial Class ViewLogBackups
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
         Me.ShowInWindowsExplorerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RenameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.FileList, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -113,9 +114,9 @@ Partial Class ViewLogBackups
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 136)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 158)
         '
         'DeleteToolStripMenuItem
         '
@@ -311,6 +312,12 @@ Partial Class ViewLogBackups
         Me.ToolTip.SetToolTip(Me.ChkIgnoreSearchResultsLimits, "Warning: Enabling this could cause performance issues.")
         Me.ChkIgnoreSearchResultsLimits.UseVisualStyleBackColor = True
         '
+        'RenameToolStripMenuItem
+        '
+        Me.RenameToolStripMenuItem.Name = "RenameToolStripMenuItem"
+        Me.RenameToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
+        Me.RenameToolStripMenuItem.Text = "Rename"
+        '
         'ChkLogFileDeletions
         '
         Me.ChkLogFileDeletions.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -445,4 +452,5 @@ Partial Class ViewLogBackups
     Friend WithEvents boxLimiter As ComboBox
     Friend WithEvents btnViewLogsWithLimits As Button
     Friend WithEvents ShowInWindowsExplorerToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RenameToolStripMenuItem As ToolStripMenuItem
 End Class

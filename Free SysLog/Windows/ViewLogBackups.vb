@@ -430,6 +430,7 @@ Public Class ViewLogBackups
         If FileList.SelectedRows.Count > 0 Then
             DeleteToolStripMenuItem.Enabled = True
             ShowInWindowsExplorerToolStripMenuItem.Visible = True
+            RenameToolStripMenuItem.Visible = True
             ViewToolStripMenuItem.Enabled = FileList.SelectedRows.Count <= 1
 
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
@@ -445,6 +446,7 @@ Public Class ViewLogBackups
             DeleteToolStripMenuItem.Enabled = False
             ViewToolStripMenuItem.Enabled = False
             ShowInWindowsExplorerToolStripMenuItem.Visible = False
+            RenameToolStripMenuItem.Visible = False
         End If
     End Sub
 
@@ -711,5 +713,53 @@ Public Class ViewLogBackups
 
     Private Sub ShowInWindowsExplorerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowInWindowsExplorerToolStripMenuItem.Click
         SelectFileInWindowsExplorer(Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value))
+    End Sub
+
+    Private Sub RenameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RenameToolStripMenuItem.Click
+        Dim strOldFileName As String = FileList.SelectedRows(0).Cells(0).Value.ToString()
+        Dim strOldFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strOldFileName)
+
+        Dim strNewFileName As String = InputBox("Enter the new name for the selected file:", "Rename File", strOldFileName)
+
+        If String.IsNullOrWhiteSpace(strNewFileName) Then
+            MsgBox("No name entered.", MsgBoxStyle.Exclamation, Text)
+            Exit Sub
+        End If
+
+        ' Ensure extension is preserved if user removes it
+        Dim strOldFileExtension As String = Path.GetExtension(strOldFileName)
+
+        If String.IsNullOrEmpty(Path.GetExtension(strNewFileName)) Then
+            strNewFileName &= strOldFileExtension
+        End If
+
+        ' Invalid character check
+        Dim invalidChars() As Char = Path.GetInvalidFileNameChars()
+
+        If strNewFileName.IndexOfAny(invalidChars) >= 0 Then
+            MsgBox("Invalid characters in file name.", MsgBoxStyle.Critical, Text)
+            Exit Sub
+        End If
+
+        Dim strNewFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strNewFileName)
+
+        ' Ensure user didn't re-enter the same name
+        If strOldFileNameFullPath.Equals(strNewFileNameFullPath, StringComparison.OrdinalIgnoreCase) Then
+            MsgBox("The new name is the same as the old name.", MsgBoxStyle.Information, Text)
+            Exit Sub
+        End If
+
+        ' Check for collisions
+        If File.Exists(strNewFileNameFullPath) Then
+            MsgBox("A file with that name already exists.", MsgBoxStyle.Critical, Text)
+            Exit Sub
+        End If
+
+        ' Finally rename
+        File.Move(strOldFileNameFullPath, strNewFileNameFullPath)
+
+        MsgBox("File renamed successfully.", MsgBoxStyle.Information, Text)
+
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 End Class
