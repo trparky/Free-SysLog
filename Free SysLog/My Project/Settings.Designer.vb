@@ -1412,6 +1412,18 @@ Namespace My
                 Me("ShowNTFSCompressionSizeDifferencePercentage") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property CompressBackupLogFiles() As Boolean
+            Get
+                Return CType(Me("CompressBackupLogFiles"),Boolean)
+            End Get
+            Set
+                Me("CompressBackupLogFiles") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

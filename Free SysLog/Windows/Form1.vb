@@ -178,7 +178,9 @@ Public Class Form1
 
     Private Sub MakeLogBackup()
         WriteLogsToDisk()
-        File.Copy(strPathToDataFile, GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json")))
+        Dim strLogFileBackupFileName As String = GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json"))
+        File.Copy(strPathToDataFile, strLogFileBackupFileName)
+        If My.Settings.CompressBackupLogFiles Then CompressFile(strLogFileBackupFileName)
     End Sub
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
@@ -328,6 +330,7 @@ Public Class Form1
         ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
         ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
         IncludeCommasInDHMS.Checked = My.Settings.IncludeCommasInDHMS
+        CompressBackupLogFilesToolStripMenuItem.Checked = My.Settings.CompressBackupLogFiles
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -2160,6 +2163,10 @@ Public Class Form1
 
     Private Sub IncludeCommasInDHMS_Click(sender As Object, e As EventArgs) Handles IncludeCommasInDHMS.Click
         My.Settings.IncludeCommasInDHMS = IncludeCommasInDHMS.Checked
+    End Sub
+
+    Private Sub CompressBackupLogFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CompressBackupLogFilesToolStripMenuItem.Click
+        My.Settings.CompressBackupLogFiles = CompressBackupLogFilesToolStripMenuItem.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

@@ -344,5 +344,8 @@
     <Setting Name="ShowNTFSCompressionSizeDifferencePercentage" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="CompressBackupLogFiles" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

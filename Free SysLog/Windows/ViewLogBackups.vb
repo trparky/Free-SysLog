@@ -568,20 +568,6 @@ Public Class ViewLogBackups
         BtnRefresh.PerformClick()
     End Sub
 
-    Private Sub CompressFile(fileName As String)
-        If File.Exists(fileName) Then
-            Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
-                Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_DEFAULT
-                Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
-                Marshal.WriteInt16(ptr, comp)
-
-                NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
-
-                Marshal.FreeHGlobal(ptr)
-            End Using
-        End If
-    End Sub
-
     Private Shared Function GetCompressedSize(fileName As String) As Long
         If Not File.Exists(fileName) Then Return -1
 
