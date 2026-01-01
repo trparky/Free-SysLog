@@ -72,6 +72,18 @@ Public Class ViewLogBackups
         End Try
     End Function
 
+    Private Function GetNTFSFileCompressionInfo(file As FileInfo) As String
+        Dim longNTFSCompressedFileSize As Long = GetCompressedSize(file.FullName)
+        Dim strFileSizeString As String = FileSizeToHumanSize(longNTFSCompressedFileSize)
+
+        If ChkShowNTFSCompressionSizeDifferencePercentage.Checked Then
+            Dim strPercentString As String = MyRoundingFunction(longNTFSCompressedFileSize / file.Length * 100, 2)
+            strFileSizeString &= $", {strPercentString}% smaller"
+        End If
+
+        Return strFileSizeString
+    End Function
+
     Private Sub LoadFileList()
         Dim filesInDirectory As FileInfo()
 
@@ -129,7 +141,6 @@ Public Class ViewLogBackups
                                                        .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
                                                    End With
 
-
                                                    For Each cell As DataGridViewCell In row.Cells
                                                        cell.Style.Font = My.Settings.font
                                                        If boolIsHidden AndAlso ChkShowHiddenAsGray.Checked Then cell.Style.ForeColor = Color.Gray
@@ -138,18 +149,9 @@ Public Class ViewLogBackups
 
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
-                                                   If boolIsCompressed Then
-                                                       intCompresedSize = GetCompressedSize(file.FullName)
-
-                                                       If ChkShowNTFSCompressionSizeDifference.Checked Then
-                                                           If ChkShowNTFSCompressionSizeDifferencePercentage.Checked Then
-                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(intCompresedSize)}, {MyRoundingFunction(intCompresedSize / file.Length * 100, 2)}% smaller)"
-                                                           Else
-                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(intCompresedSize)})"
-                                                           End If
-
-                                                           Interlocked.Increment(intNumberOfCompressedFiles)
-                                                       End If
+                                                   If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
+                                                       row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file)})"
+                                                       Interlocked.Increment(intNumberOfCompressedFiles)
                                                    End If
 
                                                    threadSafeListOfDataGridViewRows.Add(row)
