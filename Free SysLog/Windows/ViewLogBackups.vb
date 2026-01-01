@@ -1,10 +1,11 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
+Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
-Imports System.Runtime.InteropServices
+Imports Free_SysLog.ThreadSafetyLists
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -80,7 +81,7 @@ Public Class ViewLogBackups
             filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
         End If
 
-        Dim listOfDataGridViewRows As New List(Of DataGridViewRow)
+        Dim threadSafeListOfDataGridViewRows As New ThreadSafeList(Of DataGridViewRow)
         Dim intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace As Long
         Dim intNumberOfCompressedFiles As Integer = 0
@@ -151,15 +152,13 @@ Public Class ViewLogBackups
                                                        End If
                                                    End If
 
-                                                   ' Thread-safe add to list
-                                                   SyncLock listOfDataGridViewRows
-                                                       listOfDataGridViewRows.Add(row)
-                                                   End SyncLock
+                                                   threadSafeListOfDataGridViewRows.Add(row)
                                                End If
                                            End Sub)
 
         Invoke(Sub()
-                   listOfDataGridViewRows = listOfDataGridViewRows.OrderBy(Function(row As MyDataGridViewFileRow) row.fileDate).ToList()
+                   Dim listOfDataGridViewRows As List(Of DataGridViewRow) = threadSafeListOfDataGridViewRows.GetSnapshot.OrderBy(Function(row As MyDataGridViewFileRow) row.fileDate).ToList()
+                   threadSafeListOfDataGridViewRows = Nothing
 
                    If intNumberOfCompressedFiles = 0 Then
                        ColFileSize.HeaderText = "File Size"
