@@ -72,16 +72,24 @@ Public Class ViewLogBackups
         End Try
     End Function
 
-    Private Function GetNTFSFileCompressionInfo(file As FileInfo) As String
+    Private Function GetNTFSFileCompressionInfo(file As FileInfo, ByRef longUsedDiskSpace As Long) As String
         Dim longNTFSCompressedFileSize As Long = GetCompressedSize(file.FullName)
-        Dim strFileSizeString As String = FileSizeToHumanSize(longNTFSCompressedFileSize)
 
-        If ChkShowNTFSCompressionSizeDifferencePercentage.Checked Then
-            Dim strPercentString As String = MyRoundingFunction(longNTFSCompressedFileSize / file.Length * 100, 2)
-            strFileSizeString &= $", {strPercentString}% smaller"
+        If longNTFSCompressedFileSize = -1 Then
+            Interlocked.Add(longUsedDiskSpace, file.Length)
+            Return "Error"
+        Else
+            Interlocked.Add(longUsedDiskSpace, longNTFSCompressedFileSize)
+
+            Dim strFileSizeString As String = FileSizeToHumanSize(longNTFSCompressedFileSize)
+
+            If ChkShowNTFSCompressionSizeDifferencePercentage.Checked Then
+                Dim strPercentString As String = MyRoundingFunction(longNTFSCompressedFileSize / file.Length * 100, 2)
+                strFileSizeString &= $", {strPercentString}% smaller"
+            End If
+
+            Return strFileSizeString
         End If
-
-        Return strFileSizeString
     End Function
 
     Private Sub LoadFileList()
@@ -103,11 +111,9 @@ Public Class ViewLogBackups
                                                Dim boolIsCompressed As Boolean = (file.Attributes And FileAttributes.Compressed) = FileAttributes.Compressed
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
                                                Dim intCompresedSize As Long = -1
+                                               Dim longNTFSCompressedFileSize As Long = -1
 
                                                If intCount <> -1 Then
-                                                   ' Accumulate counts and totals
-                                                   Interlocked.Add(longUsedDiskSpace, file.Length)
-
                                                    If boolIsHidden Then
                                                        Interlocked.Increment(intHiddenFileCount)
                                                        Interlocked.Add(intHiddenTotalLogCount, intCount)
@@ -150,9 +156,11 @@ Public Class ViewLogBackups
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
                                                    If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
-                                                       row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file)})"
+                                                       row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file, longUsedDiskSpace)})"
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
                                                    End If
+
+                                                   If Not boolIsCompressed Then Interlocked.Add(longUsedDiskSpace, file.Length)
 
                                                    threadSafeListOfDataGridViewRows.Add(row)
                                                End If
@@ -179,7 +187,13 @@ Public Class ViewLogBackups
                    FileList.ResumeLayout()
 
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
-                   LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+
+                   If intNumberOfCompressedFiles = 0 Then
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                   Else
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                   End If
+
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
 
                    lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
@@ -568,6 +582,9 @@ Public Class ViewLogBackups
         BtnRefresh.PerformClick()
     End Sub
 
+    ''' <summary>Returns the NTFS compressed size of a file on disk. Returns a -1 if an error occurs.</summary>
+    ''' <param name="fileName">Path to the file to get the size of.</param>
+    ''' <returns>A 64-bit Integer.</returns>
     Private Shared Function GetCompressedSize(fileName As String) As Long
         If Not File.Exists(fileName) Then Return -1
 
