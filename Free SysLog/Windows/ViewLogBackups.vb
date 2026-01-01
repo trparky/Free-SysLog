@@ -133,6 +133,8 @@ Public Class ViewLogBackups
                                                        If boolIsCompressed Then cell.Style.ForeColor = Color.Blue
                                                    Next
 
+                                                   row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
                                                    If boolIsCompressed Then row.Cells(2).Value &= " (" & FileSizeToHumanSize(GetCompressedSize(file.FullName)) & ")"
 
                                                    ' Thread-safe add to list
@@ -167,7 +169,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub DataGridView1_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles FileList.CellPainting
-        If e.RowIndex = -1 AndAlso (e.ColumnIndex = colHidden.Index Or e.ColumnIndex = colEntryCount.Index) Then
+        If e.RowIndex = -1 AndAlso (e.ColumnIndex = colHidden.Index Or e.ColumnIndex = colEntryCount.Index Or e.ColumnIndex = ColFileSize.Index) Then
             e.PaintBackground(e.CellBounds, False)
             TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
             e.Handled = True
