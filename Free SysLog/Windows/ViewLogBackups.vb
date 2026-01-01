@@ -83,11 +83,13 @@ Public Class ViewLogBackups
         Dim listOfDataGridViewRows As New List(Of DataGridViewRow)
         Dim intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace As Long
+        Dim intNumberOfCompressedFiles As Integer = 0
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
                                                Dim boolIsCompressed As Boolean = (file.Attributes And FileAttributes.Compressed) = FileAttributes.Compressed
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
+                                               Dim intCompresedSize As Long = -1
 
                                                If intCount <> -1 Then
                                                    ' Accumulate counts and totals
@@ -135,7 +137,19 @@ Public Class ViewLogBackups
 
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
-                                                   If boolIsCompressed Then row.Cells(2).Value &= " (" & FileSizeToHumanSize(GetCompressedSize(file.FullName)) & ")"
+                                                   If boolIsCompressed Then
+                                                       intCompresedSize = GetCompressedSize(file.FullName)
+
+                                                       If ChkShowNTFSCompressionSizeDifference.Checked Then
+                                                           If ChkShowNTFSCompressionSizeDifferencePercentage.Checked Then
+                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(intCompresedSize)}, {MyRoundingFunction(intCompresedSize / file.Length * 100, 2)}% smaller)"
+                                                           Else
+                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(intCompresedSize)})"
+                                                           End If
+
+                                                           Interlocked.Increment(intNumberOfCompressedFiles)
+                                                       End If
+                                                   End If
 
                                                    ' Thread-safe add to list
                                                    SyncLock listOfDataGridViewRows
@@ -146,6 +160,12 @@ Public Class ViewLogBackups
 
         Invoke(Sub()
                    listOfDataGridViewRows = listOfDataGridViewRows.OrderBy(Function(row As MyDataGridViewFileRow) row.fileDate).ToList()
+
+                   If intNumberOfCompressedFiles = 0 Then
+                       ColFileSize.HeaderText = "File Size"
+                   Else
+                       ColFileSize.HeaderText = "File Size (Compressed Size)"
+                   End If
 
                    If My.Settings.font IsNot Nothing Then
                        FileList.DefaultCellStyle.Font = My.Settings.font
@@ -194,6 +214,10 @@ Public Class ViewLogBackups
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
         colEntryCount.Width = My.Settings.viewLogBackupsEntryCountColumnSize
         colHidden.Width = My.Settings.viewLogBackupsHiddenColumnSize
+
+        ChkShowNTFSCompressionSizeDifference.Checked = My.Settings.ShowNTFSCompressionSizeDifference
+        ChkShowNTFSCompressionSizeDifferencePercentage.Enabled = ChkShowNTFSCompressionSizeDifference.Checked
+        ChkShowNTFSCompressionSizeDifferencePercentage.Checked = My.Settings.ShowNTFSCompressionSizeDifferencePercentage
 
         LoadColumnOrders(FileList.Columns, My.Settings.fileListColumnOrder)
 
@@ -848,6 +872,17 @@ Public Class ViewLogBackups
 
         MsgBox("File renamed successfully.", MsgBoxStyle.Information, Text)
 
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+    End Sub
+
+    Private Sub ChkShowNTFSCompressionSizeDifference_Click(sender As Object, e As EventArgs) Handles ChkShowNTFSCompressionSizeDifference.Click
+        My.Settings.ShowNTFSCompressionSizeDifference = ChkShowNTFSCompressionSizeDifference.Checked
+        ChkShowNTFSCompressionSizeDifferencePercentage.Enabled = ChkShowNTFSCompressionSizeDifference.Checked
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+    End Sub
+
+    Private Sub ChkShowNTFSCompressionSizeDifferencePercentage_Click(sender As Object, e As EventArgs) Handles ChkShowNTFSCompressionSizeDifferencePercentage.Click
+        My.Settings.ShowNTFSCompressionSizeDifferencePercentage = ChkShowNTFSCompressionSizeDifferencePercentage.Checked
         ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 End Class

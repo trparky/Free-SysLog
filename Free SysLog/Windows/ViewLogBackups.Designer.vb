@@ -32,6 +32,8 @@ Partial Class ViewLogBackups
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnView = New System.Windows.Forms.Button()
         Me.BtnDelete = New System.Windows.Forms.Button()
+        Me.ChkShowNTFSCompressionSizeDifference = New System.Windows.Forms.CheckBox()
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage = New System.Windows.Forms.CheckBox()
         Me.BtnRefresh = New System.Windows.Forms.Button()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblNumberOfFiles = New System.Windows.Forms.ToolStripStatusLabel()
@@ -83,7 +85,7 @@ Partial Class ViewLogBackups
         Me.FileList.ReadOnly = True
         Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.FileList.Size = New System.Drawing.Size(929, 243)
+        Me.FileList.Size = New System.Drawing.Size(990, 243)
         Me.FileList.TabIndex = 36
         '
         'ColFileName
@@ -118,7 +120,7 @@ Partial Class ViewLogBackups
         '
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.CompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 202)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 180)
         '
         'DeleteToolStripMenuItem
         '
@@ -181,7 +183,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(954, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(1015, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -226,6 +228,28 @@ Partial Class ViewLogBackups
         Me.ChkRegExSearch.TabIndex = 32
         Me.ChkRegExSearch.Text = "Regex?"
         Me.ChkRegExSearch.UseVisualStyleBackColor = True
+        '
+        'ChkShowNTFSCompressionSizeDifference
+        '
+        Me.ChkShowNTFSCompressionSizeDifference.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowNTFSCompressionSizeDifference.AutoSize = True
+        Me.ChkShowNTFSCompressionSizeDifference.Location = New System.Drawing.Point(714, 265)
+        Me.ChkShowNTFSCompressionSizeDifference.Name = "ChkShowNTFSCompressionSizeDifference"
+        Me.ChkShowNTFSCompressionSizeDifference.Size = New System.Drawing.Size(222, 17)
+        Me.ChkShowNTFSCompressionSizeDifference.TabIndex = 43
+        Me.ChkShowNTFSCompressionSizeDifference.Text = "Show NTFS Compression Size Difference"
+        Me.ChkShowNTFSCompressionSizeDifference.UseVisualStyleBackColor = True
+        '
+        'ChkShowNTFSCompressionSizeDifferencePercentage
+        '
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.AutoSize = True
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Location = New System.Drawing.Point(714, 292)
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Name = "ChkShowNTFSCompressionSizeDifferencePercentage"
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Size = New System.Drawing.Size(280, 17)
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.TabIndex = 44
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Text = "Show NTFS Compression Size Difference Percentage"
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.UseVisualStyleBackColor = True
         '
         'BtnSearch
         '
@@ -397,7 +421,7 @@ Partial Class ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(954, 364)
+        Me.ClientSize = New System.Drawing.Size(1015, 364)
         Me.Controls.Add(Me.btnViewLogsWithLimits)
         Me.Controls.Add(Me.boxLimiter)
         Me.Controls.Add(Me.boxLimitBy)
@@ -416,10 +440,12 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.BtnView)
         Me.Controls.Add(Me.FileList)
         Me.Controls.Add(Me.ChkLogFileDeletions)
+        Me.Controls.Add(Me.ChkShowNTFSCompressionSizeDifference)
+        Me.Controls.Add(Me.ChkShowNTFSCompressionSizeDifferencePercentage)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(970, 403)
+        Me.MinimumSize = New System.Drawing.Size(1031, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
@@ -469,4 +495,6 @@ Partial Class ViewLogBackups
     Friend WithEvents RenameToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UncompressFileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChkShowNTFSCompressionSizeDifference As CheckBox
+    Friend WithEvents ChkShowNTFSCompressionSizeDifferencePercentage As CheckBox
 End Class
