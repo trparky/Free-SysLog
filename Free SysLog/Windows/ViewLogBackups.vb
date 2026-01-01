@@ -4,7 +4,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
-Imports Microsoft.VisualBasic.Logging
+Imports System.Runtime.InteropServices
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -86,6 +86,7 @@ Public Class ViewLogBackups
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
+                                               Dim boolIsCompressed As Boolean = (file.Attributes And FileAttributes.Compressed) = FileAttributes.Compressed
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
 
                                                If intCount <> -1 Then
@@ -129,7 +130,10 @@ Public Class ViewLogBackups
                                                    For Each cell As DataGridViewCell In row.Cells
                                                        cell.Style.Font = My.Settings.font
                                                        If boolIsHidden AndAlso ChkShowHiddenAsGray.Checked Then cell.Style.ForeColor = Color.Gray
+                                                       If boolIsCompressed Then cell.Style.ForeColor = Color.Blue
                                                    Next
+
+                                                   If boolIsCompressed Then row.Cells(2).Value &= " (" & FileSizeToHumanSize(GetCompressedSize(file.FullName)) & ")"
 
                                                    ' Thread-safe add to list
                                                    SyncLock listOfDataGridViewRows
@@ -442,6 +446,14 @@ Public Class ViewLogBackups
                 UnhideToolStripMenuItem.Visible = False
                 HideToolStripMenuItem.Visible = True
             End If
+
+            If (New FileInfo(fileName).Attributes And FileAttributes.Compressed) = FileAttributes.Compressed Then
+                UncompressFileToolStripMenuItem.Visible = True
+                CompressFileToolStripMenuItem.Visible = False
+            Else
+                UncompressFileToolStripMenuItem.Visible = False
+                CompressFileToolStripMenuItem.Visible = True
+            End If
         Else
             DeleteToolStripMenuItem.Enabled = False
             ViewToolStripMenuItem.Enabled = False
@@ -462,6 +474,38 @@ Public Class ViewLogBackups
         My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
         ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         colHidden.Visible = ChkShowHidden.Checked
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub UncompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UncompressFileToolStripMenuItem.Click
+        Dim fileName As String
+
+        If FileList.SelectedRows.Count > 1 Then
+            For Each item As DataGridViewRow In FileList.SelectedRows
+                fileName = Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value)
+                UncompressFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
+            UncompressFile(fileName)
+        End If
+
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub CompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CompressFileToolStripMenuItem.Click
+        Dim fileName As String
+
+        If FileList.SelectedRows.Count > 1 Then
+            For Each item As DataGridViewRow In FileList.SelectedRows
+                fileName = Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value)
+                CompressFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
+            CompressFile(fileName)
+        End If
+
         BtnRefresh.PerformClick()
     End Sub
 
@@ -495,6 +539,48 @@ Public Class ViewLogBackups
         End If
 
         BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub CompressFile(fileName As String)
+        If File.Exists(fileName) Then
+            Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_DEFAULT
+                Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
+                Marshal.WriteInt16(ptr, comp)
+
+                NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
+
+                Marshal.FreeHGlobal(ptr)
+            End Using
+        End If
+    End Sub
+
+    Private Shared Function GetCompressedSize(fileName As String) As Long
+        If Not File.Exists(fileName) Then Return -1
+
+        Dim high As UInteger = 0
+        Dim low As UInteger = NativeMethod.NativeMethods.GetCompressedFileSize(fileName, high)
+
+        If low = &HFFFFFFFFUI AndAlso Marshal.GetLastWin32Error() <> 0 Then
+            ' error, return -1 or throw exception
+            Return -1
+        End If
+
+        Return (CLng(high) << 32) + low
+    End Function
+
+    Private Sub UncompressFile(fileName As String)
+        If File.Exists(fileName) Then
+            Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_NONE
+                Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
+                Marshal.WriteInt16(ptr, comp)
+
+                NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
+
+                Marshal.FreeHGlobal(ptr)
+            End Using
+        End If
     End Sub
 
     Private Sub HideFile(fileName As String)

@@ -55,6 +55,8 @@ Partial Class ViewLogBackups
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
+        Me.CompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UncompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
         Me.ShowInWindowsExplorerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -100,7 +102,7 @@ Partial Class ViewLogBackups
         '
         'ColFileSize
         '
-        Me.ColFileSize.HeaderText = "File Size"
+        Me.ColFileSize.HeaderText = "File Size (Compressed File Size)"
         Me.ColFileSize.Name = "ColFileSize"
         Me.ColFileSize.ReadOnly = True
         Me.ColFileSize.Width = 240
@@ -114,9 +116,9 @@ Partial Class ViewLogBackups
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.CompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 158)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 202)
         '
         'DeleteToolStripMenuItem
         '
@@ -201,6 +203,18 @@ Partial Class ViewLogBackups
         Me.ChkCaseInsensitiveSearch.TabIndex = 33
         Me.ChkCaseInsensitiveSearch.Text = "Case Insensitive?"
         Me.ChkCaseInsensitiveSearch.UseVisualStyleBackColor = True
+        '
+        'CompressFileToolStripMenuItem
+        '
+        Me.CompressFileToolStripMenuItem.Name = "CompressFileToolStripMenuItem"
+        Me.CompressFileToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
+        Me.CompressFileToolStripMenuItem.Text = "Compress File"
+        '
+        'UncompressFileToolStripMenuItem
+        '
+        Me.UncompressFileToolStripMenuItem.Name = "UncompressFileToolStripMenuItem"
+        Me.UncompressFileToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
+        Me.UncompressFileToolStripMenuItem.Text = "Uncompress File"
         '
         'ChkRegExSearch
         '
@@ -453,4 +467,6 @@ Partial Class ViewLogBackups
     Friend WithEvents btnViewLogsWithLimits As Button
     Friend WithEvents ShowInWindowsExplorerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RenameToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents CompressFileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents UncompressFileToolStripMenuItem As ToolStripMenuItem
 End Class
