@@ -158,9 +158,11 @@ Public Class ViewLogBackups
                                                    If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
                                                        row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file, longUsedDiskSpace)})"
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
+                                                   ElseIf boolIsCompressed AndAlso Not ChkShowNTFSCompressionSizeDifference.Checked Then
+                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                   ElseIf Not boolIsCompressed Then
+                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
                                                    End If
-
-                                                   If Not boolIsCompressed Then Interlocked.Add(longUsedDiskSpace, file.Length)
 
                                                    threadSafeListOfDataGridViewRows.Add(row)
                                                End If
@@ -189,7 +191,7 @@ Public Class ViewLogBackups
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
 
                    If intNumberOfCompressedFiles = 0 Then
-                       LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                       LblTotalDiskSpace.Text = $"Total File Size: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    Else
                        LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    End If
