@@ -233,7 +233,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowNTFSCompressionSizeDifference.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowNTFSCompressionSizeDifference.AutoSize = True
-        Me.ChkShowNTFSCompressionSizeDifference.Location = New System.Drawing.Point(714, 265)
+        Me.ChkShowNTFSCompressionSizeDifference.Location = New System.Drawing.Point(554, 292)
         Me.ChkShowNTFSCompressionSizeDifference.Name = "ChkShowNTFSCompressionSizeDifference"
         Me.ChkShowNTFSCompressionSizeDifference.Size = New System.Drawing.Size(222, 17)
         Me.ChkShowNTFSCompressionSizeDifference.TabIndex = 43
@@ -244,7 +244,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.AutoSize = True
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Location = New System.Drawing.Point(714, 292)
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Location = New System.Drawing.Point(554, 319)
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.Name = "ChkShowNTFSCompressionSizeDifferencePercentage"
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.Size = New System.Drawing.Size(280, 17)
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.TabIndex = 44
@@ -290,7 +290,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowHidden.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHidden.AutoSize = True
-        Me.ChkShowHidden.Location = New System.Drawing.Point(275, 265)
+        Me.ChkShowHidden.Location = New System.Drawing.Point(843, 292)
         Me.ChkShowHidden.Name = "ChkShowHidden"
         Me.ChkShowHidden.Size = New System.Drawing.Size(114, 17)
         Me.ChkShowHidden.TabIndex = 34
@@ -308,7 +308,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHiddenAsGray.AutoSize = True
-        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(395, 265)
+        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(843, 319)
         Me.ChkShowHiddenAsGray.Name = "ChkShowHiddenAsGray"
         Me.ChkShowHiddenAsGray.Size = New System.Drawing.Size(153, 17)
         Me.ChkShowHiddenAsGray.TabIndex = 35
@@ -342,7 +342,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkIgnoreSearchResultsLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkIgnoreSearchResultsLimits.AutoSize = True
-        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(554, 292)
+        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(843, 265)
         Me.ChkIgnoreSearchResultsLimits.Name = "ChkIgnoreSearchResultsLimits"
         Me.ChkIgnoreSearchResultsLimits.Size = New System.Drawing.Size(160, 17)
         Me.ChkIgnoreSearchResultsLimits.TabIndex = 37
