@@ -15,54 +15,58 @@ Namespace TaskHandling
         End Function
 
         Public Function DoesTaskExist()
-            Using taskService As New TaskService
-                Dim task As Task = Nothing
+            Try
+                Using taskService As New TaskService
+                    Dim task As Task = Nothing
 
-                If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
-                    If task.Definition.Settings.IdleSettings.StopOnIdleEnd Then
-                        task.Definition.Settings.IdleSettings.StopOnIdleEnd = False
-                        task.RegisterChanges()
-                    End If
-
-                    If task.Definition.Triggers.Any() Then
-                        Dim trigger As Trigger = task.Definition.Triggers(0)
-
-                        If trigger.TriggerType = TaskTriggerType.Logon Then
-                            Dim dblSeconds As Double = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
-
-                            If dblSeconds > 0 Then
-                                ParentForm.StartUpDelay.Checked = True
-                                ParentForm.StartUpDelay.Text = $"        Startup Delay ({dblSeconds} {If(dblSeconds = 1, "Second", "Seconds")})"
-                            End If
-                        End If
-                    End If
-
-                    If Not Debugger.IsAttached Then
-                        If task.Definition.Actions.Any() Then
-                            Dim action As Action = task.Definition.Actions(0)
-
-                            If action.ActionType = TaskActionType.Execute Then
-                                If Not DirectCast(action, ExecAction).Path.Replace(strQuote, "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
-                                    task.Definition.Actions.Remove(action)
-
-                                    Dim exeFileInfo As New FileInfo(strEXEPath)
-                                    task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
-                                    task.RegisterChanges()
-                                End If
-                            End If
-                        Else
-                            Dim exeFileInfo As New FileInfo(strEXEPath)
-                            task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
+                    If GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
+                        If task.Definition.Settings.IdleSettings.StopOnIdleEnd Then
+                            task.Definition.Settings.IdleSettings.StopOnIdleEnd = False
                             task.RegisterChanges()
                         End If
+
+                        If task.Definition.Triggers.Any() Then
+                            Dim trigger As Trigger = task.Definition.Triggers(0)
+
+                            If trigger.TriggerType = TaskTriggerType.Logon Then
+                                Dim dblSeconds As Double = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+
+                                If dblSeconds > 0 Then
+                                    ParentForm.StartUpDelay.Checked = True
+                                    ParentForm.StartUpDelay.Text = $"        Startup Delay ({dblSeconds} {If(dblSeconds = 1, "Second", "Seconds")})"
+                                End If
+                            End If
+                        End If
+
+                        If Not Debugger.IsAttached Then
+                            If task.Definition.Actions.Any() Then
+                                Dim action As Action = task.Definition.Actions(0)
+
+                                If action.ActionType = TaskActionType.Execute Then
+                                    If Not DirectCast(action, ExecAction).Path.Replace(strQuote, "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
+                                        task.Definition.Actions.Remove(action)
+
+                                        Dim exeFileInfo As New FileInfo(strEXEPath)
+                                        task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
+                                        task.RegisterChanges()
+                                    End If
+                                End If
+                            Else
+                                Dim exeFileInfo As New FileInfo(strEXEPath)
+                                task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
+                                task.RegisterChanges()
+                            End If
+                        End If
+
+                        ParentForm.StartUpDelay.Enabled = True
+                        Return True
                     End If
+                End Using
 
-                    ParentForm.StartUpDelay.Enabled = True
-                    Return True
-                End If
-            End Using
-
-            Return False
+                Return False
+            Catch ex As Exception
+                Return False
+            End Try
         End Function
 
         Public Sub CreateTask()
