@@ -237,7 +237,7 @@ Partial Class ViewLogBackups
         Me.ChkShowNTFSCompressionSizeDifference.Name = "ChkShowNTFSCompressionSizeDifference"
         Me.ChkShowNTFSCompressionSizeDifference.Size = New System.Drawing.Size(222, 17)
         Me.ChkShowNTFSCompressionSizeDifference.TabIndex = 43
-        Me.ChkShowNTFSCompressionSizeDifference.Text = "Show NTFS Compression Size Difference"
+        Me.ChkShowNTFSCompressionSizeDifference.Text = "Show NTFS Compression Size Differences"
         Me.ChkShowNTFSCompressionSizeDifference.UseVisualStyleBackColor = True
         '
         'ChkShowNTFSCompressionSizeDifferencePercentage
@@ -248,7 +248,7 @@ Partial Class ViewLogBackups
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.Name = "ChkShowNTFSCompressionSizeDifferencePercentage"
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.Size = New System.Drawing.Size(280, 17)
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.TabIndex = 44
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Text = "Show NTFS Compression Size Difference Percentage"
+        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Text = "Show NTFS Compression Size Difference Percentages"
         Me.ChkShowNTFSCompressionSizeDifferencePercentage.UseVisualStyleBackColor = True
         '
         'BtnSearch
