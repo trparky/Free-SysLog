@@ -517,7 +517,7 @@ Public Class ViewLogBackups
         My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
         ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         colHidden.Visible = ChkShowHidden.Checked
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub UncompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UncompressFileToolStripMenuItem.Click
@@ -533,7 +533,7 @@ Public Class ViewLogBackups
             UncompressFile(fileName)
         End If
 
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub CompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CompressFileToolStripMenuItem.Click
@@ -549,7 +549,7 @@ Public Class ViewLogBackups
             CompressFile(fileName)
         End If
 
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub UnhideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnhideToolStripMenuItem.Click
@@ -565,7 +565,7 @@ Public Class ViewLogBackups
             UnhideFile(fileName)
         End If
 
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub HideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideToolStripMenuItem.Click
@@ -581,7 +581,7 @@ Public Class ViewLogBackups
             HideFile(fileName)
         End If
 
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     ''' <summary>Returns the NTFS compressed size of a file on disk. Returns a -1 if an error occurs.</summary>
@@ -633,7 +633,7 @@ Public Class ViewLogBackups
 
     Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
         My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub FileList_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles FileList.ColumnWidthChanged
