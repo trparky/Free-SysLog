@@ -92,7 +92,7 @@ Public Class ViewLogBackups
         End If
     End Function
 
-    Private Sub LoadFileList()
+    Private Sub LoadFileList(Optional intReselectItem As Integer = -1)
         Dim filesInDirectory As FileInfo()
 
         If ChkShowHidden.Checked Then
@@ -202,6 +202,12 @@ Public Class ViewLogBackups
                    lblTotalNumberOfHiddenLogs.Visible = intHiddenFileCount > 0
                    lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
                    lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
+
+                   If intReselectItem <> -1 AndAlso intReselectItem < FileList.Rows.Count Then
+                       FileList.ClearSelection()
+                       FileList.Rows(intReselectItem).Selected = True
+                       FileList.FirstDisplayedScrollingRowIndex = intReselectItem
+                   End If
                End Sub)
     End Sub
 
@@ -521,6 +527,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub UncompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UncompressFileToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim fileName As String
 
         If FileList.SelectedRows.Count > 1 Then
@@ -533,10 +540,11 @@ Public Class ViewLogBackups
             UncompressFile(fileName)
         End If
 
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
     End Sub
 
     Private Sub CompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CompressFileToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim fileName As String
 
         If FileList.SelectedRows.Count > 1 Then
@@ -549,10 +557,11 @@ Public Class ViewLogBackups
             CompressFile(fileName)
         End If
 
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
     End Sub
 
     Private Sub UnhideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnhideToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim fileName As String
 
         If FileList.SelectedRows.Count > 1 Then
@@ -565,10 +574,15 @@ Public Class ViewLogBackups
             UnhideFile(fileName)
         End If
 
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        If ChkShowHidden.Checked Then
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
+        Else
+            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        End If
     End Sub
 
     Private Sub HideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim fileName As String
 
         If FileList.SelectedRows.Count > 1 Then
@@ -581,7 +595,11 @@ Public Class ViewLogBackups
             HideFile(fileName)
         End If
 
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        If ChkShowHidden.Checked Then
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
+        Else
+            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        End If
     End Sub
 
     ''' <summary>Returns the NTFS compressed size of a file on disk. Returns a -1 if an error occurs.</summary>
@@ -834,6 +852,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub RenameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RenameToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim strOldFileName As String = FileList.SelectedRows(0).Cells(0).Value.ToString()
         Dim strOldFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strOldFileName)
 
@@ -878,7 +897,7 @@ Public Class ViewLogBackups
 
         MsgBox("File renamed successfully.", MsgBoxStyle.Information, Text)
 
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
     End Sub
 
     Private Sub ChkShowNTFSCompressionSizeDifference_Click(sender As Object, e As EventArgs) Handles ChkShowNTFSCompressionSizeDifference.Click
