@@ -158,9 +158,7 @@ Public Class ViewLogBackups
                                                    If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
                                                        row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file, longUsedDiskSpace)})"
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
-                                                   ElseIf boolIsCompressed AndAlso Not ChkShowNTFSCompressionSizeDifference.Checked Then
-                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
-                                                   ElseIf Not boolIsCompressed Then
+                                                   Else
                                                        Interlocked.Add(longUsedDiskSpace, file.Length)
                                                    End If
 
