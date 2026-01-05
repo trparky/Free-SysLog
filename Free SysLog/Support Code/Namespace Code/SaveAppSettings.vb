@@ -61,10 +61,10 @@ Namespace SaveAppSettings
 
                     Return New Font(fontName, fontSize, fontStyle)
                 Else
-                    Return New Font("Microsoft Sans Serif", 9.75)
+                    Return Control.DefaultFont
                 End If
             Catch ex As Exception
-                Return New Font("Microsoft Sans Serif", 9.75)
+                Return Control.DefaultFont
             End Try
         End Function
 
