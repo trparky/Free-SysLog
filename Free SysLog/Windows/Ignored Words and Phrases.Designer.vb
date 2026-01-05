@@ -445,6 +445,8 @@ Partial Class IgnoredWordsAndPhrases
         Me.EnableDisableRecordingToolStripMenuItem.Name = "EnableDisableRecordingToolStripMenuItem"
         Me.EnableDisableRecordingToolStripMenuItem.Size = New System.Drawing.Size(209, 22)
         Me.EnableDisableRecordingToolStripMenuItem.Text = "Enable/Disable Recording"
+        Me.EnableDisableRecordingToolStripMenuItem.ToolTipText = "Makes it so that even if the log is ignored, the log text is still recorded in pr" &
+    "ogram memory and not written to disk."
         '
         'IgnoredWordsAndPhrases
         '
