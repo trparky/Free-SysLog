@@ -48,6 +48,8 @@ Namespace SaveAppSettings
 
                     If Not Single.TryParse(MatchResults.Groups("size").Value, fontSize) Then fontSize = 8.25
 
+                    fontSize = Math.Max(6.0F, Math.Min(fontSize, 32.0F))
+
                     If Not String.IsNullOrWhiteSpace(MatchResults.Groups("style").Value) Then
                         Dim strStyleValue As String = MatchResults.Groups("style").Value
 
@@ -59,10 +61,10 @@ Namespace SaveAppSettings
 
                     Return New Font(fontName, fontSize, fontStyle)
                 Else
-                    Return New Font("Microsoft Sans Serif", 9.75)
+                    Return Control.DefaultFont
                 End If
             Catch ex As Exception
-                Return New Font("Microsoft Sans Serif", 9.75)
+                Return Control.DefaultFont
             End Try
         End Function
 

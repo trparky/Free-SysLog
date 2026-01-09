@@ -110,6 +110,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Support Code\AlertsHistoryDataGridViewRow.vb" />
     <Compile Include="Support Code\My Custom ListViews.vb" />
     <Compile Include="Support Code\My Data Classes.vb" />

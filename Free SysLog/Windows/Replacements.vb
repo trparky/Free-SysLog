@@ -178,7 +178,7 @@ Public Class Replacements
                 tempReplacements.Add(Newtonsoft.Json.JsonConvert.SerializeObject(replacementsClass))
             Next
 
-            newReplacementsList.Sort(Function(x As ReplacementsClass, y As ReplacementsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            newReplacementsList.OrderByDescending(Function(i As ReplacementsClass) i.BoolEnabled).ThenBy(Function(i As ReplacementsClass) i.BoolRegex)
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             replacementsList.Clear()
@@ -333,6 +333,8 @@ Public Class Replacements
             For Each item As MyReplacementsListViewItem In ReplacementsListView.Items
                 listOfReplacementsClass.Add(New ReplacementsClass With {.BoolRegex = item.BoolRegex, .StrReplace = item.SubItems(0).Text, .StrReplaceWith = item.SubItems(1).Text, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolEnabled = item.BoolEnabled})
             Next
+
+            listOfReplacementsClass.OrderByDescending(Function(i As ReplacementsClass) i.BoolEnabled).ThenBy(Function(i As ReplacementsClass) i.BoolRegex)
 
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass, Newtonsoft.Json.Formatting.Indented))
 

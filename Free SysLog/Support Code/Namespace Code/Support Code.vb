@@ -115,7 +115,7 @@ Namespace SupportCode
         Public Const boolDebugBuild As Boolean = False
 #End If
 
-        Public Function TimespanToHMS(timeSpan As TimeSpan, Optional boolUseCommas As Boolean = True) As String
+        Public Function TimespanToHMS(timeSpan As TimeSpan) As String
             If timeSpan.TotalMilliseconds < 1 Then Return "0s"
             If timeSpan < TimeSpan.Zero Then timeSpan = timeSpan.Duration()
 
@@ -128,18 +128,54 @@ Namespace SupportCode
 
             If parts.Count() = 0 Then parts.Add($"{timeSpan.Milliseconds}ms")
 
-            If boolUseCommas Then
+            If My.Settings.IncludeCommasInDHMS Then
                 Return String.Join(", ", parts)
             Else
                 Return String.Join(" ", parts)
             End If
         End Function
 
+        Public Sub CompressFile(fileName As String)
+            If File.Exists(fileName) Then
+                Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                    Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_DEFAULT
+                    Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
+                    Marshal.WriteInt16(ptr, comp)
+
+                    NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
+
+                    Marshal.FreeHGlobal(ptr)
+                End Using
+            End If
+        End Sub
+
+        Public Sub WriteFileAtomically(path As String, contents As Byte())
+            Dim tmpPath As String = path & ".tmp"
+
+            Try
+                File.WriteAllBytes(tmpPath, contents)
+
+                If File.Exists(path) Then
+                    File.Replace(tmpPath, path, Nothing)
+                Else
+                    File.Move(tmpPath, path)
+                End If
+            Catch
+                ' Fail silently
+            Finally
+                Try
+                    If File.Exists(tmpPath) Then File.Delete(tmpPath)
+                Catch
+                    ' Fail silently
+                End Try
+            End Try
+        End Sub
+
         Public Sub WriteFileAtomically(path As String, contents As String)
             Dim tmpPath As String = path & ".tmp"
 
             Try
-                File.WriteAllText(tmpPath, contents)
+                File.WriteAllText(tmpPath, contents, Encoding.UTF8)
 
                 If File.Exists(path) Then
                     File.Replace(tmpPath, path, Nothing)

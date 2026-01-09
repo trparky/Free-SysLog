@@ -19,7 +19,7 @@ Public Class Form1
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
     Public ReadOnly dataGridLockObject As New Object
     Public ReadOnly IgnoredLogsLockObject As New Object
-    Private Const strPayPal As String = "https://paypal.me/trparky"
+    Private Const strBuyMeACoffee As String = "https://buymeacoffee.com/trparky"
     Private serverThread As Threading.Thread
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
     Private boolServerRunning As Boolean = False
@@ -178,7 +178,9 @@ Public Class Form1
 
     Private Sub MakeLogBackup()
         WriteLogsToDisk()
-        File.Copy(strPathToDataFile, GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json")))
+        Dim strLogFileBackupFileName As String = GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json"))
+        File.Copy(strPathToDataFile, strLogFileBackupFileName)
+        If My.Settings.CompressBackupLogFiles Then CompressFile(strLogFileBackupFileName)
     End Sub
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
@@ -327,6 +329,8 @@ Public Class Form1
         ConfirmDelete.Checked = My.Settings.ConfirmDelete
         ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
         ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
+        IncludeCommasInDHMS.Checked = My.Settings.IncludeCommasInDHMS
+        CompressBackupLogFilesToolStripMenuItem.Checked = My.Settings.CompressBackupLogFiles
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -482,7 +486,7 @@ Public Class Form1
         LoadCheckboxSettings()
 
         processUptimeTimer = New Timer() With {.Interval = 1000, .Enabled = True}
-        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now - dateProcessStarted, False)}"
+        AddHandler processUptimeTimer.Tick, Sub() lblProcessUptime.Text = $"Program Uptime: {TimespanToHMS(Now - dateProcessStarted)}"
 
         SetDoubleBufferingFlag(Logs)
 
@@ -1135,12 +1139,17 @@ Public Class Form1
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-            ShowSingleInstanceWindow(IgnoredLogsAndSearchResultsInstance, Function() New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {.Icon = Icon})
+            ShowSingleInstanceWindow(IgnoredLogsAndSearchResultsInstance, Function()
+                                                                              Dim instanceToBeReturned As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.ignored) With {
+                                                                                  .Icon = Icon,
+                                                                                  .MainProgramForm = Me,
+                                                                                  .Text = "Ignored Logs",
+                                                                                  .LogsToBeDisplayed = IgnoredLogs.GetSnapshot()
+                                                                              }
+                                                                              instanceToBeReturned.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
 
-            IgnoredLogsAndSearchResultsInstance.MainProgramForm = Me
-            IgnoredLogsAndSearchResultsInstance.Text = "Ignored Logs"
-            IgnoredLogsAndSearchResultsInstance.LogsToBeDisplayed = IgnoredLogs.GetSnapshot()
-            IgnoredLogsAndSearchResultsInstance.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+                                                                              Return instanceToBeReturned
+                                                                          End Function)
         End SyncLock
     End Sub
 
@@ -1244,6 +1253,11 @@ Public Class Form1
         IgnoredStats.Clear()
         longNumberOfIgnoredLogs = 0
         LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+
+        If My.Settings.saveIgnoredLogCount Then
+            NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+            WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+        End If
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
@@ -1537,7 +1551,7 @@ Public Class Form1
     End Sub
 
     Private Sub DonationStripMenuItem_Click(sender As Object, e As EventArgs) Handles DonationStripMenuItem.Click
-        Process.Start(strPayPal)
+        Process.Start(New ProcessStartInfo(strBuyMeACoffee) With {.UseShellExecute = True})
     End Sub
 
     Private Sub StopServerStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopServerStripMenuItem.Click
@@ -1617,6 +1631,8 @@ Public Class Form1
                     End If
                 End If
             End Using
+        Else
+            MsgBox("This instance doesn't own the mutex lock for Free Syslog, thus this function is disabled.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
@@ -1985,6 +2001,7 @@ Public Class Form1
     Private Sub LogFunctionsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles LogFunctionsToolStripMenuItem.DropDownOpening
         SyncLock dataGridLockObject
             AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
+            IgnoredLogsToolStripMenuItem.Visible = IgnoredLogs.Count > 0 Or My.Settings.recordIgnoredLogs
         End SyncLock
     End Sub
 
@@ -2142,6 +2159,14 @@ Public Class Form1
                 LblItemsSelected.Text = $"Checked Logs: {intNumberOfCheckedLogs:N0}"
             End If
         End If
+    End Sub
+
+    Private Sub IncludeCommasInDHMS_Click(sender As Object, e As EventArgs) Handles IncludeCommasInDHMS.Click
+        My.Settings.IncludeCommasInDHMS = IncludeCommasInDHMS.Checked
+    End Sub
+
+    Private Sub CompressBackupLogFilesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CompressBackupLogFilesToolStripMenuItem.Click
+        My.Settings.CompressBackupLogFiles = CompressBackupLogFilesToolStripMenuItem.Checked
     End Sub
 
 #Region "-- SysLog Server Code --"

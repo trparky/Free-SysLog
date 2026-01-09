@@ -1,10 +1,11 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
+Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
-Imports Microsoft.VisualBasic.Logging
+Imports Free_SysLog.ThreadSafetyLists
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -71,7 +72,27 @@ Public Class ViewLogBackups
         End Try
     End Function
 
-    Private Sub LoadFileList()
+    Private Function GetNTFSFileCompressionInfo(file As FileInfo, ByRef longUsedDiskSpace As Long) As String
+        Dim longNTFSCompressedFileSize As Long = GetCompressedSize(file.FullName)
+
+        If longNTFSCompressedFileSize = -1 Then
+            Interlocked.Add(longUsedDiskSpace, file.Length)
+            Return "Error"
+        Else
+            Interlocked.Add(longUsedDiskSpace, longNTFSCompressedFileSize)
+
+            Dim strFileSizeString As String = FileSizeToHumanSize(longNTFSCompressedFileSize)
+
+            If ChkShowNTFSCompressionSizeDifferencePercentage.Checked Then
+                Dim strPercentString As String = MyRoundingFunction(longNTFSCompressedFileSize / file.Length * 100, 2)
+                strFileSizeString &= $", {strPercentString}% smaller"
+            End If
+
+            Return strFileSizeString
+        End If
+    End Function
+
+    Private Sub LoadFileList(Optional intReselectItem As Integer = -1)
         Dim filesInDirectory As FileInfo()
 
         If ChkShowHidden.Checked Then
@@ -80,18 +101,19 @@ Public Class ViewLogBackups
             filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
         End If
 
-        Dim listOfDataGridViewRows As New List(Of DataGridViewRow)
+        Dim threadSafeListOfDataGridViewRows As New ThreadSafeList(Of DataGridViewRow)
         Dim intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace As Long
+        Dim intNumberOfCompressedFiles As Integer = 0
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
+                                               Dim boolIsCompressed As Boolean = (file.Attributes And FileAttributes.Compressed) = FileAttributes.Compressed
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
+                                               Dim intCompresedSize As Long = -1
+                                               Dim longNTFSCompressedFileSize As Long = -1
 
                                                If intCount <> -1 Then
-                                                   ' Accumulate counts and totals
-                                                   Interlocked.Add(longUsedDiskSpace, file.Length)
-
                                                    If boolIsHidden Then
                                                        Interlocked.Increment(intHiddenFileCount)
                                                        Interlocked.Add(intHiddenTotalLogCount, intCount)
@@ -110,7 +132,7 @@ Public Class ViewLogBackups
                                                        .Cells(0).Value = file.Name
                                                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                                                       .Cells(1).Value = $"{file.LastWriteTime.ToLongDateString} {file.LastWriteTime.ToLongTimeString}"
+                                                       .Cells(1).Value = $"{file.LastWriteTime:D} {file.LastWriteTime:T}"
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(2).Value = FileSizeToHumanSize(file.Length)
@@ -125,21 +147,34 @@ Public Class ViewLogBackups
                                                        .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
                                                    End With
 
-
                                                    For Each cell As DataGridViewCell In row.Cells
                                                        cell.Style.Font = My.Settings.font
                                                        If boolIsHidden AndAlso ChkShowHiddenAsGray.Checked Then cell.Style.ForeColor = Color.Gray
+                                                       If boolIsCompressed Then cell.Style.ForeColor = Color.Blue
                                                    Next
 
-                                                   ' Thread-safe add to list
-                                                   SyncLock listOfDataGridViewRows
-                                                       listOfDataGridViewRows.Add(row)
-                                                   End SyncLock
+                                                   row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+
+                                                   If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
+                                                       row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file, longUsedDiskSpace)})"
+                                                       Interlocked.Increment(intNumberOfCompressedFiles)
+                                                   Else
+                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                   End If
+
+                                                   threadSafeListOfDataGridViewRows.Add(row)
                                                End If
                                            End Sub)
 
         Invoke(Sub()
-                   listOfDataGridViewRows = listOfDataGridViewRows.OrderBy(Function(row As MyDataGridViewFileRow) row.fileDate).ToList()
+                   Dim listOfDataGridViewRows As List(Of DataGridViewRow) = threadSafeListOfDataGridViewRows.GetSnapshot.OrderBy(Function(row As MyDataGridViewFileRow) row.fileDate).ToList()
+                   threadSafeListOfDataGridViewRows = Nothing
+
+                   If intNumberOfCompressedFiles = 0 Then
+                       ColFileSize.HeaderText = "File Size"
+                   Else
+                       ColFileSize.HeaderText = "File Size (Compressed Size)"
+                   End If
 
                    If My.Settings.font IsNot Nothing Then
                        FileList.DefaultCellStyle.Font = My.Settings.font
@@ -152,18 +187,30 @@ Public Class ViewLogBackups
                    FileList.ResumeLayout()
 
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
-                   LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+
+                   If intNumberOfCompressedFiles = 0 Then
+                       LblTotalDiskSpace.Text = $"Total File Size: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                   Else
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                   End If
+
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
 
                    lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
                    lblTotalNumberOfHiddenLogs.Visible = intHiddenFileCount > 0
                    lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
                    lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
+
+                   If intReselectItem <> -1 AndAlso intReselectItem < FileList.Rows.Count Then
+                       FileList.ClearSelection()
+                       FileList.Rows(intReselectItem).Selected = True
+                       FileList.FirstDisplayedScrollingRowIndex = intReselectItem
+                   End If
                End Sub)
     End Sub
 
     Private Sub DataGridView1_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles FileList.CellPainting
-        If e.RowIndex = -1 AndAlso (e.ColumnIndex = colHidden.Index Or e.ColumnIndex = colEntryCount.Index) Then
+        If e.RowIndex = -1 AndAlso (e.ColumnIndex = colHidden.Index Or e.ColumnIndex = colEntryCount.Index Or e.ColumnIndex = ColFileSize.Index) Then
             e.PaintBackground(e.CellBounds, False)
             TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
             e.Handled = True
@@ -188,6 +235,10 @@ Public Class ViewLogBackups
         ColFileSize.Width = My.Settings.ColViewLogBackupsFileSize
         colEntryCount.Width = My.Settings.viewLogBackupsEntryCountColumnSize
         colHidden.Width = My.Settings.viewLogBackupsHiddenColumnSize
+
+        ChkShowNTFSCompressionSizeDifference.Checked = My.Settings.ShowNTFSCompressionSizeDifference
+        ChkShowNTFSCompressionSizeDifferencePercentage.Enabled = ChkShowNTFSCompressionSizeDifference.Checked
+        ChkShowNTFSCompressionSizeDifferencePercentage.Checked = My.Settings.ShowNTFSCompressionSizeDifferencePercentage
 
         LoadColumnOrders(FileList.Columns, My.Settings.fileListColumnOrder)
 
@@ -429,6 +480,8 @@ Public Class ViewLogBackups
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
         If FileList.SelectedRows.Count > 0 Then
             DeleteToolStripMenuItem.Enabled = True
+            ShowInWindowsExplorerToolStripMenuItem.Visible = True
+            RenameToolStripMenuItem.Visible = True
             ViewToolStripMenuItem.Enabled = FileList.SelectedRows.Count <= 1
 
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
@@ -440,9 +493,19 @@ Public Class ViewLogBackups
                 UnhideToolStripMenuItem.Visible = False
                 HideToolStripMenuItem.Visible = True
             End If
+
+            If (New FileInfo(fileName).Attributes And FileAttributes.Compressed) = FileAttributes.Compressed Then
+                UncompressFileToolStripMenuItem.Visible = True
+                CompressFileToolStripMenuItem.Visible = False
+            Else
+                UncompressFileToolStripMenuItem.Visible = False
+                CompressFileToolStripMenuItem.Visible = True
+            End If
         Else
             DeleteToolStripMenuItem.Enabled = False
             ViewToolStripMenuItem.Enabled = False
+            ShowInWindowsExplorerToolStripMenuItem.Visible = False
+            RenameToolStripMenuItem.Visible = False
         End If
     End Sub
 
@@ -458,10 +521,45 @@ Public Class ViewLogBackups
         My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
         ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         colHidden.Visible = ChkShowHidden.Checked
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+    End Sub
+
+    Private Sub UncompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UncompressFileToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
+        Dim fileName As String
+
+        If FileList.SelectedRows.Count > 1 Then
+            For Each item As DataGridViewRow In FileList.SelectedRows
+                fileName = Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value)
+                UncompressFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
+            UncompressFile(fileName)
+        End If
+
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
+    End Sub
+
+    Private Sub CompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CompressFileToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
+        Dim fileName As String
+
+        If FileList.SelectedRows.Count > 1 Then
+            For Each item As DataGridViewRow In FileList.SelectedRows
+                fileName = Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value)
+                CompressFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
+            CompressFile(fileName)
+        End If
+
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
     End Sub
 
     Private Sub UnhideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnhideToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim fileName As String
 
         If FileList.SelectedRows.Count > 1 Then
@@ -474,10 +572,15 @@ Public Class ViewLogBackups
             UnhideFile(fileName)
         End If
 
-        BtnRefresh.PerformClick()
+        If ChkShowHidden.Checked Then
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
+        Else
+            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        End If
     End Sub
 
     Private Sub HideToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HideToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim fileName As String
 
         If FileList.SelectedRows.Count > 1 Then
@@ -490,7 +593,42 @@ Public Class ViewLogBackups
             HideFile(fileName)
         End If
 
-        BtnRefresh.PerformClick()
+        If ChkShowHidden.Checked Then
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
+        Else
+            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        End If
+    End Sub
+
+    ''' <summary>Returns the NTFS compressed size of a file on disk. Returns a -1 if an error occurs.</summary>
+    ''' <param name="fileName">Path to the file to get the size of.</param>
+    ''' <returns>A 64-bit Integer.</returns>
+    Private Shared Function GetCompressedSize(fileName As String) As Long
+        If Not File.Exists(fileName) Then Return -1
+
+        Dim high As UInteger = 0
+        Dim low As UInteger = NativeMethod.NativeMethods.GetCompressedFileSize(fileName, high)
+
+        If low = &HFFFFFFFFUI AndAlso Marshal.GetLastWin32Error() <> 0 Then
+            ' error, return -1 or throw exception
+            Return -1
+        End If
+
+        Return (CLng(high) << 32) + low
+    End Function
+
+    Private Sub UncompressFile(fileName As String)
+        If File.Exists(fileName) Then
+            Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_NONE
+                Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
+                Marshal.WriteInt16(ptr, comp)
+
+                NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
+
+                Marshal.FreeHGlobal(ptr)
+            End Using
+        End If
     End Sub
 
     Private Sub HideFile(fileName As String)
@@ -511,7 +649,7 @@ Public Class ViewLogBackups
 
     Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
         My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
-        BtnRefresh.PerformClick()
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
     Private Sub FileList_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles FileList.ColumnWidthChanged
@@ -705,5 +843,69 @@ Public Class ViewLogBackups
                                               End Sub
 
         worker.RunWorkerAsync()
+    End Sub
+
+    Private Sub ShowInWindowsExplorerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowInWindowsExplorerToolStripMenuItem.Click
+        SelectFileInWindowsExplorer(Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value))
+    End Sub
+
+    Private Sub RenameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RenameToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
+        Dim strOldFileName As String = FileList.SelectedRows(0).Cells(0).Value.ToString()
+        Dim strOldFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strOldFileName)
+
+        Dim strNewFileName As String = InputBox("Enter the new name for the selected file:", "Rename File", strOldFileName)
+
+        If String.IsNullOrWhiteSpace(strNewFileName) Then
+            MsgBox("No name entered.", MsgBoxStyle.Exclamation, Text)
+            Exit Sub
+        End If
+
+        ' Ensure extension is preserved if user removes it
+        Dim strOldFileExtension As String = Path.GetExtension(strOldFileName)
+
+        If String.IsNullOrEmpty(Path.GetExtension(strNewFileName)) Then
+            strNewFileName &= strOldFileExtension
+        End If
+
+        ' Invalid character check
+        Dim invalidChars() As Char = Path.GetInvalidFileNameChars()
+
+        If strNewFileName.IndexOfAny(invalidChars) >= 0 Then
+            MsgBox("Invalid characters in file name.", MsgBoxStyle.Critical, Text)
+            Exit Sub
+        End If
+
+        Dim strNewFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strNewFileName)
+
+        ' Ensure user didn't re-enter the same name
+        If strOldFileNameFullPath.Equals(strNewFileNameFullPath, StringComparison.OrdinalIgnoreCase) Then
+            MsgBox("The new name is the same as the old name.", MsgBoxStyle.Information, Text)
+            Exit Sub
+        End If
+
+        ' Check for collisions
+        If File.Exists(strNewFileNameFullPath) Then
+            MsgBox("A file with that name already exists.", MsgBoxStyle.Critical, Text)
+            Exit Sub
+        End If
+
+        ' Finally rename
+        File.Move(strOldFileNameFullPath, strNewFileNameFullPath)
+
+        MsgBox("File renamed successfully.", MsgBoxStyle.Information, Text)
+
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
+    End Sub
+
+    Private Sub ChkShowNTFSCompressionSizeDifference_Click(sender As Object, e As EventArgs) Handles ChkShowNTFSCompressionSizeDifference.Click
+        My.Settings.ShowNTFSCompressionSizeDifference = ChkShowNTFSCompressionSizeDifference.Checked
+        ChkShowNTFSCompressionSizeDifferencePercentage.Enabled = ChkShowNTFSCompressionSizeDifference.Checked
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+    End Sub
+
+    Private Sub ChkShowNTFSCompressionSizeDifferencePercentage_Click(sender As Object, e As EventArgs) Handles ChkShowNTFSCompressionSizeDifferencePercentage.Click
+        My.Settings.ShowNTFSCompressionSizeDifferencePercentage = ChkShowNTFSCompressionSizeDifferencePercentage.Checked
+        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 End Class

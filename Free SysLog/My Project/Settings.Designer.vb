@@ -1376,6 +1376,54 @@ Namespace My
                 Me("AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property IncludeCommasInDHMS() As Boolean
+            Get
+                Return CType(Me("IncludeCommasInDHMS"),Boolean)
+            End Get
+            Set
+                Me("IncludeCommasInDHMS") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property ShowNTFSCompressionSizeDifference() As Boolean
+            Get
+                Return CType(Me("ShowNTFSCompressionSizeDifference"),Boolean)
+            End Get
+            Set
+                Me("ShowNTFSCompressionSizeDifference") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property ShowNTFSCompressionSizeDifferencePercentage() As Boolean
+            Get
+                Return CType(Me("ShowNTFSCompressionSizeDifferencePercentage"),Boolean)
+            End Get
+            Set
+                Me("ShowNTFSCompressionSizeDifferencePercentage") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property CompressBackupLogFiles() As Boolean
+            Get
+                Return CType(Me("CompressBackupLogFiles"),Boolean)
+            End Get
+            Set
+                Me("CompressBackupLogFiles") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

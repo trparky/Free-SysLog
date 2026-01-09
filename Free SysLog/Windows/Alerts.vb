@@ -1,4 +1,5 @@
-﻿Imports Free_SysLog.SupportCode
+﻿Imports System.ComponentModel
+Imports Free_SysLog.SupportCode
 
 Public Class Alerts
     Private boolDoneLoading As Boolean = False
@@ -312,7 +313,7 @@ Public Class Alerts
                 tempAlerts.Add(Newtonsoft.Json.JsonConvert.SerializeObject(AlertsClass))
             Next
 
-            newAlertsList.Sort(Function(x As AlertsClass, y As AlertsClass) x.BoolRegex.CompareTo(y.BoolRegex))
+            newAlertsList.OrderByDescending(Function(i As AlertsClass) i.BoolEnabled).ThenBy(Function(i As AlertsClass) i.BoolRegex)
 
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             alertsList.Clear()
@@ -401,6 +402,8 @@ Public Class Alerts
             For Each item As AlertsListViewItem In AlertsListView.Items
                 listOfAlertsClass.Add(New AlertsClass() With {.StrLogText = item.StrLogText, .StrAlertText = item.StrAlertText, .BoolCaseSensitive = item.BoolCaseSensitive, .BoolRegex = item.BoolRegex, .alertType = item.AlertType, .BoolEnabled = item.BoolEnabled, .BoolLimited = item.BoolLimited})
             Next
+
+            listOfAlertsClass.OrderByDescending(Function(i As AlertsClass) i.BoolEnabled).ThenBy(Function(i As AlertsClass) i.BoolRegex)
 
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfAlertsClass, Newtonsoft.Json.Formatting.Indented))
 

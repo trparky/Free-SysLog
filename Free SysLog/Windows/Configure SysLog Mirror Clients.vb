@@ -187,6 +187,8 @@ Public Class ConfigureSysLogMirrorClients
                 tempServer.Add(Newtonsoft.Json.JsonConvert.SerializeObject(SysLogProxyServer))
             Next
 
+            serversList.Sort(Function(x As SysLogProxyServer, y As SysLogProxyServer) y.boolEnabled.CompareTo(x.boolEnabled))
+
             ' We now save the new list to the main lists in memory now that we know nothing wrong happened above.
             serversList.Clear()
             serversList.Merge(newServerList.GetSnapshot())
@@ -246,6 +248,8 @@ Public Class ConfigureSysLogMirrorClients
             For Each item As ServerListViewItem In servers.Items
                 listOfSysLogProxyServer.Add(New SysLogProxyServer() With {.ip = item.SubItems(0).Text, .port = Integer.Parse(item.SubItems(1).Text), .boolEnabled = item.BoolEnabled, .name = item.SubItems(3).Text})
             Next
+
+            listOfSysLogProxyServer.Sort(Function(x As SysLogProxyServer, y As SysLogProxyServer) y.boolEnabled.CompareTo(x.boolEnabled))
 
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer, Newtonsoft.Json.Formatting.Indented))
 

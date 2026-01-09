@@ -63,6 +63,9 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkAutoRefresh = New System.Windows.Forms.CheckBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkRefreshOnlyIfActive = New System.Windows.Forms.CheckBox()
+        Me.colRecord = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.EnableDisableRecordingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkRecord = New System.Windows.Forms.CheckBox()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -94,7 +97,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated, Me.colDateOfLastEvent, Me.colSinceLastEvent})
+        Me.IgnoredListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Ignored, Me.Regex, Me.CaseSensitive, Me.ColEnabled, Me.colHits, Me.colTarget, Me.colDateCreated, Me.colDateOfLastEvent, Me.colSinceLastEvent, Me.colRecord})
         Me.IgnoredListView.ContextMenuStrip = Me.ListViewMenu
         Me.IgnoredListView.FullRowSelect = True
         Me.IgnoredListView.HideSelection = False
@@ -151,20 +154,20 @@ Partial Class IgnoredWordsAndPhrases
         '
         'ListViewMenu
         '
-        Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem, Me.ResetHitsToolStripMenuItem})
+        Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem, Me.ResetHitsToolStripMenuItem, Me.EnableDisableRecordingToolStripMenuItem})
         Me.ListViewMenu.Name = "ContextMenuStrip1"
-        Me.ListViewMenu.Size = New System.Drawing.Size(153, 48)
+        Me.ListViewMenu.Size = New System.Drawing.Size(210, 92)
         '
         'EnableDisableToolStripMenuItem
         '
         Me.EnableDisableToolStripMenuItem.Name = "EnableDisableToolStripMenuItem"
-        Me.EnableDisableToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.EnableDisableToolStripMenuItem.Size = New System.Drawing.Size(209, 22)
         Me.EnableDisableToolStripMenuItem.Text = "Enable/Disable"
         '
         'ResetHitsToolStripMenuItem
         '
         Me.ResetHitsToolStripMenuItem.Name = "ResetHitsToolStripMenuItem"
-        Me.ResetHitsToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ResetHitsToolStripMenuItem.Size = New System.Drawing.Size(209, 22)
         Me.ResetHitsToolStripMenuItem.Text = "Reset Hit"
         '
         'BtnEdit
@@ -420,11 +423,37 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkRefreshOnlyIfActive.Text = "Only If Active Window"
         Me.ChkRefreshOnlyIfActive.UseVisualStyleBackColor = True
         '
+        'colRecord
+        '
+        Me.colRecord.Text = "Record?"
+        '
+        'ChkRecord
+        '
+        Me.ChkRecord.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkRecord.AutoSize = True
+        Me.ChkRecord.Location = New System.Drawing.Point(800, 351)
+        Me.ChkRecord.Name = "ChkRecord"
+        Me.ChkRecord.Size = New System.Drawing.Size(67, 17)
+        Me.ChkRecord.TabIndex = 55
+        Me.ChkRecord.Text = "Record?"
+        Me.ToolTip.SetToolTip(Me.ChkRecord, "Makes it so that even if the log is ignored, the log text is still recorded in pr" &
+        "ogram memory and not written to disk.")
+        Me.ChkRecord.UseVisualStyleBackColor = True
+        '
+        'EnableDisableRecordingToolStripMenuItem
+        '
+        Me.EnableDisableRecordingToolStripMenuItem.Name = "EnableDisableRecordingToolStripMenuItem"
+        Me.EnableDisableRecordingToolStripMenuItem.Size = New System.Drawing.Size(209, 22)
+        Me.EnableDisableRecordingToolStripMenuItem.Text = "Enable/Disable Recording"
+        Me.EnableDisableRecordingToolStripMenuItem.ToolTipText = "Makes it so that even if the log is ignored, the log text is still recorded in pr" &
+    "ogram memory and not written to disk."
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1118, 437)
+        Me.Controls.Add(Me.ChkRecord)
         Me.Controls.Add(Me.ChkRefreshOnlyIfActive)
         Me.Controls.Add(Me.ChkAutoRefresh)
         Me.Controls.Add(Me.btnUpdateHits)
@@ -501,4 +530,7 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents ChkAutoRefresh As CheckBox
     Friend WithEvents ToolTip As ToolTip
     Friend WithEvents ChkRefreshOnlyIfActive As CheckBox
+    Friend WithEvents colRecord As ColumnHeader
+    Friend WithEvents ChkRecord As CheckBox
+    Friend WithEvents EnableDisableRecordingToolStripMenuItem As ToolStripMenuItem
 End Class
