@@ -1414,93 +1414,86 @@ Public Class Form1
         My.Settings.boolShowServerTimeColumn = colServerTime.Visible
     End Sub
 
+    Private Shared Sub SetShowHideText(boolIsColumnVisible As Boolean, strColumnDisplayName As String, menuItemControl As ToolStripMenuItem)
+        ' If the column is visible, the action is "Hide". Otherwise, it's "Show".
+        menuItemControl.Text = If(boolIsColumnVisible, $"Hide '{strColumnDisplayName}' Column", $"Show '{strColumnDisplayName}' Column")
+    End Sub
+
+    Private Sub SetMenuItemsVisible(boolIsVisible As Boolean, ParamArray items() As ToolStripItem)
+        For Each item In items
+            item.Visible = boolIsVisible
+        Next
+    End Sub
+
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
-        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
+        Dim clientPoint As Point = Logs.PointToClient(MousePosition)
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(clientPoint.X, clientPoint.Y)
+        Dim boolIsHeader As Boolean = hitTest.Type = DataGridViewHitTestType.ColumnHeader
 
-        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
-            CopyLogTextToolStripMenuItem.Visible = False
-            CopyRawLogTextToolStripMenuItem.Visible = False
-            CreateAlertToolStripMenuItem.Visible = False
-            CreateIgnoredLogToolStripMenuItem.Visible = False
-            CreateReplacementToolStripMenuItem.Visible = False
-            DeleteLogsToolStripMenuItem.Visible = False
-            DeleteSimilarLogsToolStripMenuItem.Visible = False
-            ExportsLogsToolStripMenuItem.Visible = False
-            OpenLogViewerToolStripMenuItem.Visible = False
-            LogsMenuHideAlertsColumn.Visible = True
-            LogsMenuHideHostnameColumn.Visible = True
-            LogsMenuHideLogTypeColumn.Visible = True
-            LogsMenuHideServerTimeColumn.Visible = True
+        ' These are your "log action" items
+        Dim actionItems As ToolStripItem() = {
+            CopyLogTextToolStripMenuItem,
+            CopyRawLogTextToolStripMenuItem,
+            CreateAlertToolStripMenuItem,
+            CreateIgnoredLogToolStripMenuItem,
+            CreateReplacementToolStripMenuItem,
+            DeleteLogsToolStripMenuItem,
+            DeleteSimilarLogsToolStripMenuItem,
+            ExportsLogsToolStripMenuItem,
+            OpenLogViewerToolStripMenuItem
+        }
 
-            If ColAlerts.Visible Then
-                LogsMenuHideAlertsColumn.Text = "Hide 'Alerts' Column"
-            Else
-                LogsMenuHideAlertsColumn.Text = "Show 'Alerts' Column"
-            End If
+        ' These are your "hide/show column" items
+        Dim columnItems As ToolStripItem() = {
+            LogsMenuHideAlertsColumn,
+            LogsMenuHideHostnameColumn,
+            LogsMenuHideLogTypeColumn,
+            LogsMenuHideServerTimeColumn
+        }
 
-            If ColHostname.Visible Then
-                LogsMenuHideHostnameColumn.Text = "Hide 'Hostname' Column"
-            Else
-                LogsMenuHideHostnameColumn.Text = "Show 'Hostname' Column"
-            End If
+        If boolIsHeader Then
+            SetMenuItemsVisible(False, actionItems)
+            SetMenuItemsVisible(True, columnItems)
 
-            If colLogType.Visible Then
-                LogsMenuHideLogTypeColumn.Text = "Hide 'Log Type' Column"
-            Else
-                LogsMenuHideLogTypeColumn.Text = "Show 'Log Type' Column"
-            End If
-
-            If colServerTime.Visible Then
-                LogsMenuHideServerTimeColumn.Text = "Hide 'Server Time' Column"
-            Else
-                LogsMenuHideServerTimeColumn.Text = "Show 'Server Time' Column"
-            End If
+            ' FIXED: each one updates its own menu item
+            SetShowHideText(ColAlerts.Visible, "Alerts", LogsMenuHideAlertsColumn)
+            SetShowHideText(ColHostname.Visible, "Hostname", LogsMenuHideHostnameColumn)
+            SetShowHideText(colLogType.Visible, "Log Type", LogsMenuHideLogTypeColumn)
+            SetShowHideText(colServerTime.Visible, "Server Time", LogsMenuHideServerTimeColumn)
         Else
-            ' Reset all to visible
-            CopyLogTextToolStripMenuItem.Visible = True
-            CopyRawLogTextToolStripMenuItem.Visible = True
-            CreateAlertToolStripMenuItem.Visible = True
-            CreateIgnoredLogToolStripMenuItem.Visible = True
-            CreateReplacementToolStripMenuItem.Visible = True
-            DeleteLogsToolStripMenuItem.Visible = True
-            DeleteSimilarLogsToolStripMenuItem.Visible = True
-            ExportsLogsToolStripMenuItem.Visible = True
-            OpenLogViewerToolStripMenuItem.Visible = True
-            LogsMenuHideAlertsColumn.Visible = False
-            LogsMenuHideHostnameColumn.Visible = False
-            LogsMenuHideLogTypeColumn.Visible = False
-            LogsMenuHideServerTimeColumn.Visible = False
+            ' Not on header: show actions, hide column toggles
+            SetMenuItemsVisible(True, actionItems)
+            SetMenuItemsVisible(False, columnItems)
 
-            If Logs.SelectedRows.Count = 0 Then
-                DeleteLogsToolStripMenuItem.Visible = False
-                ExportsLogsToolStripMenuItem.Visible = False
-                DeleteSimilarLogsToolStripMenuItem.Visible = False
-            Else
-                DeleteLogsToolStripMenuItem.Visible = True
-                ExportsLogsToolStripMenuItem.Visible = True
-                DeleteSimilarLogsToolStripMenuItem.Visible = True
-            End If
+            Dim intSelectedCount As Integer = Logs.SelectedRows.Count
+            Dim boolHasSelection As Boolean = intSelectedCount > 0
+            Dim boolSingleSelection As Boolean = intSelectedCount = 1
 
-            If Logs.SelectedRows.Count = 1 Then
-                CopyLogTextToolStripMenuItem.Visible = True
-                OpenLogViewerToolStripMenuItem.Visible = True
-                CreateAlertToolStripMenuItem.Visible = True
-                CreateReplacementToolStripMenuItem.Visible = True
-                CreateIgnoredLogToolStripMenuItem.Visible = True
-                DeleteSimilarLogsToolStripMenuItem.Visible = True
+            ' Items that only make sense when something is selected
+            DeleteLogsToolStripMenuItem.Visible = boolHasSelection
+            ExportsLogsToolStripMenuItem.Visible = boolHasSelection
+            DeleteSimilarLogsToolStripMenuItem.Visible = boolHasSelection
 
+            ' Items that only make sense when exactly one row is selected
+            CopyLogTextToolStripMenuItem.Visible = boolSingleSelection
+            OpenLogViewerToolStripMenuItem.Visible = boolSingleSelection
+            CreateAlertToolStripMenuItem.Visible = boolSingleSelection
+            CreateReplacementToolStripMenuItem.Visible = boolSingleSelection
+            CreateIgnoredLogToolStripMenuItem.Visible = boolSingleSelection
+
+            ' Raw log text depends on row content
+            CopyRawLogTextToolStripMenuItem.Visible = False
+
+            If boolSingleSelection Then
                 Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-                If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
-            Else
-                OpenLogViewerToolStripMenuItem.Visible = False
-                CreateAlertToolStripMenuItem.Visible = False
-                CreateReplacementToolStripMenuItem.Visible = False
-                CreateIgnoredLogToolStripMenuItem.Visible = False
-                DeleteSimilarLogsToolStripMenuItem.Visible = False
+
+                If selectedItem IsNot Nothing Then
+                    CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
+                End If
             End If
 
-            DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
-            ExportsLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Export Selected Log", "Export Selected Logs")
+            DeleteLogsToolStripMenuItem.Text = "Delete Selected " & If(boolSingleSelection, "Log", "Logs")
+            ExportsLogsToolStripMenuItem.Text = "Export Selected " & If(boolSingleSelection, "Log", "Logs")
         End If
     End Sub
 
