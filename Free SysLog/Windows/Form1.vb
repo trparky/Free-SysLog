@@ -1398,44 +1398,118 @@ Public Class Form1
         My.Settings.boolConfirmClose = ChkEnableConfirmCloseToolStripItem.Checked
     End Sub
 
+    Private Sub LogsMenuHideAlertsColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideAlertsColumn.Click
+        ColAlerts.Visible = Not ColAlerts.Visible
+        My.Settings.boolShowAlertedColumn = ColAlerts.Visible
+        ChkShowAlertedColumn.Checked = ColAlerts.Visible
+    End Sub
+
+    Private Sub LogsMenuHideHostnameColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideHostnameColumn.Click
+        ColHostname.Visible = Not ColHostname.Visible
+        My.Settings.boolShowHostnameColumn = ColHostname.Visible
+        ChkShowHostnameColumn.Checked = ColHostname.Visible
+    End Sub
+
+    Private Sub LogsMenuHideLogTypeColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideLogTypeColumn.Click
+        colLogType.Visible = Not colLogType.Visible
+        My.Settings.boolShowLogTypeColumn = colLogType.Visible
+        ChkShowLogTypeColumn.Checked = colLogType.Visible
+    End Sub
+
+    Private Sub LogsMenuHideServerTimeColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideServerTimeColumn.Click
+        colServerTime.Visible = Not colServerTime.Visible
+        My.Settings.boolShowServerTimeColumn = colServerTime.Visible
+        ChkShowServerTimeColumn.Checked = colServerTime.Visible
+    End Sub
+
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
         Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
 
         If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
-            e.Cancel = True
-            Exit Sub
-        End If
-
-        If Logs.SelectedRows.Count = 0 Then
-            DeleteLogsToolStripMenuItem.Visible = False
-            ExportsLogsToolStripMenuItem.Visible = False
-            DeleteSimilarLogsToolStripMenuItem.Visible = False
-        Else
-            DeleteLogsToolStripMenuItem.Visible = True
-            ExportsLogsToolStripMenuItem.Visible = True
-            DeleteSimilarLogsToolStripMenuItem.Visible = True
-        End If
-
-        If Logs.SelectedRows.Count = 1 Then
-            CopyLogTextToolStripMenuItem.Visible = True
-            OpenLogViewerToolStripMenuItem.Visible = True
-            CreateAlertToolStripMenuItem.Visible = True
-            CreateReplacementToolStripMenuItem.Visible = True
-            CreateIgnoredLogToolStripMenuItem.Visible = True
-            DeleteSimilarLogsToolStripMenuItem.Visible = True
-
-            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-            If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
-        Else
-            OpenLogViewerToolStripMenuItem.Visible = False
+            CopyLogTextToolStripMenuItem.Visible = False
+            CopyRawLogTextToolStripMenuItem.Visible = False
             CreateAlertToolStripMenuItem.Visible = False
-            CreateReplacementToolStripMenuItem.Visible = False
             CreateIgnoredLogToolStripMenuItem.Visible = False
+            CreateReplacementToolStripMenuItem.Visible = False
+            DeleteLogsToolStripMenuItem.Visible = False
             DeleteSimilarLogsToolStripMenuItem.Visible = False
-        End If
+            ExportsLogsToolStripMenuItem.Visible = False
+            OpenLogViewerToolStripMenuItem.Visible = False
+            LogsMenuHideAlertsColumn.Visible = True
+            LogsMenuHideHostnameColumn.Visible = True
+            LogsMenuHideLogTypeColumn.Visible = True
+            LogsMenuHideServerTimeColumn.Visible = True
 
-        DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
-        ExportsLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Export Selected Log", "Export Selected Logs")
+            If ColAlerts.Visible Then
+                LogsMenuHideAlertsColumn.Text = "Hide 'Alerts' Column"
+            Else
+                LogsMenuHideAlertsColumn.Text = "Show 'Alerts' Column"
+            End If
+
+            If ColHostname.Visible Then
+                LogsMenuHideHostnameColumn.Text = "Hide 'Hostname' Column"
+            Else
+                LogsMenuHideHostnameColumn.Text = "Show 'Hostname' Column"
+            End If
+
+            If colLogType.Visible Then
+                LogsMenuHideLogTypeColumn.Text = "Hide 'Log Type' Column"
+            Else
+                LogsMenuHideLogTypeColumn.Text = "Show 'Log Type' Column"
+            End If
+
+            If colServerTime.Visible Then
+                LogsMenuHideServerTimeColumn.Text = "Hide 'Server Time' Column"
+            Else
+                LogsMenuHideServerTimeColumn.Text = "Show 'Server Time' Column"
+            End If
+        Else
+            ' Reset all to visible
+            CopyLogTextToolStripMenuItem.Visible = True
+            CopyRawLogTextToolStripMenuItem.Visible = True
+            CreateAlertToolStripMenuItem.Visible = True
+            CreateIgnoredLogToolStripMenuItem.Visible = True
+            CreateReplacementToolStripMenuItem.Visible = True
+            DeleteLogsToolStripMenuItem.Visible = True
+            DeleteSimilarLogsToolStripMenuItem.Visible = True
+            ExportsLogsToolStripMenuItem.Visible = True
+            OpenLogViewerToolStripMenuItem.Visible = True
+            LogsMenuHideAlertsColumn.Visible = False
+            LogsMenuHideHostnameColumn.Visible = False
+            LogsMenuHideLogTypeColumn.Visible = False
+            LogsMenuHideServerTimeColumn.Visible = False
+
+            If Logs.SelectedRows.Count = 0 Then
+                DeleteLogsToolStripMenuItem.Visible = False
+                ExportsLogsToolStripMenuItem.Visible = False
+                DeleteSimilarLogsToolStripMenuItem.Visible = False
+            Else
+                DeleteLogsToolStripMenuItem.Visible = True
+                ExportsLogsToolStripMenuItem.Visible = True
+                DeleteSimilarLogsToolStripMenuItem.Visible = True
+            End If
+
+            If Logs.SelectedRows.Count = 1 Then
+                CopyLogTextToolStripMenuItem.Visible = True
+                OpenLogViewerToolStripMenuItem.Visible = True
+                CreateAlertToolStripMenuItem.Visible = True
+                CreateReplacementToolStripMenuItem.Visible = True
+                CreateIgnoredLogToolStripMenuItem.Visible = True
+                DeleteSimilarLogsToolStripMenuItem.Visible = True
+
+                Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+                If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
+            Else
+                OpenLogViewerToolStripMenuItem.Visible = False
+                CreateAlertToolStripMenuItem.Visible = False
+                CreateReplacementToolStripMenuItem.Visible = False
+                CreateIgnoredLogToolStripMenuItem.Visible = False
+                DeleteSimilarLogsToolStripMenuItem.Visible = False
+            End If
+
+            DeleteLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Delete Selected Log", "Delete Selected Logs")
+            ExportsLogsToolStripMenuItem.Text = If(Logs.SelectedRows.Count = 1, "Export Selected Log", "Export Selected Logs")
+        End If
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click

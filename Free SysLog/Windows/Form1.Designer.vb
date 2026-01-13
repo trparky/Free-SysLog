@@ -97,6 +97,10 @@ Partial Class Form1
         Me.CloseMe = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuSeparator = New System.Windows.Forms.ToolStripSeparator()
         Me.OpenLogViewerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsMenuHideAlertsColumn = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsMenuHideHostnameColumn = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsMenuHideLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsMenuHideServerTimeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteSimilarLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -792,7 +796,7 @@ Partial Class Form1
         '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LogsMenuHideAlertsColumn, Me.LogsMenuHideHostnameColumn, Me.LogsMenuHideLogTypeColumn, Me.LogsMenuHideServerTimeColumn, Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(183, 180)
         '
@@ -813,6 +817,30 @@ Partial Class Form1
         Me.OpenLogViewerToolStripMenuItem.Name = "OpenLogViewerToolStripMenuItem"
         Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
         Me.OpenLogViewerToolStripMenuItem.Text = "Open Log Viewer"
+        '
+        'LogsMenuHideAlertsColumn
+        '
+        Me.LogsMenuHideAlertsColumn.Name = "LogsMenuHideAlertsColumn"
+        Me.LogsMenuHideAlertsColumn.Size = New System.Drawing.Size(182, 22)
+        Me.LogsMenuHideAlertsColumn.Text = "Hide 'Alerts' Column"
+        '
+        'LogsMenuHideHostnameColumn
+        '
+        Me.LogsMenuHideHostnameColumn.Name = "LogsMenuHideHostnameColumn"
+        Me.LogsMenuHideHostnameColumn.Size = New System.Drawing.Size(182, 22)
+        Me.LogsMenuHideHostnameColumn.Text = "Hide 'Hostname' Column"
+        '
+        'LogsMenuHideLogTypeColumn
+        '
+        Me.LogsMenuHideLogTypeColumn.Name = "LogsMenuHideLogTypeColumn"
+        Me.LogsMenuHideLogTypeColumn.Size = New System.Drawing.Size(182, 22)
+        Me.LogsMenuHideLogTypeColumn.Text = "Hide 'Log Type' Column"
+        '
+        'LogsMenuHideServerTimeColumn
+        '
+        Me.LogsMenuHideServerTimeColumn.Name = "LogsMenuHideServerTimeColumn"
+        Me.LogsMenuHideServerTimeColumn.Size = New System.Drawing.Size(182, 22)
+        Me.LogsMenuHideServerTimeColumn.Text = "Hide 'Server Time' Column"
         '
         'DeleteSimilarLogsToolStripMenuItem
         '
@@ -1138,6 +1166,10 @@ Partial Class Form1
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CopyRawLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LogsMenuHideAlertsColumn As ToolStripMenuItem
+    Friend WithEvents LogsMenuHideHostnameColumn As ToolStripMenuItem
+    Friend WithEvents LogsMenuHideLogTypeColumn As ToolStripMenuItem
+    Friend WithEvents LogsMenuHideServerTimeColumn As ToolStripMenuItem
     Friend WithEvents DeleteLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteSimilarLogsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ExportsLogsToolStripMenuItem As ToolStripMenuItem
