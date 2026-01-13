@@ -307,7 +307,6 @@ Public Class Form1
         ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
         LblAutoSaved.Visible = ChkEnableAutoSave.Checked
         ColAlerts.Visible = My.Settings.boolShowAlertedColumn
-        ChkShowAlertedColumn.Checked = My.Settings.boolShowAlertedColumn
         MinimizeToClockTray.Checked = My.Settings.MinimizeToClockTray
         StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
         ChkEnableStartAtUserStartup.Checked = TaskHandling.DoesTaskExist()
@@ -317,11 +316,8 @@ Public Class Form1
         ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
         ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
         ColHostname.Visible = My.Settings.boolShowHostnameColumn
-        ChkShowHostnameColumn.Checked = My.Settings.boolShowHostnameColumn
         colServerTime.Visible = My.Settings.boolShowServerTimeColumn
-        ChkShowServerTimeColumn.Checked = My.Settings.boolShowServerTimeColumn
         colLogType.Visible = My.Settings.boolShowLogTypeColumn
-        ChkShowLogTypeColumn.Checked = My.Settings.boolShowLogTypeColumn
         RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
         IPv6Support.Checked = My.Settings.IPv6Support
         ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
@@ -1401,25 +1397,21 @@ Public Class Form1
     Private Sub LogsMenuHideAlertsColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideAlertsColumn.Click
         ColAlerts.Visible = Not ColAlerts.Visible
         My.Settings.boolShowAlertedColumn = ColAlerts.Visible
-        ChkShowAlertedColumn.Checked = ColAlerts.Visible
     End Sub
 
     Private Sub LogsMenuHideHostnameColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideHostnameColumn.Click
         ColHostname.Visible = Not ColHostname.Visible
         My.Settings.boolShowHostnameColumn = ColHostname.Visible
-        ChkShowHostnameColumn.Checked = ColHostname.Visible
     End Sub
 
     Private Sub LogsMenuHideLogTypeColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideLogTypeColumn.Click
         colLogType.Visible = Not colLogType.Visible
         My.Settings.boolShowLogTypeColumn = colLogType.Visible
-        ChkShowLogTypeColumn.Checked = colLogType.Visible
     End Sub
 
     Private Sub LogsMenuHideServerTimeColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideServerTimeColumn.Click
         colServerTime.Visible = Not colServerTime.Visible
         My.Settings.boolShowServerTimeColumn = colServerTime.Visible
-        ChkShowServerTimeColumn.Checked = colServerTime.Visible
     End Sub
 
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
@@ -1758,11 +1750,6 @@ Public Class Form1
         ShowSingleInstanceWindow(Of ConfigureSysLogMirrorClients)(ConfigureSysLogMirrorClientsInstance, Icon)
     End Sub
 
-    Private Sub ChkShowAlertedColumn_Click(sender As Object, e As EventArgs) Handles ChkShowAlertedColumn.Click
-        My.Settings.boolShowAlertedColumn = ChkShowAlertedColumn.Checked
-        ColAlerts.Visible = ChkShowAlertedColumn.Checked
-    End Sub
-
     Private Sub MinimizeToClockTray_Click(sender As Object, e As EventArgs) Handles MinimizeToClockTray.Click
         My.Settings.MinimizeToClockTray = MinimizeToClockTray.Checked
     End Sub
@@ -1892,21 +1879,6 @@ Public Class Form1
         Else
             SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
         End If
-    End Sub
-
-    Private Sub ChkShowHostnameColumn_Click(sender As Object, e As EventArgs) Handles ChkShowHostnameColumn.Click
-        My.Settings.boolShowHostnameColumn = ChkShowHostnameColumn.Checked
-        ColHostname.Visible = My.Settings.boolShowHostnameColumn
-    End Sub
-
-    Private Sub ChkShowLogTypeColumn_Click(sender As Object, e As EventArgs) Handles ChkShowLogTypeColumn.Click
-        My.Settings.boolShowLogTypeColumn = ChkShowLogTypeColumn.Checked
-        colLogType.Visible = My.Settings.boolShowLogTypeColumn
-    End Sub
-
-    Private Sub ChkShowServerTimeColumn_Click(sender As Object, e As EventArgs) Handles ChkShowServerTimeColumn.Click
-        My.Settings.boolShowServerTimeColumn = ChkShowServerTimeColumn.Checked
-        colServerTime.Visible = My.Settings.boolShowServerTimeColumn
     End Sub
 
     Private Sub RemoveNumbersFromRemoteApp_Click(sender As Object, e As EventArgs) Handles RemoveNumbersFromRemoteApp.Click
