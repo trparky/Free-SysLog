@@ -1555,7 +1555,7 @@ Public Class Form1
     End Sub
 
     Private Sub StopServerStripMenuItem_Click(sender As Object, e As EventArgs) Handles StopServerStripMenuItem.Click
-        If StopServerStripMenuItem.Text = "Stop Server" Then
+        If StopServerStripMenuItem.Text = "Stop Server" AndAlso MsgBox("Are you sure you want to stop the server thread?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
             SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
             If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
             StopServerStripMenuItem.Text = "Start Server"
