@@ -112,6 +112,30 @@
   <ItemGroup>
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Support Code\AlertsHistoryDataGridViewRow.vb" />
+    <Compile Include="Support Code\Form1 Extensions\Data Handling.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Form1 Extensions\Helper Functions.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Form1 Extensions\Load Settings.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Form1 Extensions\Midnight Timer Code.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Form1 Extensions\Notifications.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Form1 Extensions\Server Startup.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Form1 Extensions\SysLog Code.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Support Code\Form1 Extensions\Variables.Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Support Code\My Custom ListViews.vb" />
     <Compile Include="Support Code\My Data Classes.vb" />
     <Compile Include="Support Code\DataGridViewComparer.vb" />
