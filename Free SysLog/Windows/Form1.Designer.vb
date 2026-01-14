@@ -90,6 +90,7 @@ Partial Class Form1
         Me.ClearNotificationLimits = New System.Windows.Forms.ToolStripMenuItem()
         Me.ColLogsAutoFill = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.LogsHeaderMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyRawLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -782,9 +783,15 @@ Partial Class Form1
         Me.ChkEnableConfirmCloseToolStripItem.Size = New System.Drawing.Size(319, 22)
         Me.ChkEnableConfirmCloseToolStripItem.Text = "Enable Confirm Close"
         '
+        'LogsHeaderMenu
+        '
+        Me.LogsHeaderMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LogsMenuHideAlertsColumn, Me.LogsMenuHideHostnameColumn, Me.LogsMenuHideLogTypeColumn, Me.LogsMenuHideServerTimeColumn})
+        Me.LogsHeaderMenu.Name = "LogsHeaderMenu"
+        Me.LogsHeaderMenu.Size = New System.Drawing.Size(183, 180)
+        '
         'LogsMenu
         '
-        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LogsMenuHideAlertsColumn, Me.LogsMenuHideHostnameColumn, Me.LogsMenuHideLogTypeColumn, Me.LogsMenuHideServerTimeColumn, Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
+        Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
         Me.LogsMenu.Size = New System.Drawing.Size(183, 180)
         '
@@ -1038,6 +1045,7 @@ Partial Class Form1
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.LogsMenu.ResumeLayout(False)
+        Me.LogsHeaderMenu.ResumeLayout(False)
         Me.IconMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -1122,6 +1130,7 @@ Partial Class Form1
     Friend WithEvents NotifyIcon As NotifyIcon
     Friend WithEvents ChkEnableConfirmCloseToolStripItem As ToolStripMenuItem
     Friend WithEvents LogsMenu As ContextMenuStrip
+    Friend WithEvents LogsHeaderMenu As ContextMenuStrip
     Friend WithEvents CopyLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CopyRawLogTextToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents OpenLogViewerToolStripMenuItem As ToolStripMenuItem

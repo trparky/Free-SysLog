@@ -1414,87 +1414,44 @@ Public Class Form1
         My.Settings.boolShowServerTimeColumn = colServerTime.Visible
     End Sub
 
-    Private Shared Sub SetShowHideText(boolIsColumnVisible As Boolean, strColumnDisplayName As String, menuItemControl As ToolStripMenuItem)
-        ' If the column is visible, the action is "Hide". Otherwise, it's "Show".
-        menuItemControl.Text = If(boolIsColumnVisible, $"Hide '{strColumnDisplayName}' Column", $"Show '{strColumnDisplayName}' Column")
-    End Sub
-
-    Private Sub SetMenuItemsVisible(boolIsVisible As Boolean, ParamArray items() As ToolStripItem)
-        For Each item In items
-            item.Visible = boolIsVisible
-        Next
-    End Sub
-
     Private Sub LogsMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsMenu.Opening
-        Dim clientPoint As Point = Logs.PointToClient(MousePosition)
-        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(clientPoint.X, clientPoint.Y)
-        Dim boolIsHeader As Boolean = hitTest.Type = DataGridViewHitTestType.ColumnHeader
+        Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(Logs.PointToClient(MousePosition).X, Logs.PointToClient(MousePosition).Y)
 
-        ' These are your "log action" items
-        Dim actionItems As ToolStripItem() = {
-            CopyLogTextToolStripMenuItem,
-            CopyRawLogTextToolStripMenuItem,
-            CreateAlertToolStripMenuItem,
-            CreateIgnoredLogToolStripMenuItem,
-            CreateReplacementToolStripMenuItem,
-            DeleteLogsToolStripMenuItem,
-            DeleteSimilarLogsToolStripMenuItem,
-            ExportsLogsToolStripMenuItem,
-            OpenLogViewerToolStripMenuItem
-        }
-
-        ' These are your "hide/show column" items
-        Dim columnItems As ToolStripItem() = {
-            LogsMenuHideAlertsColumn,
-            LogsMenuHideHostnameColumn,
-            LogsMenuHideLogTypeColumn,
-            LogsMenuHideServerTimeColumn
-        }
-
-        If boolIsHeader Then
-            SetMenuItemsVisible(False, actionItems)
-            SetMenuItemsVisible(True, columnItems)
-
-            ' FIXED: each one updates its own menu item
-            SetShowHideText(ColAlerts.Visible, "Alerts", LogsMenuHideAlertsColumn)
-            SetShowHideText(ColHostname.Visible, "Hostname", LogsMenuHideHostnameColumn)
-            SetShowHideText(colLogType.Visible, "Log Type", LogsMenuHideLogTypeColumn)
-            SetShowHideText(colServerTime.Visible, "Server Time", LogsMenuHideServerTimeColumn)
-        Else
-            ' Not on header: show actions, hide column toggles
-            SetMenuItemsVisible(True, actionItems)
-            SetMenuItemsVisible(False, columnItems)
-
-            Dim intSelectedCount As Integer = Logs.SelectedRows.Count
-            Dim boolHasSelection As Boolean = intSelectedCount > 0
-            Dim boolSingleSelection As Boolean = intSelectedCount = 1
-
-            ' Items that only make sense when something is selected
-            DeleteLogsToolStripMenuItem.Visible = boolHasSelection
-            ExportsLogsToolStripMenuItem.Visible = boolHasSelection
-            DeleteSimilarLogsToolStripMenuItem.Visible = boolHasSelection
-
-            ' Items that only make sense when exactly one row is selected
-            CopyLogTextToolStripMenuItem.Visible = boolSingleSelection
-            OpenLogViewerToolStripMenuItem.Visible = boolSingleSelection
-            CreateAlertToolStripMenuItem.Visible = boolSingleSelection
-            CreateReplacementToolStripMenuItem.Visible = boolSingleSelection
-            CreateIgnoredLogToolStripMenuItem.Visible = boolSingleSelection
-
-            ' Raw log text depends on row content
-            CopyRawLogTextToolStripMenuItem.Visible = False
-
-            If boolSingleSelection Then
-                Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-
-                If selectedItem IsNot Nothing Then
-                    CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
-                End If
-            End If
-
-            DeleteLogsToolStripMenuItem.Text = "Delete Selected " & If(boolSingleSelection, "Log", "Logs")
-            ExportsLogsToolStripMenuItem.Text = "Export Selected " & If(boolSingleSelection, "Log", "Logs")
+        If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
+            e.Cancel = True
+            Exit Sub
         End If
+
+        If Logs.SelectedRows.Count = 0 Then
+            DeleteLogsToolStripMenuItem.Visible = False
+            ExportsLogsToolStripMenuItem.Visible = False
+            DeleteSimilarLogsToolStripMenuItem.Visible = False
+        Else
+            DeleteLogsToolStripMenuItem.Visible = True
+            ExportsLogsToolStripMenuItem.Visible = True
+            DeleteSimilarLogsToolStripMenuItem.Visible = True
+        End If
+
+        If Logs.SelectedRows.Count = 1 Then
+            CopyLogTextToolStripMenuItem.Visible = True
+            OpenLogViewerToolStripMenuItem.Visible = True
+            CreateAlertToolStripMenuItem.Visible = True
+            CreateReplacementToolStripMenuItem.Visible = True
+            CreateIgnoredLogToolStripMenuItem.Visible = True
+            DeleteSimilarLogsToolStripMenuItem.Visible = True
+
+            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+            If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
+        Else
+            OpenLogViewerToolStripMenuItem.Visible = False
+            CreateAlertToolStripMenuItem.Visible = False
+            CreateReplacementToolStripMenuItem.Visible = False
+            CreateIgnoredLogToolStripMenuItem.Visible = False
+            DeleteSimilarLogsToolStripMenuItem.Visible = False
+        End If
+
+        DeleteLogsToolStripMenuItem.Text = "Delete Selected " & If(Logs.SelectedRows.Count = 1, "Log", "Logs")
+        ExportsLogsToolStripMenuItem.Text = "Delete Selected " & If(Logs.SelectedRows.Count = 1, "Log", "Logs")
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
@@ -1528,18 +1485,21 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_MouseDown(sender As Object, e As MouseEventArgs) Handles Logs.MouseDown
-        If e.Button = MouseButtons.Right Then
-            Dim currentMouseOverRow As Integer = Logs.HitTest(e.X, e.Y).RowIndex
-
-            If currentMouseOverRow >= 0 Then
-                If Logs.SelectedRows.Count <= 1 Then
-                    Logs.ClearSelection()
-                    Logs.Rows(currentMouseOverRow).Selected = True
-                End If
-            End If
-        End If
-
         Dim hitTest As DataGridView.HitTestInfo = Logs.HitTest(e.X, e.Y)
+
+        If e.Button = MouseButtons.Right Then
+            If hitTest.RowIndex >= 0 AndAlso hitTest.Type = DataGridViewHitTestType.Cell AndAlso Logs.SelectedRows.Count <= 1 Then
+                Logs.ClearSelection()
+                Logs.Rows(hitTest.RowIndex).Selected = True
+            End If
+
+            Dim menuToShow As ContextMenuStrip = If(hitTest.Type = DataGridViewHitTestType.ColumnHeader, LogsHeaderMenu, LogsMenu)
+
+            Logs.ContextMenuStrip = menuToShow
+            menuToShow.Show(Logs, New Point(e.X, e.Y))
+
+            Exit Sub
+        End If
 
         If hitTest.Type = DataGridViewHitTestType.ColumnHeader Then
             Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
