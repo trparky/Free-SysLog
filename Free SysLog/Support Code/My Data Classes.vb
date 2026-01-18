@@ -32,6 +32,7 @@ Public Class SavedData
             .RawLogData = rawLogData
             .AlertText = alertText
             .alertType = alertType
+            .ServerDate = ServerDate
 
             If My.Settings.font IsNot Nothing Then
                 .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
