@@ -12,6 +12,7 @@ Imports Free_SysLog.SyslogTcpServer.SyslogTcpServer
 Imports Free_SysLog.ThreadSafetyLists
 
 Public Class Form1
+#Region "--== Variables ==--"
     Private boolMaximizedBeforeMinimize As Boolean
     Private boolDoneLoading As Boolean = False
     Public IgnoredLogs As New ThreadSafeList(Of MyDataGridViewRow)
@@ -33,155 +34,7 @@ Public Class Form1
     Private ReplacementsInstance As Replacements
     Private AlertsInstance As Alerts
     Private ConfigureSysLogMirrorClientsInstance As ConfigureSysLogMirrorClients
-
-#Region "--== Midnight Timer Code ==--"
-    ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
-    ' I have rewritten the code to ensure that I fully understand it and to avoid blatantly copying someone else's work.
-    ' Using their code as-is without making an effort to learn from it or to create my own implementation doesn't sit well with me.
-
-    Private MyMidnightTimer As Timers.Timer
-
-    Private Sub CreateNewMidnightTimer()
-        If MyMidnightTimer IsNot Nothing Then
-            MyMidnightTimer.Stop()
-            MyMidnightTimer.Dispose()
-            MyMidnightTimer = Nothing
-        End If
-
-        ' Calculate the time span until midnight
-        Dim ts As TimeSpan = GetMidnight(1).Subtract(Date.Now)
-        Dim tsMidnight As New TimeSpan(ts.Hours, ts.Minutes, ts.Seconds)
-
-        ' Create and start the new timer
-        MyMidnightTimer = New Timers.Timer(tsMidnight.TotalMilliseconds)
-
-        AddHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
-        AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
-
-        MyMidnightTimer.Start()
-    End Sub
-
-    Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
-        If Logs.InvokeRequired Then
-            Logs.Invoke(New Action(Of Object, Timers.ElapsedEventArgs)(AddressOf MidnightEvent), sender, e)
-            Return
-        End If
-
-        SyncLock dataGridLockObject
-            If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
-
-            Dim oldLogCount As Integer = Logs.Rows.Count
-            Logs.Rows.Clear()
-
-            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", Logs))
-
-            UpdateLogCount()
-            SelectLatestLogEntry()
-            BtnSaveLogsToDisk.Enabled = True
-
-            recentUniqueObjects.Clear()
-
-            NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
-        End SyncLock
-
-        CreateNewMidnightTimer()
-    End Sub
-
-    Private Sub WindowsTimeChangeHandler(sender As Object, e As EventArgs)
-        CreateNewMidnightTimer()
-    End Sub
-
-    Private Function GetMidnight(minutesAfterMidnight As Integer) As Date
-        Dim tomorrow As Date = Date.Now.AddDays(1)
-        Return New Date(tomorrow.Year, tomorrow.Month, tomorrow.Day, 0, minutesAfterMidnight, 0)
-    End Function
-
-    Private Sub BackupOldLogsAfterClearingAtMidnight_Click(sender As Object, e As EventArgs) Handles BackupOldLogsAfterClearingAtMidnight.Click
-        My.Settings.DeleteOldLogsAtMidnight = BackupOldLogsAfterClearingAtMidnight.Checked
-    End Sub
-
-    Private Sub DeleteOldLogsAtMidnight_Click(sender As Object, e As EventArgs) Handles DeleteOldLogsAtMidnight.Click
-        My.Settings.DeleteOldLogsAtMidnight = DeleteOldLogsAtMidnight.Checked
-        BackupOldLogsAfterClearingAtMidnight.Enabled = DeleteOldLogsAtMidnight.Checked
-
-        If Not DeleteOldLogsAtMidnight.Checked Then
-            DeleteOldLogsAtMidnight.Checked = False
-            My.Settings.DeleteOldLogsAtMidnight = False
-        End If
-
-        If DeleteOldLogsAtMidnight.Checked Then
-            CreateNewMidnightTimer()
-        Else
-            If MyMidnightTimer IsNot Nothing Then
-                MyMidnightTimer.Stop()
-                MyMidnightTimer.Dispose()
-                MyMidnightTimer = Nothing
-            End If
-        End If
-    End Sub
 #End Region
-
-    Private Function GetDateStringBasedOnUserPreference(dateObject As Date) As String
-        Select Case My.Settings.DateFormat
-            Case 1
-                Return dateObject.ToLongDateString.Replace("/", "-").Replace("\", "-")
-            Case 2
-                Return dateObject.ToShortDateString.Replace("/", "-").Replace("\", "-")
-            Case 3
-                Return dateObject.ToString(My.Settings.CustomDateFormat).Replace("/", "-").Replace("\", "-")
-            Case Else
-                Return dateObject.ToLongDateString().Replace("/", "-").Replace("\", "-")
-        End Select
-    End Function
-
-    Public Sub WriteLogsToDisk()
-        SyncLock dataGridLockObject
-            Dim collectionOfSavedData As New List(Of SavedData)
-            Dim myItem As MyDataGridViewRow
-
-            Try
-                For Each item As DataGridViewRow In Logs.Rows
-                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                        myItem = DirectCast(item, MyDataGridViewRow)
-
-                        collectionOfSavedData.Add(New SavedData With {
-                                                .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                                .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                                .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                                .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                                .DateObject = myItem.DateObject,
-                                                .BoolAlerted = myItem.BoolAlerted,
-                                                .ServerDate = myItem.ServerDate,
-                                                .rawLogData = myItem.RawLogData,
-                                                .alertText = myItem.AlertText,
-                                                .alertType = myItem.alertType
-                                              })
-                    End If
-                Next
-
-                WriteFileAtomically(strPathToDataFile, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
-
-                NumberOfIgnoredLogs = longNumberOfIgnoredLogs
-                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
-            Catch ex As Exception
-                MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption and loss.", MsgBoxStyle.Critical, Text)
-                Process.GetCurrentProcess.Kill()
-            End Try
-
-            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
-
-            BtnSaveLogsToDisk.Enabled = False
-        End SyncLock
-    End Sub
-
-    Private Sub MakeLogBackup()
-        WriteLogsToDisk()
-        Dim strLogFileBackupFileName As String = GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json"))
-        File.Copy(strPathToDataFile, strLogFileBackupFileName)
-        If My.Settings.CompressBackupLogFiles Then CompressFile(strLogFileBackupFileName)
-    End Sub
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
         If ChkEnableStartAtUserStartup.Checked Then
@@ -194,15 +47,6 @@ Public Class Form1
             End Using
 
             StartUpDelay.Enabled = False
-        End If
-    End Sub
-
-    Public Sub SelectLatestLogEntry()
-        If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
-            boolIsProgrammaticScroll = True
-            Logs.BeginInvoke(Sub()
-                                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
-                             End Sub)
         End If
     End Sub
 
@@ -260,134 +104,8 @@ Public Class Form1
         LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
     End Sub
 
-    Public Sub RestoreWindow()
-        If boolMaximizedBeforeMinimize Then
-            WindowState = FormWindowState.Maximized
-        ElseIf My.Settings.boolMaximized Then
-            WindowState = FormWindowState.Maximized
-        Else
-            WindowState = FormWindowState.Normal
-        End If
-
-        BringToFront()
-        Activate()
-
-        SelectLatestLogEntry()
-    End Sub
-
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
         RestoreWindow()
-    End Sub
-
-    Private Sub LoadCheckboxSettings()
-        If My.Settings.NotificationLength = 0 Then
-            NotificationLengthShort.Checked = True
-            NotificationLengthLong.Checked = False
-        Else
-            NotificationLengthShort.Checked = False
-            NotificationLengthLong.Checked = True
-        End If
-
-        ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
-
-        OnlySaveAlertedLogs.Checked = My.Settings.OnlySaveAlertedLogs
-        SaveIgnoredLogCount.Checked = My.Settings.saveIgnoredLogCount
-        AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer
-        ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
-        IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
-        AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
-        ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
-        ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
-        LimitNumberOfIgnoredLogs.Visible = My.Settings.recordIgnoredLogs
-        IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
-        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
-        ChkEnableAutoScroll.Checked = My.Settings.autoScroll
-        ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
-        ChkEnableAutoSave.Checked = My.Settings.autoSave
-        ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
-        LblAutoSaved.Visible = ChkEnableAutoSave.Checked
-        ColAlerts.Visible = My.Settings.boolShowAlertedColumn
-        MinimizeToClockTray.Checked = My.Settings.MinimizeToClockTray
-        StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
-        ChkEnableStartAtUserStartup.Checked = TaskHandling.DoesTaskExist()
-        DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
-        BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
-        BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
-        ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
-        ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
-        ColHostname.Visible = My.Settings.boolShowHostnameColumn
-        colServerTime.Visible = My.Settings.boolShowServerTimeColumn
-        colLogType.Visible = My.Settings.boolShowLogTypeColumn
-        RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
-        IPv6Support.Checked = My.Settings.IPv6Support
-        ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
-        ChkDebug.Checked = My.Settings.boolDebug
-        ConfirmDelete.Checked = My.Settings.ConfirmDelete
-        ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
-        ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
-        IncludeCommasInDHMS.Checked = My.Settings.IncludeCommasInDHMS
-        CompressBackupLogFilesToolStripMenuItem.Checked = My.Settings.CompressBackupLogFiles
-    End Sub
-
-    Private Sub LoadAndDeserializeArrays()
-        Dim tempReplacementsClass As ReplacementsClass
-        Dim tempSysLogProxyServer As SysLogProxyServer
-        Dim tempIgnoredClass As IgnoredClass
-        Dim tempAlertsClass As AlertsClass
-
-        If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
-            For Each strJSONString As String In My.Settings.replacements
-                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                If tempReplacementsClass.BoolEnabled Then replacementsList.Add(tempReplacementsClass)
-                tempReplacementsClass = Nothing
-            Next
-        End If
-
-        If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
-            Dim customHostname As CustomHostname
-
-            For Each strJSONString As String In My.Settings.hostnames
-                customHostname = Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                SupportCode.hostnames(customHostname.ip) = customHostname.deviceName
-            Next
-        End If
-
-        If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
-            For Each strJSONString As String In My.Settings.ServersToSendTo
-                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                If tempSysLogProxyServer.boolEnabled Then serversList.Add(tempSysLogProxyServer)
-                tempSysLogProxyServer = Nothing
-            Next
-        End If
-
-        If My.Settings.ignored2 Is Nothing Then
-            My.Settings.ignored2 = New Specialized.StringCollection()
-
-            If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count > 0 Then
-                For Each strIgnoredString As String In My.Settings.ignored
-                    My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New IgnoredClass With {.BoolCaseSensitive = False, .BoolRegex = False, .StrIgnore = strIgnoredString}))
-                Next
-
-                My.Settings.ignored.Clear()
-                My.Settings.Save()
-            End If
-        End If
-
-        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
-            For Each strJSONString As String In My.Settings.ignored2
-                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
-                tempIgnoredClass = Nothing
-            Next
-        End If
-
-        If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
-            For Each strJSONString As String In My.Settings.alerts
-                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
-                If tempAlertsClass.BoolEnabled Then alertsList.Add(tempAlertsClass)
-                tempAlertsClass = Nothing
-            Next
-        End If
     End Sub
 
     Private Sub boxLimiter_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimiter.SelectedValueChanged
@@ -427,25 +145,6 @@ Public Class Form1
             boxLimiter.Enabled = False
         End If
     End Sub
-
-    Private Function FormatSecondsToReadableTime(input As Integer) As String
-        If input < 0 Then Return "0 seconds"
-
-        Dim minutes As Integer = input \ 60
-        Dim seconds As Integer = input Mod 60
-
-        Dim parts As New List(Of String)
-
-        If minutes > 0 Then
-            parts.Add($"{minutes} minute{If(minutes > 1, "s", "")}")
-        End If
-
-        If seconds > 0 OrElse minutes = 0 Then
-            parts.Add($"{seconds} second{If(seconds <> 1, "s", "")}")
-        End If
-
-        Return String.Join(" and ", parts)
-    End Function
 
     Private Sub Logs_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles Logs.CellPainting
         If e.RowIndex = -1 AndAlso e.ColumnIndex = ColAlerts.Index AndAlso e.ColumnIndex = colDelete.Index Then
@@ -531,239 +230,8 @@ Public Class Form1
         AddNotificationActionHandler()
     End Sub
 
-    Private Sub AddNotificationActionHandler()
-        AddHandler ToastNotificationManagerCompat.OnActivated, Sub(args)
-                                                                   ' Parse arguments
-                                                                   Dim argsDictionary As New Dictionary(Of String, String)
-                                                                   Dim itemSplit As String()
-
-                                                                   For Each item As String In args.Argument.Split(";")
-                                                                       If Not String.IsNullOrWhiteSpace(item) Then
-                                                                           itemSplit = item.Split("=")
-
-                                                                           If itemSplit.Length = 2 AndAlso Not String.IsNullOrWhiteSpace(itemSplit(0)) Then
-                                                                               argsDictionary(itemSplit(0)) = itemSplit(1)
-                                                                           End If
-                                                                       End If
-                                                                   Next
-
-                                                                   If argsDictionary.ContainsKey("action") Then
-                                                                       If argsDictionary("action").ToString.Equals(strOpenSysLog, StringComparison.OrdinalIgnoreCase) Then
-                                                                           Invoke(Sub() RestoreWindow())
-                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
-                                                                           Try
-                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(argsDictionary("datapacket").ToString, JSONDecoderSettingsForSettingsFiles)
-
-                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext, NotificationDataPacket.alertType)
-                                                                           Catch ex As Exception
-                                                                           End Try
-                                                                       End If
-                                                                   End If
-                                                               End Sub
-    End Sub
-
-    Private Async Sub StartTCPServer()
-        Dim subRoutine As New SyslogMessageHandlerDelegate(Sub(strReceivedData As String, strSourceIP As String)
-                                                               SyslogParser.ProcessIncomingLog(strReceivedData, strSourceIP)
-                                                           End Sub)
-
-        SyslogTcpServer = New SyslogTcpServer.SyslogTcpServer(subRoutine, My.Settings.sysLogPort)
-        Await SyslogTcpServer.StartAsync()
-    End Sub
-
-    Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
-        If Not boolDebugBuild AndAlso My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
-                                                                                                                      Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
-                                                                                                                      checkForUpdatesClassObject.CheckForUpdates(False)
-                                                                                                                  End Sub)
-
-        If boolDoWeOwnTheMutex Then
-            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
-            serverThread.Start()
-
-            If My.Settings.EnableTCPServer Then
-                StartTCPServer()
-                boolTCPServerRunning = True
-            End If
-
-            boolServerRunning = True
-        Else
-            Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp)
-
-            If activeProcess Is Nothing Then
-                MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
-            Else
-                Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
-
-                SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
-                End SyncLock
-
-                MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
-            End If
-        End If
-    End Sub
-
-    Private Sub LoadDataFile(Optional boolShowDataLoadedEvent As Boolean = True)
-        If File.Exists(strPathToDataFile) Then
-            Try
-                Invoke(Sub()
-                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Loading data and populating data grid... Please Wait.", Logs))
-                           LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
-                       End Sub)
-
-                Dim collectionOfSavedData As New List(Of SavedData)
-
-                Using fileStream As New StreamReader(strPathToDataFile)
-                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
-                End Using
-
-                Dim listOfLogEntries As New List(Of MyDataGridViewRow)
-                Dim stopwatch As Stopwatch = Stopwatch.StartNew
-
-                If collectionOfSavedData.Any() Then
-                    Dim intProgress As Integer = 0
-
-                    Invoke(Sub() LoadingProgressBar.Visible = True)
-
-                    For Each item As SavedData In collectionOfSavedData
-                        listOfLogEntries.Add(item.MakeDataGridRow(Logs))
-                        intProgress += 1
-                        Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
-                    Next
-
-                    Invoke(Sub() LoadingProgressBar.Visible = False)
-                End If
-
-                If boolShowDataLoadedEvent Then
-                    listOfLogEntries.Add(SyslogParser.MakeLocalDataGridRowEntry($"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", Logs))
-                End If
-
-                SyncLock dataGridLockObject
-                    Invoke(Sub()
-                               Logs.SuspendLayout()
-                               Logs.Rows.Clear()
-
-                               If listOfLogEntries.Count > 2000 Then
-                                   Dim intBatchSize As Integer = 250
-
-                                   Threading.Tasks.Task.Run(Sub()
-                                                                For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
-                                                                    Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
-                                                                    Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
-                                                                Next
-
-                                                                Invoke(Sub()
-                                                                           SelectLatestLogEntry()
-
-                                                                           Logs.SelectedRows(0).Selected = False
-                                                                           UpdateLogCount()
-                                                                           Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
-                                                                           Logs.ResumeLayout()
-                                                                       End Sub)
-                                                            End Sub)
-                               Else
-                                   Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                                   Logs.ResumeLayout()
-
-                                   SelectLatestLogEntry()
-
-                                   Logs.SelectedRows(0).Selected = False
-                                   UpdateLogCount()
-                                   Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
-                               End If
-                           End Sub)
-                End SyncLock
-            Catch ex As Newtonsoft.Json.JsonSerializationException
-                HandleLogFileLoadException(ex)
-            Catch ex As Newtonsoft.Json.JsonReaderException
-                HandleLogFileLoadException(ex)
-            End Try
-        End If
-    End Sub
-
-    Private Sub HandleLogFileLoadException(ex As Exception)
-        If File.Exists($"{strPathToDataFile}.bad") Then
-            File.Copy(strPathToDataFile, GetUniqueFileName($"{strPathToDataFile}.bad"))
-        Else
-            File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
-        End If
-
-        WriteFileAtomically(strPathToDataFile, "[]")
-        LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
-
-        SyncLock dataGridLockObject
-            Invoke(Sub()
-                       Logs.SuspendLayout()
-                       Logs.Rows.Clear()
-
-                       Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
-                           SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs),
-                           SyslogParser.MakeLocalDataGridRowEntry("There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", Logs),
-                           SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", Logs)
-                       }
-
-                       Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                       Logs.ResumeLayout()
-                       UpdateLogCount()
-                   End Sub)
-        End SyncLock
-    End Sub
-
-    Private Function GetUniqueFileName(fileName As String) As String
-        Dim fileInfo As New FileInfo(fileName)
-
-        Dim strDirectory As String = fileInfo.DirectoryName
-        Dim strFileBase As String = Path.GetFileNameWithoutExtension(fileInfo.Name)
-        Dim strFileExtension As String = fileInfo.Extension
-
-        If String.IsNullOrWhiteSpace(strDirectory) Then strDirectory = Directory.GetCurrentDirectory
-
-        Dim strNewFileName As String = Path.Combine(strDirectory, fileInfo.Name)
-        Dim intCount As Integer = 1
-
-        While File.Exists(strNewFileName)
-            strNewFileName = Path.Combine(strDirectory, $"{strFileBase} ({intCount}){strFileExtension}")
-            intCount += 1
-        End While
-
-        Return strNewFileName
-    End Function
-
     Private Sub BtnOpenLogLocation_Click(sender As Object, e As EventArgs) Handles BtnOpenLogLocation.Click
         SelectFileInWindowsExplorer(strPathToDataFile)
-    End Sub
-
-    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
-        strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
-
-        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType}
-            LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
-            LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
-            LogViewerInstance.TopMost = True
-            LogViewerInstance.txtAlertText.Text = strAlertText
-
-            LogViewerInstance.ShowDialog()
-        End Using
-    End Sub
-
-    Private Sub OpenLogViewerWindow()
-        If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
-            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-            Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
-            Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
-
-            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me, .alertType = selectedRow.alertType}
-                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
-                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
-
-                If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
-                    LogViewerInstance.txtAlertText.Text = selectedRow.AlertText
-                End If
-
-                LogViewerInstance.ShowDialog(Me)
-            End Using
-        End If
     End Sub
 
     Private Sub Logs_DoubleClick(sender As Object, e As EventArgs) Handles Logs.DoubleClick
@@ -879,11 +347,6 @@ Public Class Form1
         e.Cancel = True
     End Sub
 
-    Public Sub UpdateLogCount()
-        BtnClearLog.Enabled = Logs.Rows.Count <> 0
-        NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
-    End Sub
-
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
@@ -918,13 +381,6 @@ Public Class Form1
             UpdateLogCount()
             SaveLogsToDiskSub()
         End If
-    End Sub
-
-    Public Sub SaveLogsToDiskSub()
-        WriteLogsToDisk()
-        LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
-        SaveTimer.Enabled = False
-        SaveTimer.Enabled = True
     End Sub
 
     Private Sub BtnSaveLogsToDisk_Click(sender As Object, e As EventArgs) Handles BtnSaveLogsToDisk.Click
@@ -1092,40 +548,6 @@ Public Class Form1
             Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
             SortLogsByDateObject(column.Index, If(sortOrder = SortOrder.Ascending, ListSortDirection.Ascending, ListSortDirection.Descending))
-        End If
-    End Sub
-
-    Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
-        SyncLock dataGridLockObject
-            SortLogsByDateObjectNoLocking(columnIndex, order)
-        End SyncLock
-    End Sub
-
-    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As ListSortDirection)
-        Logs.SuspendLayout()
-        Logs.Sort(Logs.Columns(columnIndex), order)
-        Logs.ResumeLayout()
-    End Sub
-
-    Public Sub ShowSingleInstanceWindow(Of T As {Form, New})(ByRef instance As T, ownerIcon As Icon)
-        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
-            instance.WindowState = FormWindowState.Normal
-            instance.BringToFront()
-            instance.Activate()
-        Else
-            instance = New T() With {.Icon = ownerIcon}
-            instance.Show()
-        End If
-    End Sub
-
-    Public Sub ShowSingleInstanceWindow(Of T As Form)(ByRef instance As T, createForm As Func(Of T))
-        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
-            instance.WindowState = FormWindowState.Normal
-            instance.BringToFront()
-            instance.Activate()
-        Else
-            instance = createForm()
-            instance.Show()
         End If
     End Sub
 
@@ -1332,46 +754,6 @@ Public Class Form1
                 Process.GetCurrentProcess.Kill()
             End If
         End Using
-    End Sub
-
-    Private Sub ClearLogsOlderThan(daysToKeep As Integer)
-        Try
-            SyncLock dataGridLockObject
-                Logs.AllowUserToOrderColumns = False
-                Logs.Enabled = False
-
-                Dim intOldCount As Integer = Logs.Rows.Count
-                Dim newListOfLogs As New List(Of MyDataGridViewRow)
-                Dim dateChosenDate As Date = Now.AddDays(daysToKeep * -1)
-
-                For Each item As MyDataGridViewRow In Logs.Rows
-                    If item.DateObject.Date >= dateChosenDate Then
-                        newListOfLogs.Add(item.Clone())
-                    End If
-                Next
-
-                If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
-
-                Logs.Enabled = True
-                Logs.AllowUserToOrderColumns = True
-
-                Logs.SuspendLayout()
-                Logs.Rows.Clear()
-                Logs.Rows.AddRange(newListOfLogs.ToArray)
-
-                Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
-
-                Logs.ResumeLayout()
-
-                SelectLatestLogEntry()
-            End SyncLock
-
-            UpdateLogCount()
-            SaveLogsToDiskSub()
-        Catch ex As ArgumentOutOfRangeException
-            ' Handle exception if necessary
-        End Try
     End Sub
 
     Private Sub OlderThan1DayToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OlderThan1DayToolStripMenuItem.Click
@@ -2280,6 +1662,636 @@ Public Class Form1
         End If
 
         SelectLatestLogEntry()
+    End Sub
+#End Region
+
+#Region "--== Data Handling Code ==-"
+    Private Sub MakeLogBackup()
+        WriteLogsToDisk()
+        Dim strLogFileBackupFileName As String = GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json"))
+        File.Copy(strPathToDataFile, strLogFileBackupFileName)
+        If My.Settings.CompressBackupLogFiles Then CompressFile(strLogFileBackupFileName)
+    End Sub
+
+    Private Sub LoadDataFile(Optional boolShowDataLoadedEvent As Boolean = True)
+        If File.Exists(strPathToDataFile) Then
+            Try
+                Invoke(Sub()
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Loading data and populating data grid... Please Wait.", Logs))
+                           LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
+                       End Sub)
+
+                Dim collectionOfSavedData As New List(Of SavedData)
+
+                Using fileStream As New StreamReader(strPathToDataFile)
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                End Using
+
+                Dim listOfLogEntries As New List(Of MyDataGridViewRow)
+                Dim stopwatch As Stopwatch = Stopwatch.StartNew
+
+                If collectionOfSavedData.Any() Then
+                    Dim intProgress As Integer = 0
+
+                    Invoke(Sub() LoadingProgressBar.Visible = True)
+
+                    For Each item As SavedData In collectionOfSavedData
+                        listOfLogEntries.Add(item.MakeDataGridRow(Logs))
+                        intProgress += 1
+                        Invoke(Sub() LoadingProgressBar.Value = intProgress / collectionOfSavedData.Count * 100)
+                    Next
+
+                    Invoke(Sub() LoadingProgressBar.Visible = False)
+                End If
+
+                If boolShowDataLoadedEvent Then
+                    listOfLogEntries.Add(SyslogParser.MakeLocalDataGridRowEntry($"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", Logs))
+                End If
+
+                SyncLock dataGridLockObject
+                    Invoke(Sub()
+                               Logs.SuspendLayout()
+                               Logs.Rows.Clear()
+
+                               If listOfLogEntries.Count > 2000 Then
+                                   Dim intBatchSize As Integer = 250
+
+                                   Threading.Tasks.Task.Run(Sub()
+                                                                For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                                                                    Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                                                    Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                                                Next
+
+                                                                Invoke(Sub()
+                                                                           SelectLatestLogEntry()
+
+                                                                           Logs.SelectedRows(0).Selected = False
+                                                                           UpdateLogCount()
+                                                                           Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                                                                           Logs.ResumeLayout()
+                                                                       End Sub)
+                                                            End Sub)
+                               Else
+                                   Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                                   Logs.ResumeLayout()
+
+                                   SelectLatestLogEntry()
+
+                                   Logs.SelectedRows(0).Selected = False
+                                   UpdateLogCount()
+                                   Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                               End If
+                           End Sub)
+                End SyncLock
+            Catch ex As Newtonsoft.Json.JsonSerializationException
+                HandleLogFileLoadException(ex)
+            Catch ex As Newtonsoft.Json.JsonReaderException
+                HandleLogFileLoadException(ex)
+            End Try
+        End If
+    End Sub
+
+    Public Sub WriteLogsToDisk()
+        SyncLock dataGridLockObject
+            Dim collectionOfSavedData As New List(Of SavedData)
+            Dim myItem As MyDataGridViewRow
+
+            Try
+                For Each item As DataGridViewRow In Logs.Rows
+                    If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
+                        myItem = DirectCast(item, MyDataGridViewRow)
+
+                        collectionOfSavedData.Add(New SavedData With {
+                                                .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
+                                                .logType = myItem.Cells(ColumnIndex_LogType).Value,
+                                                .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
+                                                .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
+                                                .log = myItem.Cells(ColumnIndex_LogText).Value,
+                                                .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
+                                                .DateObject = myItem.DateObject,
+                                                .BoolAlerted = myItem.BoolAlerted,
+                                                .ServerDate = myItem.ServerDate,
+                                                .rawLogData = myItem.RawLogData,
+                                                .alertText = myItem.AlertText,
+                                                .alertType = myItem.alertType
+                                              })
+                    End If
+                Next
+
+                WriteFileAtomically(strPathToDataFile, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
+
+                NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+            Catch ex As Exception
+                MsgBox("A critical error occurred while writing log data to disk. The old data had been saved to prevent data corruption and loss.", MsgBoxStyle.Critical, Text)
+                Process.GetCurrentProcess.Kill()
+            End Try
+
+            LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
+
+            BtnSaveLogsToDisk.Enabled = False
+        End SyncLock
+    End Sub
+
+    Private Function GetUniqueFileName(fileName As String) As String
+        Dim fileInfo As New FileInfo(fileName)
+
+        Dim strDirectory As String = fileInfo.DirectoryName
+        Dim strFileBase As String = Path.GetFileNameWithoutExtension(fileInfo.Name)
+        Dim strFileExtension As String = fileInfo.Extension
+
+        If String.IsNullOrWhiteSpace(strDirectory) Then strDirectory = Directory.GetCurrentDirectory
+
+        Dim strNewFileName As String = Path.Combine(strDirectory, fileInfo.Name)
+        Dim intCount As Integer = 1
+
+        While File.Exists(strNewFileName)
+            strNewFileName = Path.Combine(strDirectory, $"{strFileBase} ({intCount}){strFileExtension}")
+            intCount += 1
+        End While
+
+        Return strNewFileName
+    End Function
+
+    Private Sub HandleLogFileLoadException(ex As Exception)
+        If File.Exists($"{strPathToDataFile}.bad") Then
+            File.Copy(strPathToDataFile, GetUniqueFileName($"{strPathToDataFile}.bad"))
+        Else
+            File.Copy(strPathToDataFile, $"{strPathToDataFile}.bad")
+        End If
+
+        WriteFileAtomically(strPathToDataFile, "[]")
+        LblLogFileSize.Text = $"Log File Size: {FileSizeToHumanSize(New FileInfo(strPathToDataFile).Length)}"
+
+        SyncLock dataGridLockObject
+            Invoke(Sub()
+                       Logs.SuspendLayout()
+                       Logs.Rows.Clear()
+
+                       Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
+                           SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs),
+                           SyslogParser.MakeLocalDataGridRowEntry("There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", Logs),
+                           SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", Logs)
+                       }
+
+                       Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                       Logs.ResumeLayout()
+                       UpdateLogCount()
+                   End Sub)
+        End SyncLock
+    End Sub
+
+    Private Sub ClearLogsOlderThan(daysToKeep As Integer)
+        Try
+            SyncLock dataGridLockObject
+                Logs.AllowUserToOrderColumns = False
+                Logs.Enabled = False
+
+                Dim intOldCount As Integer = Logs.Rows.Count
+                Dim newListOfLogs As New List(Of MyDataGridViewRow)
+                Dim dateChosenDate As Date = Now.AddDays(daysToKeep * -1)
+
+                For Each item As MyDataGridViewRow In Logs.Rows
+                    If item.DateObject.Date >= dateChosenDate Then
+                        newListOfLogs.Add(item.Clone())
+                    End If
+                Next
+
+                If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+
+                Logs.Enabled = True
+                Logs.AllowUserToOrderColumns = True
+
+                Logs.SuspendLayout()
+                Logs.Rows.Clear()
+                Logs.Rows.AddRange(newListOfLogs.ToArray)
+
+                Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
+                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+
+                Logs.ResumeLayout()
+
+                SelectLatestLogEntry()
+            End SyncLock
+
+            UpdateLogCount()
+            SaveLogsToDiskSub()
+        Catch ex As ArgumentOutOfRangeException
+            ' Handle exception if necessary
+        End Try
+    End Sub
+
+    Private Function GetDateStringBasedOnUserPreference(dateObject As Date) As String
+        Select Case My.Settings.DateFormat
+            Case 1
+                Return dateObject.ToLongDateString.Replace("/", "-").Replace("\", "-")
+            Case 2
+                Return dateObject.ToShortDateString.Replace("/", "-").Replace("\", "-")
+            Case 3
+                Return dateObject.ToString(My.Settings.CustomDateFormat).Replace("/", "-").Replace("\", "-")
+            Case Else
+                Return dateObject.ToLongDateString().Replace("/", "-").Replace("\", "-")
+        End Select
+    End Function
+#End Region
+
+#Region "--== Helper Functions ==--"
+    Public Sub SelectLatestLogEntry()
+        If ChkEnableAutoScroll.Checked AndAlso Logs.Rows.Count > 0 AndAlso intSortColumnIndex = 0 Then
+            boolIsProgrammaticScroll = True
+            Logs.BeginInvoke(Sub()
+                                 Logs.FirstDisplayedScrollingRowIndex = If(sortOrder = SortOrder.Ascending, Logs.Rows.Count - 1, 0)
+                             End Sub)
+        End If
+    End Sub
+
+    Public Sub RestoreWindow()
+        If boolMaximizedBeforeMinimize Then
+            WindowState = FormWindowState.Maximized
+        ElseIf My.Settings.boolMaximized Then
+            WindowState = FormWindowState.Maximized
+        Else
+            WindowState = FormWindowState.Normal
+        End If
+
+        BringToFront()
+        Activate()
+
+        SelectLatestLogEntry()
+    End Sub
+
+    Private Function FormatSecondsToReadableTime(input As Integer) As String
+        If input < 0 Then Return "0 seconds"
+
+        Dim minutes As Integer = input \ 60
+        Dim seconds As Integer = input Mod 60
+
+        Dim parts As New List(Of String)
+
+        If minutes > 0 Then
+            parts.Add($"{minutes} minute{If(minutes > 1, "s", "")}")
+        End If
+
+        If seconds > 0 OrElse minutes = 0 Then
+            parts.Add($"{seconds} second{If(seconds <> 1, "s", "")}")
+        End If
+
+        Return String.Join(" and ", parts)
+    End Function
+
+    Public Sub UpdateLogCount()
+        BtnClearLog.Enabled = Logs.Rows.Count <> 0
+        NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
+    End Sub
+
+    Public Sub SaveLogsToDiskSub()
+        WriteLogsToDisk()
+        LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
+        SaveTimer.Enabled = False
+        SaveTimer.Enabled = True
+    End Sub
+
+    Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
+        SyncLock dataGridLockObject
+            SortLogsByDateObjectNoLocking(columnIndex, order)
+        End SyncLock
+    End Sub
+
+    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As ListSortDirection)
+        Logs.SuspendLayout()
+        Logs.Sort(Logs.Columns(columnIndex), order)
+        Logs.ResumeLayout()
+    End Sub
+
+    Public Sub ShowSingleInstanceWindow(Of T As {Form, New})(ByRef instance As T, ownerIcon As Icon)
+        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
+            instance.WindowState = FormWindowState.Normal
+            instance.BringToFront()
+            instance.Activate()
+        Else
+            instance = New T() With {.Icon = ownerIcon}
+            instance.Show()
+        End If
+    End Sub
+
+    Public Sub ShowSingleInstanceWindow(Of T As Form)(ByRef instance As T, createForm As Func(Of T))
+        If instance IsNot Nothing AndAlso Not instance.IsDisposed Then
+            instance.WindowState = FormWindowState.Normal
+            instance.BringToFront()
+            instance.Activate()
+        Else
+            instance = createForm()
+            instance.Show()
+        End If
+    End Sub
+
+    Private Sub OpenLogViewerWindow()
+        If Logs.Rows.Count > 0 And Logs.SelectedCells.Count > 0 Then
+            Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+            Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
+            Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
+
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me, .alertType = selectedRow.alertType}
+                LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
+                LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
+
+                If Not String.IsNullOrEmpty(selectedRow.AlertText) Then
+                    LogViewerInstance.txtAlertText.Text = selectedRow.AlertText
+                End If
+
+                LogViewerInstance.ShowDialog(Me)
+            End Using
+        End If
+    End Sub
+
+    Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
+        strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
+
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType}
+            LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
+            LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
+            LogViewerInstance.TopMost = True
+            LogViewerInstance.txtAlertText.Text = strAlertText
+
+            LogViewerInstance.ShowDialog()
+        End Using
+    End Sub
+#End Region
+
+#Region "--== Load Settings ==--"
+    Private Sub LoadCheckboxSettings()
+        If My.Settings.NotificationLength = 0 Then
+            NotificationLengthShort.Checked = True
+            NotificationLengthLong.Checked = False
+        Else
+            NotificationLengthShort.Checked = False
+            NotificationLengthLong.Checked = True
+        End If
+
+        ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+
+        OnlySaveAlertedLogs.Checked = My.Settings.OnlySaveAlertedLogs
+        SaveIgnoredLogCount.Checked = My.Settings.saveIgnoredLogCount
+        AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer
+        ColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+        IncludeButtonsOnNotifications.Checked = My.Settings.IncludeButtonsOnNotifications
+        AutomaticallyCheckForUpdates.Checked = My.Settings.boolCheckForUpdates
+        ChkDeselectItemAfterMinimizingWindow.Checked = My.Settings.boolDeselectItemsWhenMinimizing
+        ChkEnableRecordingOfIgnoredLogs.Checked = My.Settings.recordIgnoredLogs
+        LimitNumberOfIgnoredLogs.Visible = My.Settings.recordIgnoredLogs
+        IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
+        ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
+        ChkEnableAutoScroll.Checked = My.Settings.autoScroll
+        ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
+        ChkEnableAutoSave.Checked = My.Settings.autoSave
+        ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
+        LblAutoSaved.Visible = ChkEnableAutoSave.Checked
+        ColAlerts.Visible = My.Settings.boolShowAlertedColumn
+        MinimizeToClockTray.Checked = My.Settings.MinimizeToClockTray
+        StopServerStripMenuItem.Visible = boolDoWeOwnTheMutex
+        ChkEnableStartAtUserStartup.Checked = TaskHandling.DoesTaskExist()
+        DeleteOldLogsAtMidnight.Checked = My.Settings.DeleteOldLogsAtMidnight
+        BackupOldLogsAfterClearingAtMidnight.Enabled = My.Settings.DeleteOldLogsAtMidnight
+        BackupOldLogsAfterClearingAtMidnight.Checked = My.Settings.BackupOldLogsAfterClearingAtMidnight
+        ViewLogBackups.Visible = BackupOldLogsAfterClearingAtMidnight.Checked
+        ChkEnableTCPSyslogServer.Checked = My.Settings.EnableTCPServer
+        ColHostname.Visible = My.Settings.boolShowHostnameColumn
+        colServerTime.Visible = My.Settings.boolShowServerTimeColumn
+        colLogType.Visible = My.Settings.boolShowLogTypeColumn
+        RemoveNumbersFromRemoteApp.Checked = My.Settings.RemoveNumbersFromRemoteApp
+        IPv6Support.Checked = My.Settings.IPv6Support
+        ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
+        ChkDebug.Checked = My.Settings.boolDebug
+        ConfirmDelete.Checked = My.Settings.ConfirmDelete
+        ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
+        ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
+        IncludeCommasInDHMS.Checked = My.Settings.IncludeCommasInDHMS
+        CompressBackupLogFilesToolStripMenuItem.Checked = My.Settings.CompressBackupLogFiles
+    End Sub
+
+    Private Sub LoadAndDeserializeArrays()
+        Dim tempReplacementsClass As ReplacementsClass
+        Dim tempSysLogProxyServer As SysLogProxyServer
+        Dim tempIgnoredClass As IgnoredClass
+        Dim tempAlertsClass As AlertsClass
+
+        If My.Settings.replacements IsNot Nothing AndAlso My.Settings.replacements.Count > 0 Then
+            For Each strJSONString As String In My.Settings.replacements
+                tempReplacementsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ReplacementsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                If tempReplacementsClass.BoolEnabled Then replacementsList.Add(tempReplacementsClass)
+                tempReplacementsClass = Nothing
+            Next
+        End If
+
+        If My.Settings.hostnames IsNot Nothing AndAlso My.Settings.hostnames.Count > 0 Then
+            Dim customHostname As CustomHostname
+
+            For Each strJSONString As String In My.Settings.hostnames
+                customHostname = Newtonsoft.Json.JsonConvert.DeserializeObject(Of CustomHostname)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                SupportCode.hostnames(customHostname.ip) = customHostname.deviceName
+            Next
+        End If
+
+        If My.Settings.ServersToSendTo IsNot Nothing AndAlso My.Settings.ServersToSendTo.Count > 0 Then
+            For Each strJSONString As String In My.Settings.ServersToSendTo
+                tempSysLogProxyServer = Newtonsoft.Json.JsonConvert.DeserializeObject(Of SysLogProxyServer)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                If tempSysLogProxyServer.boolEnabled Then serversList.Add(tempSysLogProxyServer)
+                tempSysLogProxyServer = Nothing
+            Next
+        End If
+
+        If My.Settings.ignored2 Is Nothing Then
+            My.Settings.ignored2 = New Specialized.StringCollection()
+
+            If My.Settings.ignored IsNot Nothing AndAlso My.Settings.ignored.Count > 0 Then
+                For Each strIgnoredString As String In My.Settings.ignored
+                    My.Settings.ignored2.Add(Newtonsoft.Json.JsonConvert.SerializeObject(New IgnoredClass With {.BoolCaseSensitive = False, .BoolRegex = False, .StrIgnore = strIgnoredString}))
+                Next
+
+                My.Settings.ignored.Clear()
+                My.Settings.Save()
+            End If
+        End If
+
+        If My.Settings.ignored2 IsNot Nothing AndAlso My.Settings.ignored2.Count > 0 Then
+            For Each strJSONString As String In My.Settings.ignored2
+                tempIgnoredClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of IgnoredClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                If tempIgnoredClass.BoolEnabled Then ignoredList.Add(tempIgnoredClass)
+                tempIgnoredClass = Nothing
+            Next
+        End If
+
+        If My.Settings.alerts IsNot Nothing AndAlso My.Settings.alerts.Count > 0 Then
+            For Each strJSONString As String In My.Settings.alerts
+                tempAlertsClass = Newtonsoft.Json.JsonConvert.DeserializeObject(Of AlertsClass)(strJSONString, JSONDecoderSettingsForSettingsFiles)
+                If tempAlertsClass.BoolEnabled Then alertsList.Add(tempAlertsClass)
+                tempAlertsClass = Nothing
+            Next
+        End If
+    End Sub
+#End Region
+
+#Region "--== Midnight Timer Code ==--"
+    ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
+    ' I have rewritten the code to ensure that I fully understand it and to avoid blatantly copying someone else's work.
+    ' Using their code as-is without making an effort to learn from it or to create my own implementation doesn't sit well with me.
+
+    Private MyMidnightTimer As Timers.Timer
+
+    Private Sub CreateNewMidnightTimer()
+        If MyMidnightTimer IsNot Nothing Then
+            MyMidnightTimer.Stop()
+            MyMidnightTimer.Dispose()
+            MyMidnightTimer = Nothing
+        End If
+
+        ' Calculate the time span until midnight
+        Dim ts As TimeSpan = GetMidnight(1).Subtract(Date.Now)
+        Dim tsMidnight As New TimeSpan(ts.Hours, ts.Minutes, ts.Seconds)
+
+        ' Create and start the new timer
+        MyMidnightTimer = New Timers.Timer(tsMidnight.TotalMilliseconds)
+
+        AddHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
+        AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
+
+        MyMidnightTimer.Start()
+    End Sub
+
+    Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
+        If Logs.InvokeRequired Then
+            Logs.Invoke(New Action(Of Object, Timers.ElapsedEventArgs)(AddressOf MidnightEvent), sender, e)
+            Return
+        End If
+
+        SyncLock dataGridLockObject
+            If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
+
+            Dim oldLogCount As Integer = Logs.Rows.Count
+            Logs.Rows.Clear()
+
+            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The program deleted {oldLogCount:N0} log {If(oldLogCount = 1, "entry", "entries")} at midnight.", Logs))
+
+            UpdateLogCount()
+            SelectLatestLogEntry()
+            BtnSaveLogsToDisk.Enabled = True
+
+            recentUniqueObjects.Clear()
+
+            NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
+        End SyncLock
+
+        CreateNewMidnightTimer()
+    End Sub
+
+    Private Sub WindowsTimeChangeHandler(sender As Object, e As EventArgs)
+        CreateNewMidnightTimer()
+    End Sub
+
+    Private Function GetMidnight(minutesAfterMidnight As Integer) As Date
+        Dim tomorrow As Date = Date.Now.AddDays(1)
+        Return New Date(tomorrow.Year, tomorrow.Month, tomorrow.Day, 0, minutesAfterMidnight, 0)
+    End Function
+
+    Private Sub BackupOldLogsAfterClearingAtMidnight_Click(sender As Object, e As EventArgs) Handles BackupOldLogsAfterClearingAtMidnight.Click
+        My.Settings.DeleteOldLogsAtMidnight = BackupOldLogsAfterClearingAtMidnight.Checked
+    End Sub
+
+    Private Sub DeleteOldLogsAtMidnight_Click(sender As Object, e As EventArgs) Handles DeleteOldLogsAtMidnight.Click
+        My.Settings.DeleteOldLogsAtMidnight = DeleteOldLogsAtMidnight.Checked
+        BackupOldLogsAfterClearingAtMidnight.Enabled = DeleteOldLogsAtMidnight.Checked
+
+        If Not DeleteOldLogsAtMidnight.Checked Then
+            DeleteOldLogsAtMidnight.Checked = False
+            My.Settings.DeleteOldLogsAtMidnight = False
+        End If
+
+        If DeleteOldLogsAtMidnight.Checked Then
+            CreateNewMidnightTimer()
+        Else
+            If MyMidnightTimer IsNot Nothing Then
+                MyMidnightTimer.Stop()
+                MyMidnightTimer.Dispose()
+                MyMidnightTimer = Nothing
+            End If
+        End If
+    End Sub
+#End Region
+
+#Region "--== Notification Code ==--"
+    Private Sub AddNotificationActionHandler()
+        AddHandler ToastNotificationManagerCompat.OnActivated, Sub(args)
+                                                                   ' Parse arguments
+                                                                   Dim argsDictionary As New Dictionary(Of String, String)
+                                                                   Dim itemSplit As String()
+
+                                                                   For Each item As String In args.Argument.Split(";")
+                                                                       If Not String.IsNullOrWhiteSpace(item) Then
+                                                                           itemSplit = item.Split("=")
+
+                                                                           If itemSplit.Length = 2 AndAlso Not String.IsNullOrWhiteSpace(itemSplit(0)) Then
+                                                                               argsDictionary(itemSplit(0)) = itemSplit(1)
+                                                                           End If
+                                                                       End If
+                                                                   Next
+
+                                                                   If argsDictionary.ContainsKey("action") Then
+                                                                       If argsDictionary("action").ToString.Equals(strOpenSysLog, StringComparison.OrdinalIgnoreCase) Then
+                                                                           Invoke(Sub() RestoreWindow())
+                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
+                                                                           Try
+                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(argsDictionary("datapacket").ToString, JSONDecoderSettingsForSettingsFiles)
+
+                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext, NotificationDataPacket.alertType)
+                                                                           Catch ex As Exception
+                                                                           End Try
+                                                                       End If
+                                                                   End If
+                                                               End Sub
+    End Sub
+#End Region
+
+#Region "--== Server Startup Code ==--"
+    Private Async Sub StartTCPServer()
+        Dim subRoutine As New SyslogMessageHandlerDelegate(Sub(strReceivedData As String, strSourceIP As String)
+                                                               SyslogParser.ProcessIncomingLog(strReceivedData, strSourceIP)
+                                                           End Sub)
+
+        SyslogTcpServer = New SyslogTcpServer.SyslogTcpServer(subRoutine, My.Settings.sysLogPort)
+        Await SyslogTcpServer.StartAsync()
+    End Sub
+
+    Private Sub RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+        If Not boolDebugBuild AndAlso My.Settings.boolCheckForUpdates Then Threading.ThreadPool.QueueUserWorkItem(Sub()
+                                                                                                                      Dim checkForUpdatesClassObject As New checkForUpdates.CheckForUpdatesClass(Me)
+                                                                                                                      checkForUpdatesClassObject.CheckForUpdates(False)
+                                                                                                                  End Sub)
+
+        If boolDoWeOwnTheMutex Then
+            serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+            serverThread.Start()
+
+            If My.Settings.EnableTCPServer Then
+                StartTCPServer()
+                boolTCPServerRunning = True
+            End If
+
+            boolServerRunning = True
+        Else
+            Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp)
+
+            If activeProcess Is Nothing Then
+                MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            Else
+                Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
+
+                SyncLock dataGridLockObject
+                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                End SyncLock
+
+                MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+            End If
+        End If
     End Sub
 #End Region
 End Class
