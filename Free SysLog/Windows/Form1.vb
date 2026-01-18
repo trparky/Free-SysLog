@@ -2168,6 +2168,13 @@ Public Class Form1
         My.Settings.CompressBackupLogFiles = CompressBackupLogFilesToolStripMenuItem.Checked
     End Sub
 
+    Private Sub LogsHeaderMenu_Opening(sender As Object, e As CancelEventArgs) Handles LogsHeaderMenu.Opening
+        LogsMenuHideAlertsColumn.Text = $"{If(ColAlerts.Visible, "Hide", "Show")} Alerts Column"
+        LogsMenuHideHostnameColumn.Text = $"{If(ColHostname.Visible, "Hide", "Show")} Hostname Column"
+        LogsMenuHideLogTypeColumn.Text = $"{If(colLogType.Visible, "Hide", "Show")} Log Type Column"
+        LogsMenuHideServerTimeColumn.Text = $"{If(colServerTime.Visible, "Hide", "Show")} Server Time Column"
+    End Sub
+
 #Region "-- SysLog Server Code --"
     Sub SysLogThread()
         Try
