@@ -177,7 +177,15 @@ Public Class IgnoredWordsAndPhrases
             ChkRemoteProcess.Checked = False
             ChkRecord.Checked = False
             strOldRuleText = Nothing
+
+            UpdateRuleLabels()
         End If
+    End Sub
+
+    Private Sub UpdateRuleLabels()
+        lblTotalRules.Text = $"Total Ignored Rules: {IgnoredListView.Items.Count:N0}"
+        lblActiveRules.Text = $"Active Ignored Rules: {IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Count(Function(item As MyIgnoredListViewItem) item.BoolEnabled):N0}"
+        lblInactiveRules.Text = $"Inactive Ignored Rules: {IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Count(Function(item As MyIgnoredListViewItem) Not item.BoolEnabled):N0}"
     End Sub
 
     Private Sub IgnoredListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles IgnoredListView.ColumnReordered
@@ -280,6 +288,8 @@ Public Class IgnoredWordsAndPhrases
         lblTotalHits.Text = $"Total Ignored Hits: {longTotalHits:N0}"
 
         IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
+
+        UpdateRuleLabels()
 
         Ignored.Width = My.Settings.colIgnoredReplace
         Regex.Width = My.Settings.colIgnoredRegex
@@ -490,6 +500,8 @@ Public Class IgnoredWordsAndPhrases
             Next
         End If
 
+        UpdateRuleLabels()
+
         boolChanged = True
         boolCurrentlyEditing = False
     End Sub
@@ -584,6 +596,7 @@ Public Class IgnoredWordsAndPhrases
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             Finally
+                UpdateRuleLabels()
                 boolCurrentlyEditing = False
             End Try
         End If
@@ -612,6 +625,7 @@ Public Class IgnoredWordsAndPhrases
     Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
         If MsgBox("Are you sure you want to delete all of the ignored words and phrases?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
             IgnoredListView.Items.Clear()
+            UpdateRuleLabels()
             boolChanged = True
         End If
     End Sub
@@ -682,6 +696,8 @@ Public Class IgnoredWordsAndPhrases
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         boolCurrentlyEditing = False
+
+        UpdateRuleLabels()
     End Sub
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
