@@ -212,7 +212,7 @@ Public Class Form1
 
         If My.Settings.saveIgnoredLogCount Then
             longNumberOfIgnoredLogs = NumberOfIgnoredLogs
-            LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+            LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
         End If
 
         If My.Settings.font IsNot Nothing Then
@@ -587,9 +587,9 @@ Public Class Form1
                 ClearIgnoredLogsToolStripMenuItem.Enabled = False
 
                 If My.Settings.recordIgnoredLogs Then
-                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {IgnoredLogs.Count:N0}"
+                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {IgnoredLogs.Count:N0}"
                 Else
-                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
                 End If
             End SyncLock
         End If
@@ -616,7 +616,7 @@ Public Class Form1
         If Not ChkEnableRecordingOfIgnoredLogs.Checked Then
             IgnoredLogs.Clear()
 
-            LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+            LblNumberOfIgnoredIncomingLogs.Text = "Number of Ignored Incoming Logs: 0"
         End If
     End Sub
 
@@ -670,7 +670,7 @@ Public Class Form1
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
         IgnoredStats.Clear()
         longNumberOfIgnoredLogs = 0
-        LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+        LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs

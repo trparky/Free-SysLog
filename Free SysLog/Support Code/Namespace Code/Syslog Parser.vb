@@ -508,10 +508,10 @@ Namespace SyslogParser
                         End If
 
                         If My.Settings.recordIgnoredLogs Then
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {ParentForm.IgnoredLogs.Count:N0}"
                         Else
                             ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
                         End If
 
                         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
@@ -521,7 +521,7 @@ Namespace SyslogParser
                         ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
                     End SyncLock
                 Else
-                    ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                    ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
                 End If
             End If
         End Sub

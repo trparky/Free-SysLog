@@ -285,7 +285,7 @@ Partial Class Form1
         Me.LblNumberOfIgnoredIncomingLogs.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.LblNumberOfIgnoredIncomingLogs.Name = "LblNumberOfIgnoredIncomingLogs"
         Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
-        Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of ignored incoming logs: 0"
+        Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of Ignored Incoming Logs: 0"
         '
         'LblAutoScrollStatus
         '
