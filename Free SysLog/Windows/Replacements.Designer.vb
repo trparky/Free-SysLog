@@ -23,6 +23,7 @@ Partial Class Replacements
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Replacements))
         Me.ReplacementsListView = New System.Windows.Forms.ListView()
         Me.Replace = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ReplaceWith = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -50,6 +51,7 @@ Partial Class Replacements
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.BtnCancel = New System.Windows.Forms.Button()
+        Me.lblReplacementNotes = New System.Windows.Forms.Label()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -66,7 +68,7 @@ Partial Class Replacements
         Me.ReplacementsListView.HideSelection = False
         Me.ReplacementsListView.Location = New System.Drawing.Point(12, 12)
         Me.ReplacementsListView.Name = "ReplacementsListView"
-        Me.ReplacementsListView.Size = New System.Drawing.Size(915, 363)
+        Me.ReplacementsListView.Size = New System.Drawing.Size(915, 334)
         Me.ReplacementsListView.TabIndex = 4
         Me.ReplacementsListView.UseCompatibleStateImageBehavior = False
         Me.ReplacementsListView.View = System.Windows.Forms.View.Details
@@ -109,7 +111,7 @@ Partial Class Replacements
         'BtnAdd
         '
         Me.BtnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnAdd.Location = New System.Drawing.Point(12, 521)
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 518)
         Me.BtnAdd.Name = "BtnAdd"
         Me.BtnAdd.Size = New System.Drawing.Size(75, 23)
         Me.BtnAdd.TabIndex = 5
@@ -120,7 +122,7 @@ Partial Class Replacements
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
-        Me.BtnDelete.Location = New System.Drawing.Point(12, 381)
+        Me.BtnDelete.Location = New System.Drawing.Point(12, 352)
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(75, 23)
         Me.BtnDelete.TabIndex = 6
@@ -131,7 +133,7 @@ Partial Class Replacements
         '
         Me.BtnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEdit.Enabled = False
-        Me.BtnEdit.Location = New System.Drawing.Point(93, 381)
+        Me.BtnEdit.Location = New System.Drawing.Point(93, 352)
         Me.BtnEdit.Name = "BtnEdit"
         Me.BtnEdit.Size = New System.Drawing.Size(75, 23)
         Me.BtnEdit.TabIndex = 7
@@ -142,7 +144,7 @@ Partial Class Replacements
         '
         Me.BtnEnableDisable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEnableDisable.Enabled = False
-        Me.BtnEnableDisable.Location = New System.Drawing.Point(174, 381)
+        Me.BtnEnableDisable.Location = New System.Drawing.Point(174, 352)
         Me.BtnEnableDisable.Name = "BtnEnableDisable"
         Me.BtnEnableDisable.Size = New System.Drawing.Size(75, 23)
         Me.BtnEnableDisable.TabIndex = 9
@@ -152,7 +154,7 @@ Partial Class Replacements
         'BtnExport
         '
         Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnExport.Location = New System.Drawing.Point(801, 381)
+        Me.BtnExport.Location = New System.Drawing.Point(801, 352)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
         Me.BtnExport.TabIndex = 14
@@ -162,7 +164,7 @@ Partial Class Replacements
         'BtnImport
         '
         Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnImport.Location = New System.Drawing.Point(882, 381)
+        Me.BtnImport.Location = New System.Drawing.Point(882, 352)
         Me.BtnImport.Name = "BtnImport"
         Me.BtnImport.Size = New System.Drawing.Size(75, 23)
         Me.BtnImport.TabIndex = 13
@@ -172,7 +174,7 @@ Partial Class Replacements
         'btnDeleteAll
         '
         Me.btnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDeleteAll.Location = New System.Drawing.Point(255, 381)
+        Me.btnDeleteAll.Location = New System.Drawing.Point(255, 352)
         Me.btnDeleteAll.Name = "btnDeleteAll"
         Me.btnDeleteAll.Size = New System.Drawing.Size(75, 23)
         Me.btnDeleteAll.TabIndex = 17
@@ -182,7 +184,7 @@ Partial Class Replacements
         'BtnDown
         '
         Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnDown.Location = New System.Drawing.Point(933, 352)
+        Me.BtnDown.Location = New System.Drawing.Point(933, 323)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)
         Me.BtnDown.TabIndex = 19
@@ -204,7 +206,7 @@ Partial Class Replacements
         Me.SeparatingLine.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SeparatingLine.BackColor = System.Drawing.Color.Black
-        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 413)
+        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 384)
         Me.SeparatingLine.Name = "SeparatingLine"
         Me.SeparatingLine.Size = New System.Drawing.Size(971, 1)
         Me.SeparatingLine.TabIndex = 26
@@ -215,7 +217,7 @@ Partial Class Replacements
         Me.ChkEnabled.AutoSize = True
         Me.ChkEnabled.Checked = True
         Me.ChkEnabled.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ChkEnabled.Location = New System.Drawing.Point(714, 498)
+        Me.ChkEnabled.Location = New System.Drawing.Point(714, 495)
         Me.ChkEnabled.Name = "ChkEnabled"
         Me.ChkEnabled.Size = New System.Drawing.Size(71, 17)
         Me.ChkEnabled.TabIndex = 33
@@ -226,7 +228,7 @@ Partial Class Replacements
         '
         Me.ChkCaseSensitive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkCaseSensitive.AutoSize = True
-        Me.ChkCaseSensitive.Location = New System.Drawing.Point(539, 498)
+        Me.ChkCaseSensitive.Location = New System.Drawing.Point(539, 495)
         Me.ChkCaseSensitive.Name = "ChkCaseSensitive"
         Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
         Me.ChkCaseSensitive.TabIndex = 32
@@ -237,7 +239,7 @@ Partial Class Replacements
         '
         Me.ChkRegex.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRegex.AutoSize = True
-        Me.ChkRegex.Location = New System.Drawing.Point(12, 498)
+        Me.ChkRegex.Location = New System.Drawing.Point(12, 495)
         Me.ChkRegex.Name = "ChkRegex"
         Me.ChkRegex.Size = New System.Drawing.Size(478, 17)
         Me.ChkRegex.TabIndex = 31
@@ -249,7 +251,7 @@ Partial Class Replacements
         '
         Me.TxtReplaceWith.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtReplaceWith.Location = New System.Drawing.Point(62, 472)
+        Me.TxtReplaceWith.Location = New System.Drawing.Point(62, 469)
         Me.TxtReplaceWith.Name = "TxtReplaceWith"
         Me.TxtReplaceWith.Size = New System.Drawing.Size(895, 20)
         Me.TxtReplaceWith.TabIndex = 30
@@ -258,7 +260,7 @@ Partial Class Replacements
         '
         Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(27, 475)
+        Me.Label2.Location = New System.Drawing.Point(27, 472)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(29, 13)
         Me.Label2.TabIndex = 29
@@ -268,7 +270,7 @@ Partial Class Replacements
         '
         Me.TxtReplace.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtReplace.Location = New System.Drawing.Point(62, 446)
+        Me.TxtReplace.Location = New System.Drawing.Point(62, 417)
         Me.TxtReplace.Name = "TxtReplace"
         Me.TxtReplace.Size = New System.Drawing.Size(895, 20)
         Me.TxtReplace.TabIndex = 28
@@ -277,7 +279,7 @@ Partial Class Replacements
         '
         Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(9, 449)
+        Me.Label1.Location = New System.Drawing.Point(9, 420)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(47, 13)
         Me.Label1.TabIndex = 27
@@ -287,7 +289,7 @@ Partial Class Replacements
         '
         Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(17, 424)
+        Me.Label3.Location = New System.Drawing.Point(17, 395)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(92, 13)
         Me.Label3.TabIndex = 34
@@ -296,18 +298,29 @@ Partial Class Replacements
         'BtnCancel
         '
         Me.BtnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnCancel.Location = New System.Drawing.Point(93, 521)
+        Me.BtnCancel.Location = New System.Drawing.Point(93, 518)
         Me.BtnCancel.Name = "BtnCancel"
         Me.BtnCancel.Size = New System.Drawing.Size(75, 23)
         Me.BtnCancel.TabIndex = 46
         Me.BtnCancel.Text = "Cancel"
         Me.BtnCancel.UseVisualStyleBackColor = True
         '
+        'lblReplacementNotes
+        '
+        Me.lblReplacementNotes.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblReplacementNotes.AutoSize = True
+        Me.lblReplacementNotes.Location = New System.Drawing.Point(59, 440)
+        Me.lblReplacementNotes.Name = "lblReplacementNotes"
+        Me.lblReplacementNotes.Size = New System.Drawing.Size(749, 26)
+        Me.lblReplacementNotes.TabIndex = 47
+        Me.lblReplacementNotes.Text = resources.GetString("lblReplacementNotes.Text")
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(969, 553)
+        Me.Controls.Add(Me.lblReplacementNotes)
         Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.ChkEnabled)
@@ -365,4 +378,5 @@ Partial Class Replacements
     Friend WithEvents Label1 As Label
     Friend WithEvents Label3 As Label
     Friend WithEvents BtnCancel As Button
+    Friend WithEvents lblReplacementNotes As Label
 End Class
