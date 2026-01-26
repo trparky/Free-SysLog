@@ -11,6 +11,7 @@ Namespace SyslogParser
         Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?:\d ){0,1}(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z)(?: -){0,1} (?<hostname>(?:\\.|[^\n\r ])+) (?:\d+ ){0,1}(?<appname>(?:\\.|[^\n\r:]+?)(?: \d*){0,1}):{0,1} (?:- - %% ){0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
         Private ReadOnly rfc5424TransformRegex As New Regex("<{0,1}(?<priority>[0-9]{0,})>{0,1}(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) {1,2}[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+)(?: \:){0,1} \[{0,1}(?<appname>(?:\\.|[^\n\r:]+))\]{0,1}:{0,1} {0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
 
+        Private ReadOnly regExTrim As New Regex("TRIM\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
         Private ReadOnly regExUpper As New Regex("UPPER\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
         Private ReadOnly regExUppercase As New Regex("UPPERCASE\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
         Private ReadOnly regExLower As New Regex("LOWER\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
@@ -534,6 +535,7 @@ Namespace SyslogParser
         Private Function ExpandCaseFunctions(strInput As String) As String
             If String.IsNullOrEmpty(strInput) Then Return strInput
 
+            strInput = regExTrim.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.Trim())
             strInput = regExUpper.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
             strInput = regExUppercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
             strInput = regExLower.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
