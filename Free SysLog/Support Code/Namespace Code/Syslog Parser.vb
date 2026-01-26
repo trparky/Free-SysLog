@@ -556,11 +556,13 @@ Namespace SyslogParser
                         strReplaceWith = item.StrReplaceWith.Replace("$replace", item.StrReplace, StringComparison.OrdinalIgnoreCase)
                     End If
 
-                    If strReplaceWith.CaseInsensitiveContains("UPPER(") OrElse strReplaceWith.CaseInsensitiveContains("UPPERCASE(") OrElse strReplaceWith.CaseInsensitiveContains("LOWER(") OrElse strReplaceWith.CaseInsensitiveContains("LOWERCASE(") Then
-                        strReplaceWith = ExpandCaseFunctions(strReplaceWith)
-                    End If
+                    If regExObject.IsMatch(input) Then
+                        If strReplaceWith.CaseInsensitiveContains("UPPER(") OrElse strReplaceWith.CaseInsensitiveContains("UPPERCASE(") OrElse strReplaceWith.CaseInsensitiveContains("LOWER(") OrElse strReplaceWith.CaseInsensitiveContains("LOWERCASE(") Then
+                            strReplaceWith = ExpandCaseFunctions(strReplaceWith)
+                        End If
 
-                    input = regExObject.Replace(input, strReplaceWith)
+                        input = regExObject.Replace(input, strReplaceWith)
+                    End If
                 Catch ex As Exception
                 End Try
             Next
