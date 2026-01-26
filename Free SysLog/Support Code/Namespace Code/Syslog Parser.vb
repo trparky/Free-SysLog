@@ -545,6 +545,7 @@ Namespace SyslogParser
         Private Function ProcessReplacements(input As String) As String
             Dim regExObject As Regex
             Dim strRegexPattern, strReplaceWith As String
+            Dim regExGroupCollection As GroupCollection
 
             For Each item As ReplacementsClass In replacementsList.GetSnapshot
                 Try
@@ -557,6 +558,20 @@ Namespace SyslogParser
                     End If
 
                     If regExObject.IsMatch(input) Then
+                        regExGroupCollection = regExObject.Match(input).Groups
+
+                        If regExGroupCollection.Count > 0 Then
+                            For index As Integer = 0 To regExGroupCollection.Count - 1
+                                ' Handle the indexed group
+                                strReplaceWith = GetCachedRegex(ReplacementsRegexCache, Regex.Escape($"${index}"), False).Replace(strReplaceWith, regExGroupCollection(index).Value)
+
+                                ' Handle the named group
+                                If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
+                                    strReplaceWith = GetCachedRegex(ReplacementsRegexCache, Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strReplaceWith, regExGroupCollection(regExGroupCollection(index).Name).Value)
+                                End If
+                            Next
+                        End If
+
                         If strReplaceWith.CaseInsensitiveContains("UPPER(") OrElse strReplaceWith.CaseInsensitiveContains("UPPERCASE(") OrElse strReplaceWith.CaseInsensitiveContains("LOWER(") OrElse strReplaceWith.CaseInsensitiveContains("LOWERCASE(") Then
                             strReplaceWith = ExpandCaseFunctions(strReplaceWith)
                         End If
