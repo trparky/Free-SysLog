@@ -535,11 +535,16 @@ Namespace SyslogParser
         Private Function ExpandCaseFunctions(strInput As String) As String
             If String.IsNullOrEmpty(strInput) Then Return strInput
 
-            strInput = regExTrim.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.Trim())
-            strInput = regExUpper.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
-            strInput = regExUppercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
-            strInput = regExLower.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
-            strInput = regExLowercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
+            Dim strPrevious As String
+
+            Do
+                strPrevious = strInput
+                strInput = regExTrim.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.Trim())
+                strInput = regExUpper.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
+                strInput = regExUppercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
+                strInput = regExLower.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
+                strInput = regExLowercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
+            Loop While Not strInput.Equals(strPrevious, StringComparison.OrdinalIgnoreCase)
 
             Return strInput
         End Function
