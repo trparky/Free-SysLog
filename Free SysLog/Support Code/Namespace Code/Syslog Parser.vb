@@ -593,8 +593,13 @@ Namespace SyslogParser
         End Function
 
         Private Function GetCachedRegex(ByRef regexCache As ConcurrentDictionary(Of String, Regex), pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
-            If Not regexCache.ContainsKey(pattern) Then regexCache(pattern) = New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
-            Return regexCache(pattern)
+            If regexCache.ContainsKey(pattern) Then
+                Return regexCache(pattern)
+            Else
+                Dim regExObject As New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
+                regexCache(pattern) = regExObject
+                Return regExObject
+            End If
         End Function
 
         Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
