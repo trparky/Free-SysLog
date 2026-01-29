@@ -149,7 +149,7 @@ Namespace SyslogParser
 
                 Return (facilityDescription, severityDescription)
             Else
-                Return Nothing
+                Return (Nothing, Nothing)
             End If
         End Function
 
@@ -277,7 +277,7 @@ Namespace SyslogParser
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
                     Dim boolAlerted As Boolean = False
-                    Dim priorityObject As (Facility As String, Severity As String) = Nothing
+                    Dim priorityObject As (Facility As String, Severity As String) = (Nothing, Nothing)
                     Dim priority As String = Nothing
                     Dim message As String = Nothing
                     Dim timestamp As String = Nothing
