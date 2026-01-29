@@ -58,7 +58,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnResetHits = New System.Windows.Forms.Button()
         Me.txtComment = New System.Windows.Forms.TextBox()
         Me.lblCommentLabel = New System.Windows.Forms.Label()
-        Me.lblTotalHits = New System.Windows.Forms.Label()
+        Me.lblTotalHits = New System.Windows.Forms.ToolStripStatusLabel()
         Me.btnUpdateHits = New System.Windows.Forms.Button()
         Me.ChkAutoRefresh = New System.Windows.Forms.CheckBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
@@ -66,13 +66,18 @@ Partial Class IgnoredWordsAndPhrases
         Me.colRecord = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.EnableDisableRecordingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkRecord = New System.Windows.Forms.CheckBox()
+        Me.StatusStrip = New System.Windows.Forms.StatusStrip()
+        Me.lblTotalRules = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblActiveRules = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblInactiveRules = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.StatusStrip.SuspendLayout()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnAdd
         '
         Me.BtnAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnAdd.Location = New System.Drawing.Point(12, 402)
+        Me.BtnAdd.Location = New System.Drawing.Point(12, 389)
         Me.BtnAdd.Name = "BtnAdd"
         Me.BtnAdd.Size = New System.Drawing.Size(65, 23)
         Me.BtnAdd.TabIndex = 1
@@ -83,7 +88,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
-        Me.BtnDelete.Location = New System.Drawing.Point(12, 251)
+        Me.BtnDelete.Location = New System.Drawing.Point(12, 240)
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(65, 23)
         Me.BtnDelete.TabIndex = 2
@@ -103,7 +108,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.IgnoredListView.HideSelection = False
         Me.IgnoredListView.Location = New System.Drawing.Point(12, 12)
         Me.IgnoredListView.Name = "IgnoredListView"
-        Me.IgnoredListView.Size = New System.Drawing.Size(1064, 233)
+        Me.IgnoredListView.Size = New System.Drawing.Size(1064, 222)
         Me.IgnoredListView.TabIndex = 5
         Me.IgnoredListView.UseCompatibleStateImageBehavior = False
         Me.IgnoredListView.View = System.Windows.Forms.View.Details
@@ -156,7 +161,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem, Me.ResetHitsToolStripMenuItem, Me.EnableDisableRecordingToolStripMenuItem})
         Me.ListViewMenu.Name = "ContextMenuStrip1"
-        Me.ListViewMenu.Size = New System.Drawing.Size(210, 92)
+        Me.ListViewMenu.Size = New System.Drawing.Size(210, 70)
         '
         'EnableDisableToolStripMenuItem
         '
@@ -174,7 +179,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.BtnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEdit.Enabled = False
-        Me.BtnEdit.Location = New System.Drawing.Point(83, 251)
+        Me.BtnEdit.Location = New System.Drawing.Point(83, 240)
         Me.BtnEdit.Name = "BtnEdit"
         Me.BtnEdit.Size = New System.Drawing.Size(75, 23)
         Me.BtnEdit.TabIndex = 8
@@ -185,7 +190,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.BtnEnableDisable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEnableDisable.Enabled = False
-        Me.BtnEnableDisable.Location = New System.Drawing.Point(164, 251)
+        Me.BtnEnableDisable.Location = New System.Drawing.Point(164, 240)
         Me.BtnEnableDisable.Name = "BtnEnableDisable"
         Me.BtnEnableDisable.Size = New System.Drawing.Size(75, 23)
         Me.BtnEnableDisable.TabIndex = 10
@@ -195,7 +200,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnImport
         '
         Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnImport.Location = New System.Drawing.Point(1031, 251)
+        Me.BtnImport.Location = New System.Drawing.Point(1031, 240)
         Me.BtnImport.Name = "BtnImport"
         Me.BtnImport.Size = New System.Drawing.Size(75, 23)
         Me.BtnImport.TabIndex = 11
@@ -205,7 +210,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnExport
         '
         Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnExport.Location = New System.Drawing.Point(950, 251)
+        Me.BtnExport.Location = New System.Drawing.Point(950, 240)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
         Me.BtnExport.TabIndex = 12
@@ -215,7 +220,7 @@ Partial Class IgnoredWordsAndPhrases
         'btnDeleteAll
         '
         Me.btnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDeleteAll.Location = New System.Drawing.Point(245, 251)
+        Me.btnDeleteAll.Location = New System.Drawing.Point(245, 240)
         Me.btnDeleteAll.Name = "btnDeleteAll"
         Me.btnDeleteAll.Size = New System.Drawing.Size(75, 23)
         Me.btnDeleteAll.TabIndex = 17
@@ -225,7 +230,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnDown
         '
         Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnDown.Location = New System.Drawing.Point(1083, 222)
+        Me.BtnDown.Location = New System.Drawing.Point(1082, 211)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)
         Me.BtnDown.TabIndex = 19
@@ -247,7 +252,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.SeparatingLine.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SeparatingLine.BackColor = System.Drawing.Color.Black
-        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 286)
+        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 275)
         Me.SeparatingLine.Name = "SeparatingLine"
         Me.SeparatingLine.Size = New System.Drawing.Size(1124, 1)
         Me.SeparatingLine.TabIndex = 26
@@ -256,7 +261,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 299)
+        Me.Label4.Location = New System.Drawing.Point(12, 288)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(161, 13)
         Me.Label4.TabIndex = 39
@@ -268,7 +273,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkEnabled.AutoSize = True
         Me.ChkEnabled.Checked = True
         Me.ChkEnabled.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ChkEnabled.Location = New System.Drawing.Point(607, 351)
+        Me.ChkEnabled.Location = New System.Drawing.Point(607, 340)
         Me.ChkEnabled.Name = "ChkEnabled"
         Me.ChkEnabled.Size = New System.Drawing.Size(71, 17)
         Me.ChkEnabled.TabIndex = 44
@@ -279,7 +284,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ChkCaseSensitive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkCaseSensitive.AutoSize = True
-        Me.ChkCaseSensitive.Location = New System.Drawing.Point(499, 351)
+        Me.ChkCaseSensitive.Location = New System.Drawing.Point(499, 340)
         Me.ChkCaseSensitive.Name = "ChkCaseSensitive"
         Me.ChkCaseSensitive.Size = New System.Drawing.Size(102, 17)
         Me.ChkCaseSensitive.TabIndex = 43
@@ -290,7 +295,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ChkRegex.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRegex.AutoSize = True
-        Me.ChkRegex.Location = New System.Drawing.Point(15, 351)
+        Me.ChkRegex.Location = New System.Drawing.Point(15, 340)
         Me.ChkRegex.Name = "ChkRegex"
         Me.ChkRegex.Size = New System.Drawing.Size(478, 17)
         Me.ChkRegex.TabIndex = 42
@@ -302,7 +307,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.TxtIgnored.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtIgnored.Location = New System.Drawing.Point(61, 325)
+        Me.TxtIgnored.Location = New System.Drawing.Point(61, 314)
         Me.TxtIgnored.Name = "TxtIgnored"
         Me.TxtIgnored.Size = New System.Drawing.Size(1046, 20)
         Me.TxtIgnored.TabIndex = 41
@@ -311,7 +316,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 328)
+        Me.Label1.Location = New System.Drawing.Point(12, 317)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(43, 13)
         Me.Label1.TabIndex = 40
@@ -321,7 +326,7 @@ Partial Class IgnoredWordsAndPhrases
         'BtnCancel
         '
         Me.BtnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnCancel.Location = New System.Drawing.Point(83, 402)
+        Me.BtnCancel.Location = New System.Drawing.Point(83, 389)
         Me.BtnCancel.Name = "BtnCancel"
         Me.BtnCancel.Size = New System.Drawing.Size(75, 23)
         Me.BtnCancel.TabIndex = 45
@@ -331,7 +336,7 @@ Partial Class IgnoredWordsAndPhrases
         'btnDeleteDuringEditing
         '
         Me.btnDeleteDuringEditing.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDeleteDuringEditing.Location = New System.Drawing.Point(164, 402)
+        Me.btnDeleteDuringEditing.Location = New System.Drawing.Point(164, 389)
         Me.btnDeleteDuringEditing.Name = "btnDeleteDuringEditing"
         Me.btnDeleteDuringEditing.Size = New System.Drawing.Size(75, 23)
         Me.btnDeleteDuringEditing.TabIndex = 46
@@ -342,7 +347,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ChkRemoteProcess.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRemoteProcess.AutoSize = True
-        Me.ChkRemoteProcess.Location = New System.Drawing.Point(684, 351)
+        Me.ChkRemoteProcess.Location = New System.Drawing.Point(684, 340)
         Me.ChkRemoteProcess.Name = "ChkRemoteProcess"
         Me.ChkRemoteProcess.Size = New System.Drawing.Size(110, 17)
         Me.ChkRemoteProcess.TabIndex = 47
@@ -352,7 +357,7 @@ Partial Class IgnoredWordsAndPhrases
         'btnResetHits
         '
         Me.btnResetHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnResetHits.Location = New System.Drawing.Point(326, 251)
+        Me.btnResetHits.Location = New System.Drawing.Point(326, 240)
         Me.btnResetHits.Name = "btnResetHits"
         Me.btnResetHits.Size = New System.Drawing.Size(75, 23)
         Me.btnResetHits.TabIndex = 48
@@ -363,7 +368,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.txtComment.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtComment.Location = New System.Drawing.Point(73, 374)
+        Me.txtComment.Location = New System.Drawing.Point(73, 363)
         Me.txtComment.Name = "txtComment"
         Me.txtComment.Size = New System.Drawing.Size(1033, 20)
         Me.txtComment.TabIndex = 49
@@ -372,26 +377,16 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.lblCommentLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblCommentLabel.AutoSize = True
-        Me.lblCommentLabel.Location = New System.Drawing.Point(16, 377)
+        Me.lblCommentLabel.Location = New System.Drawing.Point(16, 366)
         Me.lblCommentLabel.Name = "lblCommentLabel"
         Me.lblCommentLabel.Size = New System.Drawing.Size(51, 13)
         Me.lblCommentLabel.TabIndex = 50
         Me.lblCommentLabel.Text = "Comment"
         '
-        'lblTotalHits
-        '
-        Me.lblTotalHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.lblTotalHits.AutoSize = True
-        Me.lblTotalHits.Location = New System.Drawing.Point(823, 256)
-        Me.lblTotalHits.Name = "lblTotalHits"
-        Me.lblTotalHits.Size = New System.Drawing.Size(103, 13)
-        Me.lblTotalHits.TabIndex = 51
-        Me.lblTotalHits.Text = "Total Ignored Hits: 0"
-        '
         'btnUpdateHits
         '
         Me.btnUpdateHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnUpdateHits.Location = New System.Drawing.Point(407, 251)
+        Me.btnUpdateHits.Location = New System.Drawing.Point(407, 240)
         Me.btnUpdateHits.Name = "btnUpdateHits"
         Me.btnUpdateHits.Size = New System.Drawing.Size(179, 23)
         Me.btnUpdateHits.TabIndex = 52
@@ -402,7 +397,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ChkAutoRefresh.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkAutoRefresh.AutoSize = True
-        Me.ChkAutoRefresh.Location = New System.Drawing.Point(592, 255)
+        Me.ChkAutoRefresh.Location = New System.Drawing.Point(592, 244)
         Me.ChkAutoRefresh.Name = "ChkAutoRefresh"
         Me.ChkAutoRefresh.Size = New System.Drawing.Size(88, 17)
         Me.ChkAutoRefresh.TabIndex = 53
@@ -416,7 +411,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ChkRefreshOnlyIfActive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRefreshOnlyIfActive.AutoSize = True
-        Me.ChkRefreshOnlyIfActive.Location = New System.Drawing.Point(686, 255)
+        Me.ChkRefreshOnlyIfActive.Location = New System.Drawing.Point(686, 244)
         Me.ChkRefreshOnlyIfActive.Name = "ChkRefreshOnlyIfActive"
         Me.ChkRefreshOnlyIfActive.Size = New System.Drawing.Size(131, 17)
         Me.ChkRefreshOnlyIfActive.TabIndex = 54
@@ -431,7 +426,7 @@ Partial Class IgnoredWordsAndPhrases
         '
         Me.ChkRecord.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRecord.AutoSize = True
-        Me.ChkRecord.Location = New System.Drawing.Point(800, 351)
+        Me.ChkRecord.Location = New System.Drawing.Point(800, 340)
         Me.ChkRecord.Name = "ChkRecord"
         Me.ChkRecord.Size = New System.Drawing.Size(67, 17)
         Me.ChkRecord.TabIndex = 55
@@ -448,16 +443,52 @@ Partial Class IgnoredWordsAndPhrases
         Me.EnableDisableRecordingToolStripMenuItem.ToolTipText = "Makes it so that even if the log is ignored, the log text is still recorded in pr" &
     "ogram memory and not written to disk."
         '
+        'StatusStrip
+        '
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblTotalRules, Me.lblActiveRules, Me.lblInactiveRules, Me.lblTotalHits})
+        Me.StatusStrip.Location = New System.Drawing.Point(0, 415)
+        Me.StatusStrip.Name = "StatusStrip"
+        Me.StatusStrip.Size = New System.Drawing.Size(1118, 22)
+        Me.StatusStrip.TabIndex = 56
+        Me.StatusStrip.Text = "StatusStrip"
+        '
+        'lblTotalHits
+        '
+        Me.lblTotalHits.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.lblTotalHits.Name = "lblTotalHits"
+        Me.lblTotalHits.Size = New System.Drawing.Size(113, 17)
+        Me.lblTotalHits.Text = "Total Ignored Hits: 0"
+        '
+        'lblTotalRules
+        '
+        Me.lblTotalRules.Name = "lblTotalRules"
+        Me.lblTotalRules.Size = New System.Drawing.Size(76, 17)
+        Me.lblTotalRules.Text = "Total Rules: 0"
+        '
+        'lblActiveRules
+        '
+        Me.lblActiveRules.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.lblActiveRules.Name = "lblActiveRules"
+        Me.lblActiveRules.Size = New System.Drawing.Size(83, 17)
+        Me.lblActiveRules.Text = "Active Rules: 0"
+        '
+        'lblInactiveRules
+        '
+        Me.lblInactiveRules.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.lblInactiveRules.Name = "lblInactiveRules"
+        Me.lblInactiveRules.Size = New System.Drawing.Size(91, 17)
+        Me.lblInactiveRules.Text = "Inactive Rules: 0"
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1118, 437)
+        Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.ChkRecord)
         Me.Controls.Add(Me.ChkRefreshOnlyIfActive)
         Me.Controls.Add(Me.ChkAutoRefresh)
         Me.Controls.Add(Me.btnUpdateHits)
-        Me.Controls.Add(Me.lblTotalHits)
         Me.Controls.Add(Me.ChkRemoteProcess)
         Me.Controls.Add(Me.btnDeleteDuringEditing)
         Me.Controls.Add(Me.BtnCancel)
@@ -486,6 +517,8 @@ Partial Class IgnoredWordsAndPhrases
         Me.Name = "IgnoredWordsAndPhrases"
         Me.Text = "Ignored Words and Phrases"
         Me.ListViewMenu.ResumeLayout(False)
+        Me.StatusStrip.ResumeLayout(False)
+        Me.StatusStrip.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -523,7 +556,7 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents txtComment As TextBox
     Friend WithEvents lblCommentLabel As Label
     Friend WithEvents ResetHitsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents lblTotalHits As Label
+    Friend WithEvents lblTotalHits As ToolStripStatusLabel
     Friend WithEvents colDateOfLastEvent As ColumnHeader
     Friend WithEvents btnUpdateHits As Button
     Friend WithEvents colSinceLastEvent As ColumnHeader
@@ -533,4 +566,8 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents colRecord As ColumnHeader
     Friend WithEvents ChkRecord As CheckBox
     Friend WithEvents EnableDisableRecordingToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents StatusStrip As StatusStrip
+    Friend WithEvents lblTotalRules As ToolStripStatusLabel
+    Friend WithEvents lblActiveRules As ToolStripStatusLabel
+    Friend WithEvents lblInactiveRules As ToolStripStatusLabel
 End Class

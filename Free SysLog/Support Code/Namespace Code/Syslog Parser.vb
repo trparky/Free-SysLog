@@ -11,6 +11,12 @@ Namespace SyslogParser
         Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?:\d ){0,1}(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z)(?: -){0,1} (?<hostname>(?:\\.|[^\n\r ])+) (?:\d+ ){0,1}(?<appname>(?:\\.|[^\n\r:]+?)(?: \d*){0,1}):{0,1} (?:- - %% ){0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
         Private ReadOnly rfc5424TransformRegex As New Regex("<{0,1}(?<priority>[0-9]{0,})>{0,1}(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) {1,2}[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+)(?: \:){0,1} \[{0,1}(?<appname>(?:\\.|[^\n\r:]+))\]{0,1}:{0,1} {0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
 
+        Private ReadOnly regExTrim As New Regex("TRIM\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+        Private ReadOnly regExUpper As New Regex("UPPER\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+        Private ReadOnly regExUppercase As New Regex("UPPERCASE\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+        Private ReadOnly regExLower As New Regex("LOWER\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+        Private ReadOnly regExLowercase As New Regex("LOWERCASE\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor2 As New Regex("(<\d+>)", RegexOptions.Compiled)
@@ -508,10 +514,10 @@ Namespace SyslogParser
                         End If
 
                         If My.Settings.recordIgnoredLogs Then
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {ParentForm.IgnoredLogs.Count:N0}"
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {ParentForm.IgnoredLogs.Count:N0}"
                         Else
                             ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
                         End If
 
                         SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
@@ -521,15 +527,64 @@ Namespace SyslogParser
                         ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
                     End SyncLock
                 Else
-                    ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of ignored incoming logs: {longNumberOfIgnoredLogs:N0}"
+                    ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
                 End If
             End If
         End Sub
 
+        Private Function ExpandCaseFunctions(strInput As String) As String
+            If String.IsNullOrEmpty(strInput) Then Return strInput
+
+            Dim strPrevious As String
+
+            Do
+                strPrevious = strInput
+                strInput = regExTrim.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.Trim())
+                strInput = regExUpper.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
+                strInput = regExUppercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
+                strInput = regExLower.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
+                strInput = regExLowercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
+            Loop While Not strInput.Equals(strPrevious, StringComparison.OrdinalIgnoreCase)
+
+            Return strInput
+        End Function
+
         Private Function ProcessReplacements(input As String) As String
+            Dim regExObject As Regex
+            Dim strRegexPattern, strReplaceWith As String
+            Dim regExGroupCollection As GroupCollection
+
             For Each item As ReplacementsClass In replacementsList.GetSnapshot
                 Try
-                    input = GetCachedRegex(ReplacementsRegexCache, If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " ")), item.BoolCaseSensitive).Replace(input, item.StrReplaceWith)
+                    strRegexPattern = If(item.BoolRegex, item.StrReplace, Regex.Escape(item.StrReplace).Replace("\ ", " "))
+                    regExObject = GetCachedRegex(ReplacementsRegexCache, strRegexPattern, item.BoolCaseSensitive)
+                    strReplaceWith = item.StrReplaceWith
+
+                    If strReplaceWith.CaseInsensitiveContains("$replace") Then
+                        strReplaceWith = item.StrReplaceWith.Replace("$replace", item.StrReplace, StringComparison.OrdinalIgnoreCase)
+                    End If
+
+                    If regExObject.IsMatch(input) Then
+                        regExGroupCollection = regExObject.Match(input).Groups
+
+                        If regExGroupCollection.Count > 0 Then
+                            For index As Integer = 0 To regExGroupCollection.Count - 1
+                                ' Handle the indexed group
+                                strReplaceWith = GetCachedRegex(ReplacementsRegexCache, Regex.Escape($"${index}"), False).Replace(strReplaceWith, regExGroupCollection(index).Value)
+
+                                ' Handle the named group
+                                If Not String.IsNullOrEmpty(regExGroupCollection(index).Name) Then
+                                    strReplaceWith = GetCachedRegex(ReplacementsRegexCache, Regex.Escape($"$({regExGroupCollection(index).Name})"), True).Replace(strReplaceWith, regExGroupCollection(regExGroupCollection(index).Name).Value)
+                                End If
+                            Next
+                        End If
+
+                        If strReplaceWith.CaseInsensitiveContains("UPPER(") OrElse strReplaceWith.CaseInsensitiveContains("UPPERCASE(") OrElse strReplaceWith.CaseInsensitiveContains("LOWER(") OrElse strReplaceWith.CaseInsensitiveContains("LOWERCASE(") Then
+                            strReplaceWith = ExpandCaseFunctions(strReplaceWith)
+                        End If
+
+                        input = regExObject.Replace(input, strReplaceWith)
+                    End If
                 Catch ex As Exception
                 End Try
             Next
@@ -538,8 +593,13 @@ Namespace SyslogParser
         End Function
 
         Private Function GetCachedRegex(ByRef regexCache As ConcurrentDictionary(Of String, Regex), pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
-            If Not regexCache.ContainsKey(pattern) Then regexCache(pattern) = New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
-            Return regexCache(pattern)
+            If regexCache.ContainsKey(pattern) Then
+                Return regexCache(pattern)
+            Else
+                Dim regExObject As New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
+                regexCache(pattern) = regExObject
+                Return regExObject
+            End If
         End Function
 
         Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean

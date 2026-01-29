@@ -177,7 +177,15 @@ Public Class IgnoredWordsAndPhrases
             ChkRemoteProcess.Checked = False
             ChkRecord.Checked = False
             strOldRuleText = Nothing
+
+            UpdateRuleLabels()
         End If
+    End Sub
+
+    Private Sub UpdateRuleLabels()
+        lblTotalRules.Text = $"Total Ignored Rules: {IgnoredListView.Items.Count:N0}"
+        lblActiveRules.Text = $"Active Ignored Rules: {IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Count(Function(item As MyIgnoredListViewItem) item.BoolEnabled):N0}"
+        lblInactiveRules.Text = $"Inactive Ignored Rules: {IgnoredListView.Items.Cast(Of MyIgnoredListViewItem).Count(Function(item As MyIgnoredListViewItem) Not item.BoolEnabled):N0}"
     End Sub
 
     Private Sub IgnoredListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles IgnoredListView.ColumnReordered
@@ -280,6 +288,8 @@ Public Class IgnoredWordsAndPhrases
         lblTotalHits.Text = $"Total Ignored Hits: {longTotalHits:N0}"
 
         IgnoredListView.Items.AddRange(MyIgnoredListViewItem.ToArray())
+
+        UpdateRuleLabels()
 
         Ignored.Width = My.Settings.colIgnoredReplace
         Regex.Width = My.Settings.colIgnoredRegex
@@ -398,9 +408,17 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub EnableDisableRecordingToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableDisableRecordingToolStripMenuItem.Click
-        Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
-        selectedItem.BoolRecordLog = Not selectedItem.BoolRecordLog ' Flip the setting
-        selectedItem.SubItems(colRecord.Index).Text = If(selectedItem.BoolRecordLog, "Yes", "No")
+        If IgnoredListView.SelectedItems.Count = 1 Then
+            Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+            selectedItem.BoolRecordLog = Not selectedItem.BoolRecordLog ' Flip the setting
+            selectedItem.SubItems(colRecord.Index).Text = If(selectedItem.BoolRecordLog, "Yes", "No")
+        Else
+            For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
+                item.BoolRecordLog = Not item.BoolRecordLog ' Flip the setting
+                item.SubItems(colRecord.Index).Text = If(item.BoolRecordLog, "Yes", "No")
+            Next
+        End If
+
         boolChanged = True
     End Sub
 
@@ -419,26 +437,17 @@ Public Class IgnoredWordsAndPhrases
             Exit Sub
         End If
 
-        ' If exactly one item is selected, show enable/disable and reset options
-        If IgnoredListView.SelectedItems.Count = 1 Then
-            EnableDisableToolStripMenuItem.Visible = True
-            ResetHitsToolStripMenuItem.Visible = True
-            EnableDisableRecordingToolStripMenuItem.Visible = True
+        EnableDisableToolStripMenuItem.Visible = True
+        ResetHitsToolStripMenuItem.Visible = True
+        EnableDisableRecordingToolStripMenuItem.Visible = True
 
-            ' Update the Enable/Disable text based on the item's BoolEnabled property
-            Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
-            EnableDisableToolStripMenuItem.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
-            EnableDisableRecordingToolStripMenuItem.Text = If(selectedItem.BoolRecordLog, "Disable Log Recording", "Enable Log Recording")
+        ' Update the Enable/Disable text based on the item's BoolEnabled property
+        Dim selectedItem As MyIgnoredListViewItem = IgnoredListView.SelectedItems(0)
+        EnableDisableToolStripMenuItem.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
+        EnableDisableRecordingToolStripMenuItem.Text = If(selectedItem.BoolRecordLog, "Disable Log Recording", "Enable Log Recording")
 
-            ' Make Reset Hits option be singular.
-            ResetHitsToolStripMenuItem.Text = "Reset Hit"
-        Else
-            ' If multiple items are selected, only show the reset hits option
-            ResetHitsToolStripMenuItem.Visible = True
-
-            ' Make Reset Hits option be plural.
-            ResetHitsToolStripMenuItem.Text = "Reset Hits"
-        End If
+        ' Make Reset Hits option be singular.
+        ResetHitsToolStripMenuItem.Text = $"Reset {If(IgnoredListView.SelectedItems.Count = 1, "Hit", "Hits")}"
     End Sub
 
     Private Sub DisableEnableItem()
@@ -489,6 +498,8 @@ Public Class IgnoredWordsAndPhrases
                 End If
             Next
         End If
+
+        UpdateRuleLabels()
 
         boolChanged = True
         boolCurrentlyEditing = False
@@ -584,6 +595,7 @@ Public Class IgnoredWordsAndPhrases
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             Finally
+                UpdateRuleLabels()
                 boolCurrentlyEditing = False
             End Try
         End If
@@ -612,6 +624,7 @@ Public Class IgnoredWordsAndPhrases
     Private Sub btnDeleteAll_Click(sender As Object, e As EventArgs) Handles btnDeleteAll.Click
         If MsgBox("Are you sure you want to delete all of the ignored words and phrases?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
             IgnoredListView.Items.Clear()
+            UpdateRuleLabels()
             boolChanged = True
         End If
     End Sub
@@ -682,6 +695,8 @@ Public Class IgnoredWordsAndPhrases
         ChkRegex.Checked = False
         ChkEnabled.Checked = True
         boolCurrentlyEditing = False
+
+        UpdateRuleLabels()
     End Sub
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles IgnoredListView.ColumnClick
