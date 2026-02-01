@@ -16,6 +16,7 @@ Namespace SyslogParser
         Private ReadOnly regExUppercase As New Regex("UPPERCASE\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
         Private ReadOnly regExLower As New Regex("LOWER\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
         Private ReadOnly regExLowercase As New Regex("LOWERCASE\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+        Private ReadOnly regExNsLookup As New Regex("NSLOOKUP\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
 
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
@@ -602,6 +603,16 @@ Namespace SyslogParser
             End If
         End Function
 
+        Private Function IpToHostname(ipAddress As String) As String
+            Try
+                Dim entry As IPHostEntry = Dns.GetHostEntry(ipAddress)
+                Return entry.HostName
+            Catch ex As Exception
+                ' No PTR record, invalid IP, or DNS failure
+                Return ipAddress
+            End Try
+        End Function
+
         Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
             Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
             Dim RegExObject As Regex
@@ -639,6 +650,10 @@ Namespace SyslogParser
                                 End If
                             Next
                         End If
+                    End If
+
+                    If strAlertText.CaseInsensitiveContains("NSLOOKUP(") Then
+                        strAlertText = regExNsLookup.Replace(strAlertText, Function(mm As Match) IpToHostname(mm.Groups(1).Value))
                     End If
 
                     If alert.BoolLimited Then
