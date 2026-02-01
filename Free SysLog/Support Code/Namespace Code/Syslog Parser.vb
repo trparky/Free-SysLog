@@ -625,7 +625,7 @@ Namespace SyslogParser
 
                     strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
 
-                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) AndAlso RegExObject.IsMatch(strLogText) Then
                         regExGroupCollection = RegExObject.Match(strLogText).Groups
 
                         If regExGroupCollection.Count > 0 Then
