@@ -236,7 +236,7 @@ Partial Class Alerts
         Me.lblRegExBackReferences.AutoSize = True
         Me.lblRegExBackReferences.Location = New System.Drawing.Point(196, 349)
         Me.lblRegExBackReferences.Name = "lblRegExBackReferences"
-        Me.lblRegExBackReferences.Size = New System.Drawing.Size(595, 39)
+        Me.lblRegExBackReferences.Size = New System.Drawing.Size(757, 39)
         Me.lblRegExBackReferences.TabIndex = 37
         Me.lblRegExBackReferences.Text = resources.GetString("lblRegExBackReferences.Text")
         '

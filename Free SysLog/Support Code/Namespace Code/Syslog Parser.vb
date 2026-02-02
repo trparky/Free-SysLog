@@ -652,6 +652,10 @@ Namespace SyslogParser
                         End If
                     End If
 
+                    If strAlertText.CaseInsensitiveContains("UPPER(") OrElse strAlertText.CaseInsensitiveContains("UPPERCASE(") OrElse strAlertText.CaseInsensitiveContains("LOWER(") OrElse strAlertText.CaseInsensitiveContains("LOWERCASE(") Then
+                        strAlertText = ExpandCaseFunctions(strAlertText)
+                    End If
+
                     If strAlertText.CaseInsensitiveContains("NSLOOKUP(") Then
                         strAlertText = regExNsLookup.Replace(strAlertText, Function(mm As Match) IpToHostname(mm.Groups(1).Value))
                     End If
