@@ -57,6 +57,10 @@
         Close()
     End Sub
 
+    Private Sub IntegerInputForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
     Private Sub IntegerInputForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyData = Keys.Escape Then
             DialogResult = DialogResult.Cancel

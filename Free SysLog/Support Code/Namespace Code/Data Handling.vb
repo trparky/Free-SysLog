@@ -67,7 +67,7 @@ Namespace DataHandling
                     End If
 
                     If My.Settings.AskOpenExplorer Then
-                        Using OpenExplorer As New OpenExplorer()
+                        Using OpenExplorer As New OpenExplorer(saveFileDialog.FileName)
                             OpenExplorer.StartPosition = FormStartPosition.CenterParent
                             OpenExplorer.MyParentForm = ParentForm
 
@@ -149,7 +149,7 @@ Namespace DataHandling
                     End If
 
                     If My.Settings.AskOpenExplorer Then
-                        Using OpenExplorer As New OpenExplorer()
+                        Using OpenExplorer As New OpenExplorer(saveFileDialog.FileName)
                             OpenExplorer.StartPosition = FormStartPosition.CenterParent
                             OpenExplorer.MyParentForm = ParentForm
 

@@ -206,7 +206,7 @@ Public Class Hostnames
             SupportCode.WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(My.Settings.hostnames, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
-                Using OpenExplorer As New OpenExplorer()
+                Using OpenExplorer As New OpenExplorer(saveFileDialog.FileName)
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent
                     OpenExplorer.MyParentForm = Me
 
