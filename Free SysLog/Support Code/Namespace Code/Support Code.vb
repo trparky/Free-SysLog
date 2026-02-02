@@ -135,6 +135,10 @@ Namespace SupportCode
             End If
         End Function
 
+        Public Function SearchListView(strRuleBase As String, listViewCollection As ListView.ListViewItemCollection) As Boolean
+            Return listViewCollection.Cast(Of ListViewItem).Any(Function(item As ListViewItem) item.SubItems(0).Text.Equals(strRuleBase, StringComparison.OrdinalIgnoreCase))
+        End Function
+
         Public Sub CompressFile(fileName As String)
             If File.Exists(fileName) Then
                 Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)

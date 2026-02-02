@@ -67,11 +67,15 @@ Public Class Hostnames
                 lblAddEditHostNameLabel.Text = "Add New Custom Hostname"
                 BtnAddSave.Text = "Add"
             Else
-                Dim newListViewItem As New ListViewItem(txtIP.Text)
-                newListViewItem.SubItems.Add(txtHostname.Text)
-                If My.Settings.font IsNot Nothing Then newListViewItem.Font = My.Settings.font
+                If SupportCode.SearchListView(txtIP.Text, ListHostnames.Items) Then
+                    MsgBox("This IP Address already exists in the list.", MsgBoxStyle.Critical, Text)
+                Else
+                    Dim newListViewItem As New ListViewItem(txtIP.Text)
+                    newListViewItem.SubItems.Add(txtHostname.Text)
+                    If My.Settings.font IsNot Nothing Then newListViewItem.Font = My.Settings.font
 
-                ListHostnames.Items.Add(newListViewItem)
+                    ListHostnames.Items.Add(newListViewItem)
+                End If
             End If
 
             boolEditMode = False

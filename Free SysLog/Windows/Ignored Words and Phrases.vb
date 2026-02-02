@@ -141,30 +141,34 @@ Public Class IgnoredWordsAndPhrases
                 Label4.Text = "Add Ignored Words and Phrases"
                 boolCurrentlyEditing = False
             Else
-                Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
+                If SearchListView(TxtIgnored.Text, IgnoredListView.Items) Then
+                    MsgBox("This ignored word or phrase already exists in the list.", MsgBoxStyle.Critical, Text)
+                Else
+                    Dim IgnoredListViewItem As New MyIgnoredListViewItem(TxtIgnored.Text)
 
-                With IgnoredListViewItem
-                    .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
-                    .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
-                    .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
-                    .SubItems.Add("0")
-                    .SubItems.Add(If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text"))
-                    .SubItems.Add(Date.Now.ToLongDateString)
-                    .SubItems.Add("")
-                    .SubItems.Add("")
-                    .SubItems.Add(If(ChkRecord.Checked, "Yes", "No"))
-                    .BoolRegex = ChkRegex.Checked
-                    .BoolCaseSensitive = ChkCaseSensitive.Checked
-                    .BoolEnabled = ChkEnabled.Checked
-                    .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
-                    .strComment = txtComment.Text
-                    .BoolRecordLog = ChkRecord.Checked
-                    .dateCreated = Date.Now
-                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
-                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
-                End With
+                    With IgnoredListViewItem
+                        .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
+                        .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
+                        .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                        .SubItems.Add("0")
+                        .SubItems.Add(If(ChkRemoteProcess.Checked, "Remote App", "Main Log Text"))
+                        .SubItems.Add(Date.Now.ToLongDateString)
+                        .SubItems.Add("")
+                        .SubItems.Add("")
+                        .SubItems.Add(If(ChkRecord.Checked, "Yes", "No"))
+                        .BoolRegex = ChkRegex.Checked
+                        .BoolCaseSensitive = ChkCaseSensitive.Checked
+                        .BoolEnabled = ChkEnabled.Checked
+                        .IgnoreType = If(ChkRemoteProcess.Checked, IgnoreType.RemoteApp, IgnoreType.MainLog)
+                        .strComment = txtComment.Text
+                        .BoolRecordLog = ChkRecord.Checked
+                        .dateCreated = Date.Now
+                        If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                        .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
+                    End With
 
-                IgnoredListView.Items.Add(IgnoredListViewItem)
+                    IgnoredListView.Items.Add(IgnoredListViewItem)
+                End If
             End If
 
             boolEditMode = False
