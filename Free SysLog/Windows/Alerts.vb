@@ -510,7 +510,6 @@ Public Class Alerts
         BtnAdd.Text = "Add"
         Label4.Text = "Add Alert"
         boolEditMode = False
-        boolChanged = True
         TxtAlertText.Text = Nothing
         TxtLogText.Text = Nothing
         IconPictureBox.Image = Nothing

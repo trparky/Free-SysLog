@@ -676,7 +676,6 @@ Public Class IgnoredWordsAndPhrases
         BtnAdd.Text = "Add"
         Label4.Text = "Add Ignored Words and Phrases"
         boolEditMode = False
-        boolChanged = True
         TxtIgnored.Text = Nothing
         txtComment.Text = Nothing
         ChkCaseSensitive.Checked = False

@@ -435,7 +435,6 @@ Public Class Replacements
         BtnAdd.Text = "Add"
         Label3.Text = "Add Replacement"
         boolEditMode = False
-        boolChanged = True
         TxtReplace.Text = Nothing
         TxtReplaceWith.Text = Nothing
         ChkCaseSensitive.Checked = False
