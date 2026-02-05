@@ -1,6 +1,16 @@
 ﻿Public Class OpenExplorer
     Public Property MyParentForm As Form
 
+    Public Sub New(strFilePath As String)
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        Debug.WriteLine(Label1.Width)
+        Label1.Text = String.Format(Label1.Text, strFilePath)
+        Size = New Size(Label1.Width + 80, Size.Height)
+    End Sub
+
     Private Sub OpenExplorer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Media.SystemSounds.Asterisk.Play()
         PictureBox1.Image = SystemIcons.Question.ToBitmap()

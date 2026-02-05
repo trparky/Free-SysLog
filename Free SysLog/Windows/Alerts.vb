@@ -232,41 +232,45 @@ Public Class Alerts
                 BtnAdd.Text = "Add"
                 Label4.Text = "Add Alert"
             Else
-                Dim AlertsListViewItem As New AlertsListViewItem(TxtLogText.Text) With {.StrLogText = TxtLogText.Text, .StrAlertText = TxtAlertText.Text}
+                If SearchListView(TxtLogText.Text, AlertsListView.Items) Then
+                    MsgBox("An alert with the same log text already exists.", MsgBoxStyle.Critical, Text)
+                Else
+                    Dim AlertsListViewItem As New AlertsListViewItem(TxtLogText.Text) With {.StrLogText = TxtLogText.Text, .StrAlertText = TxtAlertText.Text}
 
-                With AlertsListViewItem
-                    .SubItems.Add(If(String.IsNullOrWhiteSpace(TxtAlertText.Text), "(Shows Log Text)", TxtAlertText.Text))
-                    .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
-                    .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
+                    With AlertsListViewItem
+                        .SubItems.Add(If(String.IsNullOrWhiteSpace(TxtAlertText.Text), "(Shows Log Text)", TxtAlertText.Text))
+                        .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
+                        .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
 
-                    Dim AlertType As AlertType
+                        Dim AlertType As AlertType
 
-                    If AlertTypeComboBox.SelectedIndex = 0 Then
-                        AlertType = AlertType.Warning
-                        .SubItems.Add("Warning")
-                    ElseIf AlertTypeComboBox.SelectedIndex = 1 Then
-                        AlertType = AlertType.ErrorMsg
-                        .SubItems.Add("Error")
-                    ElseIf AlertTypeComboBox.SelectedIndex = 2 Then
-                        AlertType = AlertType.Info
-                        .SubItems.Add("Information")
-                    ElseIf AlertTypeComboBox.SelectedIndex = 3 Then
-                        AlertType = AlertType.None
-                        .SubItems.Add("None")
-                    End If
+                        If AlertTypeComboBox.SelectedIndex = 0 Then
+                            AlertType = AlertType.Warning
+                            .SubItems.Add("Warning")
+                        ElseIf AlertTypeComboBox.SelectedIndex = 1 Then
+                            AlertType = AlertType.ErrorMsg
+                            .SubItems.Add("Error")
+                        ElseIf AlertTypeComboBox.SelectedIndex = 2 Then
+                            AlertType = AlertType.Info
+                            .SubItems.Add("Information")
+                        ElseIf AlertTypeComboBox.SelectedIndex = 3 Then
+                            AlertType = AlertType.None
+                            .SubItems.Add("None")
+                        End If
 
-                    .SubItems.Add(If(ChkLimited.Checked, "Yes", "No"))
-                    .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
-                    .BoolRegex = ChkRegex.Checked
-                    .BoolCaseSensitive = ChkCaseSensitive.Checked
-                    .AlertType = AlertType
-                    .BoolEnabled = ChkEnabled.Checked
-                    .BoolLimited = ChkLimited.Checked
-                    .BackColor = If(ChkEnabled.Checked, Color.LightGreen, Color.Pink)
-                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
-                End With
+                        .SubItems.Add(If(ChkLimited.Checked, "Yes", "No"))
+                        .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                        .BoolRegex = ChkRegex.Checked
+                        .BoolCaseSensitive = ChkCaseSensitive.Checked
+                        .AlertType = AlertType
+                        .BoolEnabled = ChkEnabled.Checked
+                        .BoolLimited = ChkLimited.Checked
+                        .BackColor = If(ChkEnabled.Checked, Color.LightGreen, Color.Pink)
+                        If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                    End With
 
-                AlertsListView.Items.Add(AlertsListViewItem)
+                    AlertsListView.Items.Add(AlertsListViewItem)
+                End If
             End If
 
             boolEditMode = False
@@ -408,7 +412,7 @@ Public Class Alerts
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfAlertsClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
-                Using OpenExplorer As New OpenExplorer()
+                Using OpenExplorer As New OpenExplorer(saveFileDialog.FileName)
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent
                     OpenExplorer.MyParentForm = Me
 
@@ -506,7 +510,6 @@ Public Class Alerts
         BtnAdd.Text = "Add"
         Label4.Text = "Add Alert"
         boolEditMode = False
-        boolChanged = True
         TxtAlertText.Text = Nothing
         TxtLogText.Text = Nothing
         IconPictureBox.Image = Nothing

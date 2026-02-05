@@ -375,7 +375,7 @@ Public Class IgnoredLogsAndSearchResults
             End Using
 
             If My.Settings.AskOpenExplorer Then
-                Using OpenExplorer As New OpenExplorer()
+                Using OpenExplorer As New OpenExplorer(SaveFileDialog.FileName)
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent
                     OpenExplorer.MyParentForm = Me
 

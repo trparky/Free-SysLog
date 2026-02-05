@@ -123,6 +123,6 @@
   </data>
   <data name="lblReplacementNotes.Text" xml:space="preserve">
     <value>In the With field, you can reference the value of the Replace field by using $replace. You can also use RegEx back-references as well. If you do so, remember to tick the RegEx checkbox below.
-You can also modify the value of $replace using commands such as: UPPER($replace), UPPERCASE($replace), LOWER($replace), and LOWERCASE($replace).</value>
+You can also modify the value of $replace using commands such as: UPPER(), UPPERCASE(), LOWER(), LOWERCASE(), and TRIM(). You can also use RegEx backreferences.</value>
   </data>
 </root>

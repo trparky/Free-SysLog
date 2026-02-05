@@ -11,11 +11,8 @@ Namespace SyslogParser
         Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?:\d ){0,1}(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z)(?: -){0,1} (?<hostname>(?:\\.|[^\n\r ])+) (?:\d+ ){0,1}(?<appname>(?:\\.|[^\n\r:]+?)(?: \d*){0,1}):{0,1} (?:- - %% ){0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
         Private ReadOnly rfc5424TransformRegex As New Regex("<{0,1}(?<priority>[0-9]{0,})>{0,1}(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) {1,2}[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+)(?: \:){0,1} \[{0,1}(?<appname>(?:\\.|[^\n\r:]+))\]{0,1}:{0,1} {0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
 
-        Private ReadOnly regExTrim As New Regex("TRIM\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
-        Private ReadOnly regExUpper As New Regex("UPPER\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
-        Private ReadOnly regExUppercase As New Regex("UPPERCASE\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
-        Private ReadOnly regExLower As New Regex("LOWER\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
-        Private ReadOnly regExLowercase As New Regex("LOWERCASE\(((?:[^()]+|\([^()]*\))*)\)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+        Private ReadOnly embeddedCommandParsingRegEx As New Regex("([A-Z_][A-Z0-9_]*)\(([^()]*)\)", RegexOptions.Compiled)
+        Private ReadOnly embeddedCommandParsingCheck As New Regex("\b(UPPER(?:CASE)?|LOWER(?:CASE)?|TRIM|NSLOOKUP)\(", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
 
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
@@ -149,7 +146,7 @@ Namespace SyslogParser
 
                 Return (facilityDescription, severityDescription)
             Else
-                Return Nothing
+                Return (Nothing, Nothing)
             End If
         End Function
 
@@ -277,7 +274,7 @@ Namespace SyslogParser
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
                     Dim boolAlerted As Boolean = False
-                    Dim priorityObject As (Facility As String, Severity As String) = Nothing
+                    Dim priorityObject As (Facility As String, Severity As String) = (Nothing, Nothing)
                     Dim priority As String = Nothing
                     Dim message As String = Nothing
                     Dim timestamp As String = Nothing
@@ -532,19 +529,51 @@ Namespace SyslogParser
             End If
         End Sub
 
-        Private Function ExpandCaseFunctions(strInput As String) As String
-            If String.IsNullOrEmpty(strInput) Then Return strInput
+        Private Function ParensBalanced(strInput As String) As Boolean
+            Dim depth As Integer = 0
 
-            Dim strPrevious As String
+            For Each ch As Char In strInput
+                If ch = "("c Then
+                    depth += 1
+                ElseIf ch = ")"c Then
+                    depth -= 1
+                End If
 
-            Do
-                strPrevious = strInput
-                strInput = regExTrim.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.Trim())
-                strInput = regExUpper.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
-                strInput = regExUppercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToUpperInvariant())
-                strInput = regExLower.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
-                strInput = regExLowercase.Replace(strInput, Function(mm As Match) mm.Groups(1).Value.ToLowerInvariant())
-            Loop While Not strInput.Equals(strPrevious, StringComparison.OrdinalIgnoreCase)
+                If depth < 0 Then Return False
+            Next
+
+            Return depth = 0
+        End Function
+
+        Private Function ProcessEmbeddedCommands(strInput As String) As String
+            If Not ParensBalanced(strInput) Then Return strInput
+            If Not embeddedCommandParsingCheck.IsMatch(strInput) Then Return strInput
+
+            Dim strFunctionName, strInnerValue As String
+            Dim match As Match
+
+            While True
+                match = embeddedCommandParsingRegEx.Match(strInput)
+
+                If Not match.Success Then Exit While
+
+                strFunctionName = match.Groups(1).Value.ToUpperInvariant().Trim()
+                strInnerValue = match.Groups(2).Value
+
+                Select Case strFunctionName
+                    Case "UPPER", "UPPERCASE"
+                        strInnerValue = strInnerValue.ToUpperInvariant()
+                    Case "LOWER", "LOWERCASE"
+                        strInnerValue = strInnerValue.ToLowerInvariant()
+                    Case "TRIM"
+                        strInnerValue = strInnerValue.Trim()
+                    Case "NSLOOKUP"
+                        strInnerValue = IpToHostname(strInnerValue)
+                End Select
+
+                ' Replace exactly this match with its inner content, reducing nesting by 1.
+                strInput = strInput.Remove(match.Index, match.Length).Insert(match.Index, strInnerValue)
+            End While
 
             Return strInput
         End Function
@@ -579,9 +608,7 @@ Namespace SyslogParser
                             Next
                         End If
 
-                        If strReplaceWith.CaseInsensitiveContains("UPPER(") OrElse strReplaceWith.CaseInsensitiveContains("UPPERCASE(") OrElse strReplaceWith.CaseInsensitiveContains("LOWER(") OrElse strReplaceWith.CaseInsensitiveContains("LOWERCASE(") Then
-                            strReplaceWith = ExpandCaseFunctions(strReplaceWith)
-                        End If
+                        strReplaceWith = ProcessEmbeddedCommands(strReplaceWith)
 
                         input = regExObject.Replace(input, strReplaceWith)
                     End If
@@ -600,6 +627,16 @@ Namespace SyslogParser
                 regexCache(pattern) = regExObject
                 Return regExObject
             End If
+        End Function
+
+        Private Function IpToHostname(ipAddress As String) As String
+            Try
+                Dim entry As IPHostEntry = Dns.GetHostEntry(ipAddress)
+                Return entry.HostName
+            Catch ex As Exception
+                ' No PTR record, invalid IP, or DNS failure
+                Return ipAddress
+            End Try
         End Function
 
         Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
@@ -625,7 +662,7 @@ Namespace SyslogParser
 
                     strAlertText = If(String.IsNullOrWhiteSpace(alert.StrAlertText), strLogText, alert.StrAlertText)
 
-                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) Then
+                    If alert.BoolRegex And Not String.IsNullOrWhiteSpace(alert.StrAlertText) AndAlso RegExObject.IsMatch(strLogText) Then
                         regExGroupCollection = RegExObject.Match(strLogText).Groups
 
                         If regExGroupCollection.Count > 0 Then
@@ -640,6 +677,8 @@ Namespace SyslogParser
                             Next
                         End If
                     End If
+
+                    strAlertText = ProcessEmbeddedCommands(strAlertText)
 
                     If alert.BoolLimited Then
                         NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)

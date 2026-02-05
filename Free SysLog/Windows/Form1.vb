@@ -425,6 +425,7 @@ Public Class Form1
         My.Settings.Save()
         WriteLogsToDisk()
         processUptimeTimer?.Dispose()
+        MyMidnightTimer?.Dispose()
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs
@@ -711,7 +712,7 @@ Public Class Form1
                     SaveAppSettings.SaveApplicationSettingsToFile(SaveFileDialog.FileName)
 
                     If My.Settings.AskOpenExplorer Then
-                        Using OpenExplorer As New OpenExplorer()
+                        Using OpenExplorer As New OpenExplorer(SaveFileDialog.FileName)
                             OpenExplorer.StartPosition = FormStartPosition.CenterParent
                             OpenExplorer.MyParentForm = SupportCode.ParentForm
 

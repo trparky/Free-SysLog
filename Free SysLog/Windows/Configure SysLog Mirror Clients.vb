@@ -126,16 +126,20 @@ Public Class ConfigureSysLogMirrorClients
                 BtnAddServer.Text = "Add"
                 Label4.Text = "Add Server"
             Else
-                Dim ServerListView As New ServerListViewItem(txtIP.Text)
+                If SearchListView(txtIP.Text, servers.Items) Then
+                    MsgBox("A server with that IP address already exists in the list.", MsgBoxStyle.Critical, Text)
+                Else
+                    Dim ServerListView As New ServerListViewItem(txtIP.Text)
 
-                With ServerListView
-                    .SubItems.Add(txtPort.Text)
-                    .SubItems.Add(If(chkEnabled.Checked, "Yes", "No"))
-                    .SubItems.Add(txtName.Text)
-                    .BoolEnabled = chkEnabled.Checked
-                End With
+                    With ServerListView
+                        .SubItems.Add(txtPort.Text)
+                        .SubItems.Add(If(chkEnabled.Checked, "Yes", "No"))
+                        .SubItems.Add(txtName.Text)
+                        .BoolEnabled = chkEnabled.Checked
+                    End With
 
-                servers.Items.Add(ServerListView)
+                    servers.Items.Add(ServerListView)
+                End If
             End If
 
             boolEditMode = False
@@ -254,7 +258,7 @@ Public Class ConfigureSysLogMirrorClients
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfSysLogProxyServer, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
-                Using OpenExplorer As New OpenExplorer()
+                Using OpenExplorer As New OpenExplorer(saveFileDialog.FileName)
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent
                     OpenExplorer.MyParentForm = Me
 

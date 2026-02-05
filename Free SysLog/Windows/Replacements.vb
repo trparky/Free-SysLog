@@ -85,25 +85,23 @@ Public Class Replacements
             Else
                 If CheckForExistingItem(TxtReplace.Text, TxtReplaceWith.Text) Then
                     MsgBox("A similar item has already been found in your replacements list.", MsgBoxStyle.Critical, Text)
-                    Exit Sub
+                Else
+                    Dim MyReplacementsListViewItem As New MyReplacementsListViewItem(TxtReplace.Text)
+
+                    With MyReplacementsListViewItem
+                        .SubItems.Add(TxtReplaceWith.Text)
+                        .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
+                        .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
+                        .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
+                        .BoolRegex = ChkRegex.Checked
+                        .BoolCaseSensitive = ChkCaseSensitive.Checked
+                        .BoolEnabled = ChkEnabled.Checked
+                        If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
+                        .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
+                    End With
+
+                    ReplacementsListView.Items.Add(MyReplacementsListViewItem)
                 End If
-
-                Dim MyReplacementsListViewItem As New MyReplacementsListViewItem(TxtReplace.Text)
-
-                With MyReplacementsListViewItem
-                    .SubItems.Add(TxtReplaceWith.Text)
-                    .SubItems.Add(If(ChkRegex.Checked, "Yes", "No"))
-                    .SubItems.Add(If(ChkCaseSensitive.Checked, "Yes", "No"))
-                    .SubItems.Add(If(ChkEnabled.Checked, "Yes", "No"))
-                    .BoolRegex = ChkRegex.Checked
-                    .BoolCaseSensitive = ChkCaseSensitive.Checked
-                    .BoolEnabled = ChkEnabled.Checked
-                    If My.Settings.font IsNot Nothing Then .Font = My.Settings.font
-                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
-                End With
-
-                ReplacementsListView.Items.Add(MyReplacementsListViewItem)
-                boolChanged = True
             End If
 
             boolEditMode = False
@@ -339,7 +337,7 @@ Public Class Replacements
             WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(listOfReplacementsClass, Newtonsoft.Json.Formatting.Indented))
 
             If My.Settings.AskOpenExplorer Then
-                Using OpenExplorer As New OpenExplorer()
+                Using OpenExplorer As New OpenExplorer(saveFileDialog.FileName)
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent
                     OpenExplorer.MyParentForm = Me
 
@@ -437,7 +435,6 @@ Public Class Replacements
         BtnAdd.Text = "Add"
         Label3.Text = "Add Replacement"
         boolEditMode = False
-        boolChanged = True
         TxtReplace.Text = Nothing
         TxtReplaceWith.Text = Nothing
         ChkCaseSensitive.Checked = False

@@ -44,6 +44,7 @@ Partial Class OpenExplorer
         '
         'BtnYes
         '
+        Me.BtnYes.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnYes.Location = New System.Drawing.Point(231, 75)
         Me.BtnYes.Name = "BtnYes"
         Me.BtnYes.Size = New System.Drawing.Size(75, 23)
@@ -53,6 +54,7 @@ Partial Class OpenExplorer
         '
         'BtnNo
         '
+        Me.BtnNo.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.BtnNo.Location = New System.Drawing.Point(312, 75)
         Me.BtnNo.Name = "BtnNo"
         Me.BtnNo.Size = New System.Drawing.Size(75, 23)
@@ -62,6 +64,8 @@ Partial Class OpenExplorer
         '
         'Panel1
         '
+        Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Panel1.BackColor = System.Drawing.Color.White
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Controls.Add(Me.PictureBox1)
@@ -77,8 +81,8 @@ Partial Class OpenExplorer
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(316, 39)
         Me.Label1.TabIndex = 3
-        Me.Label1.Text = "Data exported successfully." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Do you want to open Windows Explorer to the locati" &
-    "on of the file?"
+        Me.Label1.Text = "Data exported successfully to ""{0}""." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Do you want to open Windows Explorer to t" &
+    "he location of the file?"
         '
         'PictureBox1
         '
