@@ -549,13 +549,22 @@ Namespace SyslogParser
             If Not ParensBalanced(strInput) Then Return strInput
             If Not embeddedCommandParsingCheck.IsMatch(strInput) Then Return strInput
 
-            Dim strFunctionName, strInnerValue As String
+            Dim strFunctionName, strInnerValue, strBefore As String
             Dim match As Match
+            Dim byteIterationGuard As Byte = 0
 
             While True
                 match = embeddedCommandParsingRegEx.Match(strInput)
 
                 If Not match.Success Then Exit While
+
+                byteIterationGuard += 1
+
+                If byteIterationGuard >= 20 Then
+                    ' Prevent infinite loops in case of unforeseen issues with the regex or input.
+                    AddToLogList(Nothing, "Embedded command processing exceeded maximum iterations. Possible malformed input.")
+                    Exit While
+                End If
 
                 strFunctionName = match.Groups(1).Value.ToUpperInvariant().Trim()
                 strInnerValue = match.Groups(2).Value
@@ -571,8 +580,15 @@ Namespace SyslogParser
                         strInnerValue = IpToHostname(strInnerValue)
                 End Select
 
+                strBefore = strInput
+
                 ' Replace exactly this match with its inner content, reducing nesting by 1.
                 strInput = strInput.Remove(match.Index, match.Length).Insert(match.Index, strInnerValue)
+
+                If strInput.Equals(strBefore, StringComparison.OrdinalIgnoreCase) Then
+                    AddToLogList(Nothing, "Embedded command processing made no progress; stopping to avoid loop.")
+                    Exit While
+                End If
             End While
 
             Return strInput
