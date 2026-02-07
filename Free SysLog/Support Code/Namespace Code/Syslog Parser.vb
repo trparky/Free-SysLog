@@ -550,6 +550,7 @@ Namespace SyslogParser
             If Not embeddedCommandParsingCheck.IsMatch(strInput) Then Return strInput
 
             Dim strFunctionName, strInnerValue, strBefore As String
+            Dim strOriginalInput As String = strInput
             Dim match As Match
             Dim byteIterationGuard As Byte = 0
 
@@ -562,7 +563,7 @@ Namespace SyslogParser
 
                 If byteIterationGuard >= 20 Then
                     ' Prevent infinite loops in case of unforeseen issues with the regex or input.
-                    AddToLogList(Nothing, "Embedded command processing exceeded maximum iterations. Possible malformed input.")
+                    AddToLogList(Nothing, $"Embedded command processing exceeded maximum iterations. Possible malformed input. The rule that caused it was... {strOriginalInput}")
                     Exit While
                 End If
 
@@ -586,7 +587,7 @@ Namespace SyslogParser
                 strInput = strInput.Remove(match.Index, match.Length).Insert(match.Index, strInnerValue)
 
                 If strInput.Equals(strBefore, StringComparison.OrdinalIgnoreCase) Then
-                    AddToLogList(Nothing, "Embedded command processing made no progress; stopping to avoid loop.")
+                    AddToLogList(Nothing, $"Embedded command processing made no progress; stopping to avoid loop. The rule that caused it was... {strOriginalInput}")
                     Exit While
                 End If
             End While
