@@ -322,7 +322,7 @@ Namespace SyslogParser
                     Dim strIgnoredPattern As String = Nothing
                     Dim boolRecordIgnoredLog As Boolean = False
 
-                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then
+                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
                         strRawLogText = ProcessReplacements(strRawLogText)
                     End If
 
@@ -354,18 +354,18 @@ Namespace SyslogParser
 
                     ' Step 3: Handle the ignored logs and alerts
                     If Not My.Settings.ProcessReplacementsInSyslogDataFirst Then
-                        If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
                             boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
 
-                        If replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then message = ProcessReplacements(message)
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
                     Else
-                        If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
                             boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
                     End If
 
-                    If alertsList IsNot Nothing AndAlso alertsList.GetSnapshot.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
+                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
                     If Not boolIgnored Then
                         Dim strLimitBy As String = Nothing
