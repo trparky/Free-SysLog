@@ -153,71 +153,107 @@ Namespace SyslogParser
         ''' <summary>Parses a date timestamp in String format to a Date Object.</summary>
         ''' <param name="timestamp">A date timestamp in String format.</param>
         ''' <returns>A Date Object.</returns>
-        ''' <exception cref="FormatException">Throws a FormatException if the function can't parse the input.</exception>
+        ''' <exception cref="ArgumentException">Throws if timestamp is null or empty.</exception>
+        ''' <exception cref="FormatException">Throws if the function can't parse the input.</exception>
+        ''' <remarks>
+        ''' Supported formats:
+        ''' - ISO 8601/RFC 3339 UTC: "yyyy-MM-ddTHH:mm:ssZ" or "yyyy-MM-ddTHH:mm:ss.fffZ"
+        ''' - ISO 8601/RFC 3339 with timezone: "yyyy-MM-ddTHH:mm:ss.fffzzz" or "yyyy-MM-ddTHH:mm:sszzz"
+        ''' - Syslog style: "MMM dd HH:mm:ss" (current year assumed)
+        ''' - Slash format: "M/d/yyyy h:mm:ss" or "d/M/yyyy H:mm:ss" (localized based on culture)
+        ''' </remarks>
         Public Function ParseTimestamp(timestamp As String) As Date
+            ' Input validation
+            If String.IsNullOrWhiteSpace(timestamp) Then
+                Throw New ArgumentException("Timestamp cannot be null or empty.", NameOf(timestamp))
+            End If
+
             Dim parsedDate As Date
             Dim userCulture As Globalization.CultureInfo = Globalization.CultureInfo.CurrentCulture
             Dim isEuropeanDateFormat As Boolean = userCulture.DateTimeFormat.ShortDatePattern.StartsWith("d")
 
-            If timestamp.EndsWith("Z") Then
-                ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds
-                If timestamp.Contains(":") AndAlso timestamp.Count(Function(c) c = ":") = 3 Then
-                    ' Handle timestamp with extra colon before milliseconds (e.g., "yyyy-MM-ddTHH:mm:ss:fffZ")
-                    timestamp = timestamp.Remove(timestamp.LastIndexOf(":"), 1).Insert(timestamp.LastIndexOf(":"), ".")
-                End If
-
-                If timestamp.Contains(".") Then
-                    ' Handle timestamp with milliseconds
-                    parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+            Try
+                If timestamp.EndsWith("Z") Then
+                    ' RFC 3339/ISO 8601 format with UTC timezone and optional milliseconds
+                    parsedDate = ParseUtcTimestamp(timestamp)
+                ElseIf HasTimezoneOffset(timestamp) Then
+                    ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds
+                    parsedDate = ParseTimestampWithOffset(timestamp)
+                ElseIf timestamp.Length >= 15 AndAlso Char.IsLetter(timestamp(0)) Then
+                    ' "MMM dd HH:mm:ss" format (like "Sep  4 22:39:12")
+                    parsedDate = ParseSyslogTimestamp(timestamp)
+                ElseIf timestamp.Contains("/") Then
+                    ' Slash-delimited format with optional AM/PM
+                    parsedDate = ParseSlashTimestamp(timestamp, isEuropeanDateFormat)
                 Else
-                    ' Handle timestamp without milliseconds
-                    parsedDate = Date.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ssZ", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+                    Throw New FormatException($"Unknown timestamp format: '{timestamp}'")
                 End If
-            ElseIf timestamp.Contains("+") OrElse timestamp.Contains("-") Then
-                Dim parsedDateOffset As DateTimeOffset
+            Catch ex As FormatException
+                Throw New FormatException($"Unable to parse timestamp '{timestamp}': {ex.Message}", ex)
+            Catch ex As ArgumentException
+                Throw
+            End Try
 
-                ' RFC 3339/ISO 8601 format with timezone offset and optional milliseconds
-                If timestamp.Contains(".") Then
-                    ' Handle timestamp with milliseconds
-                    parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffzzz", Globalization.CultureInfo.InvariantCulture)
-                    parsedDate = parsedDateOffset.DateTime
-                Else
-                    ' Handle timestamp without milliseconds
-                    parsedDateOffset = DateTimeOffset.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:sszzz", Globalization.CultureInfo.InvariantCulture)
-                    parsedDate = parsedDateOffset.DateTime
-                End If
-            ElseIf timestamp.Length >= 15 AndAlso Char.IsLetter(timestamp(0)) Then
-                ' "MMM dd HH:mm:ss" format (like "Sep  4 22:39:12")
-                timestamp = timestamp.Replace("  ", " 0") ' Handle single-digit day (e.g., "Sep  4" becomes "Sep 04")
-                parsedDate = Date.ParseExact(timestamp, "MMM dd HH:mm:ss", Globalization.CultureInfo.InvariantCulture)
+            Return parsedDate
+        End Function
 
-                ' If you need to add the current year to the date:
-                parsedDate = parsedDate.AddYears(Date.Now.Year - parsedDate.Year)
-            ElseIf timestamp.Contains("/") Then
-                If timestamp.EndsWith("PM", StringComparison.OrdinalIgnoreCase) Or timestamp.EndsWith("AM", StringComparison.OrdinalIgnoreCase) Then
-                    ' Handle both American and European formats based on localization
-                    If isEuropeanDateFormat Then
-                        ' European format "d/M/yyyy HH:mm:ss"
-                        parsedDate = Date.ParseExact(timestamp, "d/M/yyyy H:mm:ss tt", Globalization.CultureInfo.InvariantCulture)
-                    Else
-                        ' American format "M/d/yyyy h:mm:ss tt"
-                        parsedDate = Date.ParseExact(timestamp, "M/d/yyyy h:mm:ss tt", Globalization.CultureInfo.InvariantCulture)
-                    End If
-                Else
-                    ' Handle both American and European formats based on localization
-                    If isEuropeanDateFormat Then
-                        ' European format "d/M/yyyy HH:mm:ss"
-                        parsedDate = Date.ParseExact(timestamp, "d/M/yyyy H:mm:ss", Globalization.CultureInfo.InvariantCulture)
-                    Else
-                        ' American format "M/d/yyyy h:mm:ss"
-                        parsedDate = Date.ParseExact(timestamp, "M/d/yyyy h:mm:ss", Globalization.CultureInfo.InvariantCulture)
-                    End If
-                End If
-            Else
-                Throw New FormatException("Unknown timestamp format.")
+        ''' <summary>Checks if timestamp contains a timezone offset indicator.</summary>
+        Private Function HasTimezoneOffset(timestamp As String) As Boolean
+            ' Look for timezone offset pattern like +05:30 or -08:00 at the end
+            Return System.Text.RegularExpressions.Regex.IsMatch(timestamp, "[+-]\d{2}:\d{2}$")
+        End Function
+
+        ''' <summary>Parses UTC timestamp ending with 'Z'.</summary>
+        Private Function ParseUtcTimestamp(timestamp As String) As Date
+            Dim workingTimestamp As String = timestamp
+
+            ' Handle timestamp with extra colon before milliseconds (e.g., "yyyy-MM-ddTHH:mm:ss:fffZ")
+            If workingTimestamp.Contains(":") AndAlso workingTimestamp.Count(Function(c) c = ":") = 3 Then
+                workingTimestamp = workingTimestamp.Remove(workingTimestamp.LastIndexOf(":"), 1).Insert(workingTimestamp.LastIndexOf(":"), ".")
+            End If
+
+            Dim format As String = If(workingTimestamp.Contains("."), "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ssZ")
+            Return Date.ParseExact(workingTimestamp, format, Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.AdjustToUniversal)
+        End Function
+
+        ''' <summary>Parses timestamp with timezone offset.</summary>
+        Private Function ParseTimestampWithOffset(timestamp As String) As Date
+            Dim format As String = If(timestamp.Contains("."), "yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:sszzz")
+            Dim parsedDateOffset As DateTimeOffset = DateTimeOffset.ParseExact(timestamp, format, Globalization.CultureInfo.InvariantCulture)
+            Return parsedDateOffset.DateTime
+        End Function
+
+        ''' <summary>Parses syslog-style timestamp (MMM dd HH:mm:ss).</summary>
+        Private Function ParseSyslogTimestamp(timestamp As String) As Date
+            ' Handle single-digit day (e.g., "Sep  4" becomes "Sep 04")
+            Dim normalizedTimestamp As String = timestamp.Replace("  ", " 0")
+            Dim parsedDate As Date = Date.ParseExact(normalizedTimestamp, "MMM dd HH:mm:ss", Globalization.CultureInfo.InvariantCulture)
+
+            ' Add current year - handle year boundary cases
+            Dim currentDate As Date = Date.Now
+            parsedDate = parsedDate.AddYears(currentDate.Year - parsedDate.Year)
+
+            ' If the parsed date is more than 30 days in the future, assume it's from last year
+            ' (This handles the Dec 31 -> Jan 1 boundary case)
+            If parsedDate.Subtract(currentDate).TotalDays > 30 Then
+                parsedDate = parsedDate.AddYears(-1)
             End If
 
             Return parsedDate
+        End Function
+
+        ''' <summary>Parses slash-delimited timestamp with culture awareness.</summary>
+        Private Function ParseSlashTimestamp(timestamp As String, isEuropeanDateFormat As Boolean) As Date
+            Dim hasAmPm As Boolean = timestamp.EndsWith("PM", StringComparison.OrdinalIgnoreCase) OrElse timestamp.EndsWith("AM", StringComparison.OrdinalIgnoreCase)
+
+            Dim format As String
+            If isEuropeanDateFormat Then
+                format = If(hasAmPm, "d/M/yyyy H:mm:ss tt", "d/M/yyyy H:mm:ss")
+            Else
+                format = If(hasAmPm, "M/d/yyyy h:mm:ss tt", "M/d/yyyy h:mm:ss")
+            End If
+
+            Return Date.ParseExact(timestamp, format, Globalization.CultureInfo.InvariantCulture)
         End Function
 
         Public Function ConvertLineFeeds(strInput As String) As String
@@ -286,7 +322,7 @@ Namespace SyslogParser
                     Dim strIgnoredPattern As String = Nothing
                     Dim boolRecordIgnoredLog As Boolean = False
 
-                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then
+                    If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
                         strRawLogText = ProcessReplacements(strRawLogText)
                     End If
 
@@ -318,18 +354,18 @@ Namespace SyslogParser
 
                     ' Step 3: Handle the ignored logs and alerts
                     If Not My.Settings.ProcessReplacementsInSyslogDataFirst Then
-                        If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
                             boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
 
-                        If replacementsList IsNot Nothing AndAlso replacementsList.GetSnapshot.Any() Then message = ProcessReplacements(message)
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
                     Else
-                        If ignoredList IsNot Nothing AndAlso ignoredList.GetSnapshot.Any() Then
+                        If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
                             boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
                     End If
 
-                    If alertsList IsNot Nothing AndAlso alertsList.GetSnapshot.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
+                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
 
                     If Not boolIgnored Then
                         Dim strLimitBy As String = Nothing
@@ -549,13 +585,23 @@ Namespace SyslogParser
             If Not ParensBalanced(strInput) Then Return strInput
             If Not embeddedCommandParsingCheck.IsMatch(strInput) Then Return strInput
 
-            Dim strFunctionName, strInnerValue As String
+            Dim strFunctionName, strInnerValue, strBefore As String
+            Dim strOriginalInput As String = strInput
             Dim match As Match
+            Dim byteIterationGuard As Byte = 0
 
             While True
                 match = embeddedCommandParsingRegEx.Match(strInput)
 
                 If Not match.Success Then Exit While
+
+                byteIterationGuard += 1
+
+                If byteIterationGuard >= 20 Then
+                    ' Prevent infinite loops in case of unforeseen issues with the regex or input.
+                    AddToLogList(Nothing, $"Embedded command processing exceeded maximum iterations. Possible malformed input. The rule that caused it was... {strOriginalInput}")
+                    Exit While
+                End If
 
                 strFunctionName = match.Groups(1).Value.ToUpperInvariant().Trim()
                 strInnerValue = match.Groups(2).Value
@@ -571,8 +617,15 @@ Namespace SyslogParser
                         strInnerValue = IpToHostname(strInnerValue)
                 End Select
 
+                strBefore = strInput
+
                 ' Replace exactly this match with its inner content, reducing nesting by 1.
                 strInput = strInput.Remove(match.Index, match.Length).Insert(match.Index, strInnerValue)
+
+                If strInput.Equals(strBefore, StringComparison.OrdinalIgnoreCase) Then
+                    AddToLogList(Nothing, $"Embedded command processing made no progress; stopping to avoid loop. The rule that caused it was... {strOriginalInput}")
+                    Exit While
+                End If
             End While
 
             Return strInput
