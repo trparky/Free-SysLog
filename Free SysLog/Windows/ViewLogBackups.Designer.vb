@@ -210,7 +210,7 @@ Partial Class ViewLogBackups
         '
         Me.CompressFileToolStripMenuItem.Name = "CompressFileToolStripMenuItem"
         Me.CompressFileToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
-        Me.CompressFileToolStripMenuItem.Text = "Compress File"
+        Me.CompressFileToolStripMenuItem.Text = "Compress File using NTFS"
         '
         'UncompressFileToolStripMenuItem
         '
