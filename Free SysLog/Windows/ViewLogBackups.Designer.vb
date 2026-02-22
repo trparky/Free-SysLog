@@ -58,6 +58,7 @@ Partial Class ViewLogBackups
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.CompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GZIPCompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UncompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
@@ -118,7 +119,7 @@ Partial Class ViewLogBackups
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.CompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.CompressFileToolStripMenuItem, Me.GZIPCompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 180)
         '
@@ -205,6 +206,12 @@ Partial Class ViewLogBackups
         Me.ChkCaseInsensitiveSearch.TabIndex = 33
         Me.ChkCaseInsensitiveSearch.Text = "Case Insensitive?"
         Me.ChkCaseInsensitiveSearch.UseVisualStyleBackColor = True
+        '
+        'GZIPCompressFileToolStripMenuItem
+        '
+        Me.GZIPCompressFileToolStripMenuItem.Name = "GZIPCompressFileToolStripMenuItem"
+        Me.GZIPCompressFileToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
+        Me.GZIPCompressFileToolStripMenuItem.Text = "Compress File using GZIP"
         '
         'CompressFileToolStripMenuItem
         '
@@ -494,6 +501,7 @@ Partial Class ViewLogBackups
     Friend WithEvents ShowInWindowsExplorerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RenameToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CompressFileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents GZIPCompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UncompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChkShowNTFSCompressionSizeDifference As CheckBox
     Friend WithEvents ChkShowNTFSCompressionSizeDifferencePercentage As CheckBox

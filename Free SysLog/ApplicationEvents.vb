@@ -95,18 +95,22 @@ Namespace My
 
             If boolProcessAllFiles Then
                 Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
-                                                                       Using fileStream As New IO.StreamReader(file.FullName)
-                                                                           collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                           collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
+                                                                       Else
+                                                                           Using fileStream As New IO.StreamReader(file.FullName)
+                                                                               collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                                                                           End Using
+                                                                       End If
 
-                                                                           Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
-                                                                                                                                       With uniqueObjects
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
-                                                                                                                                       End With
-                                                                                                                                   End Sub)
-                                                                       End Using
+                                                                       Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
+                                                                                                                                   With uniqueObjects
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                                                                       If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                                                                   End With
+                                                                                                                               End Sub)
                                                                    End Sub)
             End If
 

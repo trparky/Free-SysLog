@@ -135,6 +135,16 @@ Namespace SupportCode
             End If
         End Function
 
+        Public Function GetTextContentsFromGZIPedLogFile(strPathToGZIPedLogFile As String) As String
+            Using sourceStream As FileStream = File.Open(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+                Using gzipStream As New Compression.GZipStream(sourceStream, Compression.CompressionMode.Decompress)
+                    Using streamReader As New StreamReader(gzipStream)
+                        Return streamReader.ReadToEnd.Trim
+                    End Using
+                End Using
+            End Using
+        End Function
+
         Public Function SearchListView(strRuleBase As String, listViewCollection As ListView.ListViewItemCollection) As Boolean
             Return listViewCollection.Cast(Of ListViewItem).Any(Function(item As ListViewItem) item.SubItems(0).Text.Equals(strRuleBase, StringComparison.OrdinalIgnoreCase))
         End Function

@@ -40,6 +40,24 @@ Public Class ViewLogBackups
         End If
     End Sub
 
+    Private Function GetEstimatedUncompressedSizeOfGZIPedFile(strPathToGZIPedLogFile As String) As Long
+        Try
+            Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+                If fs.Length < 4 Then Return -1
+
+                fs.Seek(-4, SeekOrigin.End)
+
+                Dim sizeBytes(3) As Byte
+                fs.Read(sizeBytes, 0, 4)
+
+                ' GZIP stores ISIZE as little-endian UInt32
+                Return BitConverter.ToUInt32(sizeBytes, 0)
+            End Using
+        Catch ex As Exception
+            Return -1 ' Return -1 to indicate an error occurred
+        End Try
+    End Function
+
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
         SortLogsByDateObjectNoLocking(columnIndex, order)
     End Sub
@@ -64,9 +82,13 @@ Public Class ViewLogBackups
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Try
-            Using fileStream As New StreamReader(strFileName)
-                Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
-            End Using
+            If New FileInfo(strFileName).Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(strFileName), JSONDecoderSettingsForLogFiles).Count
+            Else
+                Using fileStream As New StreamReader(strFileName)
+                    Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
+                End Using
+            End If
         Catch ex As Exception
             Return -1
         End Try
@@ -150,16 +172,29 @@ Public Class ViewLogBackups
                                                    For Each cell As DataGridViewCell In row.Cells
                                                        cell.Style.Font = My.Settings.font
                                                        If boolIsHidden AndAlso ChkShowHiddenAsGray.Checked Then cell.Style.ForeColor = Color.Gray
-                                                       If boolIsCompressed Then cell.Style.ForeColor = Color.Blue
+                                                       If boolIsCompressed Or file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then cell.Style.ForeColor = Color.Blue
                                                    Next
 
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
-                                                   If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
-                                                       row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file, longUsedDiskSpace)})"
-                                                       Interlocked.Increment(intNumberOfCompressedFiles)
+                                                   If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                       intCompresedSize = GetEstimatedUncompressedSizeOfGZIPedFile(file.FullName)
+
+                                                       If intCompresedSize <> -1 Then
+                                                           row.Cells(2).Value &= $" ({FileSizeToHumanSize(intCompresedSize)})"
+                                                           Interlocked.Increment(intNumberOfCompressedFiles)
+                                                           Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                       Else
+                                                           row.Cells(2).Value &= " (Error)"
+                                                           Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                       End If
                                                    Else
-                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                       If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
+                                                           row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file, longUsedDiskSpace)})"
+                                                           Interlocked.Increment(intNumberOfCompressedFiles)
+                                                       Else
+                                                           Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                       End If
                                                    End If
 
                                                    threadSafeListOfDataGridViewRows.Add(row)
@@ -383,29 +418,33 @@ Public Class ViewLogBackups
                                           Dim myDataGridRow As MyDataGridViewRow
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
-                                                                                 Using fileStream As New StreamReader(file.FullName)
-                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
+                                                                                 Else
+                                                                                     Using fileStream As New StreamReader(file.FullName)
+                                                                                         dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                                                                                     End Using
+                                                                                 End If
 
-                                                                                     For Each item As SavedData In dataFromFile
-                                                                                         If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                         ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                         Else
-                                                                                             boolDoesLogMatchLimitedSearch = True
-                                                                                         End If
+                                                                                 For Each item As SavedData In dataFromFile
+                                                                                     If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     Else
+                                                                                         boolDoesLogMatchLimitedSearch = True
+                                                                                     End If
 
-                                                                                         If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
-                                                                                             myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
-                                                                                             myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
-                                                                                             myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+                                                                                     If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
+                                                                                         myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
+                                                                                         myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                         myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
 
-                                                                                             SyncLock listOfSearchResults ' Ensure thread safety
-                                                                                                 listOfSearchResults.Add(myDataGridRow)
-                                                                                             End SyncLock
-                                                                                         End If
-                                                                                     Next
-                                                                                 End Using
+                                                                                         SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                             listOfSearchResults.Add(myDataGridRow)
+                                                                                         End SyncLock
+                                                                                     End If
+                                                                                 Next
                                                                              End Sub)
 
                                           For Each item As MyDataGridViewRow In listOfSearchResults
@@ -485,8 +524,9 @@ Public Class ViewLogBackups
             ViewToolStripMenuItem.Enabled = FileList.SelectedRows.Count <= 1
 
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
+            Dim fileInfo As New FileInfo(fileName)
 
-            If (New FileInfo(fileName).Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
+            If (fileInfo.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden Then
                 UnhideToolStripMenuItem.Visible = True
                 HideToolStripMenuItem.Visible = False
             Else
@@ -494,12 +534,20 @@ Public Class ViewLogBackups
                 HideToolStripMenuItem.Visible = True
             End If
 
-            If (New FileInfo(fileName).Attributes And FileAttributes.Compressed) = FileAttributes.Compressed Then
+            If (fileInfo.Attributes And FileAttributes.Compressed) = FileAttributes.Compressed Then
                 UncompressFileToolStripMenuItem.Visible = True
                 CompressFileToolStripMenuItem.Visible = False
             Else
                 UncompressFileToolStripMenuItem.Visible = False
                 CompressFileToolStripMenuItem.Visible = True
+            End If
+
+            If fileInfo.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                GZIPCompressFileToolStripMenuItem.Visible = False
+                UncompressFileToolStripMenuItem.Visible = True
+                CompressFileToolStripMenuItem.Visible = False
+            Else
+                GZIPCompressFileToolStripMenuItem.Visible = True
             End If
         Else
             DeleteToolStripMenuItem.Enabled = False
@@ -524,6 +572,88 @@ Public Class ViewLogBackups
         ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
     End Sub
 
+    Private Sub UncompressGZIPFile(strFilePath As String)
+        If String.IsNullOrWhiteSpace(strFilePath) Then Exit Sub
+        If Not File.Exists(strFilePath) Then Exit Sub
+
+        Try
+            If Not strFilePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+                ' File isn't a GZIP file based on extension.
+                Exit Sub
+            End If
+
+            Dim strUncompressedFilePath As String = strFilePath.Substring(0, strFilePath.Length - 3)
+            Dim strUncompressedData As String = GetTextContentsFromGZIPedLogFile(strFilePath)
+
+            WriteFileAtomically(strUncompressedFilePath, strUncompressedData)
+
+            ' Preserve timestamps (best-effort)
+            Try
+                File.SetCreationTimeUtc(strUncompressedFilePath, File.GetCreationTimeUtc(strFilePath))
+                File.SetLastWriteTimeUtc(strUncompressedFilePath, File.GetLastWriteTimeUtc(strFilePath))
+            Catch
+                ' Ignore timestamp preservation failures
+            End Try
+
+            ' Remove the original file after successful compression
+            File.Delete(strFilePath)
+        Catch ex As Exception
+            Try
+                If InvokeRequired Then
+                    Invoke(Sub() MsgBox($"Error compressing file ""{Path.GetFileName(strFilePath)}"": {ex.Message}", MsgBoxStyle.Critical, Text))
+                Else
+                    MsgBox($"Error compressing file ""{Path.GetFileName(strFilePath)}"": {ex.Message}", MsgBoxStyle.Critical, Text)
+                End If
+            Catch
+                ' Swallow any exceptions raised while reporting the error
+            End Try
+        End Try
+    End Sub
+
+    Private Sub GZIPCompressFile(strFilePath As String)
+        If String.IsNullOrWhiteSpace(strFilePath) Then Exit Sub
+        If Not File.Exists(strFilePath) Then Exit Sub
+
+        Try
+            If strFilePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+                ' Already compressed with .gz extension
+                Exit Sub
+            End If
+
+            Dim strCompressedFilePath As String = strFilePath & ".gz"
+
+            ' Compress source file into .gz
+            Using sourceStream As FileStream = File.Open(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                Using destinationStream As FileStream = File.Create(strCompressedFilePath)
+                    Using gzipStream As New Compression.GZipStream(destinationStream, Compression.CompressionLevel.Optimal)
+                        sourceStream.CopyTo(gzipStream)
+                    End Using
+                End Using
+            End Using
+
+            ' Preserve timestamps (best-effort)
+            Try
+                File.SetCreationTimeUtc(strCompressedFilePath, File.GetCreationTimeUtc(strFilePath))
+                File.SetLastWriteTimeUtc(strCompressedFilePath, File.GetLastWriteTimeUtc(strFilePath))
+            Catch
+                ' Ignore timestamp preservation failures
+            End Try
+
+            ' Remove the original file after successful compression
+            File.Delete(strFilePath)
+        Catch ex As Exception
+            Try
+                If InvokeRequired Then
+                    Invoke(Sub() MsgBox($"Error compressing file ""{Path.GetFileName(strFilePath)}"": {ex.Message}", MsgBoxStyle.Critical, Text))
+                Else
+                    MsgBox($"Error compressing file ""{Path.GetFileName(strFilePath)}"": {ex.Message}", MsgBoxStyle.Critical, Text)
+                End If
+            Catch
+                ' Swallow any exceptions raised while reporting the error
+            End Try
+        End Try
+    End Sub
+
     Private Sub UncompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UncompressFileToolStripMenuItem.Click
         Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim fileName As String
@@ -536,6 +666,23 @@ Public Class ViewLogBackups
         Else
             fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
             UncompressFile(fileName)
+        End If
+
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
+    End Sub
+
+    Private Sub GZIPCompressFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GZIPCompressFileToolStripMenuItem.Click
+        Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
+        Dim fileName As String
+
+        If FileList.SelectedRows.Count > 1 Then
+            For Each item As DataGridViewRow In FileList.SelectedRows
+                fileName = Path.Combine(strPathToDataBackupFolder, item.Cells(0).Value)
+                GZIPCompressFile(fileName)
+            Next
+        Else
+            fileName = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
+            GZIPCompressFile(fileName)
         End If
 
         ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
@@ -619,15 +766,19 @@ Public Class ViewLogBackups
 
     Private Sub UncompressFile(fileName As String)
         If File.Exists(fileName) Then
-            Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
-                Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_NONE
-                Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
-                Marshal.WriteInt16(ptr, comp)
+            If New FileInfo(fileName).Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                UncompressGZIPFile(fileName)
+            Else
+                Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                    Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_NONE
+                    Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
+                    Marshal.WriteInt16(ptr, comp)
 
-                NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
+                    NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
 
-                Marshal.FreeHGlobal(ptr)
-            End Using
+                    Marshal.FreeHGlobal(ptr)
+                End Using
+            End If
         End If
     End Sub
 
@@ -757,33 +908,37 @@ Public Class ViewLogBackups
                                       Dim boolDidWeHaveAMatch As Boolean = False
 
                                       Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
-                                                                             Using fileStream As New StreamReader(file.FullName)
-                                                                                 dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                                 dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
+                                                                             Else
+                                                                                 Using fileStream As New StreamReader(file.FullName)
+                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                                                                                 End Using
+                                                                             End If
 
-                                                                                 For Each item As SavedData In dataFromFile
-                                                                                     If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                                                                         boolDidWeHaveAMatch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                     ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                                                                                         boolDidWeHaveAMatch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                     ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-                                                                                         boolDidWeHaveAMatch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                     ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-                                                                                         boolDidWeHaveAMatch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                     End If
+                                                                             For Each item As SavedData In dataFromFile
+                                                                                 If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                                                     boolDidWeHaveAMatch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                 ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                                                     boolDidWeHaveAMatch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                 ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                                                     boolDidWeHaveAMatch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                 ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                                                     boolDidWeHaveAMatch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                 End If
 
-                                                                                     If boolDidWeHaveAMatch Then
-                                                                                         myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
-                                                                                         myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
-                                                                                         myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+                                                                                 If boolDidWeHaveAMatch Then
+                                                                                     myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
+                                                                                     myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                     myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
 
-                                                                                         SyncLock listOfSearchResults ' Ensure thread safety
-                                                                                             listOfSearchResults.Add(myDataGridRow)
-                                                                                         End SyncLock
-                                                                                     End If
+                                                                                     SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                         listOfSearchResults.Add(myDataGridRow)
+                                                                                     End SyncLock
+                                                                                 End If
 
-                                                                                     boolDidWeHaveAMatch = False
-                                                                                 Next
-                                                                             End Using
+                                                                                 boolDidWeHaveAMatch = False
+                                                                             Next
                                                                          End Sub)
 
                                       For Each item As MyDataGridViewRow In listOfSearchResults
@@ -852,8 +1007,14 @@ Public Class ViewLogBackups
     Private Sub RenameToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RenameToolStripMenuItem.Click
         Dim intOldIndex As Integer = FileList.SelectedRows(0).Index
         Dim strOldFileName As String = FileList.SelectedRows(0).Cells(0).Value.ToString()
-        Dim strOldFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strOldFileName)
+        Dim boolIsGZIPFile As Boolean = False
 
+        If strOldFileName.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+            boolIsGZIPFile = True
+            strOldFileName = strOldFileName.Substring(0, strOldFileName.Length - 3)
+        End If
+
+        Dim strOldFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strOldFileName)
         Dim strNewFileName As String = InputBox("Enter the new name for the selected file:", "Rename File", strOldFileName)
 
         If String.IsNullOrWhiteSpace(strNewFileName) Then
@@ -876,6 +1037,10 @@ Public Class ViewLogBackups
             Exit Sub
         End If
 
+        If boolIsGZIPFile AndAlso Not strNewFileName.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+            strNewFileName &= ".gz"
+        End If
+
         Dim strNewFileNameFullPath As String = Path.Combine(strPathToDataBackupFolder, strNewFileName)
 
         ' Ensure user didn't re-enter the same name
@@ -891,7 +1056,11 @@ Public Class ViewLogBackups
         End If
 
         ' Finally rename
-        File.Move(strOldFileNameFullPath, strNewFileNameFullPath)
+        If boolIsGZIPFile Then
+            File.Move(strOldFileNameFullPath & ".gz", strNewFileNameFullPath)
+        Else
+            File.Move(strOldFileNameFullPath, strNewFileNameFullPath)
+        End If
 
         MsgBox("File renamed successfully.", MsgBoxStyle.Information, Text)
 
