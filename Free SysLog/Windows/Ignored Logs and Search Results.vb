@@ -355,7 +355,9 @@ Public Class IgnoredLogsAndSearchResults
                                                     .log = myItem.Cells(ColumnIndex_LogText).Value,
                                                     .DateObject = myItem.DateObject,
                                                     .BoolAlerted = myItem.BoolAlerted,
-                                                    .rawLogData = myItem.RawLogData
+                                                    .rawLogData = myItem.RawLogData,
+                                                    .alertText = myItem.AlertText,
+                                                    .alertType = myItem.alertType
                                               }
                         If ColFileName.Visible Then savedData.fileName = myItem.Cells(ColumnIndex_FileName).Value
                         collectionOfSavedData.Add(savedData)
