@@ -459,9 +459,15 @@ Public Class IgnoredLogsAndSearchResults
         Dim collectionOfSavedData As New List(Of SavedData)
 
         Try
-            Using fileStream As New StreamReader(strFileName)
-                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
-            End Using
+            Dim fileInfo As New FileInfo(strFileName)
+
+            If fileInfo.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(fileInfo.FullName) Then
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(fileInfo.FullName), JSONDecoderSettingsForSettingsFiles)
+            Else
+                Using fileStream As New StreamReader(strFileName)
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
+                End Using
+            End If
 
             If collectionOfSavedData.Any() Then
                 collectionOfSavedData.Sort(Function(x As SavedData, y As SavedData) x.DateObject.CompareTo(y.DateObject))
