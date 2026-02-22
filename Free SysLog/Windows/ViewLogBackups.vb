@@ -82,7 +82,7 @@ Public Class ViewLogBackups
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Try
-            If New FileInfo(strFileName).Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+            If New FileInfo(strFileName).Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(strFileName) Then
                 Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(strFileName), JSONDecoderSettingsForLogFiles).Count
             Else
                 Using fileStream As New StreamReader(strFileName)
@@ -418,7 +418,7 @@ Public Class ViewLogBackups
                                           Dim myDataGridRow As MyDataGridViewRow
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
-                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                                  Else
                                                                                      Using fileStream As New StreamReader(file.FullName)
@@ -573,6 +573,7 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub UncompressGZIPFile(strFilePath As String)
+        If Not IsGZipFile(strFilePath) Then Exit Sub
         If String.IsNullOrWhiteSpace(strFilePath) Then Exit Sub
         If Not File.Exists(strFilePath) Then Exit Sub
 
@@ -908,7 +909,7 @@ Public Class ViewLogBackups
                                       Dim boolDidWeHaveAMatch As Boolean = False
 
                                       Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
-                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
                                                                                  dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                              Else
                                                                                  Using fileStream As New StreamReader(file.FullName)

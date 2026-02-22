@@ -135,6 +135,23 @@ Namespace SupportCode
             End If
         End Function
 
+        Public Function IsGZipFile(strPath As String) As Boolean
+            Try
+                If Not File.Exists(strPath) Then Return False
+
+                Using fileStream As New FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                    If fileStream.Length < 2 Then Return False
+
+                    Dim magicBit1 As Integer = fileStream.ReadByte()
+                    Dim magicBit2 As Integer = fileStream.ReadByte()
+
+                    Return magicBit1 = &H1F AndAlso magicBit2 = &H8B
+                End Using
+            Catch
+                Return False
+            End Try
+        End Function
+
         Public Function GetTextContentsFromGZIPedLogFile(strPathToGZIPedLogFile As String) As String
             Using sourceStream As FileStream = File.Open(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
                 Using gzipStream As New Compression.GZipStream(sourceStream, Compression.CompressionMode.Decompress)
