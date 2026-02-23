@@ -732,6 +732,7 @@ Namespace SyslogParser
                     End If
 
                     strAlertText = ProcessEmbeddedCommands(strAlertText)
+                    strAlertText = strAlertText.Replace("{NewLine}", vbCrLf, StringComparison.OrdinalIgnoreCase).Trim()
 
                     If alert.BoolLimited Then
                         NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)

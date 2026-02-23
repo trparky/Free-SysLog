@@ -67,7 +67,7 @@ Partial Class Alerts
         '
         Me.BtnEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEdit.Enabled = False
-        Me.BtnEdit.Location = New System.Drawing.Point(83, 237)
+        Me.BtnEdit.Location = New System.Drawing.Point(83, 223)
         Me.BtnEdit.Name = "BtnEdit"
         Me.BtnEdit.Size = New System.Drawing.Size(75, 23)
         Me.BtnEdit.TabIndex = 12
@@ -87,7 +87,7 @@ Partial Class Alerts
         Me.AlertsListView.HideSelection = False
         Me.AlertsListView.Location = New System.Drawing.Point(12, 12)
         Me.AlertsListView.Name = "AlertsListView"
-        Me.AlertsListView.Size = New System.Drawing.Size(933, 219)
+        Me.AlertsListView.Size = New System.Drawing.Size(933, 205)
         Me.AlertsListView.TabIndex = 11
         Me.AlertsListView.UseCompatibleStateImageBehavior = False
         Me.AlertsListView.View = System.Windows.Forms.View.Details
@@ -142,7 +142,7 @@ Partial Class Alerts
         '
         Me.BtnDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnDelete.Enabled = False
-        Me.BtnDelete.Location = New System.Drawing.Point(12, 237)
+        Me.BtnDelete.Location = New System.Drawing.Point(12, 223)
         Me.BtnDelete.Name = "BtnDelete"
         Me.BtnDelete.Size = New System.Drawing.Size(65, 23)
         Me.BtnDelete.TabIndex = 10
@@ -163,7 +163,7 @@ Partial Class Alerts
         '
         Me.BtnEnableDisable.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnEnableDisable.Enabled = False
-        Me.BtnEnableDisable.Location = New System.Drawing.Point(164, 237)
+        Me.BtnEnableDisable.Location = New System.Drawing.Point(164, 223)
         Me.BtnEnableDisable.Name = "BtnEnableDisable"
         Me.BtnEnableDisable.Size = New System.Drawing.Size(75, 23)
         Me.BtnEnableDisable.TabIndex = 13
@@ -173,7 +173,7 @@ Partial Class Alerts
         'BtnExport
         '
         Me.BtnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnExport.Location = New System.Drawing.Point(819, 237)
+        Me.BtnExport.Location = New System.Drawing.Point(819, 223)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(75, 23)
         Me.BtnExport.TabIndex = 15
@@ -183,7 +183,7 @@ Partial Class Alerts
         'BtnImport
         '
         Me.BtnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnImport.Location = New System.Drawing.Point(900, 237)
+        Me.BtnImport.Location = New System.Drawing.Point(900, 223)
         Me.BtnImport.Name = "BtnImport"
         Me.BtnImport.Size = New System.Drawing.Size(75, 23)
         Me.BtnImport.TabIndex = 14
@@ -193,7 +193,7 @@ Partial Class Alerts
         'BtnDeleteAll
         '
         Me.BtnDeleteAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnDeleteAll.Location = New System.Drawing.Point(245, 237)
+        Me.BtnDeleteAll.Location = New System.Drawing.Point(245, 223)
         Me.BtnDeleteAll.Name = "BtnDeleteAll"
         Me.BtnDeleteAll.Size = New System.Drawing.Size(75, 23)
         Me.BtnDeleteAll.TabIndex = 16
@@ -203,7 +203,7 @@ Partial Class Alerts
         'BtnDown
         '
         Me.BtnDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.BtnDown.Location = New System.Drawing.Point(951, 208)
+        Me.BtnDown.Location = New System.Drawing.Point(951, 194)
         Me.BtnDown.Name = "BtnDown"
         Me.BtnDown.Size = New System.Drawing.Size(24, 23)
         Me.BtnDown.TabIndex = 21
@@ -225,7 +225,7 @@ Partial Class Alerts
         Me.SeparatingLine.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SeparatingLine.BackColor = System.Drawing.Color.Black
-        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 269)
+        Me.SeparatingLine.Location = New System.Drawing.Point(-1, 255)
         Me.SeparatingLine.Name = "SeparatingLine"
         Me.SeparatingLine.Size = New System.Drawing.Size(1000, 1)
         Me.SeparatingLine.TabIndex = 25
@@ -234,9 +234,9 @@ Partial Class Alerts
         '
         Me.lblRegExBackReferences.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblRegExBackReferences.AutoSize = True
-        Me.lblRegExBackReferences.Location = New System.Drawing.Point(196, 349)
+        Me.lblRegExBackReferences.Location = New System.Drawing.Point(196, 335)
         Me.lblRegExBackReferences.Name = "lblRegExBackReferences"
-        Me.lblRegExBackReferences.Size = New System.Drawing.Size(757, 39)
+        Me.lblRegExBackReferences.Size = New System.Drawing.Size(757, 52)
         Me.lblRegExBackReferences.TabIndex = 37
         Me.lblRegExBackReferences.Text = resources.GetString("lblRegExBackReferences.Text")
         '
@@ -256,7 +256,7 @@ Partial Class Alerts
         'IconPictureBox
         '
         Me.IconPictureBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.IconPictureBox.Location = New System.Drawing.Point(158, 352)
+        Me.IconPictureBox.Location = New System.Drawing.Point(158, 338)
         Me.IconPictureBox.Name = "IconPictureBox"
         Me.IconPictureBox.Size = New System.Drawing.Size(32, 32)
         Me.IconPictureBox.TabIndex = 35
@@ -267,7 +267,7 @@ Partial Class Alerts
         Me.AlertTypeComboBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.AlertTypeComboBox.FormattingEnabled = True
         Me.AlertTypeComboBox.Items.AddRange(New Object() {"Warning", "Error", "Information", "None"})
-        Me.AlertTypeComboBox.Location = New System.Drawing.Point(73, 352)
+        Me.AlertTypeComboBox.Location = New System.Drawing.Point(73, 338)
         Me.AlertTypeComboBox.Name = "AlertTypeComboBox"
         Me.AlertTypeComboBox.Size = New System.Drawing.Size(79, 21)
         Me.AlertTypeComboBox.TabIndex = 34
@@ -276,7 +276,7 @@ Partial Class Alerts
         '
         Me.Label3.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(12, 355)
+        Me.Label3.Location = New System.Drawing.Point(12, 341)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(55, 13)
         Me.Label3.TabIndex = 33
@@ -286,7 +286,7 @@ Partial Class Alerts
         '
         Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(12, 329)
+        Me.Label2.Location = New System.Drawing.Point(12, 315)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(52, 13)
         Me.Label2.TabIndex = 32
@@ -296,7 +296,7 @@ Partial Class Alerts
         '
         Me.TxtAlertText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtAlertText.Location = New System.Drawing.Point(67, 326)
+        Me.TxtAlertText.Location = New System.Drawing.Point(67, 312)
         Me.TxtAlertText.Name = "TxtAlertText"
         Me.TxtAlertText.Size = New System.Drawing.Size(908, 20)
         Me.TxtAlertText.TabIndex = 31
@@ -328,7 +328,7 @@ Partial Class Alerts
         '
         Me.TxtLogText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TxtLogText.Location = New System.Drawing.Point(67, 300)
+        Me.TxtLogText.Location = New System.Drawing.Point(67, 286)
         Me.TxtLogText.Name = "TxtLogText"
         Me.TxtLogText.Size = New System.Drawing.Size(908, 20)
         Me.TxtLogText.TabIndex = 28
@@ -337,7 +337,7 @@ Partial Class Alerts
         '
         Me.Label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 303)
+        Me.Label1.Location = New System.Drawing.Point(12, 289)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(49, 13)
         Me.Label1.TabIndex = 27
@@ -348,7 +348,7 @@ Partial Class Alerts
         '
         Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 280)
+        Me.Label4.Location = New System.Drawing.Point(12, 266)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(435, 13)
         Me.Label4.TabIndex = 38
