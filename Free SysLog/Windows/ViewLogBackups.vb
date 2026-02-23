@@ -157,7 +157,18 @@ Public Class ViewLogBackups
                                                        .Cells(1).Value = $"{file.LastWriteTime:D} {file.LastWriteTime:T}"
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
-                                                       .Cells(2).Value = FileSizeToHumanSize(file.Length)
+                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                           intCompresedSize = GetEstimatedUncompressedSizeOfGZIPedFile(file.FullName)
+
+                                                           If intCompresedSize <> -1 Then
+                                                               row.Cells(2).Value = FileSizeToHumanSize(intCompresedSize)
+                                                           Else
+                                                               row.Cells(2).Value = "Error"
+                                                           End If
+                                                       Else
+                                                           .Cells(2).Value = FileSizeToHumanSize(file.Length)
+                                                       End If
+
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(3).Value = $"{intCount:N0}"
@@ -178,19 +189,12 @@ Public Class ViewLogBackups
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
                                                    If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                       intCompresedSize = GetEstimatedUncompressedSizeOfGZIPedFile(file.FullName)
-
-                                                       If intCompresedSize <> -1 Then
-                                                           row.Cells(2).Value &= $" ({FileSizeToHumanSize(intCompresedSize)})"
-                                                           Interlocked.Increment(intNumberOfCompressedFiles)
-                                                           Interlocked.Add(longUsedDiskSpace, file.Length)
-                                                       Else
-                                                           row.Cells(2).Value &= " (Error)"
-                                                           Interlocked.Add(longUsedDiskSpace, file.Length)
-                                                       End If
+                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)})"
+                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                       Interlocked.Increment(intNumberOfCompressedFiles)
                                                    Else
                                                        If boolIsCompressed AndAlso ChkShowNTFSCompressionSizeDifference.Checked Then
-                                                           row.Cells(2).Value &= $" ({GetNTFSFileCompressionInfo(file, longUsedDiskSpace)})"
+                                                           row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)})"
                                                            Interlocked.Increment(intNumberOfCompressedFiles)
                                                        Else
                                                            Interlocked.Add(longUsedDiskSpace, file.Length)
