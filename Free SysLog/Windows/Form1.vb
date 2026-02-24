@@ -1330,7 +1330,7 @@ Public Class Form1
             If DataToLoad.Count = 0 Then
                 MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
             Else
-                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me}
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me, .Size = My.Settings.AlertHistorySize}
                     Alerts_History.ShowDialog(Me)
                 End Using
             End If
@@ -1992,7 +1992,7 @@ Public Class Form1
             Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
             Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
 
-            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me, .alertType = selectedRow.alertType}
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me, .alertType = selectedRow.alertType, .Size = My.Settings.logViewerWindowSize}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
 
@@ -2008,7 +2008,7 @@ Public Class Form1
     Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
         strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
 
-        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType}
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType, .Size = My.Settings.logViewerWindowSize}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
             LogViewerInstance.TopMost = True

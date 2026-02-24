@@ -12,7 +12,7 @@
     Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
         strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
 
-        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType}
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType, .Size = My.Settings.logViewerWindowSize}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
             LogViewerInstance.TopMost = True
@@ -31,7 +31,6 @@
         SupportCode.SetDoubleBufferingFlag(AlertHistoryList)
 
         AlertHistoryList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = SupportCode.GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
-        Size = My.Settings.AlertHistorySize
         Location = SupportCode.VerifyWindowLocation(My.Settings.AlertHistoryLocation, Me)
 
         colTime.Width = My.Settings.columnTimeSize
