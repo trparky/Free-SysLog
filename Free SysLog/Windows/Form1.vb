@@ -1671,7 +1671,14 @@ Public Class Form1
         WriteLogsToDisk()
         Dim strLogFileBackupFileName As String = GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json"))
         File.Copy(strPathToDataFile, strLogFileBackupFileName)
-        If My.Settings.CompressBackupLogFiles Then CompressFile(strLogFileBackupFileName)
+
+        If My.Settings.CompressBackupLogFiles Then
+            Try
+                GZIPCompressFile(strLogFileBackupFileName)
+            Catch
+                ' If something goes wrong, we don't care.
+            End Try
+        End If
     End Sub
 
     Private Sub LoadDataFile(Optional boolShowDataLoadedEvent As Boolean = True)

@@ -32,8 +32,8 @@ Partial Class ViewLogBackups
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnView = New System.Windows.Forms.Button()
         Me.BtnDelete = New System.Windows.Forms.Button()
-        Me.ChkShowNTFSCompressionSizeDifference = New System.Windows.Forms.CheckBox()
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage = New System.Windows.Forms.CheckBox()
+        Me.ChkShowCompressionSizeDifference = New System.Windows.Forms.CheckBox()
+        Me.ChkShowCompressionSizeDifferencePercentage = New System.Windows.Forms.CheckBox()
         Me.BtnRefresh = New System.Windows.Forms.Button()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblNumberOfFiles = New System.Windows.Forms.ToolStripStatusLabel()
@@ -57,7 +57,6 @@ Partial Class ViewLogBackups
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
-        Me.CompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GZIPCompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UncompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
@@ -119,7 +118,7 @@ Partial Class ViewLogBackups
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.CompressFileToolStripMenuItem, Me.GZIPCompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.GZIPCompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 180)
         '
@@ -211,13 +210,7 @@ Partial Class ViewLogBackups
         '
         Me.GZIPCompressFileToolStripMenuItem.Name = "GZIPCompressFileToolStripMenuItem"
         Me.GZIPCompressFileToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
-        Me.GZIPCompressFileToolStripMenuItem.Text = "Compress File using GZIP"
-        '
-        'CompressFileToolStripMenuItem
-        '
-        Me.CompressFileToolStripMenuItem.Name = "CompressFileToolStripMenuItem"
-        Me.CompressFileToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
-        Me.CompressFileToolStripMenuItem.Text = "Compress File using NTFS"
+        Me.GZIPCompressFileToolStripMenuItem.Text = "Compress File"
         '
         'UncompressFileToolStripMenuItem
         '
@@ -236,27 +229,27 @@ Partial Class ViewLogBackups
         Me.ChkRegExSearch.Text = "Regex?"
         Me.ChkRegExSearch.UseVisualStyleBackColor = True
         '
-        'ChkShowNTFSCompressionSizeDifference
+        'ChkShowCompressionSizeDifference
         '
-        Me.ChkShowNTFSCompressionSizeDifference.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ChkShowNTFSCompressionSizeDifference.AutoSize = True
-        Me.ChkShowNTFSCompressionSizeDifference.Location = New System.Drawing.Point(554, 292)
-        Me.ChkShowNTFSCompressionSizeDifference.Name = "ChkShowNTFSCompressionSizeDifference"
-        Me.ChkShowNTFSCompressionSizeDifference.Size = New System.Drawing.Size(222, 17)
-        Me.ChkShowNTFSCompressionSizeDifference.TabIndex = 43
-        Me.ChkShowNTFSCompressionSizeDifference.Text = "Show NTFS Compression Size Differences"
-        Me.ChkShowNTFSCompressionSizeDifference.UseVisualStyleBackColor = True
+        Me.ChkShowCompressionSizeDifference.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowCompressionSizeDifference.AutoSize = True
+        Me.ChkShowCompressionSizeDifference.Location = New System.Drawing.Point(554, 292)
+        Me.ChkShowCompressionSizeDifference.Name = "ChkShowCompressionSizeDifference"
+        Me.ChkShowCompressionSizeDifference.Size = New System.Drawing.Size(196, 17)
+        Me.ChkShowCompressionSizeDifference.TabIndex = 43
+        Me.ChkShowCompressionSizeDifference.Text = "Show Compression Size Differences"
+        Me.ChkShowCompressionSizeDifference.UseVisualStyleBackColor = True
         '
-        'ChkShowNTFSCompressionSizeDifferencePercentage
+        'ChkShowCompressionSizeDifferencePercentage
         '
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.AutoSize = True
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Location = New System.Drawing.Point(554, 319)
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Name = "ChkShowNTFSCompressionSizeDifferencePercentage"
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Size = New System.Drawing.Size(280, 17)
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.TabIndex = 44
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.Text = "Show NTFS Compression Size Difference Percentages"
-        Me.ChkShowNTFSCompressionSizeDifferencePercentage.UseVisualStyleBackColor = True
+        Me.ChkShowCompressionSizeDifferencePercentage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkShowCompressionSizeDifferencePercentage.AutoSize = True
+        Me.ChkShowCompressionSizeDifferencePercentage.Location = New System.Drawing.Point(554, 319)
+        Me.ChkShowCompressionSizeDifferencePercentage.Name = "ChkShowCompressionSizeDifferencePercentage"
+        Me.ChkShowCompressionSizeDifferencePercentage.Size = New System.Drawing.Size(254, 17)
+        Me.ChkShowCompressionSizeDifferencePercentage.TabIndex = 44
+        Me.ChkShowCompressionSizeDifferencePercentage.Text = "Show Compression Size Difference Percentages"
+        Me.ChkShowCompressionSizeDifferencePercentage.UseVisualStyleBackColor = True
         '
         'BtnSearch
         '
@@ -447,8 +440,8 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.BtnView)
         Me.Controls.Add(Me.FileList)
         Me.Controls.Add(Me.ChkLogFileDeletions)
-        Me.Controls.Add(Me.ChkShowNTFSCompressionSizeDifference)
-        Me.Controls.Add(Me.ChkShowNTFSCompressionSizeDifferencePercentage)
+        Me.Controls.Add(Me.ChkShowCompressionSizeDifference)
+        Me.Controls.Add(Me.ChkShowCompressionSizeDifferencePercentage)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -500,9 +493,8 @@ Partial Class ViewLogBackups
     Friend WithEvents btnViewLogsWithLimits As Button
     Friend WithEvents ShowInWindowsExplorerToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RenameToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents CompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents GZIPCompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UncompressFileToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ChkShowNTFSCompressionSizeDifference As CheckBox
-    Friend WithEvents ChkShowNTFSCompressionSizeDifferencePercentage As CheckBox
+    Friend WithEvents ChkShowCompressionSizeDifference As CheckBox
+    Friend WithEvents ChkShowCompressionSizeDifferencePercentage As CheckBox
 End Class

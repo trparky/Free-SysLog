@@ -49,14 +49,6 @@ Namespace NativeMethod
         <DllImport("kernel32.dll", SetLastError:=True)>
         Public Shared Function DeviceIoControl(hDevice As SafeFileHandle, dwIoControlCode As UInteger, lpInBuffer As IntPtr, nInBufferSize As UInteger, lpOutBuffer As IntPtr, nOutBufferSize As UInteger, ByRef lpBytesReturned As UInteger, lpOverlapped As IntPtr) As Boolean
         End Function
-
-        Public Const FSCTL_SET_COMPRESSION As UInteger = &H9C040
-        Public Const COMPRESSION_FORMAT_NONE As UShort = 0
-        Public Const COMPRESSION_FORMAT_DEFAULT As UShort = 1
-
-        <DllImport("kernel32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
-        Public Shared Function GetCompressedFileSize(lpFileName As String, ByRef lpFileSizeHigh As UInteger) As UInteger
-        End Function
     End Class
 
     Module APIs
