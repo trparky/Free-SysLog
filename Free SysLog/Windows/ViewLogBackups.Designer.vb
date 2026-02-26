@@ -85,7 +85,7 @@ Partial Class ViewLogBackups
         Me.FileList.ReadOnly = True
         Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.FileList.Size = New System.Drawing.Size(990, 243)
+        Me.FileList.Size = New System.Drawing.Size(953, 243)
         Me.FileList.TabIndex = 36
         '
         'ColFileName
@@ -183,7 +183,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1015, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(978, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -283,14 +283,14 @@ Partial Class ViewLogBackups
         '
         Me.lblTotalNumberOfLogs.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
         Me.lblTotalNumberOfLogs.Name = "lblTotalNumberOfLogs"
-        Me.lblTotalNumberOfLogs.Size = New System.Drawing.Size(124, 17)
+        Me.lblTotalNumberOfLogs.Size = New System.Drawing.Size(125, 17)
         Me.lblTotalNumberOfLogs.Text = "Total Number of Logs:"
         '
         'ChkShowHidden
         '
         Me.ChkShowHidden.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHidden.AutoSize = True
-        Me.ChkShowHidden.Location = New System.Drawing.Point(843, 292)
+        Me.ChkShowHidden.Location = New System.Drawing.Point(814, 292)
         Me.ChkShowHidden.Name = "ChkShowHidden"
         Me.ChkShowHidden.Size = New System.Drawing.Size(114, 17)
         Me.ChkShowHidden.TabIndex = 34
@@ -308,7 +308,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHiddenAsGray.AutoSize = True
-        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(843, 319)
+        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(814, 319)
         Me.ChkShowHiddenAsGray.Name = "ChkShowHiddenAsGray"
         Me.ChkShowHiddenAsGray.Size = New System.Drawing.Size(153, 17)
         Me.ChkShowHiddenAsGray.TabIndex = 35
@@ -335,14 +335,14 @@ Partial Class ViewLogBackups
         '
         Me.LblTotalDiskSpace.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
         Me.LblTotalDiskSpace.Name = "LblTotalDiskSpace"
-        Me.LblTotalDiskSpace.Size = New System.Drawing.Size(123, 17)
+        Me.LblTotalDiskSpace.Size = New System.Drawing.Size(124, 17)
         Me.LblTotalDiskSpace.Text = "Total Disk Space Used:"
         '
         'ChkIgnoreSearchResultsLimits
         '
         Me.ChkIgnoreSearchResultsLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkIgnoreSearchResultsLimits.AutoSize = True
-        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(843, 265)
+        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(814, 265)
         Me.ChkIgnoreSearchResultsLimits.Name = "ChkIgnoreSearchResultsLimits"
         Me.ChkIgnoreSearchResultsLimits.Size = New System.Drawing.Size(160, 17)
         Me.ChkIgnoreSearchResultsLimits.TabIndex = 37
@@ -421,7 +421,7 @@ Partial Class ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1015, 364)
+        Me.ClientSize = New System.Drawing.Size(978, 364)
         Me.Controls.Add(Me.btnViewLogsWithLimits)
         Me.Controls.Add(Me.boxLimiter)
         Me.Controls.Add(Me.boxLimitBy)
@@ -445,7 +445,7 @@ Partial Class ViewLogBackups
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(1031, 403)
+        Me.MinimumSize = New System.Drawing.Size(994, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
