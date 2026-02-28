@@ -321,7 +321,15 @@ Public Class IgnoredLogsAndSearchResults
                 End If
             End If
 
-            For Each item As DataGridViewRow In Logs.Rows
+            Dim dataToExport As List(Of DataGridViewRow)
+
+            If Logs.SelectedRows.Count > 1 Then
+                dataToExport = Logs.SelectedRows.Cast(Of DataGridViewRow).ToList()
+            Else
+                dataToExport = Logs.Rows.Cast(Of DataGridViewRow).ToList()
+            End If
+
+            For Each item As DataGridViewRow In dataToExport
                 If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 
