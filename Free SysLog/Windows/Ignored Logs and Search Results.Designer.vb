@@ -54,6 +54,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
         Me.ChkColLogsAutoFill = New System.Windows.Forms.CheckBox()
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
+        Me.ToolStripSelectedItems = New System.Windows.Forms.ToolStripStatusLabel()
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
@@ -89,7 +90,7 @@ Partial Class IgnoredLogsAndSearchResults
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount, Me.LogsLoadedInLabel})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount, Me.LogsLoadedInLabel, Me.ToolStripSelectedItems})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 403)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1563, 22)
@@ -372,6 +373,14 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ChkKeepIgnoredLogsPastUserLimit.Text = "Keep Ignored Logs Past User-Set Limit"
         Me.ChkKeepIgnoredLogsPastUserLimit.UseVisualStyleBackColor = True
         '
+        'ToolStripSelectedItems
+        '
+        Me.ToolStripSelectedItems.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
+        Me.ToolStripSelectedItems.Name = "ToolStripSelectedItems"
+        Me.ToolStripSelectedItems.Size = New System.Drawing.Size(91, 17)
+        Me.ToolStripSelectedItems.Text = "Selected Logs: 0"
+        Me.ToolStripSelectedItems.Visible = False
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -437,4 +446,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents OpenLogForViewingToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChkAutoScroll As CheckBox
     Friend WithEvents ChkKeepIgnoredLogsPastUserLimit As CheckBox
+    Friend WithEvents ToolStripSelectedItems As ToolStripStatusLabel
 End Class

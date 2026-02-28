@@ -681,4 +681,9 @@ Public Class IgnoredLogsAndSearchResults
             If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
         End If
     End Sub
+
+    Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
+        ToolStripSelectedItems.Visible = Logs.SelectedRows.Count > 1
+        ToolStripSelectedItems.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
+    End Sub
 End Class
