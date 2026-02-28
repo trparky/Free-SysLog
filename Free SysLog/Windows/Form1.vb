@@ -553,7 +553,7 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Me.Icon)
+        ShowSingleInstanceWindow(IgnoredWordsAndPhrasesOrAlertsInstance, Me.Icon)
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
@@ -680,7 +680,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
+        ShowSingleInstanceWindow(ReplacementsInstance, Icon)
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAlternatingColorToolStripMenuItem.Click
@@ -983,7 +983,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
+        ShowSingleInstanceWindow(AlertsInstance, Icon)
     End Sub
 
     Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
@@ -992,7 +992,7 @@ Public Class Form1
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
+        ShowSingleInstanceWindow(AlertsInstance, Icon)
         AlertsInstance.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
@@ -1057,7 +1057,7 @@ Public Class Form1
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
         If Logs.SelectedRows.Count > 0 Then
-            ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
+            ShowSingleInstanceWindow(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
 
             Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
             If myItem IsNot Nothing Then IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
@@ -1065,7 +1065,7 @@ Public Class Form1
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
+        ShowSingleInstanceWindow(ReplacementsInstance, Icon)
         ReplacementsInstance.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
@@ -1083,7 +1083,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_Click(sender As Object, e As EventArgs) Handles ConfigureSysLogMirrorServers.Click
-        ShowSingleInstanceWindow(Of ConfigureSysLogMirrorClients)(ConfigureSysLogMirrorClientsInstance, Icon)
+        ShowSingleInstanceWindow(ConfigureSysLogMirrorClientsInstance, Icon)
     End Sub
 
     Private Sub MinimizeToClockTray_Click(sender As Object, e As EventArgs) Handles MinimizeToClockTray.Click
@@ -1249,7 +1249,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
-        ShowSingleInstanceWindow(Of Hostnames)(HostNamesInstance, Icon)
+        ShowSingleInstanceWindow(HostNamesInstance, Icon)
     End Sub
 
     Private Sub ChangeFont_Click(sender As Object, e As EventArgs) Handles ChangeFont.Click
