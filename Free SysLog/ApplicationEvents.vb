@@ -30,12 +30,6 @@ Namespace My
                 ' Mark as not the first run
                 My.Settings.FirstRun = False
                 My.Settings.Save()
-
-                ' Delete the backup file if it exists
-                If IO.File.Exists(strPathToConfigBackupFile) Then IO.File.Delete(strPathToConfigBackupFile)
-            Else
-                ' If not the first run, delete the backup file if it exists
-                If IO.File.Exists(strPathToConfigBackupFile) Then IO.File.Delete(strPathToConfigBackupFile)
             End If
 
             If Not Debugger.IsAttached Then
@@ -62,12 +56,6 @@ Namespace My
             If Not String.IsNullOrWhiteSpace(Settings.logFileLocation) Then
                 If Not IO.File.Exists(strPathToDataFile) Then IO.File.Move(Settings.logFileLocation, strPathToDataFile)
                 Settings.logFileLocation = Nothing
-            End If
-
-            If IO.File.Exists(strUpdaterEXE) Then
-                ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
-                IO.File.Delete(strUpdaterEXE)
-                If IO.File.Exists(strUpdaterPDB) Then IO.File.Delete(strUpdaterPDB)
             End If
 
             mutex = New Threading.Mutex(True, strMutexName, boolDoWeOwnTheMutex)
