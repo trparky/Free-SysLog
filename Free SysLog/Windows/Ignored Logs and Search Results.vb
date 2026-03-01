@@ -28,7 +28,7 @@ Public Class IgnoredLogsAndSearchResults
             Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
             Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
 
-            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = selectedRow.alertType}
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = selectedRow.alertType, .Size = My.Settings.logViewerWindowSize}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
 
@@ -321,7 +321,15 @@ Public Class IgnoredLogsAndSearchResults
                 End If
             End If
 
-            For Each item As DataGridViewRow In Logs.Rows
+            Dim dataToExport As List(Of DataGridViewRow)
+
+            If Logs.SelectedRows.Count > 1 Then
+                dataToExport = Logs.SelectedRows.Cast(Of DataGridViewRow).ToList()
+            Else
+                dataToExport = Logs.Rows.Cast(Of DataGridViewRow).ToList()
+            End If
+
+            For Each item As DataGridViewRow In dataToExport
                 If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 
@@ -459,9 +467,15 @@ Public Class IgnoredLogsAndSearchResults
         Dim collectionOfSavedData As New List(Of SavedData)
 
         Try
-            Using fileStream As New StreamReader(strFileName)
-                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
-            End Using
+            Dim fileInfo As New FileInfo(strFileName)
+
+            If fileInfo.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(fileInfo.FullName) Then
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(fileInfo.FullName), JSONDecoderSettingsForSettingsFiles)
+            Else
+                Using fileStream As New StreamReader(strFileName)
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
+                End Using
+            End If
 
             If collectionOfSavedData.Any() Then
                 collectionOfSavedData.Sort(Function(x As SavedData, y As SavedData) x.DateObject.CompareTo(y.DateObject))
@@ -528,7 +542,7 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        Dim Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon}
+        Dim Alerts As New Alerts With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .Size = My.Settings.ConfigureAlertsSize}
         Alerts.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
         Alerts.Show()
     End Sub
@@ -603,7 +617,7 @@ Public Class IgnoredLogsAndSearchResults
             Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
             Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
 
-            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = selectedRow.alertType}
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = selectedRow.alertType, .Size = My.Settings.logViewerWindowSize}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
 
@@ -666,5 +680,10 @@ Public Class IgnoredLogsAndSearchResults
             Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
             If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
         End If
+    End Sub
+
+    Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
+        ToolStripSelectedItems.Visible = Logs.SelectedRows.Count > 1
+        ToolStripSelectedItems.Text = $"Selected Logs: {Logs.SelectedRows.Count:N0}"
     End Sub
 End Class

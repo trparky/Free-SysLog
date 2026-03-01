@@ -45,7 +45,6 @@ Public Class LogViewer
         End If
 
         ChkShowRawLog.Checked = My.Settings.boolShowRawLogOnLogViewer
-        Size = My.Settings.logViewerWindowSize
         LogText.Text = If(ChkShowRawLog.Checked, strRawLogText, strLogText)
         LogText.Select(0, 0)
 

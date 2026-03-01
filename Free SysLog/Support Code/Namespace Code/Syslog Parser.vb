@@ -731,6 +731,9 @@ Namespace SyslogParser
                         End If
                     End If
 
+                    strAlertText = strAlertText.Replace("{NewLine}", vbCrLf, StringComparison.OrdinalIgnoreCase).Trim()
+                    strAlertText = strAlertText.Replace("{CrLf}", vbCrLf, StringComparison.OrdinalIgnoreCase).Trim()
+                    strAlertText = strAlertText.Replace("{NL}", vbCrLf, StringComparison.OrdinalIgnoreCase).Trim()
                     strAlertText = ProcessEmbeddedCommands(strAlertText)
 
                     If alert.BoolLimited Then

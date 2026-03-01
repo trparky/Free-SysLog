@@ -1392,24 +1392,24 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-        Public Property ShowNTFSCompressionSizeDifference() As Boolean
+        Public Property ShowCompressionSizeDifference() As Boolean
             Get
-                Return CType(Me("ShowNTFSCompressionSizeDifference"),Boolean)
+                Return CType(Me("ShowCompressionSizeDifference"),Boolean)
             End Get
             Set
-                Me("ShowNTFSCompressionSizeDifference") = value
+                Me("ShowCompressionSizeDifference") = value
             End Set
         End Property
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-        Public Property ShowNTFSCompressionSizeDifferencePercentage() As Boolean
+        Public Property ShowCompressionSizeDifferencePercentage() As Boolean
             Get
-                Return CType(Me("ShowNTFSCompressionSizeDifferencePercentage"),Boolean)
+                Return CType(Me("ShowCompressionSizeDifferencePercentage"),Boolean)
             End Get
             Set
-                Me("ShowNTFSCompressionSizeDifferencePercentage") = value
+                Me("ShowCompressionSizeDifferencePercentage") = value
             End Set
         End Property
         

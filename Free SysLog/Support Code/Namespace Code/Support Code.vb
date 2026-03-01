@@ -135,22 +135,67 @@ Namespace SupportCode
             End If
         End Function
 
+        Public Function IsGZipFile(strPath As String) As Boolean
+            Try
+                If Not File.Exists(strPath) Then Return False
+
+                Using fileStream As New FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                    If fileStream.Length < 2 Then Return False
+
+                    Dim magicBit1 As Integer = fileStream.ReadByte()
+                    Dim magicBit2 As Integer = fileStream.ReadByte()
+
+                    Return magicBit1 = &H1F AndAlso magicBit2 = &H8B
+                End Using
+            Catch
+                Return False
+            End Try
+        End Function
+
+        Public Function GetTextContentsFromGZIPedLogFile(strPathToGZIPedLogFile As String) As String
+            Using sourceStream As FileStream = File.Open(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+                Using gzipStream As New Compression.GZipStream(sourceStream, Compression.CompressionMode.Decompress)
+                    Using streamReader As New StreamReader(gzipStream)
+                        Return streamReader.ReadToEnd.Trim
+                    End Using
+                End Using
+            End Using
+        End Function
+
         Public Function SearchListView(strRuleBase As String, listViewCollection As ListView.ListViewItemCollection) As Boolean
             Return listViewCollection.Cast(Of ListViewItem).Any(Function(item As ListViewItem) item.SubItems(0).Text.Equals(strRuleBase, StringComparison.OrdinalIgnoreCase))
         End Function
 
-        Public Sub CompressFile(fileName As String)
-            If File.Exists(fileName) Then
-                Using handle As FileStream = File.Open(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
-                    Dim comp As UShort = NativeMethod.NativeMethods.COMPRESSION_FORMAT_DEFAULT
-                    Dim ptr As IntPtr = Marshal.AllocHGlobal(2)
-                    Marshal.WriteInt16(ptr, comp)
+        Public Sub GZIPCompressFile(strFilePath As String)
+            If String.IsNullOrWhiteSpace(strFilePath) Then Exit Sub
+            If Not File.Exists(strFilePath) Then Exit Sub
 
-                    NativeMethod.NativeMethods.DeviceIoControl(handle.SafeFileHandle, NativeMethod.NativeMethods.FSCTL_SET_COMPRESSION, ptr, 2, IntPtr.Zero, 0, Nothing, IntPtr.Zero)
-
-                    Marshal.FreeHGlobal(ptr)
-                End Using
+            If strFilePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+                ' Already compressed with .gz extension
+                Exit Sub
             End If
+
+            Dim strCompressedFilePath As String = strFilePath & ".gz"
+
+            ' Compress source file into .gz
+            Using sourceStream As FileStream = File.Open(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                Using destinationStream As FileStream = File.Create(strCompressedFilePath)
+                    Using gzipStream As New Compression.GZipStream(destinationStream, Compression.CompressionLevel.Optimal)
+                        sourceStream.CopyTo(gzipStream)
+                    End Using
+                End Using
+            End Using
+
+            ' Preserve timestamps (best-effort)
+            Try
+                File.SetCreationTimeUtc(strCompressedFilePath, File.GetCreationTimeUtc(strFilePath))
+                File.SetLastWriteTimeUtc(strCompressedFilePath, File.GetLastWriteTimeUtc(strFilePath))
+            Catch
+                ' Ignore timestamp preservation failures
+            End Try
+
+            ' Remove the original file after successful compression
+            File.Delete(strFilePath)
         End Sub
 
         Public Sub WriteFileAtomically(path As String, contents As Byte())

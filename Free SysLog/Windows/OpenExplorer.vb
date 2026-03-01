@@ -15,6 +15,7 @@
         Media.SystemSounds.Asterisk.Play()
         PictureBox1.Image = SystemIcons.Question.ToBitmap()
         ChkAskEveryTime.Checked = My.Settings.AskOpenExplorer
+        SupportCode.CenterFormOverParent(MyParentForm, Me)
     End Sub
 
     Private Sub BtnYes_Click(sender As Object, e As EventArgs) Handles BtnYes.Click

@@ -553,7 +553,7 @@ Public Class Form1
     End Sub
 
     Private Sub IgnoredWordsAndPhrasesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Me.Icon)
+        ShowSingleInstanceWindow(IgnoredWordsAndPhrasesOrAlertsInstance, Me.Icon)
     End Sub
 
     Private Sub ViewIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewIgnoredLogsToolStripMenuItem.Click
@@ -680,7 +680,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureReplacementsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureReplacementsToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
+        ShowSingleInstanceWindow(ReplacementsInstance, Icon)
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAlternatingColorToolStripMenuItem.Click
@@ -983,7 +983,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlertsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConfigureAlertsToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
+        ShowSingleInstanceWindow(AlertsInstance, Icon)
     End Sub
 
     Private Sub OpenWindowsExplorerToAppConfigFile_Click(sender As Object, e As EventArgs) Handles OpenWindowsExplorerToAppConfigFile.Click
@@ -992,7 +992,7 @@ Public Class Form1
     End Sub
 
     Private Sub CreateAlertToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateAlertToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Alerts)(AlertsInstance, Icon)
+        ShowSingleInstanceWindow(AlertsInstance, Icon)
         AlertsInstance.TxtLogText.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
@@ -1057,7 +1057,7 @@ Public Class Form1
 
     Private Sub CreateIgnoredLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateIgnoredLogToolStripMenuItem.Click
         If Logs.SelectedRows.Count > 0 Then
-            ShowSingleInstanceWindow(Of IgnoredWordsAndPhrases)(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
+            ShowSingleInstanceWindow(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
 
             Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
             If myItem IsNot Nothing Then IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
@@ -1065,7 +1065,7 @@ Public Class Form1
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        ShowSingleInstanceWindow(Of Replacements)(ReplacementsInstance, Icon)
+        ShowSingleInstanceWindow(ReplacementsInstance, Icon)
         ReplacementsInstance.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
     End Sub
 
@@ -1083,7 +1083,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureSysLogMirrorServers_Click(sender As Object, e As EventArgs) Handles ConfigureSysLogMirrorServers.Click
-        ShowSingleInstanceWindow(Of ConfigureSysLogMirrorClients)(ConfigureSysLogMirrorClientsInstance, Icon)
+        ShowSingleInstanceWindow(ConfigureSysLogMirrorClientsInstance, Icon)
     End Sub
 
     Private Sub MinimizeToClockTray_Click(sender As Object, e As EventArgs) Handles MinimizeToClockTray.Click
@@ -1249,7 +1249,7 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureHostnames_Click(sender As Object, e As EventArgs) Handles ConfigureHostnames.Click
-        ShowSingleInstanceWindow(Of Hostnames)(HostNamesInstance, Icon)
+        ShowSingleInstanceWindow(HostNamesInstance, Icon)
     End Sub
 
     Private Sub ChangeFont_Click(sender As Object, e As EventArgs) Handles ChangeFont.Click
@@ -1330,7 +1330,7 @@ Public Class Form1
             If DataToLoad.Count = 0 Then
                 MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
             Else
-                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me}
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me, .Size = My.Settings.AlertHistorySize}
                     Alerts_History.ShowDialog(Me)
                 End Using
             End If
@@ -1671,7 +1671,14 @@ Public Class Form1
         WriteLogsToDisk()
         Dim strLogFileBackupFileName As String = GetUniqueFileName(Path.Combine(strPathToDataBackupFolder, $"{GetDateStringBasedOnUserPreference(Now.AddDays(-1))} Backup.json"))
         File.Copy(strPathToDataFile, strLogFileBackupFileName)
-        If My.Settings.CompressBackupLogFiles Then CompressFile(strLogFileBackupFileName)
+
+        If My.Settings.CompressBackupLogFiles Then
+            Try
+                GZIPCompressFile(strLogFileBackupFileName)
+            Catch
+                ' If something goes wrong, we don't care.
+            End Try
+        End If
     End Sub
 
     Private Sub LoadDataFile(Optional boolShowDataLoadedEvent As Boolean = True)
@@ -1992,7 +1999,7 @@ Public Class Form1
             Dim strLogText As String = selectedRow.Cells(ColumnIndex_LogText).Value
             Dim strRawLogText As String = If(String.IsNullOrWhiteSpace(selectedRow.RawLogData), selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.RawLogData.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase))
 
-            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me, .alertType = selectedRow.alertType}
+            Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .MyParentForm = Me, .alertType = selectedRow.alertType, .Size = My.Settings.logViewerWindowSize}
                 LogViewerInstance.LblLogDate.Text = $"Log Date: {selectedRow.Cells(ColumnIndex_ComputedTime).Value}"
                 LogViewerInstance.LblSource.Text = $"Source IP Address: {selectedRow.Cells(ColumnIndex_IPAddress).Value}"
 
@@ -2008,7 +2015,7 @@ Public Class Form1
     Private Sub OpenLogViewerWindow(strLogText As String, strAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
         strRawLogText = strRawLogText.Replace("{newline}", vbCrLf, StringComparison.OrdinalIgnoreCase)
 
-        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType}
+        Using LogViewerInstance As New LogViewer With {.strRawLogText = strRawLogText, .strLogText = strLogText, .StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .alertType = alertType, .Size = My.Settings.logViewerWindowSize}
             LogViewerInstance.LblLogDate.Text = $"Log Date: {strLogDate}"
             LogViewerInstance.LblSource.Text = $"Source IP Address: {strSourceIP}"
             LogViewerInstance.TopMost = True

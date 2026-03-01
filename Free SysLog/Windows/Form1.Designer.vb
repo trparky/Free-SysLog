@@ -501,7 +501,7 @@ Partial Class Form1
         Me.CompressBackupLogFilesToolStripMenuItem.CheckOnClick = True
         Me.CompressBackupLogFilesToolStripMenuItem.Name = "CompressBackupLogFilesToolStripMenuItem"
         Me.CompressBackupLogFilesToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
-        Me.CompressBackupLogFilesToolStripMenuItem.Text = "Compress Backup Log Files using NTFS Compression"
+        Me.CompressBackupLogFilesToolStripMenuItem.Text = "Compress Backup Log Files"
         '
         'ColLogsAutoFill
         '
