@@ -1722,6 +1722,13 @@ Public Class Form1
                     listOfLogEntries.Add(SyslogParser.MakeLocalDataGridRowEntry("Deleting temporary settings backup file.", Logs))
                 End If
 
+                If File.Exists(strUpdaterEXE) Then
+                    ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
+                    File.Delete(strUpdaterEXE)
+                    If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
+                    listOfLogEntries.Add(SyslogParser.MakeLocalDataGridRowEntry("Deleting updater module.", Logs))
+                End If
+
                 SyncLock dataGridLockObject
                     Invoke(Sub()
                                Logs.SuspendLayout()
