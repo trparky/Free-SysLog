@@ -119,6 +119,10 @@ Namespace SyslogParser
         End Sub
 
         Private Function GetSeverityAndFacility(strPriority As String) As (Facility As String, Severity As String)
+            If String.IsNullOrWhiteSpace(strPriority) Then
+                Return ("No Facility", "No Severity")
+            End If
+
             strPriority = strPriority.Replace("<", "").Replace(">", "").Trim
 
             Dim priorityNumber As Integer
