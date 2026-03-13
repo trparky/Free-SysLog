@@ -150,7 +150,7 @@ Namespace SyslogParser
 
                 Return (facilityDescription, severityDescription)
             Else
-                Return (Nothing, Nothing)
+                Return ("No Facility", "No Severity")
             End If
         End Function
 
