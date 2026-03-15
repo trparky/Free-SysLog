@@ -198,11 +198,15 @@ Namespace SupportCode
             File.Delete(strFilePath)
         End Sub
 
-        Public Sub WriteFileAtomically(path As String, contents As Byte())
+        Public Sub WriteFileAtomically(path As String, source As Stream)
             Dim tmpPath As String = path & ".tmp"
 
             Try
-                File.WriteAllBytes(tmpPath, contents)
+                If source.CanSeek Then source.Position = 0
+
+                Using fileStream As New FileStream(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None)
+                    source.CopyTo(fileStream)
+                End Using
 
                 If File.Exists(path) Then
                     File.Replace(tmpPath, path, Nothing)

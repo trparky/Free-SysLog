@@ -58,7 +58,7 @@ Namespace DataHandling
                         Using memoryStream As New MemoryStream
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
                             xmlSerializerObject.Serialize(memoryStream, collectionOfSavedData)
-                            WriteFileAtomically(saveFileDialog.FileName, memoryStream.ToArray())
+                            WriteFileAtomically(saveFileDialog.FileName, memoryStream)
                         End Using
                     ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
                         WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
@@ -140,7 +140,7 @@ Namespace DataHandling
                         Using memoryStream As New MemoryStream
                             Dim xmlSerializerObject As New Xml.Serialization.XmlSerializer(collectionOfSavedData.GetType)
                             xmlSerializerObject.Serialize(memoryStream, collectionOfSavedData)
-                            WriteFileAtomically(saveFileDialog.FileName, memoryStream.ToArray())
+                            WriteFileAtomically(saveFileDialog.FileName, memoryStream)
                         End Using
                     ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
                         WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
