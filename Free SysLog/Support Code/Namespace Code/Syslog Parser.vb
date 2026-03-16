@@ -35,40 +35,37 @@ Namespace SyslogParser
                                    AlertType:=AlertType.None,
                                    dataGrid:=dataGrid)
 
-            MyDataGridViewRow.DefaultCellStyle.Padding = DataGridViewPadding
             Return MyDataGridViewRow
         End Function
 
         Public Function MakeDataGridRow(serverTimeStamp As Date, dateObject As Date, strTime As String, strSourceAddress As String, strHostname As String, strRemoteProcess As String, strLog As String, strLogType As String, boolAlerted As Boolean, strRawLogText As String, strAlertText As String, AlertType As AlertType, ByRef dataGrid As DataGridView) As MyDataGridViewRow
-            Using MyDataGridViewRow As New MyDataGridViewRow
-                With MyDataGridViewRow
-                    .CreateCells(dataGrid)
-                    .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(strTime)
-                    .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "", strLogType)
-                    .Cells(ColumnIndex_IPAddress).Value = strSourceAddress
-                    .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(strRemoteProcess), "", strRemoteProcess)
-                    .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(strHostname), "", strHostname)
-                    .Cells(ColumnIndex_ServerTime).Value = ToIso8601Format(serverTimeStamp)
-                    .Cells(ColumnIndex_LogText).Value = strLog
-                    .Cells(ColumnIndex_Alerted).Value = If(boolAlerted, "Yes", "No")
-                    .DateObject = dateObject
-                    .BoolAlerted = boolAlerted
-                    .ServerDate = serverTimeStamp
-                    .RawLogData = strRawLogText
-                    .AlertText = strAlertText
-                    .alertType = AlertType
+            Dim MyDataGridViewRow As New MyDataGridViewRow
 
-                    If My.Settings.font IsNot Nothing Then
-                        .DefaultCellStyle = DataGridViewCellStyle
-                        .Cells(ColumnIndex_Alerted).Style = DataGridViewCellStyle_AlertedCell
-                        .Cells(ColumnIndex_ComputedTime).Style = DataGridViewCellStyle_ComputedCell
-                    End If
+            With MyDataGridViewRow
+                .CreateCells(dataGrid)
+                .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(strTime)
+                .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "", strLogType)
+                .Cells(ColumnIndex_IPAddress).Value = strSourceAddress
+                .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(strRemoteProcess), "", strRemoteProcess)
+                .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(strHostname), "", strHostname)
+                .Cells(ColumnIndex_ServerTime).Value = ToIso8601Format(serverTimeStamp)
+                .Cells(ColumnIndex_LogText).Value = strLog
+                .Cells(ColumnIndex_Alerted).Value = If(boolAlerted, "Yes", "No")
+                .DateObject = dateObject
+                .BoolAlerted = boolAlerted
+                .ServerDate = serverTimeStamp
+                .RawLogData = strRawLogText
+                .AlertText = strAlertText
+                .alertType = AlertType
 
-                    .DefaultCellStyle.Padding = DataGridViewPadding
-                End With
+                If My.Settings.font IsNot Nothing Then
+                    .DefaultCellStyle = DataGridViewCellStyle
+                    .Cells(ColumnIndex_Alerted).Style = DataGridViewCellStyle_AlertedCell
+                    .Cells(ColumnIndex_ComputedTime).Style = DataGridViewCellStyle_ComputedCell
+                End If
+            End With
 
-                Return MyDataGridViewRow
-            End Using
+            Return MyDataGridViewRow
         End Function
 
         Public Sub AddToLogList(strTimeStampFromServer As String, strLogText As String)

@@ -105,7 +105,6 @@ Namespace SupportCode
         Public DataGridViewCellStyle As DataGridViewCellStyle
         Public DataGridViewCellStyle_ComputedCell As DataGridViewCellStyle
         Public DataGridViewCellStyle_AlertedCell As DataGridViewCellStyle
-        Public DataGridViewPadding As New Padding(0, 2, 0, 2)
 
         Public WriteOnly Property AskOpenExplorer As Boolean
             Set(value As Boolean)

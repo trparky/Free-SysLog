@@ -36,8 +36,6 @@ Public Class SavedData
                 .Cells(ColumnIndex_ComputedTime).Style = DataGridViewCellStyle_ComputedCell
                 .Cells(ColumnIndex_Alerted).Style = DataGridViewCellStyle_AlertedCell
             End If
-
-            .DefaultCellStyle.Padding = DataGridViewPadding
         End With
 
         Return MyDataGridViewRow

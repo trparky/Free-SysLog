@@ -189,6 +189,8 @@ Public Class Form1
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
+        Logs.RowsDefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+
         LoadAndDeserializeArrays()
         LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 
