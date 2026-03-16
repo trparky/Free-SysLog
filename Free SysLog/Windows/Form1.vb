@@ -218,6 +218,10 @@ Public Class Form1
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
             Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+
+            DataGridViewCellStyle = New DataGridViewCellStyle With {.Font = My.Settings.font}
+            DataGridViewCellStyle_ComputedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter}
+            DataGridViewCellStyle_AlertedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter, .WrapMode = DataGridViewTriState.True}
         End If
 
         boolDoneLoading = True
@@ -1261,6 +1265,10 @@ Public Class Form1
 
                 Logs.DefaultCellStyle.Font = My.Settings.font
                 Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+
+                DataGridViewCellStyle = New DataGridViewCellStyle With {.Font = My.Settings.font}
+                DataGridViewCellStyle_ComputedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter}
+                DataGridViewCellStyle_AlertedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter, .WrapMode = DataGridViewTriState.True}
 
                 WriteLogsToDisk()
 

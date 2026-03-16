@@ -35,7 +35,7 @@ Namespace SyslogParser
                                    AlertType:=AlertType.None,
                                    dataGrid:=dataGrid)
 
-            MyDataGridViewRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+            MyDataGridViewRow.DefaultCellStyle.Padding = DataGridViewPadding
             Return MyDataGridViewRow
         End Function
 
@@ -44,7 +44,6 @@ Namespace SyslogParser
                 With MyDataGridViewRow
                     .CreateCells(dataGrid)
                     .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(strTime)
-                    .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
                     .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(strLogType), "", strLogType)
                     .Cells(ColumnIndex_IPAddress).Value = strSourceAddress
                     .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(strRemoteProcess), "", strRemoteProcess)
@@ -52,8 +51,6 @@ Namespace SyslogParser
                     .Cells(ColumnIndex_ServerTime).Value = ToIso8601Format(serverTimeStamp)
                     .Cells(ColumnIndex_LogText).Value = strLog
                     .Cells(ColumnIndex_Alerted).Value = If(boolAlerted, "Yes", "No")
-                    .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-                    .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
                     .DateObject = dateObject
                     .BoolAlerted = boolAlerted
                     .ServerDate = serverTimeStamp
@@ -62,17 +59,12 @@ Namespace SyslogParser
                     .alertType = AlertType
 
                     If My.Settings.font IsNot Nothing Then
-                        .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
-                        .Cells(ColumnIndex_LogType).Style.Font = My.Settings.font
-                        .Cells(ColumnIndex_IPAddress).Style.Font = My.Settings.font
-                        .Cells(ColumnIndex_RemoteProcess).Style.Font = My.Settings.font
-                        .Cells(ColumnIndex_Hostname).Style.Font = My.Settings.font
-                        .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
-                        .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
-                        .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
+                        .DefaultCellStyle = DataGridViewCellStyle
+                        .Cells(ColumnIndex_Alerted).Style = DataGridViewCellStyle_AlertedCell
+                        .Cells(ColumnIndex_ComputedTime).Style = DataGridViewCellStyle_ComputedCell
                     End If
 
-                    .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+                    .DefaultCellStyle.Padding = DataGridViewPadding
                 End With
 
                 Return MyDataGridViewRow
