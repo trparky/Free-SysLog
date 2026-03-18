@@ -427,6 +427,16 @@ Public Class Form1
             End SyncLock
         End If
 
+        RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
+
+        If MyMidnightTimer IsNot Nothing Then
+            RemoveHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
+
+            MyMidnightTimer.Stop()
+            MyMidnightTimer.Dispose()
+            MyMidnightTimer = Nothing
+        End If
+
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         WriteLogsToDisk()
@@ -2158,10 +2168,14 @@ Public Class Form1
 
     Private Sub CreateNewMidnightTimer()
         If MyMidnightTimer IsNot Nothing Then
+            RemoveHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
+
             MyMidnightTimer.Stop()
             MyMidnightTimer.Dispose()
             MyMidnightTimer = Nothing
         End If
+
+        RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
 
         ' Calculate the time span until midnight
         Dim ts As TimeSpan = GetMidnight(1).Subtract(Date.Now)
