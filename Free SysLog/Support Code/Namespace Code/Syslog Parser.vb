@@ -445,7 +445,7 @@ Namespace SyslogParser
                                                                                                boolInternalRecordLog = ignoredClassInstance.BoolRecordLog
 
                                                                                                IgnoredStats.AddOrUpdate(strRegexPattern, Function(key As String) New IgnoredStatsEntry With {.Hits = 1, .LastEvent = Now}, Function(key As String, oldValue As IgnoredStatsEntry)
-                                                                                                                                                                                                                               oldValue.Hits += 1
+                                                                                                                                                                                                                               Interlocked.Increment(oldValue.Hits)
                                                                                                                                                                                                                                oldValue.LastEvent = Now
                                                                                                                                                                                                                                Return oldValue
                                                                                                                                                                                                                            End Function)
