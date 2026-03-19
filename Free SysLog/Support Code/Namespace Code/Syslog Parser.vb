@@ -14,6 +14,8 @@ Namespace SyslogParser
         Private ReadOnly embeddedCommandParsingRegEx As New Regex("([A-Z_][A-Z0-9_]*)\(([^()]*)\)", RegexOptions.Compiled)
         Private ReadOnly embeddedCommandParsingCheck As New Regex("\b(UPPER(?:CASE)?|LOWER(?:CASE)?|TRIM|NSLOOKUP)\(", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
 
+        Private ReadOnly TimeStampOffsetRegexMatch As New Regex("[+-]\d{2}:\d{2}$", RegexOptions.Compiled)
+
         Private ReadOnly NumberRemovingRegex As New Regex("([A-Za-z-]*)\[[0-9]*\]", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor1 As New Regex("\d+ (<\d+>)", RegexOptions.Compiled)
         Private ReadOnly SyslogPreProcessor2 As New Regex("(<\d+>)", RegexOptions.Compiled)
@@ -193,7 +195,7 @@ Namespace SyslogParser
         ''' <summary>Checks if timestamp contains a timezone offset indicator.</summary>
         Private Function HasTimezoneOffset(timestamp As String) As Boolean
             ' Look for timezone offset pattern like +05:30 or -08:00 at the end
-            Return System.Text.RegularExpressions.Regex.IsMatch(timestamp, "[+-]\d{2}:\d{2}$")
+            Return TimeStampOffsetRegexMatch.IsMatch(timestamp)
         End Function
 
         ''' <summary>Parses UTC timestamp ending with 'Z'.</summary>
