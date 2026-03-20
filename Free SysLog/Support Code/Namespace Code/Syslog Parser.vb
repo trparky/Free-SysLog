@@ -59,6 +59,7 @@ Namespace SyslogParser
                 .RawLogData = strRawLogText
                 .AlertText = strAlertText
                 .alertType = AlertType
+                .GUID = Guid.NewGuid()
 
                 If My.Settings.font IsNot Nothing Then
                     .DefaultCellStyle = DataGridViewCellStyle
@@ -360,8 +361,6 @@ Namespace SyslogParser
                         End If
                     End If
 
-                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType)
-
                     If Not boolIgnored Then
                         Dim strLimitBy As String = Nothing
 
@@ -388,9 +387,13 @@ Namespace SyslogParser
                         End With
                     End If
 
+                    Dim rowGUID As Guid = Guid.NewGuid
+
+                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType, rowGUID)
+
                     ' Step 4: Add to log list, separating header and message
                     If Not My.Settings.OnlySaveAlertedLogs OrElse boolAlerted Then
-                        AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog)
+                        AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog, rowGUID)
                     End If
                 End If
             Catch ex As Exception
@@ -469,7 +472,7 @@ Namespace SyslogParser
             End Try
         End Function
 
-        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean)
+        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean, rowGUID As Guid)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
@@ -487,20 +490,22 @@ Namespace SyslogParser
             If Not boolIgnored Then
                 SyncLock ParentForm.dataGridLockObject
                     ParentForm.Logs.Invoke(Sub()
-                                               ParentForm.Logs.Rows.Add(MakeDataGridRow(serverTimeStamp:=serverDate,
-                                                                                        dateObject:=currentDate,
-                                                                                        strTime:=currentDate.ToString,
-                                                                                        strSourceAddress:=strSourceIP,
-                                                                                        strHostname:=strHostname,
-                                                                                        strRemoteProcess:=strRemoteProcess,
-                                                                                        strLog:=strLogText,
-                                                                                        strLogType:=$"{priority.Severity}, {priority.Facility}",
-                                                                                        boolAlerted:=boolAlerted,
-                                                                                        strRawLogText:=strRawLogText.Trim,
-                                                                                        strAlertText:=strAlertText,
-                                                                                        AlertType:=alertType,
-                                                                                        dataGrid:=ParentForm.Logs)
-                                                                                       )
+                                               Dim newItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                             dateObject:=currentDate,
+                                                             strTime:=currentDate.ToString,
+                                                             strSourceAddress:=strSourceIP,
+                                                             strHostname:=strHostname,
+                                                             strRemoteProcess:=strRemoteProcess,
+                                                             strLog:=strLogText,
+                                                             strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                             boolAlerted:=boolAlerted,
+                                                             strRawLogText:=strRawLogText.Trim,
+                                                             strAlertText:=strAlertText,
+                                                             AlertType:=alertType,
+                                                             dataGrid:=ParentForm.Logs)
+
+                                               newItem.GUID = rowGUID
+                                               ParentForm.Logs.Rows.Add(newItem)
                                            End Sub)
                     If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
                 End SyncLock
@@ -687,7 +692,7 @@ Namespace SyslogParser
             End Try
         End Function
 
-        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType) As Boolean
+        Private Function ProcessAlerts(strLogText As String, ByRef strOutgoingAlertText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, ByRef alertTypeAsAlertType As AlertType, rowGUID As Guid) As Boolean
             Dim ToolTipIcon As ToolTipIcon = ToolTipIcon.None
             Dim RegExObject As Regex
             Dim strAlertText As String
@@ -732,9 +737,9 @@ Namespace SyslogParser
                     strAlertText = ProcessEmbeddedCommands(strAlertText)
 
                     If alert.BoolLimited Then
-                        NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
+                        NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
                     Else
-                        ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType)
+                        ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
                     End If
 
                     strOutgoingAlertText = strAlertText

@@ -503,7 +503,7 @@ Namespace SupportCode
             End If
         End Function
 
-        Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
+        Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType, rowGUID As Guid)
             Dim strIconPath As String = Nothing
             Dim notification As New ToastContentBuilder()
 
@@ -519,9 +519,7 @@ Namespace SupportCode
             End If
 
             If My.Settings.IncludeButtonsOnNotifications Then
-                Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText, .alertType = alertType})
-
-                notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("datapacket", strNotificationPacket))
+                notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("guid", rowGUID.ToString))
                 notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", strOpenSysLog))
                 If My.Settings.ShowCloseButtonOnNotifications Then notification.AddButton(New ToastButton().SetContent("Close").SetDismissActivation())
             Else

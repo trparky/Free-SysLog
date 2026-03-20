@@ -2268,11 +2268,21 @@ Public Class Form1
                                                                    If argsDictionary.ContainsKey("action") Then
                                                                        If argsDictionary("action").ToString.Equals(strOpenSysLog, StringComparison.OrdinalIgnoreCase) Then
                                                                            Invoke(Sub() RestoreWindow())
-                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
+                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("guid") Then
                                                                            Try
-                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(argsDictionary("datapacket").ToString, JSONDecoderSettingsForSettingsFiles)
+                                                                               Dim rowGUID As Guid
 
-                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext, NotificationDataPacket.alertType)
+                                                                               If Guid.TryParse(argsDictionary("guid").ToString, rowGUID) Then
+                                                                                   Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(r As MyDataGridViewRow) r.GUID = rowGUID)
+
+                                                                                   If selectedRow Is Nothing Then
+                                                                                       Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to find a corresponding log with a GUID of ""{argsDictionary("guid")}"".", Logs)))
+                                                                                   Else
+                                                                                       OpenLogViewerWindow(selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.AlertText, selectedRow.Cells(ColumnIndex_ComputedTime).Value, selectedRow.Cells(ColumnIndex_IPAddress).Value, selectedRow.RawLogData, selectedRow.alertType)
+                                                                                   End If
+                                                                               Else
+                                                                                   Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to parse incoming GUID string, the incoming GUID string was ""{argsDictionary("guid")}"".", Logs)))
+                                                                               End If
                                                                            Catch ex As Exception
                                                                            End Try
                                                                        End If
