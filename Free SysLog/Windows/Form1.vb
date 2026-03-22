@@ -2165,27 +2165,21 @@ Public Class Form1
     Private MyMidnightTimer As Timers.Timer
 
     Private Sub CreateNewMidnightTimer()
-        If MyMidnightTimer IsNot Nothing Then
-            RemoveHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
-
-            MyMidnightTimer.Stop()
-            MyMidnightTimer.Dispose()
-            MyMidnightTimer = Nothing
-        End If
-
-        RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
-
         ' Calculate the time span until midnight
         Dim ts As TimeSpan = GetMidnight(1).Subtract(Date.Now)
         Dim tsMidnight As New TimeSpan(ts.Hours, ts.Minutes, ts.Seconds)
 
-        ' Create and start the new timer
-        MyMidnightTimer = New Timers.Timer(tsMidnight.TotalMilliseconds)
+        If MyMidnightTimer Is Nothing Then
+            ' Create and start the new timer
+            MyMidnightTimer = New Timers.Timer(tsMidnight.TotalMilliseconds)
 
-        AddHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
-        AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
-
-        MyMidnightTimer.Start()
+            AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
+            AddHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
+        Else
+            MyMidnightTimer.Stop()
+            MyMidnightTimer.Interval = tsMidnight.TotalMilliseconds
+            MyMidnightTimer.Start()
+        End If
     End Sub
 
     Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
