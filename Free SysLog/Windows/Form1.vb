@@ -159,7 +159,7 @@ Public Class Form1
 
         TaskHandling.ConvertRegistryRunCommandToTask()
 
-        If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
+        If My.Settings.DeleteOldLogsAtMidnight Then StartMidnightScheduler()
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
@@ -427,19 +427,12 @@ Public Class Form1
 
         RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
 
-        If MyMidnightTimer IsNot Nothing Then
-            RemoveHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
-
-            MyMidnightTimer.Stop()
-            MyMidnightTimer.Dispose()
-            MyMidnightTimer = Nothing
-        End If
+        StopMidnightScheduler()
 
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         WriteLogsToDisk()
         processUptimeTimer?.Dispose()
-        MyMidnightTimer?.Dispose()
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs
@@ -1165,7 +1158,7 @@ Public Class Form1
             If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                 If task.Definition.Triggers.Any() Then
                     Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
-                    If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, TaskScheduler.LogonTrigger).Delay.TotalSeconds
+                    If trigger.TriggerType = Microsoft.Win32.TaskScheduler.TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, TaskScheduler.LogonTrigger).Delay.TotalSeconds
                 End If
             End If
         End Using
@@ -1187,7 +1180,7 @@ Public Class Form1
                             If task.Definition.Triggers.Any() Then
                                 Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
-                                If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
+                                If trigger.TriggerType = Microsoft.Win32.TaskScheduler.TaskTriggerType.Logon Then
                                     DirectCast(trigger, TaskScheduler.LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
                                     task.RegisterChanges()
                                 End If
@@ -1206,7 +1199,7 @@ Public Class Form1
                         If task.Definition.Triggers.Any() Then
                             Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
-                            If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
+                            If trigger.TriggerType = Microsoft.Win32.TaskScheduler.TaskTriggerType.Logon Then
                                 DirectCast(trigger, TaskScheduler.LogonTrigger).Delay = Nothing
                                 task.RegisterChanges()
                             End If
@@ -2157,37 +2150,149 @@ Public Class Form1
     End Sub
 #End Region
 
-#Region "--== Midnight Timer Code ==--"
-    ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
-    ' I have rewritten the code to ensure that I fully understand it and to avoid blatantly copying someone else's work.
-    ' Using their code as-is without making an effort to learn from it or to create my own implementation doesn't sit well with me.
+#Region "--== Midnight Task Code ==--"
+    ' Holds the cancellation token source for the scheduler loop.
+    ' We keep this at class/module scope so we can stop and restart
+    ' the scheduler from multiple methods.
+    Private MidnightCancellation As Threading.CancellationTokenSource
 
-    Private MyMidnightTimer As Timers.Timer
+    ' Starts a background async loop that waits until the next midnight,
+    ' then runs whatever "midnight work" you want to perform.
+    '
+    ' Important behavior:
+    ' * Any existing scheduler is stopped first, so only one loop runs at a time.
+    ' * A cancellation token is created so the loop can be stopped cleanly.
+    ' * We subscribe to the Windows system clock change event so that if the user
+    '   or OS changes the time, we can recalculate the next midnight correctly.
+    Private Async Sub StartMidnightScheduler()
+        ' Defensive reset:
+        ' If a previous scheduler is already running, stop it before starting a new one.
+        ' This prevents duplicate loops and duplicate event handlers.
+        StopMidnightScheduler()
 
-    Private Sub CreateNewMidnightTimer()
-        ' Calculate the time span until midnight
-        Dim ts As TimeSpan = GetMidnight(1).Subtract(Date.Now)
-        Dim tsMidnight As New TimeSpan(ts.Hours, ts.Minutes, ts.Seconds)
+        ' Create a fresh cancellation token source for this new scheduler instance.
+        MidnightCancellation = New Threading.CancellationTokenSource()
 
-        If MyMidnightTimer Is Nothing Then
-            ' Create and start the new timer
-            MyMidnightTimer = New Timers.Timer(tsMidnight.TotalMilliseconds)
+        ' Listen for system time changes.
+        ' Example: manual clock adjustment, daylight saving changes, sync corrections, etc.
+        ' If the system time changes, our current delay may no longer be correct, so we restart the scheduler.
+        AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
 
-            AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
-            AddHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
-        Else
-            MyMidnightTimer.Stop()
-            MyMidnightTimer.Interval = tsMidnight.TotalMilliseconds
-            MyMidnightTimer.Start()
+        Try
+            ' Keep looping until cancellation is requested.
+            ' Each loop:
+            '   1. Calculates the next midnight
+            '   2. Waits until then
+            '   3. Runs the midnight task
+            While Not MidnightCancellation.Token.IsCancellationRequested
+                ' Calculate the next midnight.
+                ' Date.Today = today's date at 12:00:00 AM
+                ' AddDays(1) = tomorrow at 12:00:00 AM
+                Dim nextMidnight As Date = Date.Today.AddDays(1)
+
+                ' Figure out how long from "right now" until the next midnight.
+                ' Example: If now is 10:30 PM, delay will be 1 hour 30 minutes.
+                Dim delay As TimeSpan = nextMidnight - Date.Now
+
+                ' Asynchronously wait until midnight, unless cancellation happens first.
+                '
+                ' Why use Task.Delay with a cancellation token?
+                ' * It doesn't block the UI thread while waiting.
+                ' * It can be interrupted immediately when stopping/restarting.
+                Await Threading.Tasks.Task.Delay(delay, MidnightCancellation.Token)
+
+                ' It's possible cancellation happened during or immediately after the delay.
+                ' Double-check before running the midnight work.
+                If MidnightCancellation.Token.IsCancellationRequested Then Exit While
+
+                ' Run the code that should execute at midnight.
+                ' This is your actual scheduled work.
+                RunMidnightWork()
+            End While
+        Catch ex As Threading.Tasks.TaskCanceledException
+            ' Expected / normal behavior.
+            '
+            ' Task.Delay throws TaskCanceledException when the token is canceled.
+            ' That usually happens when:
+            ' * the app is shutting down
+            ' * the scheduler is being restarted
+            ' * the system time changed and we want to recalculate the wait
+            '
+            ' Since cancellation here is intentional, we silently ignore it.
+        End Try
+    End Sub
+
+    ' Stops the midnight scheduler and cleans up resources.
+    '
+    ' Important behavior:
+    ' * Unsubscribes from the system time change event
+    ' * Cancels any active delay in StartMidnightScheduler
+    ' * Disposes the token source to release resources
+    ' * Clears the field so we know no scheduler is active
+    Private Sub StopMidnightScheduler()
+        ' Always remove the event handler when stopping.
+        ' This prevents duplicate subscriptions and avoids memory/resource leaks.
+        RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
+
+        ' Only do cleanup if a scheduler token source actually exists.
+        If MidnightCancellation IsNot Nothing Then
+            ' Signal cancellation to the running scheduler loop.
+            ' If it's currently inside Task.Delay, that delay will be canceled immediately.
+            MidnightCancellation.Cancel()
+
+            ' Release unmanaged/internal resources used by the token source.
+            MidnightCancellation.Dispose()
+
+            ' Clear the reference so this old token source can't be reused accidentally.
+            MidnightCancellation = Nothing
         End If
     End Sub
 
-    Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
-        If Logs.InvokeRequired Then
-            Logs.Invoke(New Action(Of Object, Timers.ElapsedEventArgs)(AddressOf MidnightEvent), sender, e)
-            Return
-        End If
+    ' Handles changes to the Windows system clock.
+    '
+    ' Why restart?
+    ' The scheduler calculates a fixed delay until the next midnight.
+    ' If the system time changes after that calculation, the delay may be wrong.
+    ' Restarting forces a fresh recalculation based on the new current time.
+    Private Sub WindowsTimeChangeHandler(sender As Object, e As EventArgs)
+        ' Rebuild the scheduler timing from scratch whenever the system time changes.
+        StartMidnightScheduler()
+    End Sub
 
+    ' Entry point for whatever work needs to happen at midnight.
+    '
+    ' This method is designed to be SAFE to call from any thread.
+    ' Why this matters:
+    ' * Your scheduler runs asynchronously (likely on a background thread)
+    ' * UI updates (WinForms/WPF controls) MUST run on the UI thread
+    '
+    ' So this method checks whether we're on the UI thread and, if not, marshals the call over to it.
+    Private Sub RunMidnightWork()
+        ' InvokeRequired:
+        ' Returns TRUE if the current thread is NOT the UI thread.
+        ' Returns FALSE if we are already on the UI thread.
+        '
+        ' In WinForms, only the thread that created a control (the UI thread)
+        ' is allowed to interact with it. Violating this causes exceptions.
+        If InvokeRequired Then
+            ' We are on a background thread → switch to UI thread.
+            '
+            ' Invoke():
+            ' * Executes the delegate synchronously on the UI thread
+            ' * Blocks this thread until the UI thread finishes the work
+            '
+            ' We're wrapping the actual logic (RunMidnightWorkSubRoutine)
+            ' inside a lambda so it runs on the correct thread.
+            Invoke(Sub() RunMidnightWorkSubRoutine())
+        Else
+            ' We are already on the UI thread → safe to run directly.
+            '
+            ' No need to Invoke, which avoids unnecessary overhead and prevents potential deadlocks.
+            RunMidnightWorkSubRoutine()
+        End If
+    End Sub
+
+    Private Sub RunMidnightWorkSubRoutine()
         SyncLock dataGridLockObject
             If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
 
@@ -2204,18 +2309,7 @@ Public Class Form1
 
             NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
         End SyncLock
-
-        CreateNewMidnightTimer()
     End Sub
-
-    Private Sub WindowsTimeChangeHandler(sender As Object, e As EventArgs)
-        CreateNewMidnightTimer()
-    End Sub
-
-    Private Function GetMidnight(minutesAfterMidnight As Integer) As Date
-        Dim tomorrow As Date = Date.Now.AddDays(1)
-        Return New Date(tomorrow.Year, tomorrow.Month, tomorrow.Day, 0, minutesAfterMidnight, 0)
-    End Function
 
     Private Sub BackupOldLogsAfterClearingAtMidnight_Click(sender As Object, e As EventArgs) Handles BackupOldLogsAfterClearingAtMidnight.Click
         My.Settings.DeleteOldLogsAtMidnight = BackupOldLogsAfterClearingAtMidnight.Checked
@@ -2231,13 +2325,9 @@ Public Class Form1
         End If
 
         If DeleteOldLogsAtMidnight.Checked Then
-            CreateNewMidnightTimer()
+            StartMidnightScheduler()
         Else
-            If MyMidnightTimer IsNot Nothing Then
-                MyMidnightTimer.Stop()
-                MyMidnightTimer.Dispose()
-                MyMidnightTimer = Nothing
-            End If
+            StopMidnightScheduler()
         End If
     End Sub
 #End Region
