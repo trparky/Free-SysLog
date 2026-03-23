@@ -104,10 +104,8 @@ Public Class IgnoredWordsAndPhrases
                     .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                     .strComment = txtComment.Text
 
-                    If .dateCreated = Date.MinValue Then ' Just in case it was never set
-                        .dateCreated = Date.Now
-                        .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
-                    End If
+                    .dateCreated = Date.Now
+                    .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
 
                     If Not strOldRuleText.Equals(TxtIgnored.Text, StringComparison.OrdinalIgnoreCase) Then
                         IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
