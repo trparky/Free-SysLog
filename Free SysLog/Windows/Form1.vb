@@ -1224,6 +1224,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub ClearIgnoredStatsAtMidnight_Click(sender As Object, e As EventArgs) Handles ClearIgnoredStatsAtMidnight.Click
+        My.Settings.ClearIgnoredStatsAtMidnight = ClearIgnoredStatsAtMidnight.Checked
+    End Sub
+
     Private Sub RemoveNumbersFromRemoteApp_Click(sender As Object, e As EventArgs) Handles RemoveNumbersFromRemoteApp.Click
         My.Settings.RemoveNumbersFromRemoteApp = RemoveNumbersFromRemoteApp.Checked
     End Sub
@@ -2086,6 +2090,7 @@ Public Class Form1
         ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
         IncludeCommasInDHMS.Checked = My.Settings.IncludeCommasInDHMS
         CompressBackupLogFilesToolStripMenuItem.Checked = My.Settings.CompressBackupLogFiles
+        ClearIgnoredStatsAtMidnight.Checked = My.Settings.ClearIgnoredStatsAtMidnight
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -2295,6 +2300,16 @@ Public Class Form1
     Private Sub RunMidnightWorkSubRoutine()
         SyncLock dataGridLockObject
             If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
+
+            If My.Settings.ClearIgnoredStatsAtMidnight Then
+                IgnoredStats.Clear()
+                longNumberOfIgnoredLogs = 0
+
+                If My.Settings.saveIgnoredLogCount Then
+                    NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+                    WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+                End If
+            End If
 
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
