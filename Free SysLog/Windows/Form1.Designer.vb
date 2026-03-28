@@ -46,7 +46,6 @@ Partial Class Form1
         Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.AskToOpenExplorerWhenSavingData = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ChkEnableAutoSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteOldLogsAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
         Me.BackupOldLogsAfterClearingAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
@@ -328,10 +327,6 @@ Partial Class Form1
         Me.BtnCheckForUpdates.Name = "BtnCheckForUpdates"
         Me.BtnCheckForUpdates.Size = New System.Drawing.Size(338, 22)
         Me.BtnCheckForUpdates.Text = "Check for Updates"
-        '
-        'SaveTimer
-        '
-        Me.SaveTimer.Interval = 300000
         '
         'ChkEnableAutoSave
         '
@@ -1073,7 +1068,6 @@ Partial Class Form1
     Friend WithEvents AlertsHistory As ToolStripMenuItem
     Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
     Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem
-    Friend WithEvents SaveTimer As Timer
     Friend WithEvents ChkEnableAutoSave As ToolStripMenuItem
     Friend WithEvents DeleteOldLogsAtMidnight As ToolStripMenuItem
     Friend WithEvents BackupOldLogsAfterClearingAtMidnight As ToolStripMenuItem

@@ -27,6 +27,8 @@ Public Class Form1
     Private boolTCPServerRunning As Boolean = False
     Private lastFirstDisplayedRowIndex As Integer = -1
     Private processUptimeTimer As Timer
+    Private AutoSaveCancellation As Threading.CancellationTokenSource
+    Private AutoSaveTaskInterval As TimeSpan
     Private dateProcessStarted As Date = Process.GetCurrentProcess.StartTime
 
     Private HostNamesInstance As Hostnames
@@ -94,14 +96,36 @@ Public Class Form1
     End Sub
 
     Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoSave.Click
-        SaveTimer.Enabled = ChkEnableAutoSave.Checked
+        If ChkEnableAutoSave.Checked Then
+            StartAutoSaveTask()
+        Else
+            StopAutoSaveTask()
+        End If
+
         ChangeLogAutosaveIntervalToolStripMenuItem.Visible = ChkEnableAutoSave.Checked
         LblAutoSaved.Visible = ChkEnableAutoSave.Checked
     End Sub
 
-    Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
-        WriteLogsToDisk()
-        LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
+    Private Async Sub StartAutoSaveTask()
+        AutoSaveCancellation = New Threading.CancellationTokenSource()
+
+        Try
+            While Not AutoSaveCancellation.Token.IsCancellationRequested
+                Await Threading.Tasks.Task.Delay(AutoSaveTaskInterval, AutoSaveCancellation.Token)
+
+                WriteLogsToDisk()
+                LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
+            End While
+        Catch ex As Threading.Tasks.TaskCanceledException
+        End Try
+    End Sub
+
+    Private Sub StopAutoSaveTask()
+        If AutoSaveCancellation IsNot Nothing Then
+            AutoSaveCancellation.Cancel()
+            AutoSaveCancellation.Dispose()
+            AutoSaveCancellation = Nothing
+        End If
     End Sub
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
@@ -195,8 +219,8 @@ Public Class Form1
         LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 
         If My.Settings.autoSave Then
-            SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
-            SaveTimer.Enabled = True
+            AutoSaveTaskInterval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes)
+            StartAutoSaveTask()
         End If
 
         Size = My.Settings.mainWindowSize
@@ -1054,7 +1078,9 @@ Public Class Form1
 
             If IntegerInputForm.DialogResult = DialogResult.OK Then
                 ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({IntegerInputForm.intResult} Minutes)"
-                SaveTimer.Interval = TimeSpan.FromMinutes(IntegerInputForm.intResult).TotalMilliseconds
+                AutoSaveTaskInterval = TimeSpan.FromMinutes(IntegerInputForm.intResult)
+                StopAutoSaveTask()
+                StartAutoSaveTask()
                 My.Settings.autoSaveMinutes = IntegerInputForm.intResult
 
                 MsgBox("Done.", MsgBoxStyle.Information, Text)
@@ -1970,8 +1996,8 @@ Public Class Form1
     Public Sub SaveLogsToDiskSub()
         WriteLogsToDisk()
         LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
-        SaveTimer.Enabled = False
-        SaveTimer.Enabled = True
+        StopAutoSaveTask()
+        StartAutoSaveTask()
     End Sub
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
