@@ -1,5 +1,4 @@
 ﻿Imports Free_SysLog.SupportCode
-Imports Windows.UI.Xaml.Controls.Primitives
 
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
@@ -9,11 +8,34 @@ Public Class IgnoredWordsAndPhrases
     Public strIgnoredPattern As String = Nothing
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
-    Private AutoRefreshTimer As Timer
     Private _boolCurrentlyEditing As Boolean = False
     Private boolF1KeyDown As Boolean = False
     Private Const strWindowTitle As String = "Ignored Words and Phrases"
     Private strOldRuleText As String
+    Private StatUpdateCancellation As Threading.CancellationTokenSource
+
+    Private Async Sub StartStatUpdater()
+        StatUpdateCancellation = New Threading.CancellationTokenSource()
+
+        Try
+            While Not StatUpdateCancellation.Token.IsCancellationRequested
+                If StatUpdateCancellation.Token.IsCancellationRequested Then Exit While
+
+                UpdateStats()
+
+                Await Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(5), StatUpdateCancellation.Token)
+            End While
+        Catch ex As Threading.Tasks.TaskCanceledException
+        End Try
+    End Sub
+
+    Private Sub StopStatUpdater()
+        If StatUpdateCancellation IsNot Nothing Then
+            StatUpdateCancellation.Cancel()
+            StatUpdateCancellation.Dispose()
+            StatUpdateCancellation = Nothing
+        End If
+    End Sub
 
     Private Sub ListViewMenu_Closed(sender As Object, e As ToolStripDropDownClosedEventArgs) Handles ListViewMenu.Closed
         boolCurrentlyEditing = False
@@ -195,7 +217,7 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        AutoRefreshTimer?.Dispose()
+        StopStatUpdater()
 
         If boolColumnOrderChanged Then
             My.Settings.IgnoredWordsAndPhrasesColumnOrder = SaveColumnOrders(IgnoredListView.Columns)
@@ -259,12 +281,7 @@ Public Class IgnoredWordsAndPhrases
         End Try
     End Sub
 
-    Private Sub InitializeAutoRefreshTimer()
-        AutoRefreshTimer = New Timer() With {.Interval = 5000, .Enabled = ChkAutoRefresh.Checked}
-        AddHandler AutoRefreshTimer.Tick, AddressOf AutoRefreshTimer_Tick
-    End Sub
-
-    Private Sub AutoRefreshTimer_Tick(sender As Object, e As EventArgs)
+    Private Sub UpdateStats()
         If _boolCurrentlyEditing Or boolF1KeyDown OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
         btnUpdateHits.PerformClick()
     End Sub
@@ -307,7 +324,7 @@ Public Class IgnoredWordsAndPhrases
 
         Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
 
-        InitializeAutoRefreshTimer()
+        StartStatUpdater()
 
         Size = My.Settings.ConfigureIgnoredSize
 
@@ -824,7 +841,13 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub ChkAutoRefresh_Click(sender As Object, e As EventArgs) Handles ChkAutoRefresh.Click
         My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases = ChkAutoRefresh.Checked
-        AutoRefreshTimer.Enabled = ChkAutoRefresh.Checked
+
+        If ChkAutoRefresh.Checked Then
+            StartStatUpdater()
+        Else
+            StopStatUpdater()
+        End If
+
         ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
         Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
     End Sub
