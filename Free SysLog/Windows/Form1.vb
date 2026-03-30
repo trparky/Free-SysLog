@@ -543,7 +543,7 @@ Public Class Form1
                                                       searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
-                                                      MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                      MsgBox($"Search terms not found.{vbCrLf}{vbCrLf}The search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", MsgBoxStyle.Information, Text)
                                                   End If
 
                                                   Invoke(Sub() BtnSearch.Enabled = True)
