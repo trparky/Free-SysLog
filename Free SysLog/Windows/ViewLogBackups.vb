@@ -214,7 +214,7 @@ Public Class ViewLogBackups
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
 
                    If intNumberOfCompressedFiles = 0 Then
-                       LblTotalDiskSpace.Text = $"Total File Size: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    Else
                        LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    End If
