@@ -48,7 +48,9 @@ Public Class ViewLogBackups
                 fs.Seek(-4, SeekOrigin.End)
 
                 Dim sizeBytes(3) As Byte
-                fs.Read(sizeBytes, 0, 4)
+                Dim bytesRead As Integer = fs.Read(sizeBytes, 0, 4)
+
+                If bytesRead <> 4 Then Return -1 ' Return -1 to indicate an error occurred
 
                 ' GZIP stores ISIZE as little-endian UInt32
                 Return BitConverter.ToUInt32(sizeBytes, 0)
