@@ -111,7 +111,7 @@ Public Class ViewLogBackups
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
-                                               Dim intUnCompresedSize As Long = -1
+                                               Dim longUnCompresedSize As Long = -1
 
                                                If intCount <> -1 Then
                                                    If boolIsHidden Then
@@ -136,13 +136,13 @@ Public Class ViewLogBackups
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                           intUnCompresedSize = GetEstimatedUncompressedSizeOfGZIPedFile(file.FullName)
+                                                           longUnCompresedSize = GetEstimatedUncompressedSizeOfGZIPedFile(file.FullName)
 
                                                            If ChkShowCompressionSizeDifference.Checked Then
-                                                               If intUnCompresedSize = -1 Then
+                                                               If longUnCompresedSize = -1 Then
                                                                    row.Cells(2).Value = "Error"
                                                                Else
-                                                                   row.Cells(2).Value = FileSizeToHumanSize(intUnCompresedSize)
+                                                                   row.Cells(2).Value = FileSizeToHumanSize(longUnCompresedSize)
                                                                End If
                                                            Else
                                                                row.Cells(2).Value = FileSizeToHumanSize(file.Length)
@@ -174,7 +174,7 @@ Public Class ViewLogBackups
                                                        If ChkShowCompressionSizeDifference.Checked Then
                                                            If ChkShowCompressionSizeDifferencePercentage.Checked Then
                                                                row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)}"
-                                                               If intUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / intUnCompresedSize * 100):F2}% smaller"
+                                                               If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% smaller"
                                                                row.Cells(2).Value &= $")"
                                                            Else
                                                                row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)})"
