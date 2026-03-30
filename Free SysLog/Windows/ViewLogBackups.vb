@@ -387,6 +387,7 @@ Public Class ViewLogBackups
         BtnSearch.Enabled = False
 
         Dim worker As New BackgroundWorker()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
         AddHandler worker.DoWork, Sub()
                                       Try
@@ -489,9 +490,11 @@ Public Class ViewLogBackups
                                                           searchResultsWindow.LogsToBeDisplayed = listOfSearchResults2
                                                           searchResultsWindow.ColFileName.Visible = True
                                                           searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
+                                                          searchResultsWindow.LogsLoadedInLabel.Visible = True
+                                                          searchResultsWindow.LogsLoadedInLabel.Text = $"Search Took: {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                                           searchResultsWindow.ShowDialog(Me)
                                                       Else
-                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                          MsgBox($"Search terms not found.{vbCrLf}{vbCrLf}The search took {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", MsgBoxStyle.Information, Text)
                                                       End If
                                                   End If
 
