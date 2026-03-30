@@ -40,7 +40,7 @@ Public Class ViewLogBackups
         End If
     End Sub
 
-    Private Function GetEstimatedUncompressedSizeOfGZIPedFile(strPathToGZIPedLogFile As String) As Long
+    Private Function GetUncompressedSizeOfGZIPedLogFile(strPathToGZIPedLogFile As String) As Long
         Try
             Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
                 If fs.Length < 4 Then Return -1
@@ -138,7 +138,7 @@ Public Class ViewLogBackups
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                           longUnCompresedSize = GetEstimatedUncompressedSizeOfGZIPedFile(file.FullName)
+                                                           longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
 
                                                            If ChkShowCompressionSizeDifference.Checked Then
                                                                If longUnCompresedSize = -1 Then
