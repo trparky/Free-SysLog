@@ -27,6 +27,8 @@ Public Class Form1
     Private boolTCPServerRunning As Boolean = False
     Private lastFirstDisplayedRowIndex As Integer = -1
     Private processUptimeTimer As Timer
+    Private AutoSaveCancellation As Threading.CancellationTokenSource
+    Private AutoSaveTaskInterval As TimeSpan
     Private dateProcessStarted As Date = Process.GetCurrentProcess.StartTime
 
     Private HostNamesInstance As Hostnames
@@ -94,14 +96,36 @@ Public Class Form1
     End Sub
 
     Private Sub ChkAutoSave_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoSave.Click
-        SaveTimer.Enabled = ChkEnableAutoSave.Checked
+        If ChkEnableAutoSave.Checked Then
+            StartAutoSaveTask()
+        Else
+            StopAutoSaveTask()
+        End If
+
         ChangeLogAutosaveIntervalToolStripMenuItem.Visible = ChkEnableAutoSave.Checked
         LblAutoSaved.Visible = ChkEnableAutoSave.Checked
     End Sub
 
-    Private Sub SaveTimer_Tick(sender As Object, e As EventArgs) Handles SaveTimer.Tick
-        WriteLogsToDisk()
-        LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
+    Private Async Sub StartAutoSaveTask()
+        AutoSaveCancellation = New Threading.CancellationTokenSource()
+
+        Try
+            While Not AutoSaveCancellation.Token.IsCancellationRequested
+                Await Threading.Tasks.Task.Delay(AutoSaveTaskInterval, AutoSaveCancellation.Token)
+
+                WriteLogsToDisk()
+                LblAutoSaved.Text = $"Last Auto-Saved At: {Date.Now:h:mm:ss tt}"
+            End While
+        Catch ex As Threading.Tasks.TaskCanceledException
+        End Try
+    End Sub
+
+    Private Sub StopAutoSaveTask()
+        If AutoSaveCancellation IsNot Nothing Then
+            AutoSaveCancellation.Cancel()
+            AutoSaveCancellation.Dispose()
+            AutoSaveCancellation = Nothing
+        End If
     End Sub
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick
@@ -159,7 +183,7 @@ Public Class Form1
 
         TaskHandling.ConvertRegistryRunCommandToTask()
 
-        If My.Settings.DeleteOldLogsAtMidnight Then CreateNewMidnightTimer()
+        If My.Settings.DeleteOldLogsAtMidnight Then StartMidnightScheduler()
 
         ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"        Change Log Autosave Interval ({My.Settings.autoSaveMinutes} Minutes)"
         ChangeSyslogServerPortToolStripMenuItem.Text = $"Change Syslog Server Port (Port Number {My.Settings.sysLogPort})"
@@ -189,12 +213,14 @@ Public Class Form1
         Logs.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         ColLog.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
 
+        Logs.RowsDefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+
         LoadAndDeserializeArrays()
         LoadColumnOrders(Logs.Columns, My.Settings.logsColumnOrder)
 
         If My.Settings.autoSave Then
-            SaveTimer.Interval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes).TotalMilliseconds
-            SaveTimer.Enabled = True
+            AutoSaveTaskInterval = TimeSpan.FromMinutes(My.Settings.autoSaveMinutes)
+            StartAutoSaveTask()
         End If
 
         Size = My.Settings.mainWindowSize
@@ -218,6 +244,10 @@ Public Class Form1
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle.Font = My.Settings.font
             Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+
+            DataGridViewCellStyle = New DataGridViewCellStyle With {.Font = My.Settings.font}
+            DataGridViewCellStyle_ComputedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter}
+            DataGridViewCellStyle_AlertedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter, .WrapMode = DataGridViewTriState.True}
         End If
 
         boolDoneLoading = True
@@ -302,8 +332,6 @@ Public Class Form1
                 Next
 
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {rowsToDelete.Count:N0} log {If(rowsToDelete.Count = 1, "entry", "entries")}.", Logs))
-
-                BtnSaveLogsToDisk.Enabled = True
 
                 SelectLatestLogEntry()
             End SyncLock
@@ -421,11 +449,14 @@ Public Class Form1
             End SyncLock
         End If
 
+        RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
+
+        StopMidnightScheduler()
+
         My.Settings.logsColumnOrder = SaveColumnOrders(Logs.Columns)
         My.Settings.Save()
         WriteLogsToDisk()
         processUptimeTimer?.Dispose()
-        MyMidnightTimer?.Dispose()
 
         If My.Settings.saveIgnoredLogCount Then
             NumberOfIgnoredLogs = longNumberOfIgnoredLogs
@@ -512,7 +543,7 @@ Public Class Form1
                                                       searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
                                                       searchResultsWindow.ShowDialog(Me)
                                                   Else
-                                                      MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                      MsgBox($"Search terms not found.{vbCrLf}{vbCrLf}The search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", MsgBoxStyle.Information, Text)
                                                   End If
 
                                                   Invoke(Sub() BtnSearch.Enabled = True)
@@ -1047,7 +1078,9 @@ Public Class Form1
 
             If IntegerInputForm.DialogResult = DialogResult.OK Then
                 ChangeLogAutosaveIntervalToolStripMenuItem.Text = $"Change Log Autosave Interval ({IntegerInputForm.intResult} Minutes)"
-                SaveTimer.Interval = TimeSpan.FromMinutes(IntegerInputForm.intResult).TotalMilliseconds
+                AutoSaveTaskInterval = TimeSpan.FromMinutes(IntegerInputForm.intResult)
+                StopAutoSaveTask()
+                StartAutoSaveTask()
                 My.Settings.autoSaveMinutes = IntegerInputForm.intResult
 
                 MsgBox("Done.", MsgBoxStyle.Information, Text)
@@ -1151,7 +1184,7 @@ Public Class Form1
             If TaskHandling.GetTaskObject(taskService, $"Free SysLog for {Environment.UserName}", task) Then
                 If task.Definition.Triggers.Any() Then
                     Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
-                    If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, TaskScheduler.LogonTrigger).Delay.TotalSeconds
+                    If trigger.TriggerType = Microsoft.Win32.TaskScheduler.TaskTriggerType.Logon Then dblSeconds = DirectCast(trigger, TaskScheduler.LogonTrigger).Delay.TotalSeconds
                 End If
             End If
         End Using
@@ -1173,7 +1206,7 @@ Public Class Form1
                             If task.Definition.Triggers.Any() Then
                                 Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
-                                If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
+                                If trigger.TriggerType = Microsoft.Win32.TaskScheduler.TaskTriggerType.Logon Then
                                     DirectCast(trigger, TaskScheduler.LogonTrigger).Delay = New TimeSpan(0, 0, IntegerInputForm.intResult)
                                     task.RegisterChanges()
                                 End If
@@ -1192,7 +1225,7 @@ Public Class Form1
                         If task.Definition.Triggers.Any() Then
                             Dim trigger As TaskScheduler.Trigger = task.Definition.Triggers(0)
 
-                            If trigger.TriggerType = TaskScheduler.TaskTriggerType.Logon Then
+                            If trigger.TriggerType = Microsoft.Win32.TaskScheduler.TaskTriggerType.Logon Then
                                 DirectCast(trigger, TaskScheduler.LogonTrigger).Delay = Nothing
                                 task.RegisterChanges()
                             End If
@@ -1215,6 +1248,10 @@ Public Class Form1
         Else
             SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
         End If
+    End Sub
+
+    Private Sub ClearIgnoredStatsAtMidnight_Click(sender As Object, e As EventArgs) Handles ClearIgnoredStatsAtMidnight.Click
+        My.Settings.ClearIgnoredStatsAtMidnight = ClearIgnoredStatsAtMidnight.Checked
     End Sub
 
     Private Sub RemoveNumbersFromRemoteApp_Click(sender As Object, e As EventArgs) Handles RemoveNumbersFromRemoteApp.Click
@@ -1261,6 +1298,10 @@ Public Class Form1
 
                 Logs.DefaultCellStyle.Font = My.Settings.font
                 Logs.ColumnHeadersDefaultCellStyle.Font = My.Settings.font
+
+                DataGridViewCellStyle = New DataGridViewCellStyle With {.Font = My.Settings.font}
+                DataGridViewCellStyle_ComputedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter}
+                DataGridViewCellStyle_AlertedCell = New DataGridViewCellStyle With {.Font = My.Settings.font, .Alignment = DataGridViewContentAlignment.MiddleCenter, .WrapMode = DataGridViewTriState.True}
 
                 WriteLogsToDisk()
 
@@ -1955,8 +1996,8 @@ Public Class Form1
     Public Sub SaveLogsToDiskSub()
         WriteLogsToDisk()
         LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
-        SaveTimer.Enabled = False
-        SaveTimer.Enabled = True
+        StopAutoSaveTask()
+        StartAutoSaveTask()
     End Sub
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
@@ -2075,6 +2116,7 @@ Public Class Form1
         ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications
         IncludeCommasInDHMS.Checked = My.Settings.IncludeCommasInDHMS
         CompressBackupLogFilesToolStripMenuItem.Checked = My.Settings.CompressBackupLogFiles
+        ClearIgnoredStatsAtMidnight.Checked = My.Settings.ClearIgnoredStatsAtMidnight
     End Sub
 
     Private Sub LoadAndDeserializeArrays()
@@ -2139,41 +2181,161 @@ Public Class Form1
     End Sub
 #End Region
 
-#Region "--== Midnight Timer Code ==--"
-    ' This implementation is based on code found at https://www.codeproject.com/Articles/18201/Midnight-Timer-A-Way-to-Detect-When-it-is-Midnight.
-    ' I have rewritten the code to ensure that I fully understand it and to avoid blatantly copying someone else's work.
-    ' Using their code as-is without making an effort to learn from it or to create my own implementation doesn't sit well with me.
+#Region "--== Midnight Task Code ==--"
+    ' Holds the cancellation token source for the scheduler loop.
+    ' We keep this at class/module scope so we can stop and restart
+    ' the scheduler from multiple methods.
+    Private MidnightCancellation As Threading.CancellationTokenSource
 
-    Private MyMidnightTimer As Timers.Timer
+    ' Starts a background async loop that waits until the next midnight,
+    ' then runs whatever "midnight work" you want to perform.
+    '
+    ' Important behavior:
+    ' * Any existing scheduler is stopped first, so only one loop runs at a time.
+    ' * A cancellation token is created so the loop can be stopped cleanly.
+    ' * We subscribe to the Windows system clock change event so that if the user
+    '   or OS changes the time, we can recalculate the next midnight correctly.
+    Private Async Sub StartMidnightScheduler()
+        ' Defensive reset:
+        ' If a previous scheduler is already running, stop it before starting a new one.
+        ' This prevents duplicate loops and duplicate event handlers.
+        StopMidnightScheduler()
 
-    Private Sub CreateNewMidnightTimer()
-        If MyMidnightTimer IsNot Nothing Then
-            MyMidnightTimer.Stop()
-            MyMidnightTimer.Dispose()
-            MyMidnightTimer = Nothing
-        End If
+        ' Create a fresh cancellation token source for this new scheduler instance.
+        MidnightCancellation = New Threading.CancellationTokenSource()
 
-        ' Calculate the time span until midnight
-        Dim ts As TimeSpan = GetMidnight(1).Subtract(Date.Now)
-        Dim tsMidnight As New TimeSpan(ts.Hours, ts.Minutes, ts.Seconds)
-
-        ' Create and start the new timer
-        MyMidnightTimer = New Timers.Timer(tsMidnight.TotalMilliseconds)
-
-        AddHandler MyMidnightTimer.Elapsed, AddressOf MidnightEvent
+        ' Listen for system time changes.
+        ' Example: manual clock adjustment, daylight saving changes, sync corrections, etc.
+        ' If the system time changes, our current delay may no longer be correct, so we restart the scheduler.
         AddHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
 
-        MyMidnightTimer.Start()
+        Try
+            ' Keep looping until cancellation is requested.
+            ' Each loop:
+            '   1. Calculates the next midnight
+            '   2. Waits until then
+            '   3. Runs the midnight task
+            While Not MidnightCancellation.Token.IsCancellationRequested
+                ' Calculate the next midnight.
+                ' Date.Today = today's date at 12:00:00 AM
+                ' AddDays(1) = tomorrow at 12:00:00 AM
+                Dim nextMidnight As Date = Date.Today.AddDays(1)
+
+                ' Figure out how long from "right now" until the next midnight.
+                ' Example: If now is 10:30 PM, delay will be 1 hour 30 minutes.
+                Dim delay As TimeSpan = nextMidnight - Date.Now
+
+                ' Asynchronously wait until midnight, unless cancellation happens first.
+                '
+                ' Why use Task.Delay with a cancellation token?
+                ' * It doesn't block the UI thread while waiting.
+                ' * It can be interrupted immediately when stopping/restarting.
+                Await Threading.Tasks.Task.Delay(delay, MidnightCancellation.Token)
+
+                ' It's possible cancellation happened during or immediately after the delay.
+                ' Double-check before running the midnight work.
+                If MidnightCancellation.Token.IsCancellationRequested Then Exit While
+
+                ' Run the code that should execute at midnight.
+                ' This is your actual scheduled work.
+                RunMidnightWork()
+            End While
+        Catch ex As Threading.Tasks.TaskCanceledException
+            ' Expected / normal behavior.
+            '
+            ' Task.Delay throws TaskCanceledException when the token is canceled.
+            ' That usually happens when:
+            ' * the app is shutting down
+            ' * the scheduler is being restarted
+            ' * the system time changed and we want to recalculate the wait
+            '
+            ' Since cancellation here is intentional, we silently ignore it.
+        End Try
     End Sub
 
-    Private Sub MidnightEvent(sender As Object, e As Timers.ElapsedEventArgs)
-        If Logs.InvokeRequired Then
-            Logs.Invoke(New Action(Of Object, Timers.ElapsedEventArgs)(AddressOf MidnightEvent), sender, e)
-            Return
-        End If
+    ' Stops the midnight scheduler and cleans up resources.
+    '
+    ' Important behavior:
+    ' * Unsubscribes from the system time change event
+    ' * Cancels any active delay in StartMidnightScheduler
+    ' * Disposes the token source to release resources
+    ' * Clears the field so we know no scheduler is active
+    Private Sub StopMidnightScheduler()
+        ' Always remove the event handler when stopping.
+        ' This prevents duplicate subscriptions and avoids memory/resource leaks.
+        RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
 
+        ' Only do cleanup if a scheduler token source actually exists.
+        If MidnightCancellation IsNot Nothing Then
+            ' Signal cancellation to the running scheduler loop.
+            ' If it's currently inside Task.Delay, that delay will be canceled immediately.
+            MidnightCancellation.Cancel()
+
+            ' Release unmanaged/internal resources used by the token source.
+            MidnightCancellation.Dispose()
+
+            ' Clear the reference so this old token source can't be reused accidentally.
+            MidnightCancellation = Nothing
+        End If
+    End Sub
+
+    ' Handles changes to the Windows system clock.
+    '
+    ' Why restart?
+    ' The scheduler calculates a fixed delay until the next midnight.
+    ' If the system time changes after that calculation, the delay may be wrong.
+    ' Restarting forces a fresh recalculation based on the new current time.
+    Private Sub WindowsTimeChangeHandler(sender As Object, e As EventArgs)
+        ' Rebuild the scheduler timing from scratch whenever the system time changes.
+        StartMidnightScheduler()
+    End Sub
+
+    ' Entry point for whatever work needs to happen at midnight.
+    '
+    ' This method is designed to be SAFE to call from any thread.
+    ' Why this matters:
+    ' * Your scheduler runs asynchronously (likely on a background thread)
+    ' * UI updates (WinForms/WPF controls) MUST run on the UI thread
+    '
+    ' So this method checks whether we're on the UI thread and, if not, marshals the call over to it.
+    Private Sub RunMidnightWork()
+        ' InvokeRequired:
+        ' Returns TRUE if the current thread is NOT the UI thread.
+        ' Returns FALSE if we are already on the UI thread.
+        '
+        ' In WinForms, only the thread that created a control (the UI thread)
+        ' is allowed to interact with it. Violating this causes exceptions.
+        If InvokeRequired Then
+            ' We are on a background thread → switch to UI thread.
+            '
+            ' Invoke():
+            ' * Executes the delegate synchronously on the UI thread
+            ' * Blocks this thread until the UI thread finishes the work
+            '
+            ' We're wrapping the actual logic (RunMidnightWorkSubRoutine)
+            ' inside a lambda so it runs on the correct thread.
+            Invoke(Sub() RunMidnightWorkSubRoutine())
+        Else
+            ' We are already on the UI thread → safe to run directly.
+            '
+            ' No need to Invoke, which avoids unnecessary overhead and prevents potential deadlocks.
+            RunMidnightWorkSubRoutine()
+        End If
+    End Sub
+
+    Private Sub RunMidnightWorkSubRoutine()
         SyncLock dataGridLockObject
             If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
+
+            If My.Settings.ClearIgnoredStatsAtMidnight Then
+                IgnoredStats.Clear()
+                longNumberOfIgnoredLogs = 0
+
+                If My.Settings.saveIgnoredLogCount Then
+                    NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+                    WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+                End If
+            End If
 
             Dim oldLogCount As Integer = Logs.Rows.Count
             Logs.Rows.Clear()
@@ -2188,18 +2350,7 @@ Public Class Form1
 
             NumberOfLogs.Text = $"Number of Log Entries: {Logs.Rows.Count:N0}"
         End SyncLock
-
-        CreateNewMidnightTimer()
     End Sub
-
-    Private Sub WindowsTimeChangeHandler(sender As Object, e As EventArgs)
-        CreateNewMidnightTimer()
-    End Sub
-
-    Private Function GetMidnight(minutesAfterMidnight As Integer) As Date
-        Dim tomorrow As Date = Date.Now.AddDays(1)
-        Return New Date(tomorrow.Year, tomorrow.Month, tomorrow.Day, 0, minutesAfterMidnight, 0)
-    End Function
 
     Private Sub BackupOldLogsAfterClearingAtMidnight_Click(sender As Object, e As EventArgs) Handles BackupOldLogsAfterClearingAtMidnight.Click
         My.Settings.DeleteOldLogsAtMidnight = BackupOldLogsAfterClearingAtMidnight.Checked
@@ -2215,13 +2366,9 @@ Public Class Form1
         End If
 
         If DeleteOldLogsAtMidnight.Checked Then
-            CreateNewMidnightTimer()
+            StartMidnightScheduler()
         Else
-            If MyMidnightTimer IsNot Nothing Then
-                MyMidnightTimer.Stop()
-                MyMidnightTimer.Dispose()
-                MyMidnightTimer = Nothing
-            End If
+            StopMidnightScheduler()
         End If
     End Sub
 #End Region
@@ -2246,11 +2393,21 @@ Public Class Form1
                                                                    If argsDictionary.ContainsKey("action") Then
                                                                        If argsDictionary("action").ToString.Equals(strOpenSysLog, StringComparison.OrdinalIgnoreCase) Then
                                                                            Invoke(Sub() RestoreWindow())
-                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("datapacket") Then
+                                                                       ElseIf argsDictionary("action").ToString.Equals(strViewLog, StringComparison.OrdinalIgnoreCase) AndAlso argsDictionary.ContainsKey("guid") Then
                                                                            Try
-                                                                               Dim NotificationDataPacket As NotificationDataPacket = Newtonsoft.Json.JsonConvert.DeserializeObject(Of NotificationDataPacket)(argsDictionary("datapacket").ToString, JSONDecoderSettingsForSettingsFiles)
+                                                                               Dim rowGUID As Guid
 
-                                                                               OpenLogViewerWindow(NotificationDataPacket.logtext, NotificationDataPacket.alerttext, NotificationDataPacket.logdate, NotificationDataPacket.sourceip, NotificationDataPacket.rawlogtext, NotificationDataPacket.alertType)
+                                                                               If Guid.TryParse(argsDictionary("guid").ToString, rowGUID) Then
+                                                                                   Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(r As MyDataGridViewRow) r.GUID = rowGUID)
+
+                                                                                   If selectedRow Is Nothing Then
+                                                                                       Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to find a corresponding log with a GUID of ""{argsDictionary("guid")}"".", Logs)))
+                                                                                   Else
+                                                                                       OpenLogViewerWindow(selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.AlertText, selectedRow.Cells(ColumnIndex_ComputedTime).Value, selectedRow.Cells(ColumnIndex_IPAddress).Value, selectedRow.RawLogData, selectedRow.alertType)
+                                                                                   End If
+                                                                               Else
+                                                                                   Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to parse incoming GUID string, the incoming GUID string was ""{argsDictionary("guid")}"".", Logs)))
+                                                                               End If
                                                                            Catch ex As Exception
                                                                            End Try
                                                                        End If

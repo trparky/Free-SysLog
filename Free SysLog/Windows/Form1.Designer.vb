@@ -46,7 +46,6 @@ Partial Class Form1
         Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
         Me.AskToOpenExplorerWhenSavingData = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SaveTimer = New System.Windows.Forms.Timer(Me.components)
         Me.ChkEnableAutoSave = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteOldLogsAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
         Me.BackupOldLogsAfterClearingAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
@@ -124,6 +123,7 @@ Partial Class Form1
         Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeSyslogServerPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ClearIgnoredStatsAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -328,10 +328,6 @@ Partial Class Form1
         Me.BtnCheckForUpdates.Size = New System.Drawing.Size(338, 22)
         Me.BtnCheckForUpdates.Text = "Check for Updates"
         '
-        'SaveTimer
-        '
-        Me.SaveTimer.Interval = 300000
-        '
         'ChkEnableAutoSave
         '
         Me.ChkEnableAutoSave.CheckOnClick = True
@@ -485,7 +481,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.CompressBackupLogFilesToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.IncludeCommasInDHMS, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearIgnoredStatsAtMidnight, Me.CompressBackupLogFilesToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.IncludeCommasInDHMS, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -879,6 +875,13 @@ Partial Class Form1
         Me.ChangeSyslogServerPortToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
         Me.ChangeSyslogServerPortToolStripMenuItem.Text = "Change Syslog Server Port"
         '
+        'ClearIgnoredStatsAtMidnight
+        '
+        Me.ClearIgnoredStatsAtMidnight.CheckOnClick = True
+        Me.ClearIgnoredStatsAtMidnight.Name = "ClearIgnoredStatsAtMidnight"
+        Me.ClearIgnoredStatsAtMidnight.Size = New System.Drawing.Size(319, 22)
+        Me.ClearIgnoredStatsAtMidnight.Text = "Clear Ignored Log Stats at Midnight"
+        '
         'ChangeLogAutosaveIntervalToolStripMenuItem
         '
         Me.ChangeLogAutosaveIntervalToolStripMenuItem.Name = "ChangeLogAutosaveIntervalToolStripMenuItem"
@@ -1065,7 +1068,6 @@ Partial Class Form1
     Friend WithEvents AlertsHistory As ToolStripMenuItem
     Friend WithEvents BtnSaveLogsToDisk As ToolStripMenuItem
     Friend WithEvents BtnCheckForUpdates As ToolStripMenuItem
-    Friend WithEvents SaveTimer As Timer
     Friend WithEvents ChkEnableAutoSave As ToolStripMenuItem
     Friend WithEvents DeleteOldLogsAtMidnight As ToolStripMenuItem
     Friend WithEvents BackupOldLogsAfterClearingAtMidnight As ToolStripMenuItem
@@ -1147,6 +1149,7 @@ Partial Class Form1
     Friend WithEvents OpenWindowsExplorerToAppConfigFile As ToolStripMenuItem
     Friend WithEvents CreateAlertToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChangeSyslogServerPortToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ClearIgnoredStatsAtMidnight As ToolStripMenuItem
     Friend WithEvents ChangeLogAutosaveIntervalToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateIgnoredLogToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CreateReplacementToolStripMenuItem As ToolStripMenuItem

@@ -40,7 +40,7 @@ Public Class ViewLogBackups
         End If
     End Sub
 
-    Private Function GetEstimatedUncompressedSizeOfGZIPedFile(strPathToGZIPedLogFile As String) As Long
+    Private Function GetUncompressedSizeOfGZIPedLogFile(strPathToGZIPedLogFile As String) As Long
         Try
             Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
                 If fs.Length < 4 Then Return -1
@@ -48,7 +48,9 @@ Public Class ViewLogBackups
                 fs.Seek(-4, SeekOrigin.End)
 
                 Dim sizeBytes(3) As Byte
-                fs.Read(sizeBytes, 0, 4)
+                Dim bytesRead As Integer = fs.Read(sizeBytes, 0, 4)
+
+                If bytesRead <> 4 Then Return -1 ' Return -1 to indicate an error occurred
 
                 ' GZIP stores ISIZE as little-endian UInt32
                 Return BitConverter.ToUInt32(sizeBytes, 0)
@@ -111,7 +113,7 @@ Public Class ViewLogBackups
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
-                                               Dim intUnCompresedSize As Long = -1
+                                               Dim longUnCompresedSize As Long = -1
 
                                                If intCount <> -1 Then
                                                    If boolIsHidden Then
@@ -136,13 +138,13 @@ Public Class ViewLogBackups
                                                        .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                           intUnCompresedSize = GetEstimatedUncompressedSizeOfGZIPedFile(file.FullName)
+                                                           longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
 
                                                            If ChkShowCompressionSizeDifference.Checked Then
-                                                               If intUnCompresedSize = -1 Then
+                                                               If longUnCompresedSize = -1 Then
                                                                    row.Cells(2).Value = "Error"
                                                                Else
-                                                                   row.Cells(2).Value = FileSizeToHumanSize(intUnCompresedSize)
+                                                                   row.Cells(2).Value = FileSizeToHumanSize(longUnCompresedSize)
                                                                End If
                                                            Else
                                                                row.Cells(2).Value = FileSizeToHumanSize(file.Length)
@@ -174,7 +176,7 @@ Public Class ViewLogBackups
                                                        If ChkShowCompressionSizeDifference.Checked Then
                                                            If ChkShowCompressionSizeDifferencePercentage.Checked Then
                                                                row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)}"
-                                                               If intUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / intUnCompresedSize * 100):F2}% smaller"
+                                                               If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% smaller"
                                                                row.Cells(2).Value &= $")"
                                                            Else
                                                                row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)})"
@@ -214,7 +216,7 @@ Public Class ViewLogBackups
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
 
                    If intNumberOfCompressedFiles = 0 Then
-                       LblTotalDiskSpace.Text = $"Total File Size: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    Else
                        LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    End If
@@ -385,6 +387,7 @@ Public Class ViewLogBackups
         BtnSearch.Enabled = False
 
         Dim worker As New BackgroundWorker()
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
         AddHandler worker.DoWork, Sub()
                                       Try
@@ -487,9 +490,11 @@ Public Class ViewLogBackups
                                                           searchResultsWindow.LogsToBeDisplayed = listOfSearchResults2
                                                           searchResultsWindow.ColFileName.Visible = True
                                                           searchResultsWindow.OpenLogFileForViewingToolStripMenuItem.Visible = True
+                                                          searchResultsWindow.LogsLoadedInLabel.Visible = True
+                                                          searchResultsWindow.LogsLoadedInLabel.Text = $"Search Took: {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                                           searchResultsWindow.ShowDialog(Me)
                                                       Else
-                                                          MsgBox("Search terms not found.", MsgBoxStyle.Information, Text)
+                                                          MsgBox($"Search terms not found.{vbCrLf}{vbCrLf}The search took {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", MsgBoxStyle.Information, Text)
                                                       End If
                                                   End If
 

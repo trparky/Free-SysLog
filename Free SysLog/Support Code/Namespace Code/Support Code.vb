@@ -102,6 +102,10 @@ Namespace SupportCode
         Public recentUniqueObjects As uniqueObjectsClass
         Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
 
+        Public DataGridViewCellStyle As DataGridViewCellStyle
+        Public DataGridViewCellStyle_ComputedCell As DataGridViewCellStyle
+        Public DataGridViewCellStyle_AlertedCell As DataGridViewCellStyle
+
         Public WriteOnly Property AskOpenExplorer As Boolean
             Set(value As Boolean)
                 My.Settings.AskOpenExplorer = value
@@ -198,11 +202,15 @@ Namespace SupportCode
             File.Delete(strFilePath)
         End Sub
 
-        Public Sub WriteFileAtomically(path As String, contents As Byte())
+        Public Sub WriteFileAtomically(path As String, source As Stream)
             Dim tmpPath As String = path & ".tmp"
 
             Try
-                File.WriteAllBytes(tmpPath, contents)
+                If source.CanSeek Then source.Position = 0
+
+                Using fileStream As New FileStream(tmpPath, FileMode.Create, FileAccess.Write, FileShare.None)
+                    source.CopyTo(fileStream)
+                End Using
 
                 If File.Exists(path) Then
                     File.Replace(tmpPath, path, Nothing)
@@ -495,7 +503,7 @@ Namespace SupportCode
             End If
         End Function
 
-        Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType)
+        Public Sub ShowToastNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType, rowGUID As Guid)
             Dim strIconPath As String = Nothing
             Dim notification As New ToastContentBuilder()
 
@@ -511,9 +519,7 @@ Namespace SupportCode
             End If
 
             If My.Settings.IncludeButtonsOnNotifications Then
-                Dim strNotificationPacket As String = Newtonsoft.Json.JsonConvert.SerializeObject(New NotificationDataPacket With {.alerttext = tipText, .logdate = strLogDate, .logtext = strLogText, .sourceip = strSourceIP, .rawlogtext = strRawLogText, .alertType = alertType})
-
-                notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("datapacket", strNotificationPacket))
+                notification.AddButton(New ToastButton().SetContent("View Log").AddArgument("action", strViewLog).AddArgument("guid", rowGUID.ToString))
                 notification.AddButton(New ToastButton().SetContent("Open SysLog").AddArgument("action", strOpenSysLog))
                 If My.Settings.ShowCloseButtonOnNotifications Then notification.AddButton(New ToastButton().SetContent("Close").SetDismissActivation())
             Else

@@ -8,6 +8,7 @@
     Public Property AlertText As String
     Public Property alertType As AlertType
     Public Property IgnoredPattern As String
+    Public Property GUID As Guid
 
     Public Sub UncheckRow()
         Me.Cells("colDelete").Value = False

@@ -17,15 +17,12 @@ Public Class SavedData
         With MyDataGridViewRow
             .CreateCells(dataGrid)
             .Cells(ColumnIndex_ComputedTime).Value = Date.Parse(time)
-            .Cells(ColumnIndex_ComputedTime).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Cells(ColumnIndex_LogType).Value = If(String.IsNullOrWhiteSpace(logType), "", logType)
             .Cells(ColumnIndex_IPAddress).Value = ip
             .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(appName), "", appName)
             .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(hostname), "", hostname)
             .Cells(ColumnIndex_LogText).Value = log
             .Cells(ColumnIndex_Alerted).Value = If(BoolAlerted, "Yes", "No")
-            .Cells(ColumnIndex_Alerted).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Cells(ColumnIndex_Alerted).Style.WrapMode = DataGridViewTriState.True
             .Cells(ColumnIndex_ServerTime).Value = If(ServerDate = Date.MinValue, "", ToIso8601Format(ServerDate))
             .DateObject = DateObject
             .BoolAlerted = BoolAlerted
@@ -35,17 +32,10 @@ Public Class SavedData
             .ServerDate = ServerDate
 
             If My.Settings.font IsNot Nothing Then
-                .Cells(ColumnIndex_ComputedTime).Style.Font = My.Settings.font
-                .Cells(ColumnIndex_LogType).Style.Font = My.Settings.font
-                .Cells(ColumnIndex_IPAddress).Style.Font = My.Settings.font
-                .Cells(ColumnIndex_RemoteProcess).Style.Font = My.Settings.font
-                .Cells(ColumnIndex_Hostname).Style.Font = My.Settings.font
-                .Cells(ColumnIndex_LogText).Style.Font = My.Settings.font
-                .Cells(ColumnIndex_Alerted).Style.Font = My.Settings.font
-                .Cells(ColumnIndex_ServerTime).Style.Font = My.Settings.font
+                .DefaultCellStyle = DataGridViewCellStyle
+                .Cells(ColumnIndex_ComputedTime).Style = DataGridViewCellStyle_ComputedCell
+                .Cells(ColumnIndex_Alerted).Style = DataGridViewCellStyle_AlertedCell
             End If
-
-            .DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
         End With
 
         Return MyDataGridViewRow
@@ -157,7 +147,7 @@ Public Class IgnoredClass
             sinceLastEvent = currentDate - dateLastEvent
             listViewItem.timeSpanOfLastOccurrence = sinceLastEvent
             listViewItem.dateOfLastOccurrence = dateLastEvent
-            listViewItem.SubItems.Add($"{dateLastEvent.ToLocalTime.ToLongDateString} {dateLastEvent.ToLocalTime.ToLongTimeString}")
+            listViewItem.SubItems.Add($"{dateLastEvent.ToLocalTime:D} {dateLastEvent.ToLocalTime:T}")
             listViewItem.SubItems.Add(TimespanToHMS(sinceLastEvent))
         Else
             listViewItem.SubItems.Add("")
