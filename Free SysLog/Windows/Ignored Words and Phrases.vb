@@ -762,17 +762,30 @@ Public Class IgnoredWordsAndPhrases
     Private Sub btnResetHits_Click(sender As Object, e As EventArgs) Handles btnResetHits.Click
         longNumberOfIgnoredLogs = 0
 
+        If My.Settings.saveIgnoredLogCount Then
+            NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+        End If
+
         If IgnoredListView.SelectedItems.Count > 0 Then
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
                 If IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing) Then
+                    longNumberOfIgnoredLogs -= item.intHits
                     item.SubItems(colHits.Index).Text = "0"
                     item.intHits = 0
                     item.SubItems(colDateOfLastEvent.Index).Text = ""
                     item.SubItems(colSinceLastEvent.Index).Text = ""
                 End If
             Next
+
+            If My.Settings.saveIgnoredLogCount Then
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+            End If
         Else
             IgnoredStats.Clear()
+
+            If My.Settings.saveIgnoredLogCount Then
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+            End If
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                 item.SubItems(colHits.Index).Text = "0"
