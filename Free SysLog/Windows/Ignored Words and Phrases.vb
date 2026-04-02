@@ -766,6 +766,7 @@ Public Class IgnoredWordsAndPhrases
             For Each item As MyIgnoredListViewItem In IgnoredListView.SelectedItems
                 If IgnoredStats.TryRemove(item.SubItems(Ignored.Index).Text, Nothing) Then
                     item.SubItems(colHits.Index).Text = "0"
+                    item.intHits = 0
                     item.SubItems(colDateOfLastEvent.Index).Text = ""
                     item.SubItems(colSinceLastEvent.Index).Text = ""
                 End If
@@ -775,6 +776,7 @@ Public Class IgnoredWordsAndPhrases
 
             For Each item As MyIgnoredListViewItem In IgnoredListView.Items
                 item.SubItems(colHits.Index).Text = "0"
+                item.intHits = 0
                 item.SubItems(colDateOfLastEvent.Index).Text = ""
                 item.SubItems(colSinceLastEvent.Index).Text = ""
             Next
