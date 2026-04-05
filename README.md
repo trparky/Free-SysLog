@@ -10,3 +10,13 @@ Please refer to the LICENSE file for the updated terms. Previous versions were l
 
 ## Contributions
 We welcome contributions to Free SysLog! If you’ve made improvements or fixes, please submit a pull request. All contributions must comply with the GPLv3 license, which means any modifications you make should also be shared with the community.
+
+## Windows SmartScreen Warning
+Because this is a free and independently developed tool, it is not code-signed.
+
+When running it for the first time, Windows may show a warning:
+
+* Click More Info
+* Then click Run Anyway
+
+This is expected and safe. This project is fully open source. The provided binary is built directly from the source code in this repository.
