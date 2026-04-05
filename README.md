@@ -20,7 +20,7 @@ So I made one.
 - Built specifically for Windows
 
 ## Screenshots
-![image](https://github.com/trparky/Free-SysLog/assets/32105035/8b0783ef-c5b1-4450-870f-0af30c0ee23a)
+<img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/d0fb353a-c590-40cb-9da1-0da37c341d84" />
 
 ## Getting Started
 
