@@ -20,7 +20,7 @@ So I made one.
 - Built specifically for Windows
 
 ## Screenshots
-<img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/d0fb353a-c590-40cb-9da1-0da37c341d84" />
+<img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/2353cf31-9afa-4e04-a598-05735e52e93d" />
 
 ## Getting Started
 
