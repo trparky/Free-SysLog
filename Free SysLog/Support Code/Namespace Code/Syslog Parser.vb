@@ -142,6 +142,16 @@ Namespace SyslogParser
 
                 Return (facilityDescription, severityDescription)
             Else
+                If Not Integer.TryParse(strPriority, priorityNumber) Then
+                    AddToLogList(Nothing, $"Invalid PRI: not a valid 32-bit integer: {strPriority}")
+                    Return ("No Facility", "No Severity")
+                End If
+
+                If priorityNumber < 0 OrElse priorityNumber > 191 Then
+                    AddToLogList(Nothing, $"Invalid PRI: out of range (0–191): {priorityNumber}")
+                    Return ("No Facility", "No Severity")
+                End If
+
                 Return ("No Facility", "No Severity")
             End If
         End Function
