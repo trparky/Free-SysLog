@@ -341,7 +341,7 @@ Namespace SyslogParser
                         hostname = ""
                         appName = ""
                         priorityObject = ("Local", "Error")
-                        message = $"An error occured while attempting to parse the log entry. Below is the log entry that failed...{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
+                        message = $"The log entry did not match a supported syslog format. Below is the raw entry:{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
                     End If
 
                     If Not String.IsNullOrWhiteSpace(message) AndAlso message.CaseInsensitiveContains(strNewLine) Then message = message.Replace(strNewLine, vbCrLf).Trim
