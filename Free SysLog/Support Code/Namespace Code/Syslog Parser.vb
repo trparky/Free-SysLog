@@ -110,21 +110,33 @@ Namespace SyslogParser
                               End Sub)
         End Sub
 
+        ''' <summary>
+        ''' Parses the priority value from the syslog message and returns the corresponding facility and severity as per RFC 5424.
+        ''' </summary>
+        ''' <param name="strPriority">The String representation of the PRI.</param>
+        ''' <returns>A Tuple representing what the PRI string means.</returns>
+        ''' <exception cref="FormatException" />
         Private Function GetSeverityAndFacility(strPriority As String) As (Facility As String, Severity As String)
             If String.IsNullOrWhiteSpace(strPriority) Then
-                Return ("No Facility", "No Severity")
+                Throw New FormatException("Empty PRI input")
             End If
 
             strPriority = strPriority.Replace("<", "").Replace(">", "").Trim
 
             Dim priorityNumber As Integer
 
-            If Integer.TryParse(strPriority, priorityNumber) Then
-                ' Define the severity levels as per RFC 5424
-                Dim severityLevels() As String = {"Emergency", "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug"}
+            If Not Integer.TryParse(strPriority, priorityNumber) Then
+                Throw New FormatException($"Invalid PRI: not a valid 32-bit integer: {strPriority}")
+            End If
 
-                ' Define the facility levels as per RFC 5424
-                Dim facilityLevels() As String = {"Kernel messages", "User-level messages", "Mail system", "System daemons",
+            If priorityNumber < 0 OrElse priorityNumber > 191 Then
+                Throw New FormatException($"Invalid PRI: out of range (0–191): {priorityNumber}")
+            End If
+
+            Dim severityLevels() As String = {"Emergency", "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug"}
+
+            ' Define the facility levels as per RFC 5424
+            Dim facilityLevels() As String = {"Kernel messages", "User-level messages", "Mail system", "System daemons",
                                                "Security/authorization messages", "Messages generated internally by syslogd",
                                                "Line printer subsystem", "Network news subsystem", "UUCP subsystem",
                                                "Clock daemon", "Security/authorization messages", "FTP daemon",
@@ -132,28 +144,12 @@ Namespace SyslogParser
                                                "Local use 0", "Local use 1", "Local use 2", "Local use 3", "Local use 4",
                                                "Local use 5", "Local use 6", "Local use 7"}
 
-                ' Calculate facility and severity
-                Dim facility As Integer = priorityNumber \ 8
-                Dim severity As Integer = priorityNumber Mod 8
+            ' Calculate facility and severity
+            Dim facility As Integer = priorityNumber \ 8
+            Dim severity As Integer = priorityNumber Mod 8
 
-                ' Get facility and severity descriptions
-                Dim facilityDescription As String = If(facility >= 0 And facility < facilityLevels.Length, facilityLevels(facility), "Unknown Facility")
-                Dim severityDescription As String = If(severity >= 0 And severity < severityLevels.Length, severityLevels(severity), "Unknown Severity")
-
-                Return (facilityDescription, severityDescription)
-            Else
-                If Not Integer.TryParse(strPriority, priorityNumber) Then
-                    AddToLogList(Nothing, $"Invalid PRI: not a valid 32-bit integer: {strPriority}")
-                    Return ("No Facility", "No Severity")
-                End If
-
-                If priorityNumber < 0 OrElse priorityNumber > 191 Then
-                    AddToLogList(Nothing, $"Invalid PRI: out of range (0–191): {priorityNumber}")
-                    Return ("No Facility", "No Severity")
-                End If
-
-                Return ("No Facility", "No Severity")
-            End If
+            ' Return facility and severity descriptions
+            Return (facilityLevels(facility), severityLevels(severity))
         End Function
 
         ''' <summary>Parses a date timestamp in String format to a Date Object.</summary>
@@ -406,6 +402,8 @@ Namespace SyslogParser
                         AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog, rowGUID)
                     End If
                 End If
+            Catch ex2 As FormatException
+                AddToLogList(Nothing, $"{ex2.Message}{vbCrLf}The log that failed parsing was...{vbCrLf}{strRawLogText}")
             Catch ex As Exception
                 AddToLogList(Nothing, $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
