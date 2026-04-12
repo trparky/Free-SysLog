@@ -323,6 +323,7 @@ Namespace SyslogParser
                     Dim AlertType As AlertType = AlertType.None
                     Dim strIgnoredPattern As String = Nothing
                     Dim boolRecordIgnoredLog As Boolean = False
+                    Dim logType As String = Nothing
 
                     If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
                         strRawLogText = ProcessReplacements(strRawLogText)
@@ -341,7 +342,7 @@ Namespace SyslogParser
 
                         If SupportCode.hostnames.TryGetValue(strSourceIP, customHostname) Then hostname = customHostname
 
-                        priorityObject = GetSeverityAndFacility(priority)
+                        If Not String.IsNullOrWhiteSpace(priority) Then priorityObject = GetSeverityAndFacility(priority)
                     Else
                         timestamp = Now.ToString
                         hostname = ""
@@ -372,10 +373,10 @@ Namespace SyslogParser
 
                         ParentForm.boxLimitBy.Invoke(Sub() strLimitBy = ParentForm.boxLimitBy.Text)
 
-                        Dim logType As String = $"{priorityObject.Severity}, {priorityObject.Facility}"
+                        If Not String.IsNullOrWhiteSpace(priority) Then logType = $"{priorityObject.Severity}, {priorityObject.Facility}"
 
                         With recentUniqueObjects
-                            If .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                            If Not String.IsNullOrWhiteSpace(logType) AndAlso .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
                                 ParentForm.boxLimiter.Items.Add(logType)
                             End If
 
@@ -483,6 +484,9 @@ Namespace SyslogParser
         Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean, rowGUID As Guid)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
+            Dim strPriorityString As String = Nothing
+
+            If Not String.IsNullOrWhiteSpace(priority.Severity) AndAlso Not String.IsNullOrWhiteSpace(priority.Facility) Then strPriorityString = $"{priority.Severity}, {priority.Facility}"
 
             If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
                 serverDate = currentDate
@@ -505,7 +509,7 @@ Namespace SyslogParser
                                                              strHostname:=strHostname,
                                                              strRemoteProcess:=strRemoteProcess,
                                                              strLog:=strLogText,
-                                                             strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                             strLogType:=strPriorityString,
                                                              boolAlerted:=boolAlerted,
                                                              strRawLogText:=strRawLogText.Trim,
                                                              strAlertText:=strAlertText,
@@ -535,7 +539,7 @@ Namespace SyslogParser
                                                                                   strHostname:=strHostname,
                                                                                   strRemoteProcess:=strRemoteProcess,
                                                                                   strLog:=strLogText,
-                                                                                  strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                                  strLogType:=strPriorityString,
                                                                                   boolAlerted:=boolAlerted,
                                                                                   strRawLogText:=strRawLogText.Trim,
                                                                                   strAlertText:=strAlertText,
