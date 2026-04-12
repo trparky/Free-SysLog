@@ -323,7 +323,7 @@ Namespace SyslogParser
                     Dim AlertType As AlertType = AlertType.None
                     Dim strIgnoredPattern As String = Nothing
                     Dim boolRecordIgnoredLog As Boolean = False
-                    Dim logType As String = Nothing
+                    Dim strPriorityString As String = Nothing
 
                     If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
                         strRawLogText = ProcessReplacements(strRawLogText)
@@ -368,16 +368,16 @@ Namespace SyslogParser
                         End If
                     End If
 
+                    If Not String.IsNullOrWhiteSpace(priority) Then strPriorityString = $"{priorityObject.Severity}, {priorityObject.Facility}"
+
                     If Not boolIgnored Then
                         Dim strLimitBy As String = Nothing
 
                         ParentForm.boxLimitBy.Invoke(Sub() strLimitBy = ParentForm.boxLimitBy.Text)
 
-                        If Not String.IsNullOrWhiteSpace(priority) Then logType = $"{priorityObject.Severity}, {priorityObject.Facility}"
-
                         With recentUniqueObjects
-                            If Not String.IsNullOrWhiteSpace(logType) AndAlso .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                ParentForm.boxLimiter.Items.Add(logType)
+                            If Not String.IsNullOrWhiteSpace(strPriorityString) AndAlso .logTypes.Add(strPriorityString) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(strPriorityString)
                             End If
 
                             If .processes.Add(appName) AndAlso strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
@@ -400,7 +400,7 @@ Namespace SyslogParser
 
                     ' Step 4: Add to log list, separating header and message
                     If Not My.Settings.OnlySaveAlertedLogs OrElse boolAlerted Then
-                        AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog, rowGUID)
+                        AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, strPriorityString, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog, rowGUID)
                     End If
                 End If
             Catch ex2 As FormatException
@@ -481,12 +481,9 @@ Namespace SyslogParser
             End Try
         End Function
 
-        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean, rowGUID As Guid)
+        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, strPriorityString As String, strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean, rowGUID As Guid)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
-            Dim strPriorityString As String = Nothing
-
-            If Not String.IsNullOrWhiteSpace(priority.Severity) AndAlso Not String.IsNullOrWhiteSpace(priority.Facility) Then strPriorityString = $"{priority.Severity}, {priority.Facility}"
 
             If String.IsNullOrWhiteSpace(strTimeStampFromServer) Then
                 serverDate = currentDate
