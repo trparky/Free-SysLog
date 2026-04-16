@@ -214,13 +214,7 @@ Public Class ViewLogBackups
                    FileList.ResumeLayout()
 
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
-
-                   If intNumberOfCompressedFiles = 0 Then
-                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
-                   Else
-                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
-                   End If
-
+                   LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
 
                    lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
