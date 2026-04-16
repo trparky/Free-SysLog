@@ -97,21 +97,23 @@ Public Class ViewLogBackups
     End Function
 
     Private Sub LoadFileList(Optional intReselectItem As Integer = -1)
-        Dim filesInDirectory As FileInfo()
-
-        If ChkShowHidden.Checked Then
-            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
-        Else
-            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
-        End If
-
+        Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim threadSafeListOfDataGridViewRows As New ThreadSafeList(Of DataGridViewRow)
         Dim intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
-        Dim longTotalLogCount, longUsedDiskSpace As Long
+        Dim longTotalLogCount, longUsedDiskSpace, longUsedDiskSpaceIncludingHidden As Long
         Dim intNumberOfCompressedFiles As Integer = 0
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                               Interlocked.Add(longUsedDiskSpaceIncludingHidden, file.Length)
+
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
+
+                                               If Not ChkShowHidden.Checked And boolIsHidden Then
+                                                   Exit Sub
+                                               End If
+
+                                               Interlocked.Add(longUsedDiskSpace, file.Length)
+
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
                                                Dim longUnCompresedSize As Long = -1
 
@@ -183,10 +185,7 @@ Public Class ViewLogBackups
                                                            End If
                                                        End If
 
-                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
-                                                   Else
-                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
                                                    End If
 
                                                    threadSafeListOfDataGridViewRows.Add(row)
@@ -214,7 +213,13 @@ Public Class ViewLogBackups
                    FileList.ResumeLayout()
 
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
-                   LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+
+                   If longUsedDiskSpace = longUsedDiskSpaceIncludingHidden Then
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                   Else
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)} (Including Hidden Files: {FileSizeToHumanSize(longUsedDiskSpaceIncludingHidden)})"
+                   End If
+
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
 
                    lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
