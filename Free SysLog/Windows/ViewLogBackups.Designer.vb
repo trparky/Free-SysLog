@@ -53,7 +53,6 @@ Partial Class ViewLogBackups
         Me.ChkIgnoreSearchResultsLimits = New System.Windows.Forms.CheckBox()
         Me.ChkLogFileDeletions = New System.Windows.Forms.CheckBox()
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.lblTotalNumberOfHiddenLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
@@ -180,7 +179,7 @@ Partial Class ViewLogBackups
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(978, 22)
@@ -322,14 +321,6 @@ Partial Class ViewLogBackups
         Me.lblNumberOfHiddenFiles.Size = New System.Drawing.Size(136, 17)
         Me.lblNumberOfHiddenFiles.Text = "Number of Hidden Files:"
         Me.lblNumberOfHiddenFiles.Visible = False
-        '
-        'lblTotalNumberOfHiddenLogs
-        '
-        Me.lblTotalNumberOfHiddenLogs.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
-        Me.lblTotalNumberOfHiddenLogs.Name = "lblTotalNumberOfHiddenLogs"
-        Me.lblTotalNumberOfHiddenLogs.Size = New System.Drawing.Size(138, 17)
-        Me.lblTotalNumberOfHiddenLogs.Text = "Number of Hidden Logs:"
-        Me.lblTotalNumberOfHiddenLogs.Visible = False
         '
         'LblTotalDiskSpace
         '
@@ -481,7 +472,6 @@ Partial Class ViewLogBackups
     Friend WithEvents colHidden As DataGridViewTextBoxColumn
     Friend WithEvents ChkShowHiddenAsGray As CheckBox
     Friend WithEvents lblNumberOfHiddenFiles As ToolStripStatusLabel
-    Friend WithEvents lblTotalNumberOfHiddenLogs As ToolStripStatusLabel
     Friend WithEvents LblTotalDiskSpace As ToolStripStatusLabel
     Friend WithEvents colEntryCount As DataGridViewTextBoxColumn
     Friend WithEvents ToolTip As ToolTip

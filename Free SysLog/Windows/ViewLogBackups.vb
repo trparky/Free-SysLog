@@ -99,7 +99,7 @@ Public Class ViewLogBackups
     Private Sub LoadFileList(Optional intReselectItem As Integer = -1)
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim threadSafeListOfDataGridViewRows As New ThreadSafeList(Of DataGridViewRow)
-        Dim intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
+        Dim intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace, longUsedDiskSpaceIncludingHidden As Long
         Dim intNumberOfCompressedFiles As Integer = 0
 
@@ -107,6 +107,8 @@ Public Class ViewLogBackups
                                                Interlocked.Add(longUsedDiskSpaceIncludingHidden, file.Length)
 
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
+
+                                               If boolIsHidden Then Interlocked.Increment(intHiddenFileCount)
 
                                                If Not ChkShowHidden.Checked And boolIsHidden Then
                                                    Exit Sub
@@ -118,13 +120,9 @@ Public Class ViewLogBackups
                                                Dim longUnCompresedSize As Long = -1
 
                                                If intCount <> -1 Then
-                                                   If boolIsHidden Then
-                                                       Interlocked.Increment(intHiddenFileCount)
-                                                       Interlocked.Add(intHiddenTotalLogCount, intCount)
-                                                   Else
-                                                       Interlocked.Increment(intFileCount)
-                                                       Interlocked.Add(longTotalLogCount, intCount)
-                                                   End If
+                                                   If Not boolIsHidden Then Interlocked.Add(longTotalLogCount, intCount)
+
+                                                   Interlocked.Increment(intFileCount)
 
                                                    Dim row As New MyDataGridViewFileRow()
 
@@ -222,10 +220,12 @@ Public Class ViewLogBackups
 
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
 
-                   lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
-                   lblTotalNumberOfHiddenLogs.Visible = intHiddenFileCount > 0
-                   lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
-                   lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
+                   If ChkShowHidden.Checked Then
+                       lblNumberOfHiddenFiles.Visible = False
+                   Else
+                       lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
+                       lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
+                   End If
 
                    If intReselectItem <> -1 AndAlso intReselectItem < FileList.Rows.Count Then
                        FileList.ClearSelection()
