@@ -136,22 +136,6 @@ Public Class ViewLogBackups
 
                                                        .Cells(1).Value = $"{file.LastWriteTime:D} {file.LastWriteTime:T}"
 
-                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                           longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
-
-                                                           If ChkShowCompressionSizeDifference.Checked Then
-                                                               If longUnCompresedSize = -1 Then
-                                                                   row.Cells(2).Value = "Error"
-                                                               Else
-                                                                   row.Cells(2).Value = FileSizeToHumanSize(longUnCompresedSize)
-                                                               End If
-                                                           Else
-                                                               row.Cells(2).Value = FileSizeToHumanSize(file.Length)
-                                                           End If
-                                                       Else
-                                                           .Cells(2).Value = FileSizeToHumanSize(file.Length)
-                                                       End If
-
                                                        .Cells(3).Value = $"{intCount:N0}"
                                                        .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
@@ -170,17 +154,25 @@ Public Class ViewLogBackups
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
                                                    If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                       row.Cells(2).Value = FileSizeToHumanSize(file.Length)
+
                                                        If ChkShowCompressionSizeDifference.Checked Then
-                                                           If ChkShowCompressionSizeDifferencePercentage.Checked Then
-                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)}"
-                                                               If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% smaller"
-                                                               row.Cells(2).Value &= $")"
-                                                           Else
-                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)})"
+                                                           longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
+
+                                                           If longUnCompresedSize <> -1 Then
+                                                               If ChkShowCompressionSizeDifferencePercentage.Checked Then
+                                                                   row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)}"
+                                                                   If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% smaller"
+                                                                   row.Cells(2).Value &= ")"
+                                                               Else
+                                                                   row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)})"
+                                                               End If
                                                            End If
                                                        End If
 
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
+                                                   Else
+                                                       row.Cells(2).Value = FileSizeToHumanSize(file.Length)
                                                    End If
 
                                                    threadSafeListOfDataGridViewRows.Add(row)
@@ -192,7 +184,7 @@ Public Class ViewLogBackups
                    threadSafeListOfDataGridViewRows = Nothing
 
                    If ChkShowCompressionSizeDifference.Checked And intNumberOfCompressedFiles <> 0 Then
-                       ColFileSize.HeaderText = "File Size (Compressed Size)"
+                       ColFileSize.HeaderText = "File Size (Un-Compressed Size)"
                    Else
                        ColFileSize.HeaderText = "File Size"
                    End If
