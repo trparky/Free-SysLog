@@ -135,7 +135,6 @@ Public Class ViewLogBackups
                                                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(1).Value = $"{file.LastWriteTime:D} {file.LastWriteTime:T}"
-                                                       .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
                                                            longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
@@ -152,8 +151,6 @@ Public Class ViewLogBackups
                                                        Else
                                                            .Cells(2).Value = FileSizeToHumanSize(file.Length)
                                                        End If
-
-                                                       .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(3).Value = $"{intCount:N0}"
                                                        .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
