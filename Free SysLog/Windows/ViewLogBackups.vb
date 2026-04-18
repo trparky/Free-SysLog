@@ -41,23 +41,19 @@ Public Class ViewLogBackups
     End Sub
 
     Private Function GetUncompressedSizeOfGZIPedLogFile(strPathToGZIPedLogFile As String) As Long
-        Try
-            Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
-                If fs.Length < 4 Then Return -1
+        Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+            If fs.Length < 4 Then Return -1
 
-                fs.Seek(-4, SeekOrigin.End)
+            fs.Seek(-4, SeekOrigin.End)
 
-                Dim sizeBytes(3) As Byte
-                Dim bytesRead As Integer = fs.Read(sizeBytes, 0, 4)
+            Dim sizeBytes(3) As Byte
+            Dim bytesRead As Integer = fs.Read(sizeBytes, 0, 4)
 
-                If bytesRead <> 4 Then Return -1 ' Return -1 to indicate an error occurred
+            If bytesRead <> 4 Then Return -1 ' Return -1 to indicate an error occurred
 
-                ' GZIP stores ISIZE as little-endian UInt32
-                Return BitConverter.ToUInt32(sizeBytes, 0)
-            End Using
-        Catch ex As Exception
-            Return -1 ' Return -1 to indicate an error occurred
-        End Try
+            ' GZIP stores ISIZE as little-endian UInt32
+            Return BitConverter.ToUInt32(sizeBytes, 0)
+        End Using
     End Function
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
@@ -156,19 +152,22 @@ Public Class ViewLogBackups
                                                    If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
                                                        row.Cells(2).Value = FileSizeToHumanSize(file.Length)
 
-                                                       If ChkShowCompressionSizeDifference.Checked Then
-                                                           longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
+                                                       Try
+                                                           If ChkShowCompressionSizeDifference.Checked Then
+                                                               longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
 
-                                                           If longUnCompresedSize <> -1 Then
-                                                               If ChkShowCompressionSizeDifferencePercentage.Checked Then
-                                                                   row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)}"
-                                                                   If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% smaller"
-                                                                   row.Cells(2).Value &= ")"
-                                                               Else
-                                                                   row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)})"
+                                                               If longUnCompresedSize <> -1 Then
+                                                                   If ChkShowCompressionSizeDifferencePercentage.Checked Then
+                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)}"
+                                                                       If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% smaller"
+                                                                       row.Cells(2).Value &= ")"
+                                                                   Else
+                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)})"
+                                                                   End If
                                                                End If
                                                            End If
-                                                       End If
+                                                       Catch ex As Exception
+                                                       End Try
 
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
                                                    Else
