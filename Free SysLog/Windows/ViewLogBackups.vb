@@ -116,8 +116,7 @@ Public Class ViewLogBackups
                                                Dim longUnCompressedSize As Long = -1
 
                                                If intCount <> -1 Then
-                                                   If Not boolIsHidden Then Interlocked.Add(longTotalLogCount, intCount)
-
+                                                   Interlocked.Add(longTotalLogCount, intCount)
                                                    Interlocked.Increment(intFileCount)
 
                                                    Dim row As New MyDataGridViewFileRow()
