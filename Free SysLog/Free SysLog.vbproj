@@ -138,6 +138,12 @@
     <Compile Include="Windows\Alerts.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Windows\Calendar.Designer.vb">
+      <DependentUpon>Calendar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Calendar.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\Clear logs older than.Designer.vb">
       <DependentUpon>Clear logs older than.vb</DependentUpon>
     </Compile>
@@ -255,6 +261,9 @@
     <EmbeddedResource Include="Windows\Alerts.resx">
       <DependentUpon>Alerts.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Calendar.resx">
+      <DependentUpon>Calendar.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Clear logs older than.resx">
       <DependentUpon>Clear logs older than.vb</DependentUpon>

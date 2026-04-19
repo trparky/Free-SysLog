@@ -62,6 +62,7 @@ Partial Class ViewLogBackups
         Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
         Me.ShowInWindowsExplorerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnLimitByDate = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.FileList, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -84,7 +85,7 @@ Partial Class ViewLogBackups
         Me.FileList.ReadOnly = True
         Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.FileList.Size = New System.Drawing.Size(953, 243)
+        Me.FileList.Size = New System.Drawing.Size(1068, 243)
         Me.FileList.TabIndex = 36
         '
         'ColFileName
@@ -182,7 +183,7 @@ Partial Class ViewLogBackups
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(978, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(1093, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -232,7 +233,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowCompressionSizeDifference.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowCompressionSizeDifference.AutoSize = True
-        Me.ChkShowCompressionSizeDifference.Location = New System.Drawing.Point(554, 292)
+        Me.ChkShowCompressionSizeDifference.Location = New System.Drawing.Point(670, 292)
         Me.ChkShowCompressionSizeDifference.Name = "ChkShowCompressionSizeDifference"
         Me.ChkShowCompressionSizeDifference.Size = New System.Drawing.Size(196, 17)
         Me.ChkShowCompressionSizeDifference.TabIndex = 43
@@ -243,7 +244,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowCompressionSizeDifferencePercentage.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowCompressionSizeDifferencePercentage.AutoSize = True
-        Me.ChkShowCompressionSizeDifferencePercentage.Location = New System.Drawing.Point(554, 319)
+        Me.ChkShowCompressionSizeDifferencePercentage.Location = New System.Drawing.Point(670, 319)
         Me.ChkShowCompressionSizeDifferencePercentage.Name = "ChkShowCompressionSizeDifferencePercentage"
         Me.ChkShowCompressionSizeDifferencePercentage.Size = New System.Drawing.Size(254, 17)
         Me.ChkShowCompressionSizeDifferencePercentage.TabIndex = 44
@@ -289,7 +290,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowHidden.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHidden.AutoSize = True
-        Me.ChkShowHidden.Location = New System.Drawing.Point(814, 292)
+        Me.ChkShowHidden.Location = New System.Drawing.Point(930, 292)
         Me.ChkShowHidden.Name = "ChkShowHidden"
         Me.ChkShowHidden.Size = New System.Drawing.Size(114, 17)
         Me.ChkShowHidden.TabIndex = 34
@@ -307,7 +308,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkShowHiddenAsGray.AutoSize = True
-        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(814, 319)
+        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(930, 319)
         Me.ChkShowHiddenAsGray.Name = "ChkShowHiddenAsGray"
         Me.ChkShowHiddenAsGray.Size = New System.Drawing.Size(153, 17)
         Me.ChkShowHiddenAsGray.TabIndex = 35
@@ -333,7 +334,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkIgnoreSearchResultsLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkIgnoreSearchResultsLimits.AutoSize = True
-        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(814, 265)
+        Me.ChkIgnoreSearchResultsLimits.Location = New System.Drawing.Point(930, 265)
         Me.ChkIgnoreSearchResultsLimits.Name = "ChkIgnoreSearchResultsLimits"
         Me.ChkIgnoreSearchResultsLimits.Size = New System.Drawing.Size(160, 17)
         Me.ChkIgnoreSearchResultsLimits.TabIndex = 37
@@ -351,7 +352,7 @@ Partial Class ViewLogBackups
         '
         Me.ChkLogFileDeletions.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkLogFileDeletions.AutoSize = True
-        Me.ChkLogFileDeletions.Location = New System.Drawing.Point(554, 265)
+        Me.ChkLogFileDeletions.Location = New System.Drawing.Point(670, 265)
         Me.ChkLogFileDeletions.Name = "ChkLogFileDeletions"
         Me.ChkLogFileDeletions.Size = New System.Drawing.Size(127, 17)
         Me.ChkLogFileDeletions.TabIndex = 38
@@ -408,11 +409,21 @@ Partial Class ViewLogBackups
         Me.ShowInWindowsExplorerToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.ShowInWindowsExplorerToolStripMenuItem.Text = "Show in Windows Explorer"
         '
+        'btnLimitByDate
+        '
+        Me.btnLimitByDate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnLimitByDate.Location = New System.Drawing.Point(554, 288)
+        Me.btnLimitByDate.Name = "btnLimitByDate"
+        Me.btnLimitByDate.Size = New System.Drawing.Size(110, 23)
+        Me.btnLimitByDate.TabIndex = 45
+        Me.btnLimitByDate.Text = "Limit by Date"
+        Me.btnLimitByDate.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(978, 364)
+        Me.ClientSize = New System.Drawing.Size(1093, 364)
         Me.Controls.Add(Me.btnViewLogsWithLimits)
         Me.Controls.Add(Me.boxLimiter)
         Me.Controls.Add(Me.boxLimitBy)
@@ -433,10 +444,11 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.ChkLogFileDeletions)
         Me.Controls.Add(Me.ChkShowCompressionSizeDifference)
         Me.Controls.Add(Me.ChkShowCompressionSizeDifferencePercentage)
+        Me.Controls.Add(Me.btnLimitByDate)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(994, 403)
+        Me.MinimumSize = New System.Drawing.Size(1109, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
@@ -487,4 +499,5 @@ Partial Class ViewLogBackups
     Friend WithEvents UncompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChkShowCompressionSizeDifference As CheckBox
     Friend WithEvents ChkShowCompressionSizeDifferencePercentage As CheckBox
+    Friend WithEvents btnLimitByDate As Button
 End Class

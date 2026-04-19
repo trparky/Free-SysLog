@@ -12,6 +12,9 @@ Public Class ViewLogBackups
     Private boolDoneLoading As Boolean = False
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
+    Private startDate As Date = Date.MinValue
+    Private endDate As Date = Date.MaxValue
+    Private dateMinimumFromLoadingFiles As Date = Date.MinValue
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles FileList.ColumnHeaderMouseClick
         If e.Button = MouseButtons.Left Then
@@ -97,6 +100,11 @@ Public Class ViewLogBackups
         Dim intFileCount, intHiddenFileCount As Integer
         Dim longTotalLogCount, longUsedDiskSpace, longUsedDiskSpaceIncludingHidden As Long
         Dim intNumberOfCompressedFiles As Integer = 0
+        Dim dateMinimumLockObject As New Object
+
+        dateMinimumFromLoadingFiles = Date.MinValue
+        startDate = Date.MinValue
+        endDate = Date.MaxValue
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Interlocked.Add(longUsedDiskSpaceIncludingHidden, file.Length)
@@ -108,6 +116,12 @@ Public Class ViewLogBackups
                                                If Not ChkShowHidden.Checked And boolIsHidden Then
                                                    Exit Sub
                                                End If
+
+                                               SyncLock dateMinimumLockObject
+                                                   If dateMinimumFromLoadingFiles = Date.MinValue OrElse file.LastWriteTime < dateMinimumFromLoadingFiles Then
+                                                       dateMinimumFromLoadingFiles = file.LastWriteTime
+                                                   End If
+                                               End SyncLock
 
                                                Interlocked.Add(longUsedDiskSpace, file.Length)
 
@@ -394,8 +408,13 @@ Public Class ViewLogBackups
 
                                           Dim dataFromFile As List(Of SavedData)
                                           Dim myDataGridRow As MyDataGridViewRow
+                                          Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                                 If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
+                                                                                     Exit Sub
+                                                                                 End If
+
                                                                                  If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                                  Else
@@ -783,8 +802,13 @@ Public Class ViewLogBackups
                                       Dim dataFromFile As List(Of SavedData)
                                       Dim myDataGridRow As MyDataGridViewRow
                                       Dim boolDidWeHaveAMatch As Boolean = False
+                                      Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                       Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                             If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
+                                                                                 Exit Sub
+                                                                             End If
+
                                                                              If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
                                                                                  dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                              Else
@@ -953,5 +977,23 @@ Public Class ViewLogBackups
     Private Sub ChkShowCompressionSizeDifferencePercentage_Click(sender As Object, e As EventArgs) Handles ChkShowCompressionSizeDifferencePercentage.Click
         My.Settings.ShowCompressionSizeDifferencePercentage = ChkShowCompressionSizeDifferencePercentage.Checked
         ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+    End Sub
+
+    Private Sub btnLimitByDate_Click(sender As Object, e As EventArgs) Handles btnLimitByDate.Click
+        Dim frmCalendar As New frmCalendar With {
+            .StartPosition = FormStartPosition.CenterParent,
+            .Icon = Icon,
+            .Text = "Select Date Range",
+            .startDate = If(startDate.Equals(Date.MinValue), dateMinimumFromLoadingFiles, startDate),
+            .endDate = If(endDate.Equals(Date.MaxValue), Date.Now.AddDays(-1), endDate),
+            .minDate = dateMinimumFromLoadingFiles
+        }
+
+        frmCalendar.ShowDialog(Me)
+
+        startDate = frmCalendar.startDate
+        endDate = frmCalendar.endDate
+
+        frmCalendar.Dispose()
     End Sub
 End Class
