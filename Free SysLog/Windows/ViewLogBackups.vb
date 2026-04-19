@@ -113,7 +113,7 @@ Public Class ViewLogBackups
                                                Interlocked.Add(longUsedDiskSpace, file.Length)
 
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
-                                               Dim longUnCompresedSize As Long = -1
+                                               Dim longUnCompressedSize As Long = -1
 
                                                If intCount <> -1 Then
                                                    If Not boolIsHidden Then Interlocked.Add(longTotalLogCount, intCount)
@@ -154,15 +154,15 @@ Public Class ViewLogBackups
 
                                                        Try
                                                            If ChkShowCompressionSizeDifference.Checked Then
-                                                               longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
+                                                               longUnCompressedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
 
-                                                               If longUnCompresedSize <> -1 Then
+                                                               If longUnCompressedSize <> -1 Then
                                                                    If ChkShowCompressionSizeDifferencePercentage.Checked Then
-                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)}"
-                                                                       If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% larger"
+                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)}"
+                                                                       If longUnCompressedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompressedSize * 100):F2}% larger"
                                                                        row.Cells(2).Value &= ")"
                                                                    Else
-                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompresedSize)})"
+                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)})"
                                                                    End If
                                                                End If
                                                            End If
