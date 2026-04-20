@@ -76,13 +76,12 @@ Namespace My
 
         Private Function LoadUniqueLogTypesAndProcesses(boolProcessAllFiles As Boolean) As uniqueObjectsClass
             Dim filesInDirectory As IO.FileInfo() = New IO.DirectoryInfo(strPathToDataBackupFolder).GetFiles()
-            Dim collectionOfSavedData As List(Of SavedData)
-            Dim lockObject As New Object
-
             Dim uniqueObjects As New uniqueObjectsClass
 
             If boolProcessAllFiles Then
                 Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
+                                                                       Dim collectionOfSavedData As List(Of SavedData)
+
                                                                        If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
                                                                            collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                        Else
@@ -103,6 +102,8 @@ Namespace My
             End If
 
             If IO.File.Exists(strPathToDataFile) Then
+                Dim collectionOfSavedData As List(Of SavedData)
+
                 Using fileStream As New IO.StreamReader(strPathToDataFile)
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
