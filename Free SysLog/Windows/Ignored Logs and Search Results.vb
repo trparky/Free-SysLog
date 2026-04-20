@@ -1,9 +1,10 @@
 ﻿Imports System.ComponentModel
+Imports System.Data.Common
 Imports System.IO
 Imports System.Text.RegularExpressions
+Imports System.Threading.Tasks
 Imports System.Xml.Serialization
 Imports Free_SysLog.SupportCode
-Imports System.Threading.Tasks
 
 Public Class IgnoredLogsAndSearchResults
     Public LogsToBeDisplayed As List(Of MyDataGridViewRow)
@@ -242,7 +243,10 @@ Public Class IgnoredLogsAndSearchResults
                                                                                                         End Sub)
 
 
-                                                           Invoke(Sub() Logs.ResumeLayout())
+                                                           Invoke(Sub()
+                                                                      Logs.ResumeLayout()
+                                                                      SortLogsByDateObject(0, sortOrder)
+                                                                  End Sub)
                                                        End SyncLock
                                                    End Sub)
         ElseIf _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.viewer AndAlso boolLoadExternalData AndAlso Not String.IsNullOrEmpty(strFileToLoad) Then
