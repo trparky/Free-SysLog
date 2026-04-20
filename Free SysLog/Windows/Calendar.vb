@@ -1,4 +1,6 @@
 ﻿Public Class frmCalendar
+    Public Property results As MsgBoxResult = MsgBoxResult.Cancel
+
     Public Property startDate As Date
         Get
             Return startDateTimePicker.Value
@@ -26,6 +28,7 @@
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
         startDate = startDateTimePicker.Value
         endDate = endDateTimePicker.Value
+        results = MsgBoxResult.Ok
         Close()
     End Sub
 

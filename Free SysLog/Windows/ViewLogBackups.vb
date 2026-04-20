@@ -106,6 +106,8 @@ Public Class ViewLogBackups
         startDate = Date.MinValue
         endDate = Date.MaxValue
 
+        btnClearDateLimit.Enabled = False
+
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Interlocked.Add(longUsedDiskSpaceIncludingHidden, file.Length)
 
@@ -991,9 +993,19 @@ Public Class ViewLogBackups
 
         frmCalendar.ShowDialog(Me)
 
-        startDate = frmCalendar.startDate
-        endDate = frmCalendar.endDate
+        If frmCalendar.results = MsgBoxResult.Ok Then
+            startDate = frmCalendar.startDate
+            endDate = frmCalendar.endDate
+
+            btnClearDateLimit.Enabled = True
+        End If
 
         frmCalendar.Dispose()
+    End Sub
+
+    Private Sub btnClearDateLimit_Click(sender As Object, e As EventArgs) Handles btnClearDateLimit.Click
+        startDate = Date.MinValue
+        endDate = Date.MaxValue
+        btnClearDateLimit.Enabled = False
     End Sub
 End Class

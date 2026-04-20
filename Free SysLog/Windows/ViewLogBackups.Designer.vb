@@ -51,6 +51,7 @@ Partial Class ViewLogBackups
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkIgnoreSearchResultsLimits = New System.Windows.Forms.CheckBox()
+        Me.btnClearDateLimit = New System.Windows.Forms.Button()
         Me.ChkLogFileDeletions = New System.Windows.Forms.CheckBox()
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
@@ -419,6 +420,17 @@ Partial Class ViewLogBackups
         Me.btnLimitByDate.Text = "Limit by Date"
         Me.btnLimitByDate.UseVisualStyleBackColor = True
         '
+        'btnClearDateLimit
+        '
+        Me.btnClearDateLimit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnClearDateLimit.Enabled = False
+        Me.btnClearDateLimit.Location = New System.Drawing.Point(554, 315)
+        Me.btnClearDateLimit.Name = "btnClearDateLimit"
+        Me.btnClearDateLimit.Size = New System.Drawing.Size(110, 23)
+        Me.btnClearDateLimit.TabIndex = 46
+        Me.btnClearDateLimit.Text = "Clear Date Limit"
+        Me.btnClearDateLimit.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -445,6 +457,7 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.ChkShowCompressionSizeDifference)
         Me.Controls.Add(Me.ChkShowCompressionSizeDifferencePercentage)
         Me.Controls.Add(Me.btnLimitByDate)
+        Me.Controls.Add(Me.btnClearDateLimit)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -500,4 +513,5 @@ Partial Class ViewLogBackups
     Friend WithEvents ChkShowCompressionSizeDifference As CheckBox
     Friend WithEvents ChkShowCompressionSizeDifferencePercentage As CheckBox
     Friend WithEvents btnLimitByDate As Button
+    Friend WithEvents btnClearDateLimit As Button
 End Class
