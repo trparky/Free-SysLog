@@ -8,7 +8,7 @@ Imports Free_SysLog.SupportCode
 
 Namespace SyslogParser
     Public Module SyslogParser
-        Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?:\d ){0,1}(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\.[0-9]+Z)(?: -){0,1} (?<hostname>(?:\\.|[^\n\r ])+) (?:\d+ ){0,1}(?<appname>(?:\\.|[^\n\r:]+?)(?: \d*){0,1}):{0,1} (?:- - %% ){0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
+        Private ReadOnly rfc5424Regex As New Regex("<(?<priority>[0-9]+)>(?:\d ){0,1}(?<timestamp>[0-9]{4}[-.](?:1[0-2]|0[1-9])[-.](?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?Z)(?: -){0,1} (?<hostname>(?:\\.|[^\n\r ])+) (?:\d+ ){0,1}(?<appname>(?:\\.|[^\n\r:]+?)(?: \d*){0,1}):{0,1} (?:- - %% ){0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
         Private ReadOnly rfc5424TransformRegex As New Regex("<{0,1}(?<priority>[0-9]{0,})>{0,1}(?<timestamp>(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) {1,2}[0-9]{1,2} [0-2][0-9]:[0-5][0-9]:[0-5][0-9]) (?<hostname>(?:\\.|[^\n\r ])+)(?: \:){0,1} \[{0,1}(?<appname>(?:\\.|[^\n\r:]+))\]{0,1}:{0,1} {0,1}(?<message>.+?)(?=\s*<\d+>|$)", RegexOptions.Compiled) ' PERFECT!
 
         Private ReadOnly embeddedCommandParsingRegEx As New Regex("([A-Z_][A-Z0-9_]*)\(([^()]*)\)", RegexOptions.Compiled)
@@ -110,21 +110,33 @@ Namespace SyslogParser
                               End Sub)
         End Sub
 
+        ''' <summary>
+        ''' Parses the priority value from the syslog message and returns the corresponding facility and severity as per RFC 5424.
+        ''' </summary>
+        ''' <param name="strPriority">The String representation of the PRI.</param>
+        ''' <returns>A Tuple representing what the PRI string means.</returns>
+        ''' <exception cref="FormatException" />
         Private Function GetSeverityAndFacility(strPriority As String) As (Facility As String, Severity As String)
             If String.IsNullOrWhiteSpace(strPriority) Then
-                Return ("No Facility", "No Severity")
+                Throw New FormatException("Empty PRI input")
             End If
 
             strPriority = strPriority.Replace("<", "").Replace(">", "").Trim
 
             Dim priorityNumber As Integer
 
-            If Integer.TryParse(strPriority, priorityNumber) Then
-                ' Define the severity levels as per RFC 5424
-                Dim severityLevels() As String = {"Emergency", "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug"}
+            If Not Integer.TryParse(strPriority, priorityNumber) Then
+                Throw New FormatException($"Invalid PRI: not a valid 32-bit integer: {strPriority}")
+            End If
 
-                ' Define the facility levels as per RFC 5424
-                Dim facilityLevels() As String = {"Kernel messages", "User-level messages", "Mail system", "System daemons",
+            If priorityNumber < 0 OrElse priorityNumber > 191 Then
+                Throw New FormatException($"Invalid PRI: out of range (0–191): {priorityNumber}")
+            End If
+
+            Dim severityLevels() As String = {"Emergency", "Alert", "Critical", "Error", "Warning", "Notice", "Informational", "Debug"}
+
+            ' Define the facility levels as per RFC 5424
+            Dim facilityLevels() As String = {"Kernel messages", "User-level messages", "Mail system", "System daemons",
                                                "Security/authorization messages", "Messages generated internally by syslogd",
                                                "Line printer subsystem", "Network news subsystem", "UUCP subsystem",
                                                "Clock daemon", "Security/authorization messages", "FTP daemon",
@@ -132,18 +144,12 @@ Namespace SyslogParser
                                                "Local use 0", "Local use 1", "Local use 2", "Local use 3", "Local use 4",
                                                "Local use 5", "Local use 6", "Local use 7"}
 
-                ' Calculate facility and severity
-                Dim facility As Integer = priorityNumber \ 8
-                Dim severity As Integer = priorityNumber Mod 8
+            ' Calculate facility and severity
+            Dim facility As Integer = priorityNumber \ 8
+            Dim severity As Integer = priorityNumber Mod 8
 
-                ' Get facility and severity descriptions
-                Dim facilityDescription As String = If(facility >= 0 And facility < facilityLevels.Length, facilityLevels(facility), "Unknown Facility")
-                Dim severityDescription As String = If(severity >= 0 And severity < severityLevels.Length, severityLevels(severity), "Unknown Severity")
-
-                Return (facilityDescription, severityDescription)
-            Else
-                Return ("No Facility", "No Severity")
-            End If
+            ' Return facility and severity descriptions
+            Return (facilityLevels(facility), severityLevels(severity))
         End Function
 
         ''' <summary>Parses a date timestamp in String format to a Date Object.</summary>
@@ -306,17 +312,18 @@ Namespace SyslogParser
                 If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
                     Dim boolIgnored As Boolean = False
                     Dim boolAlerted As Boolean = False
-                    Dim priorityObject As (Facility As String, Severity As String) = (Nothing, Nothing)
-                    Dim priority As String = Nothing
-                    Dim message As String = Nothing
-                    Dim timestamp As String = Nothing
-                    Dim hostname As String = Nothing
-                    Dim customHostname As String = Nothing
-                    Dim appName As String = Nothing
+                    Dim strTuplePriority As (Facility As String, Severity As String) = (Nothing, Nothing)
+                    Dim strPriority As String = Nothing
+                    Dim strMessage As String = Nothing
+                    Dim strTimeStamp As String = Nothing
+                    Dim strHostname As String = Nothing
+                    Dim strCustomHostname As String = Nothing
+                    Dim strAppName As String = Nothing
                     Dim strAlertText As String = Nothing
                     Dim AlertType As AlertType = AlertType.None
                     Dim strIgnoredPattern As String = Nothing
                     Dim boolRecordIgnoredLog As Boolean = False
+                    Dim strPriorityString As String = Nothing
 
                     If My.Settings.ProcessReplacementsInSyslogDataFirst AndAlso replacementsList IsNot Nothing AndAlso replacementsList.Any() Then
                         strRawLogText = ProcessReplacements(strRawLogText)
@@ -327,58 +334,58 @@ Namespace SyslogParser
 
                     If IsRegexMatch(rfc5424TransformRegex, strRawLogText, match) OrElse IsRegexMatch(rfc5424Regex, strRawLogText, match) Then
                         ' Handling the transformation to RFC 5424 format
-                        priority = If(String.IsNullOrWhiteSpace(match.Groups("priority").Value), "", match.Groups("priority").Value)
-                        timestamp = If(String.IsNullOrWhiteSpace(match.Groups("timestamp").Value), "", match.Groups("timestamp").Value)
-                        hostname = If(String.IsNullOrWhiteSpace(match.Groups("hostname").Value), "", match.Groups("hostname").Value)
-                        appName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
-                        message = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
+                        strPriority = If(String.IsNullOrWhiteSpace(match.Groups("priority").Value), "", match.Groups("priority").Value)
+                        strTimeStamp = If(String.IsNullOrWhiteSpace(match.Groups("timestamp").Value), "", match.Groups("timestamp").Value)
+                        strHostname = If(String.IsNullOrWhiteSpace(match.Groups("hostname").Value), "", match.Groups("hostname").Value)
+                        strAppName = If(String.IsNullOrWhiteSpace(match.Groups("appname").Value), "", match.Groups("appname").Value)
+                        strMessage = If(String.IsNullOrWhiteSpace(match.Groups("message").Value), "", match.Groups("message").Value)
 
-                        If SupportCode.hostnames.TryGetValue(strSourceIP, customHostname) Then hostname = customHostname
+                        If SupportCode.hostnames.TryGetValue(strSourceIP, strCustomHostname) Then strHostname = strCustomHostname
 
-                        priorityObject = GetSeverityAndFacility(priority)
+                        If Not String.IsNullOrWhiteSpace(strPriority) Then strTuplePriority = GetSeverityAndFacility(strPriority)
                     Else
-                        timestamp = Now.ToString
-                        hostname = ""
-                        appName = ""
-                        priorityObject = ("Local", "Error")
-                        message = $"An error occured while attempting to parse the log entry. Below is the log entry that failed...{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
+                        strTimeStamp = Now.ToString
+                        strHostname = ""
+                        strAppName = ""
+                        strTuplePriority = ("Local", "Error")
+                        strMessage = $"The log entry did not match a supported syslog format. Below is the raw entry:{vbCrLf}{strRawLogText}" ' Something went wrong, we couldn't parse the entry so we're going to just pass the raw log entry to the program.
                     End If
 
-                    If Not String.IsNullOrWhiteSpace(message) AndAlso message.CaseInsensitiveContains(strNewLine) Then message = message.Replace(strNewLine, vbCrLf).Trim
+                    If Not String.IsNullOrWhiteSpace(strMessage) AndAlso strMessage.CaseInsensitiveContains(strNewLine) Then strMessage = strMessage.Replace(strNewLine, vbCrLf).Trim
 
-                    If My.Settings.RemoveNumbersFromRemoteApp Then appName = NumberRemovingRegex.Replace(appName, "$1")
+                    If My.Settings.RemoveNumbersFromRemoteApp Then strAppName = NumberRemovingRegex.Replace(strAppName, "$1")
 
                     ' Step 3: Handle the ignored logs and alerts
                     If Not My.Settings.ProcessReplacementsInSyslogDataFirst Then
                         If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
-                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
+                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, strAppName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
 
-                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then message = ProcessReplacements(message)
+                        If replacementsList IsNot Nothing AndAlso replacementsList.Any() Then strMessage = ProcessReplacements(strMessage)
                     Else
                         If ignoredList IsNot Nothing AndAlso ignoredList.Any() Then
-                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, appName, strIgnoredPattern, boolRecordIgnoredLog)
+                            boolIgnored = ProcessIgnoredLogPreferences(strRawLogText, strAppName, strIgnoredPattern, boolRecordIgnoredLog)
                         End If
                     End If
+
+                    If Not String.IsNullOrWhiteSpace(strPriority) Then strPriorityString = $"{strTuplePriority.Severity}, {strTuplePriority.Facility}"
 
                     If Not boolIgnored Then
                         Dim strLimitBy As String = Nothing
 
                         ParentForm.boxLimitBy.Invoke(Sub() strLimitBy = ParentForm.boxLimitBy.Text)
 
-                        Dim logType As String = $"{priorityObject.Severity}, {priorityObject.Facility}"
-
                         With recentUniqueObjects
-                            If .logTypes.Add(logType) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                ParentForm.boxLimiter.Items.Add(logType)
+                            If Not String.IsNullOrWhiteSpace(strPriorityString) AndAlso .logTypes.Add(strPriorityString) AndAlso strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(strPriorityString)
                             End If
 
-                            If .processes.Add(appName) AndAlso strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                                ParentForm.boxLimiter.Items.Add(appName)
+                            If .processes.Add(strAppName) AndAlso strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(strAppName)
                             End If
 
-                            If .hostNames.Add(hostname) AndAlso strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-                                ParentForm.boxLimiter.Items.Add(hostname)
+                            If .hostNames.Add(strHostname) AndAlso strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                ParentForm.boxLimiter.Items.Add(strHostname)
                             End If
 
                             If .ipAddresses.Add(strSourceIP) AndAlso strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
@@ -389,13 +396,15 @@ Namespace SyslogParser
 
                     Dim rowGUID As Guid = Guid.NewGuid
 
-                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(message, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType, rowGUID)
+                    If alertsList IsNot Nothing AndAlso alertsList.Any() Then boolAlerted = ProcessAlerts(strMessage, strAlertText, Now.ToString, strSourceIP, strRawLogText, AlertType, rowGUID)
 
                     ' Step 4: Add to log list, separating header and message
                     If Not My.Settings.OnlySaveAlertedLogs OrElse boolAlerted Then
-                        AddToLogList(timestamp, strSourceIP, hostname, appName, message, boolIgnored, boolAlerted, priorityObject, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog, rowGUID)
+                        AddToLogList(strTimeStamp, strSourceIP, strHostname, strAppName, strMessage, boolIgnored, boolAlerted, strPriorityString, strRawLogText, strAlertText, AlertType, strIgnoredPattern, boolRecordIgnoredLog, rowGUID)
                     End If
                 End If
+            Catch ex2 As FormatException
+                AddToLogList(Nothing, $"{ex2.Message}{vbCrLf}The log that failed parsing was...{vbCrLf}{strRawLogText}")
             Catch ex As Exception
                 AddToLogList(Nothing, $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
@@ -472,7 +481,7 @@ Namespace SyslogParser
             End Try
         End Function
 
-        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, priority As (Facility As String, Severity As String), strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean, rowGUID As Guid)
+        Private Sub AddToLogList(strTimeStampFromServer As String, strSourceIP As String, strHostname As String, strRemoteProcess As String, strLogText As String, boolIgnored As Boolean, boolAlerted As Boolean, strPriorityString As String, strRawLogText As String, strAlertText As String, alertType As AlertType, strIgnoredPattern As String, boolRecordIgnoredLog As Boolean, rowGUID As Guid)
             Dim currentDate As Date = Now.ToLocalTime
             Dim serverDate As Date
 
@@ -497,7 +506,7 @@ Namespace SyslogParser
                                                              strHostname:=strHostname,
                                                              strRemoteProcess:=strRemoteProcess,
                                                              strLog:=strLogText,
-                                                             strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                             strLogType:=strPriorityString,
                                                              boolAlerted:=boolAlerted,
                                                              strRawLogText:=strRawLogText.Trim,
                                                              strAlertText:=strAlertText,
@@ -527,7 +536,7 @@ Namespace SyslogParser
                                                                                   strHostname:=strHostname,
                                                                                   strRemoteProcess:=strRemoteProcess,
                                                                                   strLog:=strLogText,
-                                                                                  strLogType:=$"{priority.Severity}, {priority.Facility}",
+                                                                                  strLogType:=strPriorityString,
                                                                                   boolAlerted:=boolAlerted,
                                                                                   strRawLogText:=strRawLogText.Trim,
                                                                                   strAlertText:=strAlertText,

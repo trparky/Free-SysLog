@@ -1,6 +1,5 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
-Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
@@ -13,6 +12,9 @@ Public Class ViewLogBackups
     Private boolDoneLoading As Boolean = False
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
+    Private startDate As Date = Date.MinValue
+    Private endDate As Date = Date.MaxValue
+    Private dateMinimumFromLoadingFiles As Date = Date.MinValue
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles FileList.ColumnHeaderMouseClick
         If e.Button = MouseButtons.Left Then
@@ -41,23 +43,19 @@ Public Class ViewLogBackups
     End Sub
 
     Private Function GetUncompressedSizeOfGZIPedLogFile(strPathToGZIPedLogFile As String) As Long
-        Try
-            Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
-                If fs.Length < 4 Then Return -1
+        Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+            If fs.Length < 4 Then Return -1
 
-                fs.Seek(-4, SeekOrigin.End)
+            fs.Seek(-4, SeekOrigin.End)
 
-                Dim sizeBytes(3) As Byte
-                Dim bytesRead As Integer = fs.Read(sizeBytes, 0, 4)
+            Dim sizeBytes(3) As Byte
+            Dim bytesRead As Integer = fs.Read(sizeBytes, 0, 4)
 
-                If bytesRead <> 4 Then Return -1 ' Return -1 to indicate an error occurred
+            If bytesRead <> 4 Then Return -1 ' Return -1 to indicate an error occurred
 
-                ' GZIP stores ISIZE as little-endian UInt32
-                Return BitConverter.ToUInt32(sizeBytes, 0)
-            End Using
-        Catch ex As Exception
-            Return -1 ' Return -1 to indicate an error occurred
-        End Try
+            ' GZIP stores ISIZE as little-endian UInt32
+            Return BitConverter.ToUInt32(sizeBytes, 0)
+        End Using
     End Function
 
     Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
@@ -97,32 +95,45 @@ Public Class ViewLogBackups
     End Function
 
     Private Sub LoadFileList(Optional intReselectItem As Integer = -1)
-        Dim filesInDirectory As FileInfo()
-
-        If ChkShowHidden.Checked Then
-            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
-        Else
-            filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
-        End If
-
+        Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim threadSafeListOfDataGridViewRows As New ThreadSafeList(Of DataGridViewRow)
-        Dim intHiddenTotalLogCount, intFileCount, intHiddenFileCount As Integer
-        Dim longTotalLogCount, longUsedDiskSpace As Long
+        Dim intFileCount, intHiddenFileCount As Integer
+        Dim longTotalLogCount, longUsedDiskSpace, longUsedDiskSpaceIncludingHidden As Long
         Dim intNumberOfCompressedFiles As Integer = 0
+        Dim dateMinimumLockObject As New Object
+
+        dateMinimumFromLoadingFiles = Date.MinValue
+        startDate = Date.MinValue
+        endDate = Date.MaxValue
+
+        btnClearDateLimit.Enabled = False
+        ToolTip.SetToolTip(btnLimitByDate, "")
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                               Interlocked.Add(longUsedDiskSpaceIncludingHidden, file.Length)
+
                                                Dim boolIsHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
+
+                                               If boolIsHidden Then Interlocked.Increment(intHiddenFileCount)
+
+                                               If Not ChkShowHidden.Checked And boolIsHidden Then
+                                                   Exit Sub
+                                               End If
+
+                                               SyncLock dateMinimumLockObject
+                                                   If dateMinimumFromLoadingFiles = Date.MinValue OrElse file.LastWriteTime < dateMinimumFromLoadingFiles Then
+                                                       dateMinimumFromLoadingFiles = file.LastWriteTime
+                                                   End If
+                                               End SyncLock
+
+                                               Interlocked.Add(longUsedDiskSpace, file.Length)
+
                                                Dim intCount As Integer = GetEntryCount(file.FullName)
-                                               Dim longUnCompresedSize As Long = -1
+                                               Dim longUnCompressedSize As Long = -1
 
                                                If intCount <> -1 Then
-                                                   If boolIsHidden Then
-                                                       Interlocked.Increment(intHiddenFileCount)
-                                                       Interlocked.Add(intHiddenTotalLogCount, intCount)
-                                                   Else
-                                                       Interlocked.Increment(intFileCount)
-                                                       Interlocked.Add(longTotalLogCount, intCount)
-                                                   End If
+                                                   Interlocked.Add(longTotalLogCount, intCount)
+                                                   Interlocked.Increment(intFileCount)
 
                                                    Dim row As New MyDataGridViewFileRow()
 
@@ -135,25 +146,6 @@ Public Class ViewLogBackups
                                                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(1).Value = $"{file.LastWriteTime:D} {file.LastWriteTime:T}"
-                                                       .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
-
-                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                           longUnCompresedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
-
-                                                           If ChkShowCompressionSizeDifference.Checked Then
-                                                               If longUnCompresedSize = -1 Then
-                                                                   row.Cells(2).Value = "Error"
-                                                               Else
-                                                                   row.Cells(2).Value = FileSizeToHumanSize(longUnCompresedSize)
-                                                               End If
-                                                           Else
-                                                               row.Cells(2).Value = FileSizeToHumanSize(file.Length)
-                                                           End If
-                                                       Else
-                                                           .Cells(2).Value = FileSizeToHumanSize(file.Length)
-                                                       End If
-
-                                                       .Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(3).Value = $"{intCount:N0}"
                                                        .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -173,20 +165,28 @@ Public Class ViewLogBackups
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
                                                    If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                       If ChkShowCompressionSizeDifference.Checked Then
-                                                           If ChkShowCompressionSizeDifferencePercentage.Checked Then
-                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)}"
-                                                               If longUnCompresedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompresedSize * 100):F2}% smaller"
-                                                               row.Cells(2).Value &= $")"
-                                                           Else
-                                                               row.Cells(2).Value &= $" ({FileSizeToHumanSize(file.Length)})"
-                                                           End If
-                                                       End If
+                                                       row.Cells(2).Value = FileSizeToHumanSize(file.Length)
 
-                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                       Try
+                                                           If ChkShowCompressionSizeDifference.Checked Then
+                                                               longUnCompressedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
+
+                                                               If longUnCompressedSize <> -1 Then
+                                                                   If ChkShowCompressionSizeDifferencePercentage.Checked Then
+                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)}"
+                                                                       If longUnCompressedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompressedSize * 100):F2}% larger"
+                                                                       row.Cells(2).Value &= ")"
+                                                                   Else
+                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)})"
+                                                                   End If
+                                                               End If
+                                                           End If
+                                                       Catch ex As Exception
+                                                       End Try
+
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
                                                    Else
-                                                       Interlocked.Add(longUsedDiskSpace, file.Length)
+                                                       row.Cells(2).Value = FileSizeToHumanSize(file.Length)
                                                    End If
 
                                                    threadSafeListOfDataGridViewRows.Add(row)
@@ -198,7 +198,7 @@ Public Class ViewLogBackups
                    threadSafeListOfDataGridViewRows = Nothing
 
                    If ChkShowCompressionSizeDifference.Checked And intNumberOfCompressedFiles <> 0 Then
-                       ColFileSize.HeaderText = "File Size (Compressed Size)"
+                       ColFileSize.HeaderText = "File Size (Un-Compressed Size)"
                    Else
                        ColFileSize.HeaderText = "File Size"
                    End If
@@ -215,18 +215,20 @@ Public Class ViewLogBackups
 
                    lblNumberOfFiles.Text = $"Number of Files: {intFileCount:N0}"
 
-                   If intNumberOfCompressedFiles = 0 Then
-                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                   If longUsedDiskSpace = longUsedDiskSpaceIncludingHidden Then
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)}"
                    Else
-                       LblTotalDiskSpace.Text = $"Total Disk Space Used on Disk: {FileSizeToHumanSize(longUsedDiskSpace)}"
+                       LblTotalDiskSpace.Text = $"Total Disk Space Used: {FileSizeToHumanSize(longUsedDiskSpace)} (Including Hidden Files: {FileSizeToHumanSize(longUsedDiskSpaceIncludingHidden)})"
                    End If
 
                    lblTotalNumberOfLogs.Text = $"Total Number of Logs: {longTotalLogCount:N0}"
 
-                   lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
-                   lblTotalNumberOfHiddenLogs.Visible = intHiddenFileCount > 0
-                   lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
-                   lblTotalNumberOfHiddenLogs.Text = $"Number of Hidden Logs: {intHiddenTotalLogCount:N0}"
+                   If ChkShowHidden.Checked Then
+                       lblNumberOfHiddenFiles.Visible = False
+                   Else
+                       lblNumberOfHiddenFiles.Visible = intHiddenFileCount > 0
+                       lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
+                   End If
 
                    If intReselectItem <> -1 AndAlso intReselectItem < FileList.Rows.Count Then
                        FileList.ClearSelection()
@@ -409,8 +411,13 @@ Public Class ViewLogBackups
 
                                           Dim dataFromFile As List(Of SavedData)
                                           Dim myDataGridRow As MyDataGridViewRow
+                                          Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                                 If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
+                                                                                     Exit Sub
+                                                                                 End If
+
                                                                                  If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                                  Else
@@ -798,8 +805,13 @@ Public Class ViewLogBackups
                                       Dim dataFromFile As List(Of SavedData)
                                       Dim myDataGridRow As MyDataGridViewRow
                                       Dim boolDidWeHaveAMatch As Boolean = False
+                                      Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                       Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                             If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
+                                                                                 Exit Sub
+                                                                             End If
+
                                                                              If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
                                                                                  dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                              Else
@@ -968,5 +980,36 @@ Public Class ViewLogBackups
     Private Sub ChkShowCompressionSizeDifferencePercentage_Click(sender As Object, e As EventArgs) Handles ChkShowCompressionSizeDifferencePercentage.Click
         My.Settings.ShowCompressionSizeDifferencePercentage = ChkShowCompressionSizeDifferencePercentage.Checked
         ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+    End Sub
+
+    Private Sub btnLimitByDate_Click(sender As Object, e As EventArgs) Handles btnLimitByDate.Click
+        Dim frmCalendar As New frmCalendar With {
+            .StartPosition = FormStartPosition.CenterParent,
+            .Icon = Icon,
+            .Text = "Select Date Range",
+            .startDate = If(startDate.Equals(Date.MinValue), dateMinimumFromLoadingFiles, startDate),
+            .endDate = If(endDate.Equals(Date.MaxValue), Date.Now.AddDays(-1), endDate),
+            .minDate = dateMinimumFromLoadingFiles
+        }
+
+        frmCalendar.ShowDialog(Me)
+
+        If frmCalendar.results = MsgBoxResult.Ok Then
+            startDate = frmCalendar.startDate
+            endDate = frmCalendar.endDate
+
+            ToolTip.SetToolTip(btnLimitByDate, $"{startDate:d} through {endDate:d}")
+
+            btnClearDateLimit.Enabled = True
+        End If
+
+        frmCalendar.Dispose()
+    End Sub
+
+    Private Sub btnClearDateLimit_Click(sender As Object, e As EventArgs) Handles btnClearDateLimit.Click
+        startDate = Date.MinValue
+        endDate = Date.MaxValue
+        btnClearDateLimit.Enabled = False
+        ToolTip.SetToolTip(btnLimitByDate, "")
     End Sub
 End Class

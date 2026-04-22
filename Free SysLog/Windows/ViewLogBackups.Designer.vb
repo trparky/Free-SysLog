@@ -51,9 +51,9 @@ Partial Class ViewLogBackups
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
         Me.ChkIgnoreSearchResultsLimits = New System.Windows.Forms.CheckBox()
+        Me.btnClearDateLimit = New System.Windows.Forms.Button()
         Me.ChkLogFileDeletions = New System.Windows.Forms.CheckBox()
         Me.lblNumberOfHiddenFiles = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.lblTotalNumberOfHiddenLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblTotalDiskSpace = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
@@ -63,6 +63,7 @@ Partial Class ViewLogBackups
         Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
         Me.ShowInWindowsExplorerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.RenameToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnLimitByDate = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.FileList, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -85,7 +86,7 @@ Partial Class ViewLogBackups
         Me.FileList.ReadOnly = True
         Me.FileList.RowHeadersVisible = False
         Me.FileList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.FileList.Size = New System.Drawing.Size(953, 243)
+        Me.FileList.Size = New System.Drawing.Size(954, 243)
         Me.FileList.TabIndex = 36
         '
         'ColFileName
@@ -180,10 +181,10 @@ Partial Class ViewLogBackups
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.lblTotalNumberOfHiddenLogs, Me.LblTotalDiskSpace})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.LblTotalDiskSpace})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(978, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(979, 22)
         Me.StatusStrip1.TabIndex = 5
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -323,14 +324,6 @@ Partial Class ViewLogBackups
         Me.lblNumberOfHiddenFiles.Text = "Number of Hidden Files:"
         Me.lblNumberOfHiddenFiles.Visible = False
         '
-        'lblTotalNumberOfHiddenLogs
-        '
-        Me.lblTotalNumberOfHiddenLogs.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
-        Me.lblTotalNumberOfHiddenLogs.Name = "lblTotalNumberOfHiddenLogs"
-        Me.lblTotalNumberOfHiddenLogs.Size = New System.Drawing.Size(138, 17)
-        Me.lblTotalNumberOfHiddenLogs.Text = "Number of Hidden Logs:"
-        Me.lblTotalNumberOfHiddenLogs.Visible = False
-        '
         'LblTotalDiskSpace
         '
         Me.LblTotalDiskSpace.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
@@ -417,11 +410,32 @@ Partial Class ViewLogBackups
         Me.ShowInWindowsExplorerToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.ShowInWindowsExplorerToolStripMenuItem.Text = "Show in Windows Explorer"
         '
+        'btnLimitByDate
+        '
+        Me.btnLimitByDate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnLimitByDate.Location = New System.Drawing.Point(322, 261)
+        Me.btnLimitByDate.Name = "btnLimitByDate"
+        Me.btnLimitByDate.Size = New System.Drawing.Size(110, 23)
+        Me.btnLimitByDate.TabIndex = 45
+        Me.btnLimitByDate.Text = "Limit by Date"
+        Me.btnLimitByDate.UseVisualStyleBackColor = True
+        '
+        'btnClearDateLimit
+        '
+        Me.btnClearDateLimit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnClearDateLimit.Enabled = False
+        Me.btnClearDateLimit.Location = New System.Drawing.Point(438, 261)
+        Me.btnClearDateLimit.Name = "btnClearDateLimit"
+        Me.btnClearDateLimit.Size = New System.Drawing.Size(110, 23)
+        Me.btnClearDateLimit.TabIndex = 46
+        Me.btnClearDateLimit.Text = "Clear Date Limit"
+        Me.btnClearDateLimit.UseVisualStyleBackColor = True
+        '
         'ViewLogBackups
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(978, 364)
+        Me.ClientSize = New System.Drawing.Size(979, 364)
         Me.Controls.Add(Me.btnViewLogsWithLimits)
         Me.Controls.Add(Me.boxLimiter)
         Me.Controls.Add(Me.boxLimitBy)
@@ -442,10 +456,12 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.ChkLogFileDeletions)
         Me.Controls.Add(Me.ChkShowCompressionSizeDifference)
         Me.Controls.Add(Me.ChkShowCompressionSizeDifferencePercentage)
+        Me.Controls.Add(Me.btnLimitByDate)
+        Me.Controls.Add(Me.btnClearDateLimit)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(994, 403)
+        Me.MinimumSize = New System.Drawing.Size(995, 403)
         Me.Name = "ViewLogBackups"
         Me.Text = "View Log Backups"
         Me.ContextMenuStrip1.ResumeLayout(False)
@@ -481,7 +497,6 @@ Partial Class ViewLogBackups
     Friend WithEvents colHidden As DataGridViewTextBoxColumn
     Friend WithEvents ChkShowHiddenAsGray As CheckBox
     Friend WithEvents lblNumberOfHiddenFiles As ToolStripStatusLabel
-    Friend WithEvents lblTotalNumberOfHiddenLogs As ToolStripStatusLabel
     Friend WithEvents LblTotalDiskSpace As ToolStripStatusLabel
     Friend WithEvents colEntryCount As DataGridViewTextBoxColumn
     Friend WithEvents ToolTip As ToolTip
@@ -497,4 +512,6 @@ Partial Class ViewLogBackups
     Friend WithEvents UncompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChkShowCompressionSizeDifference As CheckBox
     Friend WithEvents ChkShowCompressionSizeDifferencePercentage As CheckBox
+    Friend WithEvents btnLimitByDate As Button
+    Friend WithEvents btnClearDateLimit As Button
 End Class
