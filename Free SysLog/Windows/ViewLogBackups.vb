@@ -107,6 +107,7 @@ Public Class ViewLogBackups
         endDate = Date.MaxValue
 
         btnClearDateLimit.Enabled = False
+        ToolTip.SetToolTip(btnLimitByDate, "")
 
         Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                Interlocked.Add(longUsedDiskSpaceIncludingHidden, file.Length)
@@ -997,6 +998,8 @@ Public Class ViewLogBackups
             startDate = frmCalendar.startDate
             endDate = frmCalendar.endDate
 
+            ToolTip.SetToolTip(btnLimitByDate, $"{startDate:d} through {endDate:d}")
+
             btnClearDateLimit.Enabled = True
         End If
 
@@ -1007,5 +1010,6 @@ Public Class ViewLogBackups
         startDate = Date.MinValue
         endDate = Date.MaxValue
         btnClearDateLimit.Enabled = False
+        ToolTip.SetToolTip(btnLimitByDate, "")
     End Sub
 End Class
