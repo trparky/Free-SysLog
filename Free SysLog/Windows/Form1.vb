@@ -36,6 +36,7 @@ Public Class Form1
     Private ReplacementsInstance As Replacements
     Private AlertsInstance As Alerts
     Private ConfigureSysLogMirrorClientsInstance As ConfigureSysLogMirrorClients
+    Private Const strBlank As String = "(Blank)"
 #End Region
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
@@ -148,12 +149,16 @@ Public Class Form1
             sortedList = recentUniqueObjects.logTypes.ToList()
             sortedList.Sort()
 
+            boxLimiter.Items.Add(strBlank)
             boxLimiter.Items.AddRange(sortedList.ToArray)
+            boxLimiter.Text = strBlank
         ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
             sortedList = recentUniqueObjects.processes.ToList()
             sortedList.Sort()
 
+            boxLimiter.Items.Add(strBlank)
             boxLimiter.Items.AddRange(sortedList.ToArray)
+            boxLimiter.Text = strBlank
         ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
             sortedList = recentUniqueObjects.hostNames.ToList()
             sortedList.Sort()
@@ -1472,6 +1477,8 @@ Public Class Form1
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
         Dim stopWatch As Stopwatch = Stopwatch.StartNew
         Dim worker As New BackgroundWorker()
+
+        If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
 
         AddHandler worker.DoWork, Sub()
                                       Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
