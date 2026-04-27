@@ -796,6 +796,14 @@ Public Class ViewLogBackups
 
         If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
 
+        If strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
+            MsgBox("You must select a hostname to limit by.", MsgBoxStyle.Exclamation, Text)
+            Exit Sub
+        ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
+            MsgBox("You must select an IP address to limit by.", MsgBoxStyle.Exclamation, Text)
+            Exit Sub
+        End If
+
         BtnSearch.Enabled = False
 
         Dim worker As New BackgroundWorker()
