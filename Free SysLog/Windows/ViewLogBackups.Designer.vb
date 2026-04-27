@@ -397,6 +397,7 @@ Partial Class ViewLogBackups
         'btnViewLogsWithLimits
         '
         Me.btnViewLogsWithLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnViewLogsWithLimits.Enabled = False
         Me.btnViewLogsWithLimits.Location = New System.Drawing.Point(438, 288)
         Me.btnViewLogsWithLimits.Name = "btnViewLogsWithLimits"
         Me.btnViewLogsWithLimits.Size = New System.Drawing.Size(110, 23)

@@ -796,14 +796,6 @@ Public Class ViewLogBackups
 
         If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
 
-        If strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
-            MsgBox("You must select a hostname to limit by.", MsgBoxStyle.Exclamation, Text)
-            Exit Sub
-        ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
-            MsgBox("You must select an IP address to limit by.", MsgBoxStyle.Exclamation, Text)
-            Exit Sub
-        End If
-
         BtnSearch.Enabled = False
 
         Dim worker As New BackgroundWorker()
@@ -1026,5 +1018,9 @@ Public Class ViewLogBackups
         endDate = Date.MaxValue
         btnClearDateLimit.Enabled = False
         ToolTip.SetToolTip(btnLimitByDate, "")
+    End Sub
+
+    Private Sub boxLimiter_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimiter.SelectedValueChanged
+        btnViewLogsWithLimits.Enabled = Not String.IsNullOrWhiteSpace(boxLimiter.Text)
     End Sub
 End Class
