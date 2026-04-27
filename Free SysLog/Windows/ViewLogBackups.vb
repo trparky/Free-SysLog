@@ -15,6 +15,7 @@ Public Class ViewLogBackups
     Private startDate As Date = Date.MinValue
     Private endDate As Date = Date.MaxValue
     Private dateMinimumFromLoadingFiles As Date = Date.MinValue
+    Private Const strBlank As String = "(Blank)"
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles FileList.ColumnHeaderMouseClick
         If e.Button = MouseButtons.Left Then
@@ -756,12 +757,16 @@ Public Class ViewLogBackups
             sortedList = combinedUniqueObjects.logTypes.ToList()
             sortedList.Sort()
 
+            boxLimiter.Items.Add(strBlank)
             boxLimiter.Items.AddRange(sortedList.ToArray)
+            boxLimiter.Text = strBlank
         ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
             sortedList = combinedUniqueObjects.processes.ToList()
             sortedList.Sort()
 
+            boxLimiter.Items.Add(strBlank)
             boxLimiter.Items.AddRange(sortedList.ToArray)
+            boxLimiter.Text = strBlank
         ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
             sortedList = combinedUniqueObjects.hostNames.ToList()
             sortedList.Sort()
@@ -788,6 +793,16 @@ Public Class ViewLogBackups
         searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
 
         If My.Settings.font IsNot Nothing Then searchResultsWindow.Logs.DefaultCellStyle.Font = My.Settings.font
+
+        If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
+
+        If strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
+            MsgBox("You must select a hostname to limit by.", MsgBoxStyle.Exclamation, Text)
+            Exit Sub
+        ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
+            MsgBox("You must select an IP address to limit by.", MsgBoxStyle.Exclamation, Text)
+            Exit Sub
+        End If
 
         BtnSearch.Enabled = False
 
