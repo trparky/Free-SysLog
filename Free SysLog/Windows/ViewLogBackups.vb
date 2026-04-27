@@ -15,7 +15,6 @@ Public Class ViewLogBackups
     Private startDate As Date = Date.MinValue
     Private endDate As Date = Date.MaxValue
     Private dateMinimumFromLoadingFiles As Date = Date.MinValue
-    Private Const strBlank As String = "(Blank)"
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles FileList.ColumnHeaderMouseClick
         If e.Button = MouseButtons.Left Then

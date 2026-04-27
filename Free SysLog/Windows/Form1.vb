@@ -36,7 +36,6 @@ Public Class Form1
     Private ReplacementsInstance As Replacements
     Private AlertsInstance As Alerts
     Private ConfigureSysLogMirrorClientsInstance As ConfigureSysLogMirrorClients
-    Private Const strBlank As String = "(Blank)"
 #End Region
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
