@@ -520,10 +520,14 @@ Public Class ViewLogBackups
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
         If FileList.SelectedRows.Count > 0 Then
-            DeleteToolStripMenuItem.Enabled = True
+            DeleteToolStripMenuItem.Visible = True
             ShowInWindowsExplorerToolStripMenuItem.Visible = True
             RenameToolStripMenuItem.Visible = True
-            ViewToolStripMenuItem.Enabled = FileList.SelectedRows.Count <= 1
+            ViewToolStripMenuItem.Visible = FileList.SelectedRows.Count <= 1
+            UnhideToolStripMenuItem.Visible = True
+            HideToolStripMenuItem.Visible = True
+            GZIPCompressFileToolStripMenuItem.Visible = True
+            UncompressFileToolStripMenuItem.Visible = True
 
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
             Dim fileInfo As New FileInfo(fileName)
@@ -544,10 +548,14 @@ Public Class ViewLogBackups
                 UncompressFileToolStripMenuItem.Visible = False
             End If
         Else
-            DeleteToolStripMenuItem.Enabled = False
-            ViewToolStripMenuItem.Enabled = False
+            DeleteToolStripMenuItem.Visible = False
+            ViewToolStripMenuItem.Visible = False
             ShowInWindowsExplorerToolStripMenuItem.Visible = False
             RenameToolStripMenuItem.Visible = False
+            UnhideToolStripMenuItem.Visible = False
+            HideToolStripMenuItem.Visible = False
+            GZIPCompressFileToolStripMenuItem.Visible = False
+            UncompressFileToolStripMenuItem.Visible = False
         End If
     End Sub
 
@@ -1025,5 +1033,9 @@ Public Class ViewLogBackups
 
     Private Sub FileList_MouseClick(sender As Object, e As MouseEventArgs) Handles FileList.MouseClick
         If FileList.HitTest(e.X, e.Y).Type = DataGridViewHitTestType.None Then FileList.ClearSelection()
+    End Sub
+
+    Private Sub RefreshToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs) Handles RefreshToolStripMenuItem.CheckedChanged
+        BtnRefresh.PerformClick()
     End Sub
 End Class
