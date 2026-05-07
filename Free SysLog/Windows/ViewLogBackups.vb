@@ -1022,4 +1022,8 @@ Public Class ViewLogBackups
     Private Sub boxLimiter_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimiter.SelectedValueChanged
         btnViewLogsWithLimits.Enabled = Not String.IsNullOrWhiteSpace(boxLimiter.Text)
     End Sub
+
+    Private Sub FileList_MouseClick(sender As Object, e As MouseEventArgs) Handles FileList.MouseClick
+        If FileList.HitTest(e.X, e.Y).Type = DataGridViewHitTestType.None Then FileList.ClearSelection()
+    End Sub
 End Class
