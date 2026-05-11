@@ -1605,6 +1605,10 @@ Public Class Form1
         LogsMenuHideServerTimeColumn.Text = $"{If(colServerTime.Visible, "Hide", "Show")} Server Time Column"
     End Sub
 
+    Private Sub Logs_MouseClick(sender As Object, e As MouseEventArgs) Handles Logs.MouseClick
+        If Logs.HitTest(e.X, e.Y).Type = DataGridViewHitTestType.None Then Logs.ClearSelection()
+    End Sub
+
 #Region "--== SysLog Server Code ==--"
     Sub SysLogThread()
         Try
