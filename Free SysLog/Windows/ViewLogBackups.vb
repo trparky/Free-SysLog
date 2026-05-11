@@ -282,7 +282,7 @@ Public Class ViewLogBackups
         ChkLogFileDeletions.Checked = My.Settings.LogFileDeletions
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         boolDoneLoading = True
     End Sub
 
@@ -323,7 +323,7 @@ Public Class ViewLogBackups
 
                     If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
 
-                    ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+                    ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
                 End If
             Else
                 Dim msgBoxText As String = "Are you sure you want to delete the following files?" & vbCrLf & vbCrLf
@@ -348,7 +348,7 @@ Public Class ViewLogBackups
 
                     If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, strDeletedFilesLog.ToString)
 
-                    ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+                    ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
                 End If
             End If
         End If
@@ -356,7 +356,7 @@ Public Class ViewLogBackups
 
     Private Sub ViewLogBackups_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.F5 Then
-            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         ElseIf e.KeyCode = Keys.Delete Then
             BtnDelete.PerformClick()
         End If
@@ -575,7 +575,7 @@ Public Class ViewLogBackups
         My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
         ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         colHidden.Visible = ChkShowHidden.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub UncompressGZIPFile(strFilePath As String)
@@ -668,7 +668,7 @@ Public Class ViewLogBackups
         If ChkShowHidden.Checked Then
             ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
         Else
-            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         End If
     End Sub
 
@@ -689,7 +689,7 @@ Public Class ViewLogBackups
         If ChkShowHidden.Checked Then
             ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
         Else
-            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         End If
     End Sub
 
@@ -711,7 +711,7 @@ Public Class ViewLogBackups
 
     Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
         My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub FileList_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles FileList.ColumnWidthChanged
@@ -992,12 +992,12 @@ Public Class ViewLogBackups
     Private Sub ChkShowCompressionSizeDifference_Click(sender As Object, e As EventArgs) Handles ChkShowCompressionSizeDifference.Click
         My.Settings.ShowCompressionSizeDifference = ChkShowCompressionSizeDifference.Checked
         ChkShowCompressionSizeDifferencePercentage.Enabled = ChkShowCompressionSizeDifference.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub ChkShowCompressionSizeDifferencePercentage_Click(sender As Object, e As EventArgs) Handles ChkShowCompressionSizeDifferencePercentage.Click
         My.Settings.ShowCompressionSizeDifferencePercentage = ChkShowCompressionSizeDifferencePercentage.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub btnLimitByDate_Click(sender As Object, e As EventArgs) Handles btnLimitByDate.Click
