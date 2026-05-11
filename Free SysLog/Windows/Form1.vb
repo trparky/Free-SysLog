@@ -1605,7 +1605,7 @@ Public Class Form1
         LogsMenuHideServerTimeColumn.Text = $"{If(colServerTime.Visible, "Hide", "Show")} Server Time Column"
     End Sub
 
-#Region "-- SysLog Server Code --"
+#Region "--== SysLog Server Code ==--"
     Sub SysLogThread()
         Try
             ' These are initialized as IPv4 mode.
