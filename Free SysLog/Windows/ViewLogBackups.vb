@@ -234,6 +234,8 @@ Public Class ViewLogBackups
                        FileList.ClearSelection()
                        FileList.Rows(intReselectItem).Selected = True
                        FileList.FirstDisplayedScrollingRowIndex = intReselectItem
+                   Else
+                       FileList.ClearSelection()
                    End If
                End Sub)
     End Sub
@@ -361,7 +363,9 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        Dim intOldIndex As Integer = -1
+        If FileList.SelectedRows.Count > 0 Then intOldIndex = FileList.SelectedRows(0).Index
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
     End Sub
 
     Private Sub ViewLogBackups_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
