@@ -230,12 +230,11 @@ Public Class ViewLogBackups
                        lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
                    End If
 
+                   FileList.ClearSelection()
+
                    If intReselectItem <> -1 AndAlso intReselectItem < FileList.Rows.Count Then
-                       FileList.ClearSelection()
                        FileList.Rows(intReselectItem).Selected = True
                        FileList.FirstDisplayedScrollingRowIndex = intReselectItem
-                   Else
-                       FileList.ClearSelection()
                    End If
                End Sub)
     End Sub
