@@ -484,16 +484,16 @@ Namespace SupportCode
             Return Nothing
         End Function
 
-        Public Function GetProcessByPort(protocolType As ProtocolType) As Process
+        Public Function GetProcessByPort(protocolType As ProtocolType, intPort As Integer) As Process
             Dim processIPv4 As Process = Nothing
             Dim processIPv6 As Process = Nothing
 
             If protocolType = ProtocolType.Tcp Then
-                processIPv4 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
-                processIPv6 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+                processIPv4 = GetProcessByTcpPort(intPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByTcpPort(intPort, AddressFamily.InterNetworkV6)
             ElseIf protocolType = ProtocolType.Udp Then
-                processIPv4 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
-                processIPv6 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+                processIPv4 = GetProcessByUdpPort(intPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByUdpPort(intPort, AddressFamily.InterNetworkV6)
             End If
 
             If processIPv4 IsNot Nothing Then

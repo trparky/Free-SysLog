@@ -36,7 +36,7 @@ Namespace SyslogTcpServer
                     Await HandleClientAsync(tcpClient)
                 End While
             Catch ex As Exception
-                Dim activeProcess As Process = GetProcessByPort(ProtocolType.Tcp)
+                Dim activeProcess As Process = GetProcessByPort(ProtocolType.Tcp, My.Settings.sysLogPort)
 
                 If activeProcess Is Nothing Then
                     ParentForm.Logs.Invoke(Sub() ParentForm.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", ParentForm.Logs)))
