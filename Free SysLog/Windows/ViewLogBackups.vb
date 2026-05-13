@@ -94,7 +94,7 @@ Public Class ViewLogBackups
         End Try
     End Function
 
-    Private Sub LoadFileList(Optional intReselectItem As Integer = -1)
+    Private Sub LoadFileList(intReselectItem As Integer)
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim threadSafeListOfDataGridViewRows As New ThreadSafeList(Of DataGridViewRow)
         Dim intFileCount, intHiddenFileCount As Integer
