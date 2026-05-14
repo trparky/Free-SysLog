@@ -39,7 +39,7 @@ Namespace SyslogTcpServer
                 Dim activeProcess As Process = GetProcessByPort(ProtocolType.Tcp, My.Settings.sysLogPort)
 
                 If activeProcess Is Nothing Then
-                    ParentForm.Logs.Invoke(Sub() ParentForm.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", ParentForm.Logs)))
+                    ParentForm.Logs.Invoke(Sub() ParentForm.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(ex.StackTrace)}", ParentForm.Logs)))
                 Else
                     ParentForm.Logs.Invoke(Sub() ParentForm.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to start syslog TCP server. A process with a PID of {activeProcess.Id} already has the TCP port open.", ParentForm.Logs)))
                 End If

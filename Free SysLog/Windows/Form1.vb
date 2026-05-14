@@ -1683,7 +1683,7 @@ Public Class Form1
                            Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
 
                            SyncLock dataGridLockObject
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(e.StackTrace)}", Logs))
                                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
                                SelectLatestLogEntry()
                                UpdateLogCount()
@@ -1890,7 +1890,7 @@ Public Class Form1
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
                            SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs),
                            SyslogParser.MakeLocalDataGridRowEntry("There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", Logs),
-                           SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", Logs)
+                           SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(ex.StackTrace)}", Logs)
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)

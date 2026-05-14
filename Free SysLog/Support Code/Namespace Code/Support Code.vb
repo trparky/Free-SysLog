@@ -58,6 +58,8 @@ Namespace SupportCode
         Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredStats As New ConcurrentDictionary(Of String, IgnoredStatsEntry)
 
+        Public regexRemovePathFromExceptionString As New Regex("([a-zA-Z]:\\|\\\\)(?:[^\\\/:*?""<>|\r\n]+[\\\/])*[^\\\/:*?""<>|\r\n]*", RegexOptions.Compiled)
+
         Public longNumberOfIgnoredLogs As Long = 0
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
@@ -139,6 +141,11 @@ Namespace SupportCode
             Else
                 Return String.Join(" ", parts)
             End If
+        End Function
+
+        Public Function RemovePathFromExceptionString(strException As String) As String
+            If String.IsNullOrWhiteSpace(strException) Then Return strException
+            Return regexRemovePathFromExceptionString.Replace(strException, Function(m As Match) Path.GetFileName(m.Value))
         End Function
 
         Public Function IsGZipFile(strPath As String) As Boolean

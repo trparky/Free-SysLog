@@ -124,7 +124,7 @@ Namespace SaveAppSettings
 
                 Return True
             Catch ex As Exception
-                MsgBox($"There was an issue decoding your chosen JSON settings file, import failed.{vbCrLf}{vbCrLf}{ex.Message}{ex.StackTrace.Trim}", MsgBoxStyle.Critical, strMessageBoxTitle)
+                MsgBox($"There was an issue decoding your chosen JSON settings file, import failed.{vbCrLf}{vbCrLf}{ex.Message}{RemovePathFromExceptionString(ex.StackTrace.Trim)}", MsgBoxStyle.Critical, strMessageBoxTitle)
                 Return False
             End Try
         End Function

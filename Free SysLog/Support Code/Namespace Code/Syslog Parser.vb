@@ -406,7 +406,7 @@ Namespace SyslogParser
             Catch ex2 As FormatException
                 AddToLogList(Nothing, $"{ex2.Message}{vbCrLf}The log that failed parsing was...{vbCrLf}{strRawLogText}")
             Catch ex As Exception
-                AddToLogList(Nothing, $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
+                AddToLogList(Nothing, $"{ex.Message} -- {RemovePathFromExceptionString(ex.StackTrace)}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
         End Sub
 

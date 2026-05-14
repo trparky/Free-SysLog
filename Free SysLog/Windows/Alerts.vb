@@ -331,7 +331,7 @@ Public Class Alerts
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(
                     SyslogParser.MakeLocalDataGridRowEntry(
-                        $"Unable to save user preferences on ""Alerts"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        $"Unable to save user preferences on ""Alerts"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{RemovePathFromExceptionString(ex.StackTrace)}",
                         SupportCode.ParentForm.Logs
                     )
                 )

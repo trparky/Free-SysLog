@@ -266,9 +266,9 @@ Namespace checkForUpdates
             Catch ex As Exception
                 Dim strCrashFile As String = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Free SysLog Crash Details.log")
                 If File.Exists(strCrashFile) Then File.Delete(strCrashFile)
-                File.WriteAllText(strCrashFile, $"{ex.Message} -- {ex.StackTrace}")
+                File.WriteAllText(strCrashFile, $"{ex.Message} -- {RemovePathFromExceptionString(ex.StackTrace)}")
 
-                MakeLogEntry($"{ex.Message} -- {ex.StackTrace}", True)
+                MakeLogEntry($"{ex.Message} -- {RemovePathFromExceptionString(ex.StackTrace)}", True)
 
                 MsgBox($"An error occurred while attempting to update the program. Crash data has been written to a file named ""Free SysLog Crash Details.log"".{vbCrLf}{vbCrLf}Windows Explorer will open to the file location.", MsgBoxStyle.Critical, strMessageBoxTitleText)
 
@@ -396,7 +396,7 @@ Namespace checkForUpdates
                     End If
                 Catch ex As Exception
                     ' Ok, we crashed but who cares; but we log it.
-                    MakeLogEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}")
+                    MakeLogEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(ex.StackTrace)}")
                 Finally
                     windowObject.Invoke(Sub()
                                             windowObject.BtnCheckForUpdates.Enabled = True
