@@ -59,6 +59,7 @@ Partial Class ViewLogBackups
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.GZIPCompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UncompressFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RefreshToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.btnViewLogsWithLimits = New System.Windows.Forms.Button()
         Me.ShowInWindowsExplorerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -119,7 +120,7 @@ Partial Class ViewLogBackups
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.GZIPCompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeleteToolStripMenuItem, Me.ViewToolStripMenuItem, Me.HideToolStripMenuItem, Me.RenameToolStripMenuItem, Me.RefreshToolStripMenuItem, Me.ShowInWindowsExplorerToolStripMenuItem, Me.UnhideToolStripMenuItem, Me.GZIPCompressFileToolStripMenuItem, Me.UncompressFileToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip1.Size = New System.Drawing.Size(214, 180)
         '
@@ -218,6 +219,12 @@ Partial Class ViewLogBackups
         Me.UncompressFileToolStripMenuItem.Name = "UncompressFileToolStripMenuItem"
         Me.UncompressFileToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.UncompressFileToolStripMenuItem.Text = "Uncompress File"
+        '
+        'RefreshToolStripMenuItem
+        '
+        Me.RefreshToolStripMenuItem.Name = "RefreshToolStripMenuItem"
+        Me.RefreshToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
+        Me.RefreshToolStripMenuItem.Text = "Refresh File List"
         '
         'ChkRegExSearch
         '
@@ -397,6 +404,7 @@ Partial Class ViewLogBackups
         'btnViewLogsWithLimits
         '
         Me.btnViewLogsWithLimits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnViewLogsWithLimits.Enabled = False
         Me.btnViewLogsWithLimits.Location = New System.Drawing.Point(438, 288)
         Me.btnViewLogsWithLimits.Name = "btnViewLogsWithLimits"
         Me.btnViewLogsWithLimits.Size = New System.Drawing.Size(110, 23)
@@ -510,6 +518,7 @@ Partial Class ViewLogBackups
     Friend WithEvents RenameToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents GZIPCompressFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UncompressFileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RefreshToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ChkShowCompressionSizeDifference As CheckBox
     Friend WithEvents ChkShowCompressionSizeDifferencePercentage As CheckBox
     Friend WithEvents btnLimitByDate As Button

@@ -58,6 +58,8 @@ Namespace SupportCode
         Public IgnoredRegexCache As New ConcurrentDictionary(Of String, Regex)
         Public IgnoredStats As New ConcurrentDictionary(Of String, IgnoredStatsEntry)
 
+        Public regexRemovePathFromExceptionString As New Regex("([a-zA-Z]:\\|\\\\)(?:[^\\\/:*?""<>|\r\n]+[\\\/])*[^\\\/:*?""<>|\r\n]*", RegexOptions.Compiled)
+
         Public longNumberOfIgnoredLogs As Long = 0
         Public boolIsProgrammaticScroll As Boolean = False
         Public IgnoredLogsAndSearchResultsInstance As IgnoredLogsAndSearchResults = Nothing
@@ -98,6 +100,8 @@ Namespace SupportCode
         Public Const strUpdaterEXE As String = "updater.exe"
         Public Const strUpdaterPDB As String = "updater.pdb"
 
+        Public Const strBlank As String = "(Blank)"
+
         Public allUniqueObjects As uniqueObjectsClass
         Public recentUniqueObjects As uniqueObjectsClass
         Public ReadOnly IgnoredLogsAndSearchResultsInstanceLockObject As New Object()
@@ -137,6 +141,11 @@ Namespace SupportCode
             Else
                 Return String.Join(" ", parts)
             End If
+        End Function
+
+        Public Function RemovePathFromExceptionString(strException As String) As String
+            If String.IsNullOrWhiteSpace(strException) Then Return strException
+            Return regexRemovePathFromExceptionString.Replace(strException, Function(m As Match) Path.GetFileName(m.Value))
         End Function
 
         Public Function IsGZipFile(strPath As String) As Boolean
@@ -482,16 +491,16 @@ Namespace SupportCode
             Return Nothing
         End Function
 
-        Public Function GetProcessByPort(protocolType As ProtocolType) As Process
+        Public Function GetProcessByPort(protocolType As ProtocolType, intPort As Integer) As Process
             Dim processIPv4 As Process = Nothing
             Dim processIPv6 As Process = Nothing
 
             If protocolType = ProtocolType.Tcp Then
-                processIPv4 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
-                processIPv6 = GetProcessByTcpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+                processIPv4 = GetProcessByTcpPort(intPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByTcpPort(intPort, AddressFamily.InterNetworkV6)
             ElseIf protocolType = ProtocolType.Udp Then
-                processIPv4 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetwork)
-                processIPv6 = GetProcessByUdpPort(My.Settings.sysLogPort, AddressFamily.InterNetworkV6)
+                processIPv4 = GetProcessByUdpPort(intPort, AddressFamily.InterNetwork)
+                processIPv6 = GetProcessByUdpPort(intPort, AddressFamily.InterNetworkV6)
             End If
 
             If processIPv4 IsNot Nothing Then

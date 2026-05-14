@@ -280,31 +280,35 @@ Namespace SyslogParser
         End Function
 
         Public Sub ProcessIncomingLog(strRawLogText As String, strSourceIP As String)
-            If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
-                ' Convert all linefeeds.
-                strRawLogText = ConvertLineFeeds(strRawLogText)
+            Try
+                If Not String.IsNullOrWhiteSpace(strRawLogText) AndAlso Not String.IsNullOrWhiteSpace(strSourceIP) Then
+                    ' Convert all linefeeds.
+                    strRawLogText = ConvertLineFeeds(strRawLogText)
 
-                ' Do some pre-processing so that we can separate out the data more easily.
-                strRawLogText = strRawLogText.Replace(vbCrLf, strNewLine).Replace(vbLf, strNewLine)
-                strRawLogText = SyslogPreProcessor1.Replace(strRawLogText, "$1")
-                strRawLogText = SyslogPreProcessor2.Replace(strRawLogText, vbCrLf & "$1")
+                    ' Do some pre-processing so that we can separate out the data more easily.
+                    strRawLogText = strRawLogText.Replace(vbCrLf, strNewLine).Replace(vbLf, strNewLine)
+                    strRawLogText = SyslogPreProcessor1.Replace(strRawLogText, "$1")
+                    strRawLogText = SyslogPreProcessor2.Replace(strRawLogText, vbCrLf & "$1")
 
-                ' Split off each syslog entry by using vbCrLf as a delimiter.
-                Dim matches As String() = strRawLogText.Split(vbCrLf)
+                    ' Split off each syslog entry by using vbCrLf as a delimiter.
+                    Dim matches As String() = strRawLogText.Split(vbCrLf)
 
-                ' Check to see if we have anything to work with before we go into the loop.
-                If matches.Any() Then
-                    ' Now work with each syslog entry.
-                    For Each strMatch As String In matches
-                        If Not String.IsNullOrWhiteSpace(strMatch) Then
-                            ProcessIncomingLog_SubRoutine(strMatch, strSourceIP)
-                        End If
-                    Next
-                Else
-                    ' Nope, log it as unable to be parsed.
-                    AddToLogList(Nothing, $"Unable to parse log {strQuote}{strRawLogText}{strQuote}.")
+                    ' Check to see if we have anything to work with before we go into the loop.
+                    If matches.Any() Then
+                        ' Now work with each syslog entry.
+                        For Each strMatch As String In matches
+                            If Not String.IsNullOrWhiteSpace(strMatch) Then
+                                ProcessIncomingLog_SubRoutine(strMatch, strSourceIP)
+                            End If
+                        Next
+                    Else
+                        ' Nope, log it as unable to be parsed.
+                        AddToLogList(Nothing, $"Unable to parse log {strQuote}{strRawLogText}{strQuote}.")
+                    End If
                 End If
-            End If
+            Catch ex As Exception
+                AddToLogList(Nothing, $"{ex.Message} -- {RemovePathFromExceptionString(ex.StackTrace)}{vbCrLf}Data from Server: {strRawLogText}")
+            End Try
         End Sub
 
         Public Sub ProcessIncomingLog_SubRoutine(strRawLogText As String, strSourceIP As String)
@@ -406,7 +410,7 @@ Namespace SyslogParser
             Catch ex2 As FormatException
                 AddToLogList(Nothing, $"{ex2.Message}{vbCrLf}The log that failed parsing was...{vbCrLf}{strRawLogText}")
             Catch ex As Exception
-                AddToLogList(Nothing, $"{ex.Message} -- {ex.StackTrace}{vbCrLf}Data from Server: {strRawLogText}")
+                AddToLogList(Nothing, $"{ex.Message} -- {RemovePathFromExceptionString(ex.StackTrace)}{vbCrLf}Data from Server: {strRawLogText}")
             End Try
         End Sub
 

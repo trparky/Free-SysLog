@@ -205,7 +205,7 @@ Public Class ConfigureSysLogMirrorClients
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(
                     SyslogParser.MakeLocalDataGridRowEntry(
-                        $"Unable to save user preferences on ""Configure Syslog Mirror Servers"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        $"Unable to save user preferences on ""Configure Syslog Mirror Servers"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{RemovePathFromExceptionString(ex.StackTrace)}",
                         SupportCode.ParentForm.Logs
                     )
                 )

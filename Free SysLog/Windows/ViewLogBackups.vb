@@ -15,7 +15,6 @@ Public Class ViewLogBackups
     Private startDate As Date = Date.MinValue
     Private endDate As Date = Date.MaxValue
     Private dateMinimumFromLoadingFiles As Date = Date.MinValue
-    Private Const strBlank As String = "(Blank)"
 
     Private Sub Logs_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles FileList.ColumnHeaderMouseClick
         If e.Button = MouseButtons.Left Then
@@ -95,7 +94,7 @@ Public Class ViewLogBackups
         End Try
     End Function
 
-    Private Sub LoadFileList(Optional intReselectItem As Integer = -1)
+    Private Sub LoadFileList(intReselectItem As Integer)
         Dim filesInDirectory As FileInfo() = New DirectoryInfo(strPathToDataBackupFolder).GetFiles()
         Dim threadSafeListOfDataGridViewRows As New ThreadSafeList(Of DataGridViewRow)
         Dim intFileCount, intHiddenFileCount As Integer
@@ -231,8 +230,9 @@ Public Class ViewLogBackups
                        lblNumberOfHiddenFiles.Text = $"Number of Hidden Files: {intHiddenFileCount:N0}"
                    End If
 
+                   FileList.ClearSelection()
+
                    If intReselectItem <> -1 AndAlso intReselectItem < FileList.Rows.Count Then
-                       FileList.ClearSelection()
                        FileList.Rows(intReselectItem).Selected = True
                        FileList.FirstDisplayedScrollingRowIndex = intReselectItem
                    End If
@@ -281,7 +281,7 @@ Public Class ViewLogBackups
         ChkLogFileDeletions.Checked = My.Settings.LogFileDeletions
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         boolDoneLoading = True
     End Sub
 
@@ -322,7 +322,7 @@ Public Class ViewLogBackups
 
                     If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, $"The user deleted ""{FileList.SelectedRows(0).Cells(0).Value}"" from the log backups folder.")
 
-                    ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+                    ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
                 End If
             Else
                 Dim msgBoxText As String = "Are you sure you want to delete the following files?" & vbCrLf & vbCrLf
@@ -347,7 +347,7 @@ Public Class ViewLogBackups
 
                     If ChkLogFileDeletions.Checked Then SyslogParser.AddToLogList(Nothing, strDeletedFilesLog.ToString)
 
-                    ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+                    ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
                 End If
             End If
         End If
@@ -355,14 +355,16 @@ Public Class ViewLogBackups
 
     Private Sub ViewLogBackups_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
         If e.KeyCode = Keys.F5 Then
-            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         ElseIf e.KeyCode = Keys.Delete Then
             BtnDelete.PerformClick()
         End If
     End Sub
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        Dim intOldIndex As Integer = -1
+        If FileList.SelectedRows.Count > 0 Then intOldIndex = FileList.SelectedRows(0).Index
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
     End Sub
 
     Private Sub ViewLogBackups_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
@@ -521,10 +523,14 @@ Public Class ViewLogBackups
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As CancelEventArgs) Handles ContextMenuStrip1.Opening
         If FileList.SelectedRows.Count > 0 Then
-            DeleteToolStripMenuItem.Enabled = True
+            DeleteToolStripMenuItem.Visible = True
             ShowInWindowsExplorerToolStripMenuItem.Visible = True
             RenameToolStripMenuItem.Visible = True
-            ViewToolStripMenuItem.Enabled = FileList.SelectedRows.Count <= 1
+            ViewToolStripMenuItem.Visible = FileList.SelectedRows.Count <= 1
+            UnhideToolStripMenuItem.Visible = True
+            HideToolStripMenuItem.Visible = True
+            GZIPCompressFileToolStripMenuItem.Visible = True
+            UncompressFileToolStripMenuItem.Visible = True
 
             Dim fileName As String = Path.Combine(strPathToDataBackupFolder, FileList.SelectedRows(0).Cells(0).Value)
             Dim fileInfo As New FileInfo(fileName)
@@ -545,10 +551,14 @@ Public Class ViewLogBackups
                 UncompressFileToolStripMenuItem.Visible = False
             End If
         Else
-            DeleteToolStripMenuItem.Enabled = False
-            ViewToolStripMenuItem.Enabled = False
+            DeleteToolStripMenuItem.Visible = False
+            ViewToolStripMenuItem.Visible = False
             ShowInWindowsExplorerToolStripMenuItem.Visible = False
             RenameToolStripMenuItem.Visible = False
+            UnhideToolStripMenuItem.Visible = False
+            HideToolStripMenuItem.Visible = False
+            GZIPCompressFileToolStripMenuItem.Visible = False
+            UncompressFileToolStripMenuItem.Visible = False
         End If
     End Sub
 
@@ -564,7 +574,7 @@ Public Class ViewLogBackups
         My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
         ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         colHidden.Visible = ChkShowHidden.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub UncompressGZIPFile(strFilePath As String)
@@ -657,7 +667,7 @@ Public Class ViewLogBackups
         If ChkShowHidden.Checked Then
             ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
         Else
-            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         End If
     End Sub
 
@@ -678,7 +688,7 @@ Public Class ViewLogBackups
         If ChkShowHidden.Checked Then
             ThreadPool.QueueUserWorkItem(Sub() LoadFileList(intOldIndex))
         Else
-            ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+            ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
         End If
     End Sub
 
@@ -700,7 +710,7 @@ Public Class ViewLogBackups
 
     Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
         My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub FileList_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles FileList.ColumnWidthChanged
@@ -795,14 +805,6 @@ Public Class ViewLogBackups
         If My.Settings.font IsNot Nothing Then searchResultsWindow.Logs.DefaultCellStyle.Font = My.Settings.font
 
         If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
-
-        If strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
-            MsgBox("You must select a hostname to limit by.", MsgBoxStyle.Exclamation, Text)
-            Exit Sub
-        ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) And String.IsNullOrWhiteSpace(strLimiter) Then
-            MsgBox("You must select an IP address to limit by.", MsgBoxStyle.Exclamation, Text)
-            Exit Sub
-        End If
 
         BtnSearch.Enabled = False
 
@@ -989,12 +991,12 @@ Public Class ViewLogBackups
     Private Sub ChkShowCompressionSizeDifference_Click(sender As Object, e As EventArgs) Handles ChkShowCompressionSizeDifference.Click
         My.Settings.ShowCompressionSizeDifference = ChkShowCompressionSizeDifference.Checked
         ChkShowCompressionSizeDifferencePercentage.Enabled = ChkShowCompressionSizeDifference.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub ChkShowCompressionSizeDifferencePercentage_Click(sender As Object, e As EventArgs) Handles ChkShowCompressionSizeDifferencePercentage.Click
         My.Settings.ShowCompressionSizeDifferencePercentage = ChkShowCompressionSizeDifferencePercentage.Checked
-        ThreadPool.QueueUserWorkItem(AddressOf LoadFileList)
+        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub btnLimitByDate_Click(sender As Object, e As EventArgs) Handles btnLimitByDate.Click
@@ -1026,5 +1028,17 @@ Public Class ViewLogBackups
         endDate = Date.MaxValue
         btnClearDateLimit.Enabled = False
         ToolTip.SetToolTip(btnLimitByDate, "")
+    End Sub
+
+    Private Sub boxLimiter_SelectedValueChanged(sender As Object, e As EventArgs) Handles boxLimiter.SelectedValueChanged
+        btnViewLogsWithLimits.Enabled = Not String.IsNullOrWhiteSpace(boxLimiter.Text)
+    End Sub
+
+    Private Sub FileList_MouseClick(sender As Object, e As MouseEventArgs) Handles FileList.MouseClick
+        If FileList.HitTest(e.X, e.Y).Type = DataGridViewHitTestType.None Then FileList.ClearSelection()
+    End Sub
+
+    Private Sub RefreshToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs) Handles RefreshToolStripMenuItem.CheckedChanged
+        BtnRefresh.PerformClick()
     End Sub
 End Class

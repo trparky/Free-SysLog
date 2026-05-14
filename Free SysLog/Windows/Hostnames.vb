@@ -143,7 +143,7 @@ Public Class Hostnames
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(
                     SyslogParser.MakeLocalDataGridRowEntry(
-                        $"Unable to save user preferences on ""Hostnames"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{ex.StackTrace}",
+                        $"Unable to save user preferences on ""Hostnames"" window to program settings.{vbCrLf}{vbCrLf}Exception: {ex.Message}{vbCrLf}{SupportCode.RemovePathFromExceptionString(ex.StackTrace)}",
                         SupportCode.ParentForm.Logs
                     )
                 )

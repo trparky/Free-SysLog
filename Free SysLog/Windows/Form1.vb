@@ -148,12 +148,16 @@ Public Class Form1
             sortedList = recentUniqueObjects.logTypes.ToList()
             sortedList.Sort()
 
+            boxLimiter.Items.Add(strBlank)
             boxLimiter.Items.AddRange(sortedList.ToArray)
+            boxLimiter.Text = strBlank
         ElseIf boxLimitBy.Text.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
             sortedList = recentUniqueObjects.processes.ToList()
             sortedList.Sort()
 
+            boxLimiter.Items.Add(strBlank)
             boxLimiter.Items.AddRange(sortedList.ToArray)
+            boxLimiter.Text = strBlank
         ElseIf boxLimitBy.Text.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
             sortedList = recentUniqueObjects.hostNames.ToList()
             sortedList.Sort()
@@ -1473,6 +1477,8 @@ Public Class Form1
         Dim stopWatch As Stopwatch = Stopwatch.StartNew
         Dim worker As New BackgroundWorker()
 
+        If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
+
         AddHandler worker.DoWork, Sub()
                                       Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), Sub(item As MyDataGridViewRow)
                                                                                                                  If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
@@ -1599,7 +1605,11 @@ Public Class Form1
         LogsMenuHideServerTimeColumn.Text = $"{If(colServerTime.Visible, "Hide", "Show")} Server Time Column"
     End Sub
 
-#Region "-- SysLog Server Code --"
+    Private Sub Logs_MouseClick(sender As Object, e As MouseEventArgs) Handles Logs.MouseClick
+        If Logs.HitTest(e.X, e.Y).Type = DataGridViewHitTestType.None Then Logs.ClearSelection()
+    End Sub
+
+#Region "--== SysLog Server Code ==--"
     Sub SysLogThread()
         Try
             ' These are initialized as IPv4 mode.
@@ -1665,7 +1675,7 @@ Public Class Form1
             ' Does nothing
         Catch e As Exception
             Invoke(Sub()
-                       Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp)
+                       Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp, My.Settings.sysLogPort)
 
                        If activeProcess Is Nothing Then
                            MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
@@ -1673,7 +1683,7 @@ Public Class Form1
                            Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
 
                            SyncLock dataGridLockObject
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{e.StackTrace}", Logs))
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(e.StackTrace)}", Logs))
                                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
                                SelectLatestLogEntry()
                                UpdateLogCount()
@@ -1880,7 +1890,7 @@ Public Class Form1
                        Dim listOfLogEntries As New List(Of MyDataGridViewRow) From {
                            SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs),
                            SyslogParser.MakeLocalDataGridRowEntry("There was an error while decoing the JSON data, existing data was copied to another file and the log file was reset.", Logs),
-                           SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{ex.StackTrace}", Logs)
+                           SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {ex.GetType}{vbCrLf}Exception Message: {ex.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(ex.StackTrace)}", Logs)
                        }
 
                        Logs.Rows.AddRange(listOfLogEntries.ToArray)
@@ -2443,7 +2453,7 @@ Public Class Form1
 
             boolServerRunning = True
         Else
-            Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp)
+            Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp, My.Settings.sysLogPort)
 
             If activeProcess Is Nothing Then
                 MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
