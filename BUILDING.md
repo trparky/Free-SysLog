@@ -25,3 +25,16 @@ nuget restore ".\Free SysLog.sln"
 & "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" ".\Free SysLog.sln" /t:Rebuild /p:Configuration=Debug
 & "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" ".\Free SysLog.sln" /t:Rebuild /p:Configuration=Release
 ```
+
+### Copy Images
+```powershell
+Copy-Item -Path '.\Free SysLog\Resources\error.png' -Destination '.\Free SysLog\bin\Release\'
+Copy-Item -Path '.\Free SysLog\Resources\info.png' -Destination '.\Free SysLog\bin\Release\'
+Copy-Item -Path '.\Free SysLog\Resources\warning.png' -Destination '.\Free SysLog\bin\Release\'
+Copy-Item -Path '.\Free SysLog\Resources\error.png' -Destination '.\Free SysLog\bin\Debug\'
+Copy-Item -Path '.\Free SysLog\Resources\info.png' -Destination '.\Free SysLog\bin\Debug\'
+Copy-Item -Path '.\Free SysLog\Resources\warning.png' -Destination '.\Free SysLog\bin\Debug\'
+```
+
+### Final Notes
+The compiled program is located in the Bin folder. There are two versions, Debug and Release. If running in a production environment, run the Release build.
