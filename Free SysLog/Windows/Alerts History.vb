@@ -69,7 +69,9 @@ Public Class Alerts_History
     End Sub
 
     Private Sub AlertHistoryList_DoubleClick(sender As Object, e As EventArgs) Handles AlertHistoryList.DoubleClick
-        If AlertHistoryList.SelectedRows.Count > 0 Then
+        Dim hitTest As DataGridView.HitTestInfo = AlertHistoryList.HitTest(AlertHistoryList.PointToClient(MousePosition).X, AlertHistoryList.PointToClient(MousePosition).Y)
+
+        If hitTest.Type = DataGridViewHitTestType.Cell And hitTest.RowIndex <> -1 And AlertHistoryList.SelectedRows.Count > 0 Then
             Dim AlertsHistoryDataGridViewRow As AlertsHistoryDataGridViewRow = DirectCast(AlertHistoryList.SelectedRows(0), AlertsHistoryDataGridViewRow)
 
             With AlertsHistoryDataGridViewRow
