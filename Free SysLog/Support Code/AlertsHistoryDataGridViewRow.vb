@@ -7,6 +7,7 @@
     Public Property strTime As String
     Public Property strAlertText As String
     Public Property strFileName As String
+    Public Property alertDate As Date
     Public alertType As AlertType = AlertType.None
 
     Public Overrides Function Clone()

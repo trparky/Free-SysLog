@@ -111,6 +111,7 @@ Public Class AlertsHistory
             .strAlertText = strAlertText
             .alertType = alertType
             .strFileName = strFileName
+            .alertDate = alertDate
         End With
 
         Return AlertsHistoryDataGridViewRow

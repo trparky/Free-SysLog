@@ -1,10 +1,14 @@
-﻿Imports System.IO
+﻿Imports System.ComponentModel
+Imports System.IO
 Imports System.Threading.Tasks
 Imports Free_SysLog.ThreadSafetyLists
+Imports Microsoft.VisualBasic.Logging
+Imports Windows.UI.Xaml.Controls
 
 Public Class Alerts_History
     Private Shadows ParentForm As Form1
     Private boolDoneLoading As Boolean = False
+    Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
 
     Public WriteOnly Property SetParentForm As Form1
         Set(value As Form1)
@@ -198,5 +202,42 @@ Public Class Alerts_History
     Private Sub chkIncludeHiddenFiles_Click(sender As Object, e As EventArgs) Handles chkIncludeHiddenFiles.Click
         My.Settings.ShowAlertsFromAllFilesWithHiddenFiles = chkIncludeHiddenFiles.Checked
         BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub AlertHistoryList_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles AlertHistoryList.ColumnHeaderMouseClick
+        If e.Button = MouseButtons.Left Then
+            Dim column As DataGridViewColumn = AlertHistoryList.Columns(e.ColumnIndex)
+
+            If sortOrder = SortOrder.Descending Then
+                sortOrder = SortOrder.Ascending
+            ElseIf sortOrder = SortOrder.Ascending Then
+                sortOrder = SortOrder.Descending
+            Else
+                sortOrder = SortOrder.Ascending
+            End If
+
+            colTime.HeaderCell.SortGlyphDirection = SortOrder.None
+            colAlertType.HeaderCell.SortGlyphDirection = SortOrder.None
+            colAlert.HeaderCell.SortGlyphDirection = SortOrder.None
+            colFileName.HeaderCell.SortGlyphDirection = SortOrder.None
+
+            AlertHistoryList.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
+
+            SortLogsByDateObjectNoLocking(column.Index, sortOrder)
+        End If
+    End Sub
+
+    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
+        AlertHistoryList.AllowUserToOrderColumns = False
+
+        Try
+            AlertHistoryList.SuspendLayout()
+
+            Dim comparer As New AlertsHistoryDataGridViewRowComparer(columnIndex, order)
+            AlertHistoryList.Sort(comparer)
+        Finally
+            AlertHistoryList.ResumeLayout()
+            AlertHistoryList.AllowUserToOrderColumns = True
+        End Try
     End Sub
 End Class
