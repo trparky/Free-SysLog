@@ -5,6 +5,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 Imports Free_SysLog.ThreadSafetyLists
+Imports Windows.UI.Xaml.Controls
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -38,7 +39,7 @@ Public Class ViewLogBackups
 
             FileList.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
-            SortLogsByDateObject(column.Index, sortOrder)
+            InitializeMyDataGridViewFileRowComparer.InitializeMyDataGridViewFileRowComparer(FileList, column.Index, sortOrder)
         End If
     End Sub
 
@@ -57,14 +58,6 @@ Public Class ViewLogBackups
             Return BitConverter.ToUInt32(sizeBytes, 0)
         End Using
     End Function
-
-    Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
-        SortLogsByDateObjectNoLocking(columnIndex, order)
-    End Sub
-
-    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
-        InitializeMyDataGridViewFileRowComparer.InitializeMyDataGridViewFileRowComparer(FileList, columnIndex, order)
-    End Sub
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Try
