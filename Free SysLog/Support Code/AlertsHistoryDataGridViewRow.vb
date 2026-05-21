@@ -34,6 +34,22 @@
     End Function
 End Class
 
+Public Module InitializeAlertsHistoryDataGridViewRowComparer
+    Public Sub InitializeAlertsHistoryDataGridViewRowComparer(ByRef AlertHistoryList As DataGridView, columnIndex As Integer, order As SortOrder)
+        AlertHistoryList.AllowUserToOrderColumns = False
+
+        Try
+            AlertHistoryList.SuspendLayout()
+
+            Dim comparer As New AlertsHistoryDataGridViewRowComparer(columnIndex, order)
+            AlertHistoryList.Sort(comparer)
+        Finally
+            AlertHistoryList.ResumeLayout()
+            AlertHistoryList.AllowUserToOrderColumns = True
+        End Try
+    End Sub
+End Module
+
 Public Class AlertsHistoryDataGridViewRowComparer
     Implements IComparer
 
