@@ -112,7 +112,6 @@
   <ItemGroup>
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Support Code\AlertsHistoryDataGridViewRow.vb" />
-    <Compile Include="Support Code\AlertsHistoryDataGridViewRowRowComparer.vb" />
     <Compile Include="Support Code\My Custom ListViews.vb" />
     <Compile Include="Support Code\My Data Classes.vb" />
     <Compile Include="Support Code\DataGridViewComparer.vb" />
