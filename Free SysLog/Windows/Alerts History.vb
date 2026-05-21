@@ -1,5 +1,8 @@
-﻿Public Class Alerts_History
-    Public Property DataToLoad As List(Of AlertsHistory)
+﻿Imports System.IO
+Imports System.Threading.Tasks
+Imports Free_SysLog.ThreadSafetyLists
+
+Public Class Alerts_History
     Private Shadows ParentForm As Form1
     Private boolDoneLoading As Boolean = False
 
@@ -34,21 +37,18 @@
         Location = SupportCode.VerifyWindowLocation(My.Settings.AlertHistoryLocation, Me)
 
         colTime.Width = My.Settings.columnTimeSize
+        chkShowAlertsFromAllFiles.Checked = My.Settings.ShowAlertsFromAllFiles
+        chkIncludeHiddenFiles.Enabled = My.Settings.ShowAlertsFromAllFiles
+        chkIncludeHiddenFiles.Checked = My.Settings.ShowAlertsFromAllFilesWithHiddenFiles
 
         SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
 
-        If DataToLoad IsNot Nothing AndAlso DataToLoad.Any() Then
-            lblNumberOfAlerts.Text = $"Number of Alerts: {DataToLoad.Count:N0}"
-            Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
+        BtnRefresh.PerformClick()
 
-            For Each item As AlertsHistory In DataToLoad
-                listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList))
-            Next
+        chkAlertTextColumnAutoFill.Checked = My.Settings.AlertsHistoryAlertColumnFill
+        colAlert.AutoSizeMode = If(My.Settings.AlertsHistoryAlertColumnFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
-            AlertHistoryList.SuspendLayout()
-            AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
-            AlertHistoryList.ResumeLayout()
-        End If
+        colFileName.Width = My.Settings.AlertsHistoryFileNameColumnSize
 
         boolDoneLoading = True
     End Sub
@@ -85,7 +85,8 @@
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
         If ParentForm IsNot Nothing Then
             With ParentForm
-                Dim data As New List(Of AlertsHistory)
+                Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+                Dim data As New ThreadSafeList(Of AlertsHistory)
 
                 SyncLock ParentForm.dataGridLockObject
                     For Each item As MyDataGridViewRow In ParentForm.Logs.Rows
@@ -96,17 +97,65 @@
                                      .strAlertText = item.AlertText,
                                      .strIP = item.Cells(SupportCode.ColumnIndex_IPAddress).Value,
                                      .strLog = item.Cells(SupportCode.ColumnIndex_LogText).Value,
-                                     .strRawLog = item.RawLogData
+                                     .strRawLog = item.RawLogData,
+                                     .strFileName = "(Current Logs)",
+                                     .alertDate = item.DateObject,
+                                     .boolCompressed = False,
+                                     .boolHidden = False
                                     })
                         End If
                     Next
                 End SyncLock
 
+                If chkShowAlertsFromAllFiles.Checked Then
+                    Dim filesInDirectory As FileInfo()
+
+                    If chkIncludeHiddenFiles.Checked Then
+                        filesInDirectory = New DirectoryInfo(SupportCode.strPathToDataBackupFolder).GetFiles()
+                    Else
+                        filesInDirectory = New DirectoryInfo(SupportCode.strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
+                    End If
+
+                    Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                           Dim dataFromFile As List(Of SavedData)
+                                                           Dim boolCompressed As Boolean = False
+                                                           Dim boolHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
+
+                                                           If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And SupportCode.IsGZipFile(file.FullName) Then
+                                                               boolCompressed = True
+                                                               dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(SupportCode.GetTextContentsFromGZIPedLogFile(file.FullName), SupportCode.JSONDecoderSettingsForLogFiles)
+                                                           Else
+                                                               Using fileStream As New StreamReader(file.FullName)
+                                                                   dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, SupportCode.JSONDecoderSettingsForLogFiles)
+                                                               End Using
+                                                           End If
+
+                                                           Parallel.ForEach(dataFromFile, Sub(SavedData As SavedData)
+                                                                                              If SavedData.BoolAlerted Then
+                                                                                                  data.Add(New AlertsHistory With {
+                                                                                                     .strTime = SavedData.time,
+                                                                                                     .alertType = SavedData.alertType,
+                                                                                                     .strAlertText = SavedData.alertText,
+                                                                                                     .strIP = SavedData.ip,
+                                                                                                     .strLog = SavedData.log,
+                                                                                                     .strRawLog = SavedData.rawLogData,
+                                                                                                     .strFileName = file.Name,
+                                                                                                     .alertDate = SavedData.DateObject,
+                                                                                                     .boolHidden = boolHidden,
+                                                                                                     .boolCompressed = boolCompressed
+                                                                                                  })
+                                                                                              End If
+                                                                                          End Sub)
+                                                       End Sub)
+                End If
+
+                data.Sort(Function(x As AlertsHistory, y As AlertsHistory) y.alertDate.CompareTo(x.alertDate))
+
                 If data.Any() Then
                     lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
                     Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
 
-                    For Each item As AlertsHistory In data
+                    For Each item As AlertsHistory In data.GetSnapshot()
                         listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList))
                     Next
 
@@ -115,11 +164,37 @@
                     AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
                     AlertHistoryList.ResumeLayout()
                 End If
+
+                lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {stopwatch.ElapsedMilliseconds}ms"
             End With
         End If
     End Sub
 
     Private Sub Alerts_History_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         My.Settings.alertsHistoryColumnOrder = SupportCode.SaveColumnOrders(AlertHistoryList.Columns)
+    End Sub
+
+    Private Sub chkShowAlertsFromAllFiles_CheckedChanged(sender As Object, e As EventArgs) Handles chkShowAlertsFromAllFiles.CheckedChanged
+        colFileName.Visible = chkShowAlertsFromAllFiles.Checked
+        chkIncludeHiddenFiles.Enabled = chkShowAlertsFromAllFiles.Checked
+        BtnRefresh.PerformClick()
+    End Sub
+
+    Private Sub chkAlertTextColumnAutoFill_Click(sender As Object, e As EventArgs) Handles chkAlertTextColumnAutoFill.Click
+        My.Settings.AlertsHistoryAlertColumnFill = chkAlertTextColumnAutoFill.Checked
+        colAlert.AutoSizeMode = If(My.Settings.AlertsHistoryAlertColumnFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
+    End Sub
+
+    Private Sub AlertHistoryList_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles AlertHistoryList.ColumnWidthChanged
+        If boolDoneLoading Then My.Settings.AlertsHistoryFileNameColumnSize = colFileName.Width
+    End Sub
+
+    Private Sub chkShowAlertsFromAllFiles_Click(sender As Object, e As EventArgs) Handles chkShowAlertsFromAllFiles.Click
+        My.Settings.ShowAlertsFromAllFiles = chkShowAlertsFromAllFiles.Checked
+    End Sub
+
+    Private Sub chkIncludeHiddenFiles_Click(sender As Object, e As EventArgs) Handles chkIncludeHiddenFiles.Click
+        My.Settings.ShowAlertsFromAllFilesWithHiddenFiles = chkIncludeHiddenFiles.Checked
+        BtnRefresh.PerformClick()
     End Sub
 End Class

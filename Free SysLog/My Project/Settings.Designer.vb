@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.14.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "18.6.0.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -1434,6 +1434,54 @@ Namespace My
             End Get
             Set
                 Me("ClearIgnoredStatsAtMidnight") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property AlertsHistoryAlertColumnFill() As Boolean
+            Get
+                Return CType(Me("AlertsHistoryAlertColumnFill"),Boolean)
+            End Get
+            Set
+                Me("AlertsHistoryAlertColumnFill") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("100")>  _
+        Public Property AlertsHistoryFileNameColumnSize() As Integer
+            Get
+                Return CType(Me("AlertsHistoryFileNameColumnSize"),Integer)
+            End Get
+            Set
+                Me("AlertsHistoryFileNameColumnSize") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property ShowAlertsFromAllFiles() As Boolean
+            Get
+                Return CType(Me("ShowAlertsFromAllFiles"),Boolean)
+            End Get
+            Set
+                Me("ShowAlertsFromAllFiles") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property ShowAlertsFromAllFilesWithHiddenFiles() As Boolean
+            Get
+                Return CType(Me("ShowAlertsFromAllFilesWithHiddenFiles"),Boolean)
+            End Get
+            Set
+                Me("ShowAlertsFromAllFilesWithHiddenFiles") = value
             End Set
         End Property
     End Class

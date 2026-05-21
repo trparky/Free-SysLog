@@ -1355,29 +1355,14 @@ Public Class Form1
 
     Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
         If Logs.Rows.Count > 0 Then
-            Dim DataToLoad As New List(Of AlertsHistory)
+            Dim boolAnyAlerts As Boolean = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) row.BoolAlerted)
 
-            SyncLock dataGridLockObject
-                For Each item As MyDataGridViewRow In Logs.Rows
-                    If item.BoolAlerted Then
-                        DataToLoad.Add(New AlertsHistory With {
-                                 .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
-                                 .alertType = item.alertType,
-                                 .strAlertText = item.AlertText,
-                                 .strIP = item.Cells(ColumnIndex_IPAddress).Value,
-                                 .strLog = item.Cells(ColumnIndex_LogText).Value,
-                                 .strRawLog = item.RawLogData
-                                })
-                    End If
-                Next
-            End SyncLock
-
-            If DataToLoad.Count = 0 Then
-                MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
-            Else
-                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me, .Size = My.Settings.AlertHistorySize}
+            If boolAnyAlerts Then
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me, .Size = My.Settings.AlertHistorySize}
                     Alerts_History.ShowDialog(Me)
                 End Using
+            Else
+                MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
             End If
         End If
     End Sub

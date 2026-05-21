@@ -6,6 +6,7 @@
     Public Property strRawLog As String
     Public Property strTime As String
     Public Property strAlertText As String
+    Public Property strFileName As String
     Public alertType As AlertType = AlertType.None
 
     Public Overrides Function Clone()
@@ -18,6 +19,7 @@
             .strIP = Me.strIP
             .strTime = Me.strTime
             .strAlertText = Me.strAlertText
+            .strFileName = Me.strFileName
 
             For index As Short = 0 To Me.Cells.Count - 1
                 .Cells(index).Value = Me.Cells(index).Value
