@@ -94,7 +94,7 @@ Namespace SyslogParser
                                       ParentForm.UpdateLogCount()
                                       ParentForm.SelectLatestLogEntry()
                                       ParentForm.BtnSaveLogsToDisk.Enabled = True
-                                      If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
+                                      If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(ParentForm.Logs, ParentForm.intSortColumnIndex, ListSortDirection.Descending)
                                   End SyncLock
 
                                   ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
@@ -520,7 +520,7 @@ Namespace SyslogParser
                                                newItem.GUID = rowGUID
                                                ParentForm.Logs.Rows.Add(newItem)
                                            End Sub)
-                    If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then ParentForm.SortLogsByDateObjectNoLocking(ParentForm.intSortColumnIndex, ListSortDirection.Descending)
+                    If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(ParentForm.Logs, ParentForm.intSortColumnIndex, ListSortDirection.Descending)
                 End SyncLock
 
                 ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."

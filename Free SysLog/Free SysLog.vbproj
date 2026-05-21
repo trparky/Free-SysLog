@@ -114,7 +114,6 @@
     <Compile Include="Support Code\AlertsHistoryDataGridViewRow.vb" />
     <Compile Include="Support Code\My Custom ListViews.vb" />
     <Compile Include="Support Code\My Data Classes.vb" />
-    <Compile Include="Support Code\DataGridViewComparer.vb" />
     <Compile Include="Support Code\MyDataGridViewFileRow.vb" />
     <Compile Include="Support Code\Namespace Code\Data Handling.vb" />
     <Compile Include="Support Code\Namespace Code\listViewSorter.vb" />

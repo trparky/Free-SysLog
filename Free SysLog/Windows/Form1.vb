@@ -583,7 +583,7 @@ Public Class Form1
 
             Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
-            SortLogsByDateObject(column.Index, If(sortOrder = SortOrder.Ascending, ListSortDirection.Ascending, ListSortDirection.Descending))
+            InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(Logs, column.Index, sortOrder)
         End If
     End Sub
 
@@ -1993,18 +1993,6 @@ Public Class Form1
         LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
         StopAutoSaveTask()
         StartAutoSaveTask()
-    End Sub
-
-    Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
-        SyncLock dataGridLockObject
-            SortLogsByDateObjectNoLocking(columnIndex, order)
-        End SyncLock
-    End Sub
-
-    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As ListSortDirection)
-        Logs.SuspendLayout()
-        Logs.Sort(Logs.Columns(columnIndex), order)
-        Logs.ResumeLayout()
     End Sub
 
     Public Sub ShowSingleInstanceWindow(Of T As {Form, New})(ByRef instance As T, ownerIcon As Icon)
