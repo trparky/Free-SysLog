@@ -35,6 +35,7 @@ Partial Class ViewLogBackups
         Me.ChkShowCompressionSizeDifference = New System.Windows.Forms.CheckBox()
         Me.ChkShowCompressionSizeDifferencePercentage = New System.Windows.Forms.CheckBox()
         Me.BtnRefresh = New System.Windows.Forms.Button()
+        Me.lblTimeTakenToLoadData = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblNumberOfFiles = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
@@ -182,7 +183,7 @@ Partial Class ViewLogBackups
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.LblTotalDiskSpace})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfFiles, Me.lblNumberOfHiddenFiles, Me.lblTotalNumberOfLogs, Me.LblTotalDiskSpace, Me.lblTimeTakenToLoadData})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 342)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(979, 22)
@@ -268,6 +269,13 @@ Partial Class ViewLogBackups
         Me.BtnSearch.TabIndex = 31
         Me.BtnSearch.Text = "&Search"
         Me.BtnSearch.UseVisualStyleBackColor = True
+        '
+        'lblTimeTakenToLoadData
+        '
+        Me.lblTimeTakenToLoadData.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.lblTimeTakenToLoadData.Name = "lblTimeTakenToLoadData"
+        Me.lblTimeTakenToLoadData.Size = New System.Drawing.Size(141, 17)
+        Me.lblTimeTakenToLoadData.Text = "Time Taken to Load Data:"
         '
         'TxtSearchTerms
         '
@@ -523,4 +531,5 @@ Partial Class ViewLogBackups
     Friend WithEvents ChkShowCompressionSizeDifferencePercentage As CheckBox
     Friend WithEvents btnLimitByDate As Button
     Friend WithEvents btnClearDateLimit As Button
+    Friend WithEvents lblTimeTakenToLoadData As ToolStripStatusLabel
 End Class

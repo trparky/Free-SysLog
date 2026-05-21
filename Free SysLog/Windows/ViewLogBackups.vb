@@ -101,6 +101,7 @@ Public Class ViewLogBackups
         Dim longTotalLogCount, longUsedDiskSpace, longUsedDiskSpaceIncludingHidden As Long
         Dim intNumberOfCompressedFiles As Integer = 0
         Dim dateMinimumLockObject As New Object
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
         dateMinimumFromLoadingFiles = Date.MinValue
         startDate = Date.MinValue
@@ -236,6 +237,8 @@ Public Class ViewLogBackups
                        FileList.Rows(intReselectItem).Selected = True
                        FileList.FirstDisplayedScrollingRowIndex = intReselectItem
                    End If
+
+                   lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {stopwatch.ElapsedMilliseconds}ms"
                End Sub)
     End Sub
 
