@@ -412,11 +412,12 @@ Public Class ViewLogBackups
                                               filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
                                           End If
 
-                                          Dim dataFromFile As List(Of SavedData)
                                           Dim myDataGridRow As MyDataGridViewRow
                                           Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                                 Dim dataFromFile As List(Of SavedData)
+
                                                                                  If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
                                                                                      Exit Sub
                                                                                  End If
