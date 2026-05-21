@@ -63,23 +63,7 @@ Public Class ViewLogBackups
     End Sub
 
     Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
-        FileList.AllowUserToOrderColumns = False
-
-        Try
-            FileList.SuspendLayout()
-
-            Dim comparer As New MyDataGridViewFileRowComparer(columnIndex, order)
-            FileList.Sort(comparer)
-
-            For Each col As DataGridViewColumn In FileList.Columns
-                col.HeaderCell.SortGlyphDirection = SortOrder.None
-            Next
-
-            FileList.Columns(columnIndex).HeaderCell.SortGlyphDirection = order
-        Finally
-            FileList.ResumeLayout()
-            FileList.AllowUserToOrderColumns = True
-        End Try
+        InitializeMyDataGridViewFileRowComparer.InitializeMyDataGridViewFileRowComparer(FileList, columnIndex, order)
     End Sub
 
     Private Function GetEntryCount(strFileName As String) As Integer

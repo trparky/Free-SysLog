@@ -25,6 +25,28 @@
     End Function
 End Class
 
+Public Module InitializeMyDataGridViewFileRowComparer
+    Public Sub InitializeMyDataGridViewFileRowComparer(ByRef FileList As DataGridView, columnIndex As Integer, order As SortOrder)
+        FileList.AllowUserToOrderColumns = False
+
+        Try
+            FileList.SuspendLayout()
+
+            Dim comparer As New MyDataGridViewFileRowComparer(columnIndex, order)
+            FileList.Sort(comparer)
+
+            For Each col As DataGridViewColumn In FileList.Columns
+                col.HeaderCell.SortGlyphDirection = SortOrder.None
+            Next
+
+            FileList.Columns(columnIndex).HeaderCell.SortGlyphDirection = order
+        Finally
+            FileList.ResumeLayout()
+            FileList.AllowUserToOrderColumns = True
+        End Try
+    End Sub
+End Module
+
 Public Class MyDataGridViewFileRowComparer
     Implements IComparer
 
