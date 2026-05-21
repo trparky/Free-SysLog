@@ -64,20 +64,22 @@ Public Class ViewLogBackups
 
     Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
         FileList.AllowUserToOrderColumns = False
-        FileList.Enabled = False
 
-        Dim comparer As New MyDataGridViewFileRowComparer(columnIndex, order)
-        Dim rows As MyDataGridViewFileRow() = FileList.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewFileRow)().ToArray()
+        Try
+            FileList.SuspendLayout()
 
-        Array.Sort(rows, Function(row1 As MyDataGridViewFileRow, row2 As MyDataGridViewFileRow) comparer.Compare(row1, row2))
+            Dim comparer As New MyDataGridViewFileRowComparer(columnIndex, order)
+            FileList.Sort(comparer)
 
-        FileList.SuspendLayout()
-        FileList.Rows.Clear()
-        FileList.Rows.AddRange(rows)
-        FileList.ResumeLayout()
+            For Each col As DataGridViewColumn In FileList.Columns
+                col.HeaderCell.SortGlyphDirection = SortOrder.None
+            Next
 
-        FileList.Enabled = True
-        FileList.AllowUserToOrderColumns = True
+            FileList.Columns(columnIndex).HeaderCell.SortGlyphDirection = order
+        Finally
+            FileList.ResumeLayout()
+            FileList.AllowUserToOrderColumns = True
+        End Try
     End Sub
 
     Private Function GetEntryCount(strFileName As String) As Integer

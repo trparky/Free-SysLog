@@ -1,5 +1,5 @@
 ﻿Public Class MyDataGridViewFileRowComparer
-    Implements IComparer(Of MyDataGridViewFileRow)
+    Implements IComparer
 
     Private ReadOnly intColumnNumber As Integer
     Private ReadOnly soSortOrder As SortOrder
@@ -9,7 +9,10 @@
         soSortOrder = sortOrder
     End Sub
 
-    Public Function Compare(row1 As MyDataGridViewFileRow, row2 As MyDataGridViewFileRow) As Integer Implements IComparer(Of MyDataGridViewFileRow).Compare
+    Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+        Dim row1 As MyDataGridViewFileRow = DirectCast(x, MyDataGridViewFileRow)
+        Dim row2 As MyDataGridViewFileRow = DirectCast(y, MyDataGridViewFileRow)
+
         ' Compare them.
         If intColumnNumber = 1 Then
             Dim date1 As Date = row1.fileDate
