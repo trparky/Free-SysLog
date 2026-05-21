@@ -246,7 +246,7 @@ Public Class ViewLogBackups
 
     Private Sub DataGridView1_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles FileList.CellPainting
         If e.RowIndex = -1 AndAlso (e.ColumnIndex = colHidden.Index Or e.ColumnIndex = colEntryCount.Index Or e.ColumnIndex = ColFileSize.Index) Then
-            e.PaintBackground(e.CellBounds, False)
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All And Not DataGridViewPaintParts.ContentForeground)
             TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
             e.Handled = True
         End If
