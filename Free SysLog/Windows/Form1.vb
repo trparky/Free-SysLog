@@ -1107,7 +1107,7 @@ Public Class Form1
     End Sub
 
     Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
-        Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+        Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Count(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value)
 
         If intNumberOfCheckedLogs = 0 Then
             LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
