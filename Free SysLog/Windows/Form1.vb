@@ -1097,13 +1097,23 @@ Public Class Form1
             ShowSingleInstanceWindow(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
 
             Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-            If myItem IsNot Nothing Then IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
+
+            If IgnoredWordsAndPhrasesOrAlertsInstance IsNot Nothing AndAlso myItem IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(myItem.RawLogData) Then
+                IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
+            End If
         End If
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        ShowSingleInstanceWindow(ReplacementsInstance, Icon)
-        ReplacementsInstance.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+        If Logs.SelectedRows.Count > 0 AndAlso Logs.SelectedRows(0) IsNot Nothing Then
+            ShowSingleInstanceWindow(ReplacementsInstance, Icon)
+
+            Dim selectedItemObject As Object = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+
+            If ReplacementsInstance IsNot Nothing AndAlso selectedItemObject IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(selectedItemObject.ToString()) Then
+                ReplacementsInstance.TxtReplace.Text = selectedItemObject.ToString()
+            End If
+        End If
     End Sub
 
     Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
