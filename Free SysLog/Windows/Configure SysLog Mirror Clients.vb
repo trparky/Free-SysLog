@@ -199,8 +199,6 @@ Public Class ConfigureSysLogMirrorClients
 
             My.Settings.ServersToSendTo = tempServer
             My.Settings.Save()
-
-            MsgBox("Done", MsgBoxStyle.Information, "Free SysLog Server")
         Catch ex As Exception
             SyncLock SupportCode.ParentForm.dataGridLockObject
                 SupportCode.ParentForm.Logs.Rows.Add(
