@@ -5,6 +5,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 Imports Free_SysLog.SupportCode
 Imports Free_SysLog.ThreadSafetyLists
+Imports Windows.UI.Xaml.Controls
 
 Public Class ViewLogBackups
     Public MyParentForm As Form1
@@ -38,7 +39,7 @@ Public Class ViewLogBackups
 
             FileList.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
-            SortLogsByDateObject(column.Index, sortOrder)
+            InitializeMyDataGridViewFileRowComparer.InitializeMyDataGridViewFileRowComparer(FileList, column.Index, sortOrder)
         End If
     End Sub
 
@@ -57,28 +58,6 @@ Public Class ViewLogBackups
             Return BitConverter.ToUInt32(sizeBytes, 0)
         End Using
     End Function
-
-    Private Sub SortLogsByDateObject(columnIndex As Integer, order As SortOrder)
-        SortLogsByDateObjectNoLocking(columnIndex, order)
-    End Sub
-
-    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
-        FileList.AllowUserToOrderColumns = False
-        FileList.Enabled = False
-
-        Dim comparer As New MyDataGridViewFileRowComparer(columnIndex, order)
-        Dim rows As MyDataGridViewFileRow() = FileList.Rows.Cast(Of DataGridViewRow).OfType(Of MyDataGridViewFileRow)().ToArray()
-
-        Array.Sort(rows, Function(row1 As MyDataGridViewFileRow, row2 As MyDataGridViewFileRow) comparer.Compare(row1, row2))
-
-        FileList.SuspendLayout()
-        FileList.Rows.Clear()
-        FileList.Rows.AddRange(rows)
-        FileList.ResumeLayout()
-
-        FileList.Enabled = True
-        FileList.AllowUserToOrderColumns = True
-    End Sub
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Try
@@ -101,6 +80,7 @@ Public Class ViewLogBackups
         Dim longTotalLogCount, longUsedDiskSpace, longUsedDiskSpaceIncludingHidden As Long
         Dim intNumberOfCompressedFiles As Integer = 0
         Dim dateMinimumLockObject As New Object
+        Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
         dateMinimumFromLoadingFiles = Date.MinValue
         startDate = Date.MinValue
@@ -236,12 +216,14 @@ Public Class ViewLogBackups
                        FileList.Rows(intReselectItem).Selected = True
                        FileList.FirstDisplayedScrollingRowIndex = intReselectItem
                    End If
+
+                   lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {stopwatch.ElapsedMilliseconds}ms"
                End Sub)
     End Sub
 
     Private Sub DataGridView1_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles FileList.CellPainting
         If e.RowIndex = -1 AndAlso (e.ColumnIndex = colHidden.Index Or e.ColumnIndex = colEntryCount.Index Or e.ColumnIndex = ColFileSize.Index) Then
-            e.PaintBackground(e.CellBounds, False)
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All And Not DataGridViewPaintParts.ContentForeground)
             TextRenderer.DrawText(e.Graphics, e.FormattedValue.ToString(), e.CellStyle.Font, e.CellBounds, e.CellStyle.ForeColor, TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
             e.Handled = True
         End If
@@ -412,11 +394,12 @@ Public Class ViewLogBackups
                                               filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
                                           End If
 
-                                          Dim dataFromFile As List(Of SavedData)
                                           Dim myDataGridRow As MyDataGridViewRow
                                           Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                                 Dim dataFromFile As List(Of SavedData)
+
                                                                                  If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
                                                                                      Exit Sub
                                                                                  End If

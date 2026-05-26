@@ -29,6 +29,11 @@ Partial Class Alerts_History
         Me.BtnRefresh = New System.Windows.Forms.Button()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblNumberOfAlerts = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.chkShowAlertsFromAllFiles = New System.Windows.Forms.CheckBox()
+        Me.colFileName = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.chkAlertTextColumnAutoFill = New System.Windows.Forms.CheckBox()
+        Me.lblTimeTakenToLoadData = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.chkIncludeHiddenFiles = New System.Windows.Forms.CheckBox()
         CType(Me.AlertHistoryList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -41,7 +46,7 @@ Partial Class Alerts_History
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.AlertHistoryList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.AlertHistoryList.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colTime, Me.colAlertType, Me.colAlert})
+        Me.AlertHistoryList.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colTime, Me.colAlertType, Me.colAlert, Me.colFileName})
         Me.AlertHistoryList.Location = New System.Drawing.Point(12, 12)
         Me.AlertHistoryList.Name = "AlertHistoryList"
         Me.AlertHistoryList.ReadOnly = True
@@ -81,7 +86,7 @@ Partial Class Alerts_History
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfAlerts})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblNumberOfAlerts, Me.lblTimeTakenToLoadData})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 428)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1251, 22)
@@ -94,14 +99,65 @@ Partial Class Alerts_History
         Me.lblNumberOfAlerts.Size = New System.Drawing.Size(101, 17)
         Me.lblNumberOfAlerts.Text = "Number of Alerts:"
         '
+        'chkShowAlertsFromAllFiles
+        '
+        Me.chkShowAlertsFromAllFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.chkShowAlertsFromAllFiles.AutoSize = True
+        Me.chkShowAlertsFromAllFiles.Location = New System.Drawing.Point(836, 406)
+        Me.chkShowAlertsFromAllFiles.Name = "chkShowAlertsFromAllFiles"
+        Me.chkShowAlertsFromAllFiles.Size = New System.Drawing.Size(169, 17)
+        Me.chkShowAlertsFromAllFiles.TabIndex = 3
+        Me.chkShowAlertsFromAllFiles.Text = "Show Alert History from all files"
+        Me.chkShowAlertsFromAllFiles.UseVisualStyleBackColor = True
+        '
+        'colFileName
+        '
+        Me.colFileName.HeaderText = "File Name"
+        Me.colFileName.Name = "colFileName"
+        Me.colFileName.ReadOnly = True
+        Me.colFileName.Visible = False
+        '
+        'chkAlertTextColumnAutoFill
+        '
+        Me.chkAlertTextColumnAutoFill.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.chkAlertTextColumnAutoFill.AutoSize = True
+        Me.chkAlertTextColumnAutoFill.Location = New System.Drawing.Point(684, 406)
+        Me.chkAlertTextColumnAutoFill.Name = "chkAlertTextColumnAutoFill"
+        Me.chkAlertTextColumnAutoFill.Size = New System.Drawing.Size(146, 17)
+        Me.chkAlertTextColumnAutoFill.TabIndex = 4
+        Me.chkAlertTextColumnAutoFill.Text = "Alert Text Column AutoFill"
+        Me.chkAlertTextColumnAutoFill.UseVisualStyleBackColor = True
+        '
+        'lblTimeTakenToLoadData
+        '
+        Me.lblTimeTakenToLoadData.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.lblTimeTakenToLoadData.Name = "lblTimeTakenToLoadData"
+        Me.lblTimeTakenToLoadData.Size = New System.Drawing.Size(141, 17)
+        Me.lblTimeTakenToLoadData.Text = "Time Taken to Load Data:"
+        '
+        'chkIncludeHiddenFiles
+        '
+        Me.chkIncludeHiddenFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.chkIncludeHiddenFiles.AutoSize = True
+        Me.chkIncludeHiddenFiles.Enabled = False
+        Me.chkIncludeHiddenFiles.Location = New System.Drawing.Point(1011, 406)
+        Me.chkIncludeHiddenFiles.Name = "chkIncludeHiddenFiles"
+        Me.chkIncludeHiddenFiles.Size = New System.Drawing.Size(122, 17)
+        Me.chkIncludeHiddenFiles.TabIndex = 5
+        Me.chkIncludeHiddenFiles.Text = "Include Hidden Files"
+        Me.chkIncludeHiddenFiles.UseVisualStyleBackColor = True
+        '
         'Alerts_History
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1251, 450)
+        Me.Controls.Add(Me.chkAlertTextColumnAutoFill)
+        Me.Controls.Add(Me.chkShowAlertsFromAllFiles)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.BtnRefresh)
         Me.Controls.Add(Me.AlertHistoryList)
+        Me.Controls.Add(Me.chkIncludeHiddenFiles)
         Me.KeyPreview = True
         Me.MinimumSize = New System.Drawing.Size(1267, 489)
         Me.Name = "Alerts_History"
@@ -121,4 +177,9 @@ Partial Class Alerts_History
     Friend WithEvents BtnRefresh As Button
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents lblNumberOfAlerts As ToolStripStatusLabel
+    Friend WithEvents colFileName As DataGridViewTextBoxColumn
+    Friend WithEvents chkAlertTextColumnAutoFill As CheckBox
+    Friend WithEvents chkShowAlertsFromAllFiles As CheckBox
+    Friend WithEvents lblTimeTakenToLoadData As ToolStripStatusLabel
+    Friend WithEvents chkIncludeHiddenFiles As CheckBox
 End Class

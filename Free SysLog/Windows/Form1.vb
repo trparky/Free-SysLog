@@ -583,7 +583,7 @@ Public Class Form1
 
             Logs.Columns(e.ColumnIndex).HeaderCell.SortGlyphDirection = sortOrder
 
-            SortLogsByDateObject(column.Index, If(sortOrder = SortOrder.Ascending, ListSortDirection.Ascending, ListSortDirection.Descending))
+            InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(Logs, column.Index, sortOrder)
         End If
     End Sub
 
@@ -1097,17 +1097,27 @@ Public Class Form1
             ShowSingleInstanceWindow(IgnoredWordsAndPhrasesOrAlertsInstance, Icon)
 
             Dim myItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-            If myItem IsNot Nothing Then IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
+
+            If IgnoredWordsAndPhrasesOrAlertsInstance IsNot Nothing AndAlso myItem IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(myItem.RawLogData) Then
+                IgnoredWordsAndPhrasesOrAlertsInstance.TxtIgnored.Text = myItem.RawLogData
+            End If
         End If
     End Sub
 
     Private Sub CreateReplacementToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CreateReplacementToolStripMenuItem.Click
-        ShowSingleInstanceWindow(ReplacementsInstance, Icon)
-        ReplacementsInstance.TxtReplace.Text = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+        If Logs.SelectedRows.Count > 0 AndAlso Logs.SelectedRows(0) IsNot Nothing Then
+            ShowSingleInstanceWindow(ReplacementsInstance, Icon)
+
+            Dim selectedItemObject As Object = Logs.SelectedRows(0).Cells(ColumnIndex_LogText).Value
+
+            If ReplacementsInstance IsNot Nothing AndAlso selectedItemObject IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(selectedItemObject.ToString()) Then
+                ReplacementsInstance.TxtReplace.Text = selectedItemObject.ToString()
+            End If
+        End If
     End Sub
 
     Private Sub Logs_SelectionChanged(sender As Object, e As EventArgs) Handles Logs.SelectionChanged
-        Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+        Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Count(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value)
 
         If intNumberOfCheckedLogs = 0 Then
             LblItemsSelected.Visible = Logs.SelectedRows.Count > 1
@@ -1355,29 +1365,14 @@ Public Class Form1
 
     Private Sub AlertsHistory_Click(sender As Object, e As EventArgs) Handles AlertsHistory.Click
         If Logs.Rows.Count > 0 Then
-            Dim DataToLoad As New List(Of AlertsHistory)
+            Dim boolAnyAlerts As Boolean = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) row.BoolAlerted)
 
-            SyncLock dataGridLockObject
-                For Each item As MyDataGridViewRow In Logs.Rows
-                    If item.BoolAlerted Then
-                        DataToLoad.Add(New AlertsHistory With {
-                                 .strTime = item.Cells(ColumnIndex_ComputedTime).Value,
-                                 .alertType = item.alertType,
-                                 .strAlertText = item.AlertText,
-                                 .strIP = item.Cells(ColumnIndex_IPAddress).Value,
-                                 .strLog = item.Cells(ColumnIndex_LogText).Value,
-                                 .strRawLog = item.RawLogData
-                                })
-                    End If
-                Next
-            End SyncLock
-
-            If DataToLoad.Count = 0 Then
-                MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
-            Else
-                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .DataToLoad = DataToLoad, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me, .Size = My.Settings.AlertHistorySize}
+            If boolAnyAlerts Then
+                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me, .Size = My.Settings.AlertHistorySize}
                     Alerts_History.ShowDialog(Me)
                 End Using
+            Else
+                MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
             End If
         End If
     End Sub
@@ -2008,18 +2003,6 @@ Public Class Form1
         LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
         StopAutoSaveTask()
         StartAutoSaveTask()
-    End Sub
-
-    Private Sub SortLogsByDateObject(columnIndex As Integer, order As ListSortDirection)
-        SyncLock dataGridLockObject
-            SortLogsByDateObjectNoLocking(columnIndex, order)
-        End SyncLock
-    End Sub
-
-    Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As ListSortDirection)
-        Logs.SuspendLayout()
-        Logs.Sort(Logs.Columns(columnIndex), order)
-        Logs.ResumeLayout()
     End Sub
 
     Public Sub ShowSingleInstanceWindow(Of T As {Form, New})(ByRef instance As T, ownerIcon As Icon)
