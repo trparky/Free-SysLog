@@ -819,6 +819,8 @@ Public Class IgnoredWordsAndPhrases
         IgnoredListView.BeginUpdate()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+            If StatUpdateCancellation IsNot Nothing AndAlso StatUpdateCancellation.Token.IsCancellationRequested Then Exit For
+
             If item.BoolEnabled Then
                 IgnoredStatsEntry = Nothing
                 intHits = 0
