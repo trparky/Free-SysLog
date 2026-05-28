@@ -15,6 +15,11 @@ git clone https://github.com/trparky/Free-SysLog.git
 cd .\Free-SysLog\
 ```
 
+### Switch to Dev Branch (Optional, use only if you want to use potentially unstable and untested code)
+```powershell
+git switch dev
+```
+
 ### Restore Required Packages
 ```powershell
 nuget restore ".\Free SysLog.sln"
