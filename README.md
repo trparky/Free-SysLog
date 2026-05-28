@@ -44,3 +44,5 @@ This project is fully open source.
 The included binary is compiled from the exact source code in this repository—nothing hidden, nothing extra.
 
 You can verify the download using the provided SHA256 hash on the release page.
+
+Or, you can follow the instructions in the BUILDING document to build the program from source if you don't trust the pre-compiled binary.
