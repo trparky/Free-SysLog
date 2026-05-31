@@ -44,7 +44,7 @@ Public Class Alerts_History
 
         SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
 
-        BtnRefresh.PerformClick()
+        RefreshData()
 
         chkAlertTextColumnAutoFill.Checked = My.Settings.AlertsHistoryAlertColumnFill
         colAlert.AutoSizeMode = If(My.Settings.AlertsHistoryAlertColumnFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
@@ -82,10 +82,10 @@ Public Class Alerts_History
     End Sub
 
     Private Sub Alerts_History_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.F5 Then BtnRefresh.PerformClick()
+        If e.KeyCode = Keys.F5 Then RefreshData()
     End Sub
 
-    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
+    Private Sub RefreshData()
         If ParentForm IsNot Nothing Then
             With ParentForm
                 Dim stopwatch As Stopwatch = Stopwatch.StartNew()
@@ -171,6 +171,10 @@ Public Class Alerts_History
                 lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {stopwatch.ElapsedMilliseconds}ms"
             End With
         End If
+    End Sub
+
+    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
+        RefreshData()
     End Sub
 
     Private Sub Alerts_History_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
