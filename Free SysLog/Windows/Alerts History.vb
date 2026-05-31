@@ -1,9 +1,6 @@
-﻿Imports System.ComponentModel
-Imports System.IO
+﻿Imports System.IO
 Imports System.Threading.Tasks
 Imports Free_SysLog.ThreadSafetyLists
-Imports Microsoft.VisualBasic.Logging
-Imports Windows.UI.Xaml.Controls
 
 Public Class Alerts_History
     Private Shadows ParentForm As Form1
