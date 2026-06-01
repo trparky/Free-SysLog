@@ -36,6 +36,7 @@ Public Class Form1
     Private ReplacementsInstance As Replacements
     Private AlertsInstance As Alerts
     Private ConfigureSysLogMirrorClientsInstance As ConfigureSysLogMirrorClients
+    Private AlertsHistoryInstance As Alerts_History
 #End Region
 
     Private Sub ChkStartAtUserStartup_Click(sender As Object, e As EventArgs) Handles ChkEnableStartAtUserStartup.Click
@@ -1368,9 +1369,19 @@ Public Class Form1
             Dim boolAnyAlerts As Boolean = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) row.BoolAlerted)
 
             If boolAnyAlerts Then
-                Using Alerts_History As New Alerts_History() With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent, .SetParentForm = Me, .Size = My.Settings.AlertHistorySize}
-                    Alerts_History.ShowDialog(Me)
-                End Using
+                If AlertsHistoryInstance IsNot Nothing AndAlso Not AlertsHistoryInstance.IsDisposed Then
+                    AlertsHistoryInstance.WindowState = FormWindowState.Normal
+                    AlertsHistoryInstance.BringToFront()
+                    AlertsHistoryInstance.Activate()
+                Else
+                    AlertsHistoryInstance = New Alerts_History With {
+                        .Icon = Icon,
+                        .StartPosition = FormStartPosition.CenterParent,
+                        .Size = My.Settings.AlertHistorySize,
+                        .SetParentForm = Me
+                    }
+                    AlertsHistoryInstance.Show()
+                End If
             Else
                 MsgBox("There are no alerts to show in the Alerts History.", MsgBoxStyle.Information, Text)
             End If
