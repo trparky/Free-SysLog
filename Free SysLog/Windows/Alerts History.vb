@@ -184,7 +184,7 @@ Public Class Alerts_History
     Private Sub chkShowAlertsFromAllFiles_CheckedChanged(sender As Object, e As EventArgs) Handles chkShowAlertsFromAllFiles.CheckedChanged
         colFileName.Visible = chkShowAlertsFromAllFiles.Checked
         chkIncludeHiddenFiles.Enabled = chkShowAlertsFromAllFiles.Checked
-        RefreshData()
+        If boolDoneLoading Then RefreshData()
     End Sub
 
     Private Sub chkAlertTextColumnAutoFill_Click(sender As Object, e As EventArgs) Handles chkAlertTextColumnAutoFill.Click
