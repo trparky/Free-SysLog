@@ -91,7 +91,7 @@ Public Class Alerts_History
         If ParentForm IsNot Nothing Then
             With ParentForm
                 Dim stopwatch As Stopwatch = Stopwatch.StartNew()
-                Dim data As New ThreadSafeList(Of AlertsHistory)
+                Dim data As New ThreadSafeList(Of AlertsHistoryDataGridViewRow)
 
                 SyncLock ParentForm.dataGridLockObject
                     For Each item As MyDataGridViewRow In ParentForm.Logs.Rows
@@ -107,7 +107,7 @@ Public Class Alerts_History
                                      .alertDate = item.DateObject,
                                      .boolCompressed = False,
                                      .boolHidden = False
-                                    })
+                                    }.MakeDataGridRow(AlertHistoryList))
                         End If
                     Next
                 End SyncLock
@@ -148,25 +148,20 @@ Public Class Alerts_History
                                                                                                      .alertDate = SavedData.DateObject,
                                                                                                      .boolHidden = boolHidden,
                                                                                                      .boolCompressed = boolCompressed
-                                                                                                  })
+                                                                                                  }.MakeDataGridRow(AlertHistoryList))
                                                                                               End If
                                                                                           End Sub)
                                                        End Sub)
                 End If
 
-                data.Sort(Function(x As AlertsHistory, y As AlertsHistory) y.alertDate.CompareTo(x.alertDate))
+                data.Sort(Function(x As AlertsHistoryDataGridViewRow, y As AlertsHistoryDataGridViewRow) y.alertDate.CompareTo(x.alertDate))
 
                 If data.Any() Then
                     lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
-                    Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
-
-                    For Each item As AlertsHistory In data.GetSnapshot()
-                        listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList))
-                    Next
 
                     AlertHistoryList.SuspendLayout()
                     AlertHistoryList.Rows.Clear()
-                    AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
+                    AlertHistoryList.Rows.AddRange(data.GetSnapshot.ToArray)
                     AlertHistoryList.ResumeLayout()
                     AlertHistoryList.AutoResizeRows()
                 End If
