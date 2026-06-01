@@ -34,6 +34,8 @@ Public Class Alerts_History
 
         SupportCode.SetDoubleBufferingFlag(AlertHistoryList)
 
+        AlertHistoryList.RowsDefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+
         AlertHistoryList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = SupportCode.GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
         Location = SupportCode.VerifyWindowLocation(My.Settings.AlertHistoryLocation, Me)
 
@@ -166,6 +168,7 @@ Public Class Alerts_History
                     AlertHistoryList.Rows.Clear()
                     AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
                     AlertHistoryList.ResumeLayout()
+                    AlertHistoryList.AutoResizeRows()
                 End If
 
                 lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {stopwatch.ElapsedMilliseconds}ms"
