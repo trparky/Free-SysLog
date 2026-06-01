@@ -46,6 +46,8 @@ Public Class Alerts_History
 
         SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
 
+        AlertHistoryList.Columns(3).SortMode = DataGridViewColumnSortMode.NotSortable
+
         RefreshData()
 
         chkAlertTextColumnAutoFill.Checked = My.Settings.AlertsHistoryAlertColumnFill
@@ -204,6 +206,8 @@ Public Class Alerts_History
     End Sub
 
     Private Sub AlertHistoryList_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles AlertHistoryList.ColumnHeaderMouseClick
+        If e.ColumnIndex = 3 Then Exit Sub
+
         If e.Button = MouseButtons.Left Then
             Dim column As DataGridViewColumn = AlertHistoryList.Columns(e.ColumnIndex)
 
