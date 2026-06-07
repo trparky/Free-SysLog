@@ -283,7 +283,12 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub UpdateStats()
         If _boolCurrentlyEditing Or boolF1KeyDown OrElse (Not NativeMethod.NativeMethods.GetForegroundWindow() = Me.Handle And ChkRefreshOnlyIfActive.Checked) Then Exit Sub
-        btnUpdateHits.PerformClick()
+
+        If InvokeRequired Then
+            Invoke(Sub() UpdateHits())
+        Else
+            UpdateHits()
+        End If
     End Sub
 
     Private Sub IgnoredWordsAndPhrases_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -632,7 +637,7 @@ Public Class IgnoredWordsAndPhrases
         If e.KeyCode = Keys.Escape Then
             Close()
         ElseIf e.KeyCode = Keys.F5 Then
-            btnUpdateHits.PerformClick()
+            UpdateHits()
         ElseIf e.KeyCode = Keys.F1 Then
             boolF1KeyDown = False
             ChkAutoRefresh.Enabled = True
@@ -809,6 +814,10 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub btnUpdateHits_Click(sender As Object, e As EventArgs) Handles btnUpdateHits.Click
+        UpdateHits()
+    End Sub
+
+    Private Sub UpdateHits()
         Dim longTotalHits As Long = 0
         Dim sinceLastEvent As TimeSpan
         Dim intHits As Integer
@@ -819,6 +828,8 @@ Public Class IgnoredWordsAndPhrases
         IgnoredListView.BeginUpdate()
 
         For Each item As MyIgnoredListViewItem In IgnoredListView.Items
+            If StatUpdateCancellation IsNot Nothing AndAlso StatUpdateCancellation.Token.IsCancellationRequested Then Exit For
+
             If item.BoolEnabled Then
                 IgnoredStatsEntry = Nothing
                 intHits = 0

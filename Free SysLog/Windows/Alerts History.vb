@@ -1,9 +1,6 @@
-﻿Imports System.ComponentModel
-Imports System.IO
+﻿Imports System.IO
 Imports System.Threading.Tasks
 Imports Free_SysLog.ThreadSafetyLists
-Imports Microsoft.VisualBasic.Logging
-Imports Windows.UI.Xaml.Controls
 
 Public Class Alerts_History
     Private Shadows ParentForm As Form1
@@ -37,6 +34,8 @@ Public Class Alerts_History
 
         SupportCode.SetDoubleBufferingFlag(AlertHistoryList)
 
+        AlertHistoryList.RowsDefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+
         AlertHistoryList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = SupportCode.GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
         Location = SupportCode.VerifyWindowLocation(My.Settings.AlertHistoryLocation, Me)
 
@@ -47,7 +46,9 @@ Public Class Alerts_History
 
         SupportCode.LoadColumnOrders(AlertHistoryList.Columns, My.Settings.alertsHistoryColumnOrder)
 
-        BtnRefresh.PerformClick()
+        AlertHistoryList.Columns(3).SortMode = DataGridViewColumnSortMode.NotSortable
+
+        RefreshData()
 
         chkAlertTextColumnAutoFill.Checked = My.Settings.AlertsHistoryAlertColumnFill
         colAlert.AutoSizeMode = If(My.Settings.AlertsHistoryAlertColumnFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
@@ -85,14 +86,14 @@ Public Class Alerts_History
     End Sub
 
     Private Sub Alerts_History_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
-        If e.KeyCode = Keys.F5 Then BtnRefresh.PerformClick()
+        If e.KeyCode = Keys.F5 Then RefreshData()
     End Sub
 
-    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
+    Private Sub RefreshData()
         If ParentForm IsNot Nothing Then
             With ParentForm
                 Dim stopwatch As Stopwatch = Stopwatch.StartNew()
-                Dim data As New ThreadSafeList(Of AlertsHistory)
+                Dim data As New ThreadSafeList(Of AlertsHistoryDataGridViewRow)
 
                 SyncLock ParentForm.dataGridLockObject
                     For Each item As MyDataGridViewRow In ParentForm.Logs.Rows
@@ -108,7 +109,7 @@ Public Class Alerts_History
                                      .alertDate = item.DateObject,
                                      .boolCompressed = False,
                                      .boolHidden = False
-                                    })
+                                    }.MakeDataGridRow(AlertHistoryList))
                         End If
                     Next
                 End SyncLock
@@ -149,31 +150,31 @@ Public Class Alerts_History
                                                                                                      .alertDate = SavedData.DateObject,
                                                                                                      .boolHidden = boolHidden,
                                                                                                      .boolCompressed = boolCompressed
-                                                                                                  })
+                                                                                                  }.MakeDataGridRow(AlertHistoryList))
                                                                                               End If
                                                                                           End Sub)
                                                        End Sub)
                 End If
 
-                data.Sort(Function(x As AlertsHistory, y As AlertsHistory) y.alertDate.CompareTo(x.alertDate))
+                data.Sort(Function(x As AlertsHistoryDataGridViewRow, y As AlertsHistoryDataGridViewRow) y.alertDate.CompareTo(x.alertDate))
 
                 If data.Any() Then
                     lblNumberOfAlerts.Text = $"Number of Alerts: {data.Count:N0}"
-                    Dim listOfDataRows As New List(Of AlertsHistoryDataGridViewRow)
-
-                    For Each item As AlertsHistory In data.GetSnapshot()
-                        listOfDataRows.Add(item.MakeDataGridRow(AlertHistoryList))
-                    Next
 
                     AlertHistoryList.SuspendLayout()
                     AlertHistoryList.Rows.Clear()
-                    AlertHistoryList.Rows.AddRange(listOfDataRows.ToArray)
+                    AlertHistoryList.Rows.AddRange(data.GetSnapshot.ToArray)
                     AlertHistoryList.ResumeLayout()
+                    AlertHistoryList.AutoResizeRows()
                 End If
 
                 lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {stopwatch.ElapsedMilliseconds}ms"
             End With
         End If
+    End Sub
+
+    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles BtnRefresh.Click
+        RefreshData()
     End Sub
 
     Private Sub Alerts_History_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -183,7 +184,7 @@ Public Class Alerts_History
     Private Sub chkShowAlertsFromAllFiles_CheckedChanged(sender As Object, e As EventArgs) Handles chkShowAlertsFromAllFiles.CheckedChanged
         colFileName.Visible = chkShowAlertsFromAllFiles.Checked
         chkIncludeHiddenFiles.Enabled = chkShowAlertsFromAllFiles.Checked
-        BtnRefresh.PerformClick()
+        If boolDoneLoading Then RefreshData()
     End Sub
 
     Private Sub chkAlertTextColumnAutoFill_Click(sender As Object, e As EventArgs) Handles chkAlertTextColumnAutoFill.Click
@@ -205,6 +206,8 @@ Public Class Alerts_History
     End Sub
 
     Private Sub AlertHistoryList_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles AlertHistoryList.ColumnHeaderMouseClick
+        If e.ColumnIndex = 3 Then Exit Sub
+
         If e.Button = MouseButtons.Left Then
             Dim column As DataGridViewColumn = AlertHistoryList.Columns(e.ColumnIndex)
 
