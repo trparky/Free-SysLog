@@ -138,7 +138,6 @@ Public Class ViewLogBackups
 
                                                    For Each cell As DataGridViewCell In row.Cells
                                                        cell.Style.Font = My.Settings.font
-                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then cell.Style.ForeColor = Color.Blue
                                                    Next
 
                                                    row.Cells(2).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
