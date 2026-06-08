@@ -720,14 +720,15 @@ Public Class Form1
     End Sub
 
     Private Sub ConfigureAlternatingColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeAlternatingColorToolStripMenuItem.Click
-        Using ColorDialog As New ColorDialog()
-            If ColorDialog.ShowDialog() = DialogResult.OK Then
-                My.Settings.searchColor = ColorDialog.Color
+        Dim Color_Picker As New Color_Picker With {.StartPosition = FormStartPosition.CenterParent, .Icon = Icon, .ChosenColor = My.Settings.searchColor, .Size = My.Settings.ColorPickerDialogSize}
+        Color_Picker.ShowDialog()
 
-                Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = ColorDialog.Color, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(ColorDialog.Color)}
-                Logs.AlternatingRowsDefaultCellStyle = rowStyle
-            End If
-        End Using
+        My.Settings.searchColor = Color_Picker.ChosenColor
+
+        Dim rowStyle As New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
+        Logs.AlternatingRowsDefaultCellStyle = rowStyle
+
+        Color_Picker.Dispose()
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click

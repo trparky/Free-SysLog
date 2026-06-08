@@ -362,5 +362,11 @@
     <Setting Name="ShowAlertsFromAllFilesWithHiddenFiles" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="CustomColors" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ColorPickerDialogSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">733, 326</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
