@@ -238,7 +238,7 @@ Public Class ViewLogBackups
         Dim propInfo As Reflection.PropertyInfo = GetType(DataGridView).GetProperty("DoubleBuffered", flags)
         propInfo?.SetValue(FileList, True, Nothing)
 
-        FileList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor}
+        FileList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
         FileList.DefaultCellStyle = New DataGridViewCellStyle() With {.WrapMode = DataGridViewTriState.True}
         FileList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
 
