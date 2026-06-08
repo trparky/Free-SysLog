@@ -138,7 +138,6 @@ Public Class ViewLogBackups
 
                                                    For Each cell As DataGridViewCell In row.Cells
                                                        cell.Style.Font = My.Settings.font
-                                                       If boolIsHidden AndAlso ChkShowHiddenAsGray.Checked Then cell.Style.ForeColor = Color.Gray
                                                        If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then cell.Style.ForeColor = Color.Blue
                                                    Next
 
@@ -258,8 +257,6 @@ Public Class ViewLogBackups
 
         colHidden.Visible = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
         ChkShowHidden.Checked = My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow
-        ChkShowHiddenAsGray.Checked = My.Settings.boolShowHiddenAsGray
-        ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         ChkLogFileDeletions.Checked = My.Settings.LogFileDeletions
         Size = My.Settings.ViewLogBackupsSize
         CenterFormOverParent(MyParentForm, Me)
@@ -555,7 +552,6 @@ Public Class ViewLogBackups
 
     Private Sub ChkShowHidden_Click(sender As Object, e As EventArgs) Handles ChkShowHidden.Click
         My.Settings.boolShowHiddenFilesOnViewLogBackyupsWindow = ChkShowHidden.Checked
-        ChkShowHiddenAsGray.Enabled = ChkShowHidden.Checked
         colHidden.Visible = ChkShowHidden.Checked
         ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
@@ -689,11 +685,6 @@ Public Class ViewLogBackups
             attributes = attributes And Not FileAttributes.Hidden
             File.SetAttributes(fileName, attributes)
         End If
-    End Sub
-
-    Private Sub ChkShowHiddenAsGray_Click(sender As Object, e As EventArgs) Handles ChkShowHiddenAsGray.Click
-        My.Settings.boolShowHiddenAsGray = ChkShowHiddenAsGray.Checked
-        ThreadPool.QueueUserWorkItem(Sub() LoadFileList(-1))
     End Sub
 
     Private Sub FileList_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles FileList.ColumnWidthChanged

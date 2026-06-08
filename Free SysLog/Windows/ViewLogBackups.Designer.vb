@@ -46,7 +46,6 @@ Partial Class ViewLogBackups
         Me.lblTotalNumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkShowHidden = New System.Windows.Forms.CheckBox()
         Me.colHidden = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ChkShowHiddenAsGray = New System.Windows.Forms.CheckBox()
         Me.colEntryCount = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.HideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UnhideToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -320,17 +319,6 @@ Partial Class ViewLogBackups
         Me.colHidden.ReadOnly = True
         Me.colHidden.Width = 60
         '
-        'ChkShowHiddenAsGray
-        '
-        Me.ChkShowHiddenAsGray.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ChkShowHiddenAsGray.AutoSize = True
-        Me.ChkShowHiddenAsGray.Location = New System.Drawing.Point(814, 319)
-        Me.ChkShowHiddenAsGray.Name = "ChkShowHiddenAsGray"
-        Me.ChkShowHiddenAsGray.Size = New System.Drawing.Size(153, 17)
-        Me.ChkShowHiddenAsGray.TabIndex = 35
-        Me.ChkShowHiddenAsGray.Text = "Show Hidden Files as Gray"
-        Me.ChkShowHiddenAsGray.UseVisualStyleBackColor = True
-        '
         'lblNumberOfHiddenFiles
         '
         Me.lblNumberOfHiddenFiles.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
@@ -457,7 +445,6 @@ Partial Class ViewLogBackups
         Me.Controls.Add(Me.boxLimitBy)
         Me.Controls.Add(Me.lblLimitBy)
         Me.Controls.Add(Me.ChkIgnoreSearchResultsLimits)
-        Me.Controls.Add(Me.ChkShowHiddenAsGray)
         Me.Controls.Add(Me.ChkShowHidden)
         Me.Controls.Add(Me.ChkCaseInsensitiveSearch)
         Me.Controls.Add(Me.ChkRegExSearch)
@@ -511,7 +498,6 @@ Partial Class ViewLogBackups
     Friend WithEvents HideToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents UnhideToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents colHidden As DataGridViewTextBoxColumn
-    Friend WithEvents ChkShowHiddenAsGray As CheckBox
     Friend WithEvents lblNumberOfHiddenFiles As ToolStripStatusLabel
     Friend WithEvents LblTotalDiskSpace As ToolStripStatusLabel
     Friend WithEvents colEntryCount As DataGridViewTextBoxColumn
