@@ -603,9 +603,9 @@ Namespace SupportCode
             Return ipv6Address
         End Function
 
-        Public Function GetGoodTextColorBasedUponBackgroundColor(input As Color) As Color
-            Dim intCombinedTotal As Short = Integer.Parse(input.R.ToString) + Integer.Parse(input.G.ToString) + Integer.Parse(input.B.ToString)
-            Return If((intCombinedTotal / 3) < 128, Color.White, Color.Black)
+        Public Function GetGoodTextColorBasedUponBackgroundColor(background As Color) As Color
+            Dim luminance As Double = (0.299 * background.R) + (0.587 * background.G) + (0.114 * background.B)
+            Return If(luminance < 128, Color.White, Color.Black)
         End Function
 
         Public Function FileSizeToHumanSize(size As Long, Optional roundToNearestWholeNumber As Boolean = False) As String
