@@ -335,6 +335,7 @@ Namespace checkForUpdates
                 windowObject.Invoke(Sub()
                                         MakeLogEntry("No Internet connection detected.")
                                         MsgBox("No Internet connection detected.", MsgBoxStyle.Information, strMessageBoxTitleText)
+                                        windowObject.BtnCheckForUpdates.Enabled = True
                                     End Sub)
             Else
                 Try
