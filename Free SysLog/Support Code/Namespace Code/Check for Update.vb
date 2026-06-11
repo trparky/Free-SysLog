@@ -58,6 +58,7 @@ Namespace checkForUpdates
             parseError
             exceptionError
             noData
+            requiredDataMissing
         End Enum
 
         ''' <summary>This parses the XML updata data and determines if an update is needed.</summary>
@@ -90,7 +91,7 @@ Namespace checkForUpdates
                         Return ProcessUpdateXMLResponse.parseError ' Something went wrong, so we return a parseError value.
                     End If
                 Else
-                    Return ProcessUpdateXMLResponse.exceptionError ' Something really went wrong, so we return a exceptionError value.
+                    Return ProcessUpdateXMLResponse.requiredDataMissing ' The internalversion node was missing from the XML file, which shouldn't happen, so we return an requiredDataMissing value.
                 End If
             Catch ex As Exception
                 ' Something went wrong so we return an exceptionError value.
@@ -366,6 +367,10 @@ Namespace checkForUpdates
                         ElseIf response = ProcessUpdateXMLResponse.noData Then
                             If boolShowMessageBox Then
                                 windowObject.Invoke(Sub() MsgBox("The the XML data was null or empty, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
+                            End If
+                        ElseIf response = ProcessUpdateXMLResponse.requiredDataMissing Then
+                            If boolShowMessageBox Then
+                                windowObject.Invoke(Sub() MsgBox("Required data was not found in the XML data, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                             End If
                         ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
