@@ -340,23 +340,24 @@ Namespace checkForUpdates
                 Try
                     Dim xmlData As String = Nothing
                     Dim httpHelper As HttpHelper = CreateNewHTTPHelperObject()
+                    Dim boolDebugBuild As Boolean = boolDebugBuild Or My.Settings.boolDebug
 
                     If httpHelper.GetWebData(programUpdateCheckerXMLFile, xmlData, False) Then
                         Dim remoteVersion As String = Nothing
                         Dim remoteBuild As String = Nothing
                         Dim response As ProcessUpdateXMLResponse = ProcessUpdateXMLData(xmlData, remoteVersion, remoteBuild)
 
-                        If boolDebugBuild Or My.Settings.boolDebug Then
+                        If boolDebugBuild Then
                             MakeLogEntry($"The following data was received from the URL ""{programUpdateCheckerXMLFile}""...{vbCrLf}{SyslogParser.ConvertLineFeeds(xmlData)}")
                         End If
 
                         If response = ProcessUpdateXMLResponse.newVersion Then
-                            If boolDebugBuild Or My.Settings.boolDebug Then
+                            If boolDebugBuild Then
                                 MakeLogEntry($"New version detected... {remoteVersion} Build {remoteBuild}.")
                             End If
 
                             If BackgroundThreadMessageBox($"An update to {strProgramName} (version {remoteVersion} Build {remoteBuild}) is available to be downloaded, do you want to download and update to this new version?", strMessageBoxTitleText) = MsgBoxResult.Yes Then
-                                If boolDebugBuild Or My.Settings.boolDebug Then
+                                If boolDebugBuild Then
                                     MakeLogEntry("Beginning program update process.")
                                 End If
 
@@ -373,7 +374,7 @@ Namespace checkForUpdates
                                 windowObject.Invoke(Sub() MsgBox("Required data was not found in the XML data, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                             End If
                         ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded Then
-                            If boolDebugBuild Or My.Settings.boolDebug Then
+                            If boolDebugBuild Then
                                 MakeLogEntry("You already have the latest version, there is no need to update this program.")
                             End If
 
@@ -381,7 +382,7 @@ Namespace checkForUpdates
                                 windowObject.Invoke(Sub() MsgBox($"You already have the latest version, there is no need to update this program.{vbCrLf}{vbCrLf}Your current version is v{versionString}.", MsgBoxStyle.Information, strMessageBoxTitleText))
                             End If
                         ElseIf response = ProcessUpdateXMLResponse.parseError Or response = ProcessUpdateXMLResponse.exceptionError Then
-                            If boolDebugBuild Or My.Settings.boolDebug Then
+                            If boolDebugBuild Then
                                 MakeLogEntry($"There was an error when trying to parse the response from the server. The XML data from the server is below...{vbCrLf}{vbCrLf}{xmlData}")
                             End If
 
@@ -389,7 +390,7 @@ Namespace checkForUpdates
                                 windowObject.Invoke(Sub() MsgBox("There was an error when trying to parse the response from the server.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                             End If
                         ElseIf response = ProcessUpdateXMLResponse.newerVersionThanWebSite Then
-                            If boolDebugBuild Or My.Settings.boolDebug Then
+                            If boolDebugBuild Then
                                 MakeLogEntry("This is weird, you have a version that's newer than what's listed on the web site.")
                             End If
 
@@ -398,7 +399,7 @@ Namespace checkForUpdates
                             End If
                         End If
                     Else
-                        If boolDebugBuild Or My.Settings.boolDebug Then
+                        If boolDebugBuild Then
                             MakeLogEntry("There was an error checking for updates.")
                         End If
 
