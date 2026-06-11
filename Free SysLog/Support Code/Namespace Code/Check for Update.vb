@@ -57,12 +57,15 @@ Namespace checkForUpdates
             newerVersionThanWebSite
             parseError
             exceptionError
+            noData
         End Enum
 
         ''' <summary>This parses the XML updata data and determines if an update is needed.</summary>
         ''' <param name="xmlData">The XML data from the web site.</param>
         ''' <returns>A Boolean value indicating if the program has been updated or not.</returns>
         Private Function ProcessUpdateXMLData(xmlData As String, ByRef remoteVersion As String, ByRef remoteBuild As String) As ProcessUpdateXMLResponse
+            If String.IsNullOrWhiteSpace(xmlData) Then Return ProcessUpdateXMLResponse.noData ' The XML data is empty or null, so we return a noData value.
+
             Try
                 Dim xmlDocument As New XmlDocument() ' First we create an XML Document Object.
                 xmlDocument.Load(New StringReader(xmlData)) ' Now we try and parse the XML data.
@@ -359,6 +362,10 @@ Namespace checkForUpdates
                                 DownloadAndPerformUpdate()
                             Else
                                 windowObject.Invoke(Sub() MsgBox("The update will not be downloaded.", MsgBoxStyle.Information, strMessageBoxTitleText))
+                            End If
+                        ElseIf response = ProcessUpdateXMLResponse.noData Then
+                            If boolShowMessageBox Then
+                                windowObject.Invoke(Sub() MsgBox("The the XML data was null or empty, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                             End If
                         ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded Then
                             If boolDebugBuild Or My.Settings.boolDebug Then
