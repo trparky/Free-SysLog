@@ -365,14 +365,10 @@ Namespace checkForUpdates
                             Else
                                 windowObject.Invoke(Sub() MsgBox("The update will not be downloaded.", MsgBoxStyle.Information, strMessageBoxTitleText))
                             End If
-                        ElseIf response = ProcessUpdateXMLResponse.noData Then
-                            If boolShowMessageBox Then
-                                windowObject.Invoke(Sub() MsgBox("The the XML data was null or empty, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
-                            End If
-                        ElseIf response = ProcessUpdateXMLResponse.requiredDataMissing Then
-                            If boolShowMessageBox Then
-                                windowObject.Invoke(Sub() MsgBox("Required data was not found in the XML data, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
-                            End If
+                        ElseIf response = ProcessUpdateXMLResponse.noData AndAlso boolShowMessageBox Then
+                            windowObject.Invoke(Sub() MsgBox("The the XML data was null or empty, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
+                        ElseIf response = ProcessUpdateXMLResponse.requiredDataMissing AndAlso boolShowMessageBox Then
+                            windowObject.Invoke(Sub() MsgBox("Required data was not found in the XML data, check for update aborted.", MsgBoxStyle.Critical, strMessageBoxTitleText))
                         ElseIf response = ProcessUpdateXMLResponse.noUpdateNeeded Then
                             If boolDebugBuild Then
                                 MakeLogEntry("You already have the latest version, there is no need to update this program.")
