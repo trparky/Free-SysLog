@@ -106,9 +106,7 @@ Public Class Alerts_History
                                      .strLog = item.Cells(SupportCode.ColumnIndex_LogText).Value,
                                      .strRawLog = item.RawLogData,
                                      .strFileName = "(Current Logs)",
-                                     .alertDate = item.DateObject,
-                                     .boolCompressed = False,
-                                     .boolHidden = False
+                                     .alertDate = item.DateObject
                                     }.MakeDataGridRow(AlertHistoryList))
                         End If
                     Next
@@ -125,11 +123,8 @@ Public Class Alerts_History
 
                     Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                            Dim dataFromFile As List(Of SavedData)
-                                                           Dim boolCompressed As Boolean = False
-                                                           Dim boolHidden As Boolean = (file.Attributes And FileAttributes.Hidden) = FileAttributes.Hidden
 
                                                            If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And SupportCode.IsGZipFile(file.FullName) Then
-                                                               boolCompressed = True
                                                                dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(SupportCode.GetTextContentsFromGZIPedLogFile(file.FullName), SupportCode.JSONDecoderSettingsForLogFiles)
                                                            Else
                                                                Using fileStream As New StreamReader(file.FullName)
@@ -147,9 +142,7 @@ Public Class Alerts_History
                                                                                                      .strLog = SavedData.log,
                                                                                                      .strRawLog = SavedData.rawLogData,
                                                                                                      .strFileName = file.Name,
-                                                                                                     .alertDate = SavedData.DateObject,
-                                                                                                     .boolHidden = boolHidden,
-                                                                                                     .boolCompressed = boolCompressed
+                                                                                                     .alertDate = SavedData.DateObject
                                                                                                   }.MakeDataGridRow(AlertHistoryList))
                                                                                               End If
                                                                                           End Sub)

@@ -38,6 +38,7 @@
                 .Cells(index).Style.Alignment = Me.Cells(index).Style.Alignment
                 .Cells(index).Style.Font = Me.Cells(index).Style.Font
                 .MinimumHeight = Me.MinimumHeight
+                .DefaultCellStyle = Me.DefaultCellStyle
             End With
         Next
 

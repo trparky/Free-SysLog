@@ -67,7 +67,6 @@ Public Class AlertsHistory
     Public strTime, strAlertText, strIP, strLog, strRawLog, strFileName As String
     Public alertType As AlertType
     Public alertDate As Date
-    Public boolHidden, boolCompressed As Boolean
 
     Public Function MakeDataGridRow(dataGrid As DataGridView) As AlertsHistoryDataGridViewRow
         Dim AlertsHistoryDataGridViewRow As New AlertsHistoryDataGridViewRow
@@ -96,12 +95,6 @@ Public Class AlertsHistory
                 .Cells(1).Style.Font = My.Settings.font
                 .Cells(2).Style.Font = My.Settings.font
                 .Cells(3).Style.Font = My.Settings.font
-
-                If boolCompressed And boolHidden Then
-                    .Cells(3).Style.ForeColor = Color.Gray
-                ElseIf boolCompressed Then
-                    .Cells(3).Style.ForeColor = Color.Blue
-                End If
             End If
 
             .strRawLog = strRawLog
