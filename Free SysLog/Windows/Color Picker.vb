@@ -116,6 +116,8 @@
         If e.KeyCode = Keys.Enter Then
             ChosenColor = lblColorShower.BackColor
             Close()
+        ElseIf e.KeyCode = Keys.Escape Then
+            Close()
         End If
     End Sub
 End Class
