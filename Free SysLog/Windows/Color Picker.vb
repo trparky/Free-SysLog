@@ -111,4 +111,11 @@
         ColorGrid1.CustomColors.Clear()
         ColorGrid1.Invalidate()
     End Sub
+
+    Private Sub Color_Picker_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.KeyCode = Keys.Enter Then
+            ChosenColor = lblColorShower.BackColor
+            Close()
+        End If
+    End Sub
 End Class

@@ -102,6 +102,7 @@ Partial Class Color_Picker
         Me.Controls.Add(Me.ColorEditor1)
         Me.Controls.Add(Me.ColorGrid1)
         Me.Controls.Add(Me.ColorWheel1)
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(733, 326)
