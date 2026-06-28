@@ -76,14 +76,14 @@ Partial Class Color_Picker
         '
         Me.btnSaveColorToCustomColors.Location = New System.Drawing.Point(135, 254)
         Me.btnSaveColorToCustomColors.Name = "btnSaveColorToCustomColors"
-        Me.btnSaveColorToCustomColors.Size = New System.Drawing.Size(176, 23)
+        Me.btnSaveColorToCustomColors.Size = New System.Drawing.Size(143, 23)
         Me.btnSaveColorToCustomColors.TabIndex = 5
-        Me.btnSaveColorToCustomColors.Text = "Save Color to Custom Colors"
+        Me.btnSaveColorToCustomColors.Text = "Add to Custom Colors"
         Me.btnSaveColorToCustomColors.UseVisualStyleBackColor = True
         '
         'btnClearCustomColors
         '
-        Me.btnClearCustomColors.Location = New System.Drawing.Point(317, 254)
+        Me.btnClearCustomColors.Location = New System.Drawing.Point(284, 254)
         Me.btnClearCustomColors.Name = "btnClearCustomColors"
         Me.btnClearCustomColors.Size = New System.Drawing.Size(148, 23)
         Me.btnClearCustomColors.TabIndex = 6
@@ -102,6 +102,7 @@ Partial Class Color_Picker
         Me.Controls.Add(Me.ColorEditor1)
         Me.Controls.Add(Me.ColorGrid1)
         Me.Controls.Add(Me.ColorWheel1)
+        Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(733, 326)
