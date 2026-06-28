@@ -51,7 +51,7 @@ Namespace SyslogParser
                 .Cells(ColumnIndex_RemoteProcess).Value = If(String.IsNullOrWhiteSpace(strRemoteProcess), "", strRemoteProcess)
                 .Cells(ColumnIndex_Hostname).Value = If(String.IsNullOrWhiteSpace(strHostname), "", strHostname)
                 .Cells(ColumnIndex_ServerTime).Value = ToIso8601Format(serverTimeStamp)
-                .Cells(ColumnIndex_LogText).Value = strLog
+                .Cells(ColumnIndex_LogText).Value = strLog.Trim()
                 .Cells(ColumnIndex_Alerted).Value = If(boolAlerted, "Yes", "No")
                 .DateObject = dateObject
                 .BoolAlerted = boolAlerted
