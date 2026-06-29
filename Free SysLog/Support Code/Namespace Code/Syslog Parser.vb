@@ -686,13 +686,8 @@ Namespace SyslogParser
         End Function
 
         Private Function GetCachedRegex(ByRef regexCache As ConcurrentDictionary(Of String, Regex), pattern As String, Optional boolCaseSensitive As Boolean = True) As Regex
-            If regexCache.ContainsKey(pattern) Then
-                Return regexCache(pattern)
-            Else
-                Dim regExObject As New Regex(pattern, If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase))
-                regexCache(pattern) = regExObject
-                Return regExObject
-            End If
+            Dim options As RegexOptions = If(boolCaseSensitive, RegexOptions.Compiled, RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+            Return regexCache.GetOrAdd(pattern, Function(p As String) New Regex(p, options))
         End Function
 
         Private Function IpToHostname(ipAddress As String) As String
