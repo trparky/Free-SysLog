@@ -82,7 +82,7 @@ Namespace My
                 Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
                                                                        Dim collectionOfSavedData As List(Of SavedData)
 
-                                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
+                                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(file.FullName) Then
                                                                            collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                        Else
                                                                            Using fileStream As New IO.StreamReader(file.FullName)

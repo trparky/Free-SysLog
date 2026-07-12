@@ -124,7 +124,7 @@ Public Class Alerts_History
                     Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
                                                            Dim dataFromFile As List(Of SavedData)
 
-                                                           If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And SupportCode.IsGZipFile(file.FullName) Then
+                                                           If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso SupportCode.IsGZipFile(file.FullName) Then
                                                                dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(SupportCode.GetTextContentsFromGZIPedLogFile(file.FullName), SupportCode.JSONDecoderSettingsForLogFiles)
                                                            Else
                                                                Using fileStream As New StreamReader(file.FullName)
