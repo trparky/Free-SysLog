@@ -705,13 +705,17 @@ Public Class Form1
     End Sub
 
     Private Sub ZerooutIgnoredLogsCounterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZerooutIgnoredLogsCounterToolStripMenuItem.Click
-        IgnoredStats.Clear()
-        longNumberOfIgnoredLogs = 0
-        LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
+        If MsgBox("Are you sure you want to zero out the ignored logs counters?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
+            IgnoredStats.Clear()
+            longNumberOfIgnoredLogs = 0
+            LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
 
-        If My.Settings.saveIgnoredLogCount Then
-            NumberOfIgnoredLogs = longNumberOfIgnoredLogs
-            WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+            If My.Settings.saveIgnoredLogCount Then
+                NumberOfIgnoredLogs = longNumberOfIgnoredLogs
+                WriteFileAtomically(strPathToIgnoredStatsFile, Newtonsoft.Json.JsonConvert.SerializeObject(IgnoredStats, Newtonsoft.Json.Formatting.Indented))
+            End If
+        Else
+            MsgBox("The ignored logs counters have not been zeroed out.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
@@ -765,7 +769,7 @@ Public Class Form1
                         MsgBox("Data exported successfully.", MsgBoxStyle.Information, Text)
                     End If
                 Catch ex As Exception
-                    MsgBox("There was an issue saving your exported settings to disk, export failed.", MsgBoxStyle.Critical, Text)
+                    MsgBox("There was an issue saving your exported settings To disk, export failed.", MsgBoxStyle.Critical, Text)
                 End Try
             End If
         End Using
@@ -781,7 +785,7 @@ Public Class Form1
 
                 Threading.Thread.Sleep(500)
 
-                MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
+                MsgBox("Free SysLog will now close And restart itself For the imported settings To take effect.", MsgBoxStyle.Information, Text)
                 Process.Start(strEXEPath)
 
                 Try
@@ -893,7 +897,7 @@ Public Class Form1
                 If allSelectedLogs.Length > 0 Then boolCopyToClipboardResults = CopyTextToWindowsClipboard(allSelectedLogs.ToString().Trim, Text)
             End If
 
-            If boolCopyToClipboardResults Then MsgBox("Data copied to clipboard.", MsgBoxStyle.Information, Text)
+            If boolCopyToClipboardResults Then MsgBox("Data copied To clipboard.", MsgBoxStyle.Information, Text)
         End If
     End Sub
 
@@ -947,13 +951,13 @@ Public Class Form1
             Dim choice As Confirm_Delete.UserChoice
 
             Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-                Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
+                Confirm_Delete.lblMainLabel.Text = $"Are you sure you want To delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
                 Confirm_Delete.ShowDialog(Me)
                 choice = Confirm_Delete.choice
             End Using
 
             If choice = Confirm_Delete.UserChoice.NoDelete Then
-                MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} Not deleted.", MsgBoxStyle.Information, Text)
                 Exit Sub
             ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
                 MakeLogBackup()
