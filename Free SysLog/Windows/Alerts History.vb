@@ -158,7 +158,6 @@ Public Class Alerts_History
                     AlertHistoryList.Rows.Clear()
                     AlertHistoryList.Rows.AddRange(data.GetSnapshot.ToArray)
                     AlertHistoryList.ResumeLayout()
-                    AlertHistoryList.AutoResizeRows()
                 End If
 
                 lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {stopwatch.ElapsedMilliseconds}ms"
