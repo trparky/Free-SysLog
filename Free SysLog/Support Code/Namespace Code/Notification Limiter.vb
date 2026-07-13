@@ -12,17 +12,22 @@
             ' Clean up old notification entries
             CleanUpOldEntries(currentTime)
 
-            ' Check if this message has been shown recently
-            If lastNotificationTime.ContainsKey(tipText) Then
-                Dim lastTime As Date = lastNotificationTime(tipText)
-                Dim timeSinceLastNotification As TimeSpan = currentTime - lastTime
+            Dim shouldShow As Boolean = False
 
-                ' If the message was shown within the time limit, do not show it again
-                If timeSinceLastNotification.TotalSeconds < My.Settings.TimeBetweenSameNotifications Then Exit Sub
-            End If
+            lastNotificationTime.AddOrUpdate(tipText, Function(key As String) ' key not present — always show
+                                                          shouldShow = True
+                                                          Return currentTime
+                                                      End Function,
+                                             Function(key As String, existingTime As Date) ' key present — decide atomically
+                                                 If (currentTime - existingTime).TotalSeconds >= My.Settings.TimeBetweenSameNotifications Then
+                                                     shouldShow = True
+                                                     Return currentTime
+                                                 Else
+                                                     Return existingTime ' leave timestamp untouched, don't show
+                                                 End If
+                                             End Function)
 
-            ' Update the last shown time for this message
-            lastNotificationTime(tipText) = currentTime
+            If Not shouldShow Then Exit Sub
 
             SupportCode.ShowToastNotification(tipText, tipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alertType, rowGUID)
         End Sub

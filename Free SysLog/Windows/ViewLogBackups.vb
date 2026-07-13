@@ -61,7 +61,7 @@ Public Class ViewLogBackups
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Try
-            If New FileInfo(strFileName).Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(strFileName) Then
+            If New FileInfo(strFileName).Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(strFileName) Then
                 Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(strFileName), JSONDecoderSettingsForLogFiles).Count
             Else
                 Using fileStream As New StreamReader(strFileName)
@@ -400,7 +400,7 @@ Public Class ViewLogBackups
                                                                                      Exit Sub
                                                                                  End If
 
-                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
+                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(file.FullName) Then
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                                  Else
                                                                                      Using fileStream As New StreamReader(file.FullName)
@@ -802,7 +802,7 @@ Public Class ViewLogBackups
                                                                                  Exit Sub
                                                                              End If
 
-                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) And IsGZipFile(file.FullName) Then
+                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(file.FullName) Then
                                                                                  dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
                                                                              Else
                                                                                  Using fileStream As New StreamReader(file.FullName)
