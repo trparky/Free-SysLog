@@ -2410,7 +2410,7 @@ Public Class Form1
                                                                                    Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(foundRowObject As MyDataGridViewRow) foundRowObject.GUID = rowGUID)
 
                                                                                    If selectedRow Is Nothing Then
-                                                                                       Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to find a corresponding log with a GUID of ""{argsDictionary("guid")}"".", Logs)))
+                                                                                       Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to find a corresponding log with a GUID of ""{rowGUID.ToString}"".", Logs)))
                                                                                    Else
                                                                                        OpenLogViewerWindow(selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.AlertText, selectedRow.Cells(ColumnIndex_ComputedTime).Value, selectedRow.Cells(ColumnIndex_IPAddress).Value, selectedRow.RawLogData, selectedRow.alertType)
                                                                                    End If
