@@ -2407,7 +2407,7 @@ Public Class Form1
                                                                                Dim rowGUID As Guid
 
                                                                                If Guid.TryParse(argsDictionary("guid").ToString, rowGUID) Then
-                                                                                   Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(r As MyDataGridViewRow) r.GUID = rowGUID)
+                                                                                   Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(foundRowObject As MyDataGridViewRow) foundRowObject.GUID = rowGUID)
 
                                                                                    If selectedRow Is Nothing Then
                                                                                        Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to find a corresponding log with a GUID of ""{argsDictionary("guid")}"".", Logs)))
