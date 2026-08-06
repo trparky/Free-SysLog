@@ -2406,7 +2406,7 @@ Public Class Form1
                                                                            Try
                                                                                Dim rowGUID As Guid
 
-                                                                               If Guid.TryParse(argsDictionary("guid").ToString, rowGUID) Then
+                                                                               If Guid.TryParse(argsDictionary("guid").ToString.Trim, rowGUID) Then
                                                                                    Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(foundRowObject As MyDataGridViewRow) foundRowObject.GUID = rowGUID)
 
                                                                                    If selectedRow Is Nothing Then
