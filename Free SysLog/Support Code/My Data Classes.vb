@@ -30,6 +30,7 @@ Public Class SavedData
             .AlertText = alertText
             .alertType = alertType
             .ServerDate = ServerDate
+            .GUID = Guid.NewGuid()
 
             If My.Settings.font IsNot Nothing Then
                 .DefaultCellStyle = DataGridViewCellStyle
