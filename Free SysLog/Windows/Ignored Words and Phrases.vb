@@ -15,26 +15,23 @@ Public Class IgnoredWordsAndPhrases
     Private StatUpdateCancellation As Threading.CancellationTokenSource
 
     Private Async Sub StartStatUpdater()
-        StatUpdateCancellation = New Threading.CancellationTokenSource()
+        Dim cts As New Threading.CancellationTokenSource()
+        StatUpdateCancellation = cts
 
         Try
-            While Not StatUpdateCancellation.Token.IsCancellationRequested
-                If StatUpdateCancellation.Token.IsCancellationRequested Then Exit While
-
+            While Not cts.Token.IsCancellationRequested
                 UpdateStats()
-
-                Await Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(5), StatUpdateCancellation.Token)
+                Await Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(5), cts.Token)
             End While
-        Catch ex As Threading.Tasks.TaskCanceledException
+        Catch ex As OperationCanceledException
+        Finally
+            cts.Dispose()
         End Try
     End Sub
 
     Private Sub StopStatUpdater()
-        If StatUpdateCancellation IsNot Nothing Then
-            StatUpdateCancellation.Cancel()
-            StatUpdateCancellation.Dispose()
-            StatUpdateCancellation = Nothing
-        End If
+        StatUpdateCancellation?.Cancel()
+        StatUpdateCancellation = Nothing
     End Sub
 
     Private Sub ListViewMenu_Closed(sender As Object, e As ToolStripDropDownClosedEventArgs) Handles ListViewMenu.Closed
