@@ -739,7 +739,7 @@ Public Class Form1
 #If DEBUG Then
         MsgBox($"Free SysLog.{vbCrLf}{vbCrLf}Version {checkForUpdates.versionString} (Debug Build){vbCrLf}{vbCrLf}Copyright Thomas Parkison © 2023-2030", MsgBoxStyle.Information, Text)
 #Else
-        MsgBox($"Free SysLog.{vbCrLf}{vbCrLf}Version {checkForUpdates.versionString}{vbcrlf}{vbcrlf}Copyright Thomas Parkison © 2023-2025", MsgBoxStyle.Information, Text)
+        MsgBox($"Free SysLog.{vbCrLf}{vbCrLf}Version {checkForUpdates.versionString}{vbcrlf}{vbcrlf}Copyright Thomas Parkison © 2023-2030", MsgBoxStyle.Information, Text)
 #End If
     End Sub
 
@@ -2211,7 +2211,8 @@ Public Class Form1
         StopMidnightScheduler()
 
         ' Create a fresh cancellation token source for this new scheduler instance.
-        MidnightCancellation = New Threading.CancellationTokenSource()
+        Dim cts As New Threading.CancellationTokenSource()
+        MidnightCancellation = cts
 
         ' Listen for system time changes.
         ' Example: manual clock adjustment, daylight saving changes, sync corrections, etc.
@@ -2224,7 +2225,7 @@ Public Class Form1
             '   1. Calculates the next midnight
             '   2. Waits until then
             '   3. Runs the midnight task
-            While Not MidnightCancellation.Token.IsCancellationRequested
+            While Not cts.Token.IsCancellationRequested
                 ' Calculate the next midnight.
                 ' Date.Today = today's date at 12:00:00 AM
                 ' AddDays(1) = tomorrow at 12:00:00 AM
@@ -2239,11 +2240,11 @@ Public Class Form1
                 ' Why use Task.Delay with a cancellation token?
                 ' * It doesn't block the UI thread while waiting.
                 ' * It can be interrupted immediately when stopping/restarting.
-                Await Threading.Tasks.Task.Delay(delay, MidnightCancellation.Token)
+                Await Threading.Tasks.Task.Delay(delay, cts.Token)
 
                 ' It's possible cancellation happened during or immediately after the delay.
                 ' Double-check before running the midnight work.
-                If MidnightCancellation.Token.IsCancellationRequested Then Exit While
+                If cts.Token.IsCancellationRequested Then Exit While
 
                 ' Run the code that should execute at midnight.
                 ' This is your actual scheduled work.
@@ -2259,6 +2260,8 @@ Public Class Form1
             ' * the system time changed and we want to recalculate the wait
             '
             ' Since cancellation here is intentional, we silently ignore it.
+        Finally
+            cts.Dispose()
         End Try
     End Sub
 
@@ -2270,22 +2273,9 @@ Public Class Form1
     ' * Disposes the token source to release resources
     ' * Clears the field so we know no scheduler is active
     Private Sub StopMidnightScheduler()
-        ' Always remove the event handler when stopping.
-        ' This prevents duplicate subscriptions and avoids memory/resource leaks.
         RemoveHandler SystemEvents.TimeChanged, AddressOf WindowsTimeChangeHandler
-
-        ' Only do cleanup if a scheduler token source actually exists.
-        If MidnightCancellation IsNot Nothing Then
-            ' Signal cancellation to the running scheduler loop.
-            ' If it's currently inside Task.Delay, that delay will be canceled immediately.
-            MidnightCancellation.Cancel()
-
-            ' Release unmanaged/internal resources used by the token source.
-            MidnightCancellation.Dispose()
-
-            ' Clear the reference so this old token source can't be reused accidentally.
-            MidnightCancellation = Nothing
-        End If
+        MidnightCancellation?.Cancel()
+        MidnightCancellation = Nothing
     End Sub
 
     ' Handles changes to the Windows system clock.
@@ -2406,11 +2396,11 @@ Public Class Form1
                                                                            Try
                                                                                Dim rowGUID As Guid
 
-                                                                               If Guid.TryParse(argsDictionary("guid").ToString, rowGUID) Then
-                                                                                   Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(r As MyDataGridViewRow) r.GUID = rowGUID)
+                                                                               If Guid.TryParse(argsDictionary("guid").ToString.Trim, rowGUID) Then
+                                                                                   Dim selectedRow As MyDataGridViewRow = Logs.Rows.Cast(Of MyDataGridViewRow).FirstOrDefault(Function(foundRowObject As MyDataGridViewRow) foundRowObject.GUID = rowGUID)
 
                                                                                    If selectedRow Is Nothing Then
-                                                                                       Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to find a corresponding log with a GUID of ""{argsDictionary("guid")}"".", Logs)))
+                                                                                       Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Unable to find a corresponding log with a GUID of ""{rowGUID.ToString}"".", Logs)))
                                                                                    Else
                                                                                        OpenLogViewerWindow(selectedRow.Cells(ColumnIndex_LogText).Value, selectedRow.AlertText, selectedRow.Cells(ColumnIndex_ComputedTime).Value, selectedRow.Cells(ColumnIndex_IPAddress).Value, selectedRow.RawLogData, selectedRow.alertType)
                                                                                    End If
