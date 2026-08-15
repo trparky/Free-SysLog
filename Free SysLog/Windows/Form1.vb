@@ -2015,6 +2015,9 @@ Public Class Form1
     End Sub
 
     Public Sub SaveLogsToDiskSub()
+        ' Clean up old notification entries at time of saving logs to disk to prevent memory bloat.
+        NotificationLimiter.CleanUpOldEntries(Date.Now)
+
         WriteLogsToDisk()
         LblAutoSaved.Text = $"Last Saved At: {Date.Now:h:mm:ss tt}"
         StopAutoSaveTask()

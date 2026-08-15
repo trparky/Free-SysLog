@@ -8,10 +8,6 @@
         Public Function ShowNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType, rowGUID As Guid) As Boolean
             ' Get the current time
             Dim currentTime As Date = Date.Now
-
-            ' Clean up old notification entries
-            CleanUpOldEntries(currentTime)
-
             Dim shouldShow As Boolean = False
 
             lastNotificationTime.AddOrUpdate(tipText, Function(key As String) ' key not present — always show
@@ -34,7 +30,7 @@
         End Function
 
         ' Function to clean up old notification entries
-        Private Sub CleanUpOldEntries(currentTime As Date)
+        Public Sub CleanUpOldEntries(currentTime As Date)
             Dim keysToRemove As List(Of String) = lastNotificationTime.Where(Function(kvp As KeyValuePair(Of String, Date)) (currentTime - kvp.Value).TotalMinutes > CleanupThresholdInMinutes).Select(Function(kvp As KeyValuePair(Of String, Date)) kvp.Key).ToList()
 
             For Each key As String In keysToRemove
