@@ -5,7 +5,7 @@
         ' Time after which an unused entry is considered stale (in minutes)
         Private Const CleanupThresholdInMinutes As Integer = 10
 
-        Public Sub ShowNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType, rowGUID As Guid)
+        Public Function ShowNotification(tipText As String, tipIcon As ToolTipIcon, strLogText As String, strLogDate As String, strSourceIP As String, strRawLogText As String, alertType As AlertType, rowGUID As Guid) As Boolean
             ' Get the current time
             Dim currentTime As Date = Date.Now
 
@@ -27,10 +27,11 @@
                                                  End If
                                              End Function)
 
-            If Not shouldShow Then Exit Sub
+            If Not shouldShow Then Return False
 
             SupportCode.ShowToastNotification(tipText, tipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alertType, rowGUID)
-        End Sub
+            Return True
+        End Function
 
         ' Function to clean up old notification entries
         Private Sub CleanUpOldEntries(currentTime As Date)

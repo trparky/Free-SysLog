@@ -744,14 +744,18 @@ Namespace SyslogParser
                     strAlertText = strAlertText.Replace("{NL}", vbCrLf, StringComparison.OrdinalIgnoreCase).Trim()
                     strAlertText = ProcessEmbeddedCommands(strAlertText)
 
+                    Dim boolAlerted As Boolean = False
+
                     If alert.BoolLimited Then
-                        NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
+                        boolAlerted = NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
                     Else
+                        boolAlerted = True
                         ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
                     End If
 
-                    strOutgoingAlertText = strAlertText
-                    Return True
+                    If boolAlerted Then strOutgoingAlertText = strAlertText
+
+                    Return boolAlerted
                 End If
             Next
 
