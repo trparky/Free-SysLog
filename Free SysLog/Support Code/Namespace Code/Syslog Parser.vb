@@ -503,6 +503,8 @@ Namespace SyslogParser
             If Not boolIgnored Then
                 SyncLock ParentForm.dataGridLockObject
                     ParentForm.Logs.Invoke(Sub()
+                                               If Not boolAlerted Then strAlertText = Nothing
+
                                                Dim newItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
                                                              dateObject:=currentDate,
                                                              strTime:=currentDate.ToString,
