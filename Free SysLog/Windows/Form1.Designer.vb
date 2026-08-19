@@ -117,6 +117,7 @@ Partial Class Form1
         Me.ProcessReplacementsInSyslogDataFirst = New System.Windows.Forms.ToolStripMenuItem()
         Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowLogAsAlertedEvenIfLimitedByTime = New System.Windows.Forms.ToolStripMenuItem()
         Me.ShowCloseButtonOnNotifications = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveIgnoredLogCount = New System.Windows.Forms.ToolStripMenuItem()
         Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -152,6 +153,7 @@ Partial Class Form1
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
         Me.IconMenu.SuspendLayout()
+        Me.LogsHeaderMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'NotificationLength
@@ -481,7 +483,7 @@ Partial Class Form1
         '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearIgnoredStatsAtMidnight, Me.CompressBackupLogFilesToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.IncludeCommasInDHMS, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearIgnoredStatsAtMidnight, Me.CompressBackupLogFilesToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.IncludeCommasInDHMS, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowLogAsAlertedEvenIfLimitedByTime, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
@@ -908,6 +910,13 @@ Partial Class Form1
         Me.ProcessReplacementsInSyslogDataFirst.Size = New System.Drawing.Size(319, 22)
         Me.ProcessReplacementsInSyslogDataFirst.Text = "Process Replacements in Syslog Data First"
         '
+        'ShowLogAsAlertedEvenIfLimitedByTime
+        '
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.CheckOnClick = True
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.Name = "ShowLogAsAlertedEvenIfLimitedByTime"
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.Size = New System.Drawing.Size(319, 22)
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.Text = "Show Log as Alerted Even if Limited by Time"
+        '
         'ShowCloseButtonOnNotifications
         '
         Me.ShowCloseButtonOnNotifications.CheckOnClick = True
@@ -1160,6 +1169,7 @@ Partial Class Form1
     Friend WithEvents RemoveNumbersFromRemoteApp As ToolStripMenuItem
     Friend WithEvents ShowRawLogOnLogViewer As ToolStripMenuItem
     Friend WithEvents ShowCloseButtonOnNotifications As ToolStripMenuItem
+    Friend WithEvents ShowLogAsAlertedEvenIfLimitedByTime As ToolStripMenuItem
     Friend WithEvents SaveIgnoredLogCount As ToolStripMenuItem
     Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
     Friend WithEvents ConfigureTimeBetweenSameNotifications As ToolStripMenuItem

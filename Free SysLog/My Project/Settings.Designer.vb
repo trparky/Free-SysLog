@@ -1507,6 +1507,18 @@ Namespace My
                 Me("ColorPickerDialogSize") = Value
             End Set
         End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>
+        Public Property ShowAsAlertedEvenIfLimitedByTime() As Boolean
+            Get
+                Return CType(Me("ShowAsAlertedEvenIfLimitedByTime"), Boolean)
+            End Get
+            Set
+                Me("ShowAsAlertedEvenIfLimitedByTime") = Value
+            End Set
+        End Property
     End Class
 End Namespace
 

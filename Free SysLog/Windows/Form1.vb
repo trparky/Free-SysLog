@@ -817,6 +817,9 @@ Public Class Form1
     Private Sub ChkConfirmCloseToolStripItem_Click(sender As Object, e As EventArgs) Handles ChkEnableConfirmCloseToolStripItem.Click
         My.Settings.boolConfirmClose = ChkEnableConfirmCloseToolStripItem.Checked
     End Sub
+    Private Sub ShowLogAsAlertedEvenIfLimitedByTime_Click(sender As Object, e As EventArgs) Handles ShowLogAsAlertedEvenIfLimitedByTime.Click
+        My.Settings.ShowAsAlertedEvenIfLimitedByTime = ShowLogAsAlertedEvenIfLimitedByTime.Checked
+    End Sub
 
     Private Sub LogsMenuHideAlertsColumn_Click(sender As Object, e As EventArgs) Handles LogsMenuHideAlertsColumn.Click
         ColAlerts.Visible = Not ColAlerts.Visible
@@ -2091,6 +2094,7 @@ Public Class Form1
 
         ColLog.AutoSizeMode = If(My.Settings.colLogAutoFill, DataGridViewAutoSizeColumnMode.Fill, DataGridViewAutoSizeColumnMode.NotSet)
 
+        ShowLogAsAlertedEvenIfLimitedByTime.Checked = My.Settings.ShowAsAlertedEvenIfLimitedByTime
         OnlySaveAlertedLogs.Checked = My.Settings.OnlySaveAlertedLogs
         SaveIgnoredLogCount.Checked = My.Settings.saveIgnoredLogCount
         AskToOpenExplorerWhenSavingData.Checked = My.Settings.AskOpenExplorer

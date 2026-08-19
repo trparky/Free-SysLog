@@ -750,6 +750,7 @@ Namespace SyslogParser
 
                     If alert.BoolLimited Then
                         boolAlerted = NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
+                        If My.Settings.ShowAsAlertedEvenIfLimitedByTime Then boolAlerted = True
                     Else
                         boolAlerted = True
                         ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
