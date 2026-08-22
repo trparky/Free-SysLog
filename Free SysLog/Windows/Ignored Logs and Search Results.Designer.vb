@@ -34,74 +34,44 @@ Partial Class IgnoredLogsAndSearchResults
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.Logs = New System.Windows.Forms.DataGridView()
-        Me.colServerTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colServerTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColRemoteProcess = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColRemoteProcess = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColFileName = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CopyRawLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenLogForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExportSelectedLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ViewIgnoredLogPatternToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.LblCount = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ColFileName = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripSelectedItems = New System.Windows.Forms.ToolStripStatusLabel()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.SaveFileDialog = New System.Windows.Forms.SaveFileDialog()
         Me.BtnClearIgnoredLogs = New System.Windows.Forms.Button()
         Me.BtnViewMainWindow = New System.Windows.Forms.Button()
-        Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LogsContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CopyRawLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkCaseInsensitiveSearch = New System.Windows.Forms.CheckBox()
         Me.ChkColLogsAutoFill = New System.Windows.Forms.CheckBox()
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
-        Me.ToolStripSelectedItems = New System.Windows.Forms.ToolStripStatusLabel()
         Me.BtnSearch = New System.Windows.Forms.Button()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
-        Me.ExportSelectedLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
-        Me.ViewIgnoredLogPatternToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkAutoScroll = New System.Windows.Forms.CheckBox()
         Me.ChkKeepIgnoredLogsPastUserLimit = New System.Windows.Forms.CheckBox()
-        Me.OpenLogFileForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OpenLogForViewingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LogsLoadedInLabel = New System.Windows.Forms.ToolStripStatusLabel()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'ColHostname
-        '
-        Me.ColHostname.HeaderText = "Hostname/Device Name"
-        Me.ColHostname.Name = "ColHostname"
-        Me.ColHostname.ReadOnly = True
-        Me.ColHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColHostname.Width = 150
-        '
-        'colLogType
-        '
-        Me.colLogType.HeaderText = "Log Type"
-        Me.colLogType.Name = "colLogType"
-        Me.colLogType.ReadOnly = True
-        Me.colLogType.Width = 200
-        '
-        'StatusStrip1
-        '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount, Me.LogsLoadedInLabel, Me.ToolStripSelectedItems})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 403)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1563, 22)
-        Me.StatusStrip1.TabIndex = 5
-        Me.StatusStrip1.Text = "StatusStrip1"
-        '
-        'LblCount
-        '
-        Me.LblCount.Name = "LblCount"
-        Me.LblCount.Size = New System.Drawing.Size(53, 17)
-        Me.LblCount.Text = "lblCount"
         '
         'Logs
         '
@@ -120,6 +90,14 @@ Partial Class IgnoredLogsAndSearchResults
         Me.Logs.Size = New System.Drawing.Size(1539, 359)
         Me.Logs.TabIndex = 19
         '
+        'ColTime
+        '
+        Me.ColTime.HeaderText = "Time"
+        Me.ColTime.Name = "ColTime"
+        Me.ColTime.ReadOnly = True
+        Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColTime.ToolTipText = "The time at which the log entry came in."
+        '
         'colServerTime
         '
         Me.colServerTime.HeaderText = "Server Time"
@@ -128,34 +106,36 @@ Partial Class IgnoredLogsAndSearchResults
         Me.colServerTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.colServerTime.ToolTipText = "The time on the server at which the log entry came in."
         '
-        'ColTime
+        'colLogType
         '
-        Me.ColTime.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        Me.ColTime.HeaderCell.Style.Padding = New Padding(0, 0, 1, 0)
-        Me.ColTime.HeaderText = "Time"
-        Me.ColTime.Name = "ColTime"
-        Me.ColTime.ReadOnly = True
-        Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColTime.ToolTipText = "The time at which the log entry came in."
+        Me.colLogType.HeaderText = "Log Type"
+        Me.colLogType.Name = "colLogType"
+        Me.colLogType.ReadOnly = True
+        Me.colLogType.Width = 200
         '
         'ColIPAddress
         '
-        Me.ColIPAddress.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        Me.ColIPAddress.HeaderCell.Style.Padding = New Padding(0, 0, 2, 0)
         Me.ColIPAddress.HeaderText = "IP Address"
         Me.ColIPAddress.Name = "ColIPAddress"
         Me.ColIPAddress.ReadOnly = True
         Me.ColIPAddress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColIPAddress.ToolTipText = "The IP address of the system from which the log came from."
         '
-        'ColFileName
+        'ColHostname
         '
-        Me.ColFileName.HeaderText = "File Name"
-        Me.ColFileName.Name = "ColFileName"
-        Me.ColFileName.ReadOnly = True
-        Me.ColFileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColFileName.Visible = False
-        Me.ColFileName.Width = 150
+        Me.ColHostname.HeaderText = "Hostname/Device Name"
+        Me.ColHostname.Name = "ColHostname"
+        Me.ColHostname.ReadOnly = True
+        Me.ColHostname.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColHostname.Width = 150
+        '
+        'ColRemoteProcess
+        '
+        Me.ColRemoteProcess.HeaderText = "Remote Process"
+        Me.ColRemoteProcess.Name = "ColRemoteProcess"
+        Me.ColRemoteProcess.ReadOnly = True
+        Me.ColRemoteProcess.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColRemoteProcess.Width = 150
         '
         'ColLog
         '
@@ -175,13 +155,94 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ColAlerts.ToolTipText = "True or False. Indicates if the log entry triggered an alert from this program."
         Me.ColAlerts.Width = 50
         '
-        'ColRemoteProcess
+        'ColFileName
         '
-        Me.ColRemoteProcess.HeaderText = "Remote Process"
-        Me.ColRemoteProcess.Name = "ColRemoteProcess"
-        Me.ColRemoteProcess.ReadOnly = True
-        Me.ColRemoteProcess.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColRemoteProcess.Width = 150
+        Me.ColFileName.HeaderText = "File Name"
+        Me.ColFileName.Name = "ColFileName"
+        Me.ColFileName.ReadOnly = True
+        Me.ColFileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColFileName.Visible = False
+        Me.ColFileName.Width = 150
+        '
+        'LogsContextMenu
+        '
+        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.OpenLogForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
+        Me.LogsContextMenu.Name = "LogsContextMenu"
+        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 158)
+        '
+        'CopyLogTextToolStripMenuItem
+        '
+        Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
+        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
+        '
+        'CopyRawLogTextToolStripMenuItem
+        '
+        Me.CopyRawLogTextToolStripMenuItem.Name = "CopyRawLogTextToolStripMenuItem"
+        Me.CopyRawLogTextToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.CopyRawLogTextToolStripMenuItem.Text = "Copy Raw Log Text"
+        '
+        'CreateAlertToolStripMenuItem
+        '
+        Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
+        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
+        '
+        'OpenLogFileForViewingToolStripMenuItem
+        '
+        Me.OpenLogFileForViewingToolStripMenuItem.Name = "OpenLogFileForViewingToolStripMenuItem"
+        Me.OpenLogFileForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.OpenLogFileForViewingToolStripMenuItem.Text = "Open Log File for Viewing"
+        Me.OpenLogFileForViewingToolStripMenuItem.Visible = False
+        '
+        'OpenLogForViewingToolStripMenuItem
+        '
+        Me.OpenLogForViewingToolStripMenuItem.Name = "OpenLogForViewingToolStripMenuItem"
+        Me.OpenLogForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.OpenLogForViewingToolStripMenuItem.Text = "Open Log for Viewing"
+        '
+        'ExportSelectedLogsToolStripMenuItem
+        '
+        Me.ExportSelectedLogsToolStripMenuItem.Name = "ExportSelectedLogsToolStripMenuItem"
+        Me.ExportSelectedLogsToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.ExportSelectedLogsToolStripMenuItem.Text = "Export Selected Logs"
+        '
+        'ViewIgnoredLogPatternToolStripMenuItem
+        '
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Name = "ViewIgnoredLogPatternToolStripMenuItem"
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
+        Me.ViewIgnoredLogPatternToolStripMenuItem.Text = "View Ignored Log Pattern"
+        '
+        'StatusStrip1
+        '
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LblCount, Me.LogsLoadedInLabel, Me.ToolStripSelectedItems})
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 403)
+        Me.StatusStrip1.Name = "StatusStrip1"
+        Me.StatusStrip1.Size = New System.Drawing.Size(1563, 22)
+        Me.StatusStrip1.TabIndex = 5
+        Me.StatusStrip1.Text = "StatusStrip1"
+        '
+        'LblCount
+        '
+        Me.LblCount.Name = "LblCount"
+        Me.LblCount.Size = New System.Drawing.Size(53, 17)
+        Me.LblCount.Text = "lblCount"
+        '
+        'LogsLoadedInLabel
+        '
+        Me.LogsLoadedInLabel.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
+        Me.LogsLoadedInLabel.Name = "LogsLoadedInLabel"
+        Me.LogsLoadedInLabel.Size = New System.Drawing.Size(90, 17)
+        Me.LogsLoadedInLabel.Text = "Logs Loaded In:"
+        Me.LogsLoadedInLabel.Visible = False
+        '
+        'ToolStripSelectedItems
+        '
+        Me.ToolStripSelectedItems.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
+        Me.ToolStripSelectedItems.Name = "ToolStripSelectedItems"
+        Me.ToolStripSelectedItems.Size = New System.Drawing.Size(91, 17)
+        Me.ToolStripSelectedItems.Text = "Selected Logs: 0"
+        Me.ToolStripSelectedItems.Visible = False
         '
         'BtnExport
         '
@@ -204,24 +265,6 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnClearIgnoredLogs.UseVisualStyleBackColor = True
         Me.BtnClearIgnoredLogs.Visible = False
         '
-        'LogsContextMenu
-        '
-        Me.LogsContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.OpenLogFileForViewingToolStripMenuItem, Me.OpenLogForViewingToolStripMenuItem, Me.ExportSelectedLogsToolStripMenuItem, Me.ViewIgnoredLogPatternToolStripMenuItem})
-        Me.LogsContextMenu.Name = "LogsContextMenu"
-        Me.LogsContextMenu.Size = New System.Drawing.Size(211, 158)
-        '
-        'CopyLogTextToolStripMenuItem
-        '
-        Me.CopyLogTextToolStripMenuItem.Name = "CopyLogTextToolStripMenuItem"
-        Me.CopyLogTextToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
-        Me.CopyLogTextToolStripMenuItem.Text = "Copy Log Text"
-        '
-        'CopyRawLogTextToolStripMenuItem
-        '
-        Me.CopyRawLogTextToolStripMenuItem.Name = "CopyRawLogTextToolStripMenuItem"
-        Me.CopyRawLogTextToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
-        Me.CopyRawLogTextToolStripMenuItem.Text = "Copy Raw Log Text"
-        '
         'BtnViewMainWindow
         '
         Me.BtnViewMainWindow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -233,12 +276,6 @@ Partial Class IgnoredLogsAndSearchResults
         Me.BtnViewMainWindow.Text = "View Main Window"
         Me.BtnViewMainWindow.UseVisualStyleBackColor = True
         Me.BtnViewMainWindow.Visible = False
-        '
-        'CreateAlertToolStripMenuItem
-        '
-        Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
-        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
-        Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
         'ChkCaseInsensitiveSearch
         '
@@ -308,48 +345,15 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LblSearchLabel.Text = "Search Logs"
         Me.LblSearchLabel.Visible = False
         '
-        'OpenLogFileForViewingToolStripMenuItem
-        '
-        Me.OpenLogFileForViewingToolStripMenuItem.Name = "OpenLogFileForViewingToolStripMenuItem"
-        Me.OpenLogFileForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
-        Me.OpenLogFileForViewingToolStripMenuItem.Text = "Open Log File for Viewing"
-        Me.OpenLogFileForViewingToolStripMenuItem.Visible = False
-        '
-        'ExportSelectedLogsToolStripMenuItem
-        '
-        Me.ExportSelectedLogsToolStripMenuItem.Name = "ExportSelectedLogsToolStripMenuItem"
-        Me.ExportSelectedLogsToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
-        Me.ExportSelectedLogsToolStripMenuItem.Text = "Export Selected Logs"
-        '
-        'LogsLoadedInLabel
-        '
-        Me.LogsLoadedInLabel.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
-        Me.LogsLoadedInLabel.Name = "LogsLoadedInLabel"
-        Me.LogsLoadedInLabel.Size = New System.Drawing.Size(90, 17)
-        Me.LogsLoadedInLabel.Text = "Logs Loaded In:"
-        Me.LogsLoadedInLabel.Visible = False
-        '
         'LoadingProgressBar
         '
-        Me.LoadingProgressBar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LoadingProgressBar.Location = New System.Drawing.Point(727, 376)
-        Me.LoadingProgressBar.Maximum = 100
         Me.LoadingProgressBar.Name = "LoadingProgressBar"
         Me.LoadingProgressBar.Size = New System.Drawing.Size(601, 23)
         Me.LoadingProgressBar.TabIndex = 30
         Me.LoadingProgressBar.Visible = False
-        '
-        'ViewIgnoredLogPatternToolStripMenuItem
-        '
-        Me.ViewIgnoredLogPatternToolStripMenuItem.Name = "ViewIgnoredLogPatternToolStripMenuItem"
-        Me.ViewIgnoredLogPatternToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
-        Me.ViewIgnoredLogPatternToolStripMenuItem.Text = "View Ignored Log Pattern"
-        '
-        'OpenLogForViewingToolStripMenuItem
-        '
-        Me.OpenLogForViewingToolStripMenuItem.Name = "OpenLogForViewingToolStripMenuItem"
-        Me.OpenLogForViewingToolStripMenuItem.Size = New System.Drawing.Size(210, 22)
-        Me.OpenLogForViewingToolStripMenuItem.Text = "Open Log for Viewing"
         '
         'ChkAutoScroll
         '
@@ -372,14 +376,6 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ChkKeepIgnoredLogsPastUserLimit.TabIndex = 32
         Me.ChkKeepIgnoredLogsPastUserLimit.Text = "Keep Ignored Logs Past User-Set Limit"
         Me.ChkKeepIgnoredLogsPastUserLimit.UseVisualStyleBackColor = True
-        '
-        'ToolStripSelectedItems
-        '
-        Me.ToolStripSelectedItems.Margin = New System.Windows.Forms.Padding(50, 3, 0, 2)
-        Me.ToolStripSelectedItems.Name = "ToolStripSelectedItems"
-        Me.ToolStripSelectedItems.Size = New System.Drawing.Size(91, 17)
-        Me.ToolStripSelectedItems.Text = "Selected Logs: 0"
-        Me.ToolStripSelectedItems.Visible = False
         '
         'IgnoredLogsAndSearchResults
         '
@@ -404,10 +400,10 @@ Partial Class IgnoredLogsAndSearchResults
         Me.MinimumSize = New System.Drawing.Size(1579, 464)
         Me.Name = "IgnoredLogsAndSearchResults"
         Me.Text = "Ignored Logs"
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.LogsContextMenu.ResumeLayout(False)
+        Me.StatusStrip1.ResumeLayout(False)
+        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

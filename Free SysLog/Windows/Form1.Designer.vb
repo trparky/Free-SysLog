@@ -29,18 +29,23 @@ Partial Class Form1
         Me.LimitNumberOfIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnOpenLogForViewing = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearLog = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AlertsHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnClearAllLogs = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsOlderThanToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThan1DayToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThan2DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlertsHistory = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnSaveLogsToDisk = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExportAllLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip = New System.Windows.Forms.StatusStrip()
         Me.NumberOfLogs = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.LblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblItemsSelected = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.LblAutoSaved = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblLogFileSize = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblAutoScrollStatus = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblProcessUptime = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDisableAutoScrollUponScrolling = New System.Windows.Forms.ToolStripMenuItem()
         Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
@@ -56,16 +61,56 @@ Partial Class Form1
         Me.ChkRegExSearch = New System.Windows.Forms.CheckBox()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.MainMenuToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuSeparator = New System.Windows.Forms.ToolStripSeparator()
+        Me.CloseMe = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogFunctionsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ClearNotificationLimits = New System.Windows.Forms.ToolStripMenuItem()
         Me.IgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ClearIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewIgnoredLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewLogBackups = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BackupFileNameDateFormatChooser = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeFont = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeSyslogServerPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ClearIgnoredStatsAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CompressBackupLogFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureAlertsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureHostnames = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureReplacementsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureSysLogMirrorServers = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureTimeBetweenSameNotifications = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfirmDelete = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkDebug = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ChkEnableConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.IPv6Support = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkEnableRecordingOfIgnoredLogs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.IncludeButtonsOnNotifications = New System.Windows.Forms.ToolStripMenuItem()
+        Me.IncludeCommasInDHMS = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ColLogsAutoFill = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MinimizeToClockTray = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NotificationLength = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NotificationLengthLong = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NotificationLengthShort = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OnlySaveAlertedLogs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ProcessReplacementsInSyslogDataFirst = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SaveIgnoredLogCount = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowCloseButtonOnNotifications = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowLogAsAlertedEvenIfLimitedByTime = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LblSearchLabel = New System.Windows.Forms.Label()
         Me.TxtSearchTerms = New System.Windows.Forms.TextBox()
         Me.BtnSearch = New System.Windows.Forms.Button()
@@ -73,120 +118,49 @@ Partial Class Form1
         Me.Logs = New System.Windows.Forms.DataGridView()
         Me.ColTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colServerTime = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colLogType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColIPAddress = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColRemoteProcess = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColLog = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColAlerts = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColRemoteProcess = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColHostname = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.ChkEnableConfirmCloseToolStripItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChangeAlternatingColorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChangeFont = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureAlertsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureHostnames = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CompressBackupLogFilesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ClearNotificationLimits = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ColLogsAutoFill = New System.Windows.Forms.ToolStripMenuItem()
+        Me.colDelete = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.LogsMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.LogsHeaderMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.CopyLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyRawLogTextToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CloseMe = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuSeparator = New System.Windows.Forms.ToolStripSeparator()
+        Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeleteSimilarLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenLogViewerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.IconMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ReOpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogsHeaderMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.LogsMenuHideAlertsColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenuHideHostnameColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenuHideLogTypeColumn = New System.Windows.Forms.ToolStripMenuItem()
         Me.LogsMenuHideServerTimeColumn = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DeleteLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DeleteSimilarLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ExportsLogsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ImportExportSettingsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.IncludeButtonsOnNotifications = New System.Windows.Forms.ToolStripMenuItem()
-        Me.IncludeCommasInDHMS = New System.Windows.Forms.ToolStripMenuItem()
-        Me.IPv6Support = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ExportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ImportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OlderThan1DayToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OlderThan2DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OlderThan3DaysToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OlderThanAWeekToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OpenWindowsExplorerToAppConfigFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ProcessReplacementsInSyslogDataFirst = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RemoveNumbersFromRemoteApp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ShowRawLogOnLogViewer = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ShowCloseButtonOnNotifications = New System.Windows.Forms.ToolStripMenuItem()
-        Me.SaveIgnoredLogCount = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CreateAlertToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DonationStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.StopServerStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChangeSyslogServerPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ClearIgnoredStatsAtMidnight = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChangeLogAutosaveIntervalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CreateIgnoredLogToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CreateReplacementToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureSysLogMirrorServers = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureTimeBetweenSameNotifications = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfirmDelete = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChkDeselectItemAfterMinimizingWindow = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ChkDebug = New System.Windows.Forms.ToolStripMenuItem()
-        Me.BackupFileNameDateFormatChooser = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnShowLimit = New System.Windows.Forms.Button()
-        Me.MinimizeToClockTray = New System.Windows.Forms.ToolStripMenuItem()
-        Me.OnlySaveAlertedLogs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NotificationLength = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NotificationLengthLong = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NotificationLengthShort = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
-        Me.IconMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.ReOpenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
-        Me.lblProcessUptime = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblLimitBy = New System.Windows.Forms.Label()
-        Me.colDelete = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
         Me.IconMenu.SuspendLayout()
+        Me.LogsHeaderMenu.SuspendLayout()
         Me.SuspendLayout()
         '
-        'NotificationLength
+        'BtnOpenLogLocation
         '
-        Me.NotificationLength.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NotificationLengthLong, Me.NotificationLengthShort})
-        Me.NotificationLength.Name = "NotificationLength"
-        Me.NotificationLength.Size = New System.Drawing.Size(319, 22)
-        Me.NotificationLength.Text = "Notification Length"
-        '
-        'NotificationLengthLong
-        '
-        Me.NotificationLengthLong.CheckOnClick = True
-        Me.NotificationLengthLong.Name = "NotificationLengthLong"
-        Me.NotificationLengthLong.Size = New System.Drawing.Size(102, 22)
-        Me.NotificationLengthLong.Text = "Long"
-        '
-        'NotificationLengthShort
-        '
-        Me.NotificationLengthShort.CheckOnClick = True
-        Me.NotificationLengthShort.Name = "NotificationLengthShort"
-        Me.NotificationLengthShort.Size = New System.Drawing.Size(102, 22)
-        Me.NotificationLengthShort.Text = "Short"
-        '
-        'OnlySaveAlertedLogs
-        '
-        Me.OnlySaveAlertedLogs.CheckOnClick = True
-        Me.OnlySaveAlertedLogs.Name = "OnlySaveAlertedLogs"
-        Me.OnlySaveAlertedLogs.Size = New System.Drawing.Size(102, 22)
-        Me.OnlySaveAlertedLogs.Text = "Only Save Alerted Logs"
-        '
-        'CreateAlertToolStripMenuItem
-        '
-        Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
-        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
-        Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
+        Me.BtnOpenLogLocation.Name = "BtnOpenLogLocation"
+        Me.BtnOpenLogLocation.Size = New System.Drawing.Size(239, 22)
+        Me.BtnOpenLogLocation.Text = "Open Log File Location"
         '
         'LimitNumberOfIgnoredLogs
         '
@@ -195,24 +169,11 @@ Partial Class Form1
         Me.LimitNumberOfIgnoredLogs.Text = "Limit Number of Ignored Logs"
         Me.LimitNumberOfIgnoredLogs.ToolTipText = "Limits the number of ignored logs that stored in system RAM by the program."
         '
-        'BtnOpenLogLocation
-        '
-        Me.BtnOpenLogLocation.Name = "BtnOpenLogLocation"
-        Me.BtnOpenLogLocation.Size = New System.Drawing.Size(239, 22)
-        Me.BtnOpenLogLocation.Text = "Open Log File Location"
-        '
         'BtnOpenLogForViewing
         '
         Me.BtnOpenLogForViewing.Name = "BtnOpenLogForViewing"
         Me.BtnOpenLogForViewing.Size = New System.Drawing.Size(239, 22)
         Me.BtnOpenLogForViewing.Text = "Open Log File for Viewing"
-        '
-        'AlertsHistory
-        '
-        Me.AlertsHistory.Enabled = True
-        Me.AlertsHistory.Name = "AlertsHistory"
-        Me.AlertsHistory.Size = New System.Drawing.Size(239, 22)
-        Me.AlertsHistory.Text = "Alerts History"
         '
         'BtnClearLog
         '
@@ -235,12 +196,48 @@ Partial Class Form1
         Me.LogsOlderThanToolStripMenuItem.Size = New System.Drawing.Size(165, 22)
         Me.LogsOlderThanToolStripMenuItem.Text = "Logs older than..."
         '
+        'OlderThan1DayToolStripMenuItem
+        '
+        Me.OlderThan1DayToolStripMenuItem.Name = "OlderThan1DayToolStripMenuItem"
+        Me.OlderThan1DayToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThan1DayToolStripMenuItem.Text = "Older than 1 day"
+        '
+        'OlderThan2DaysToolStripMenuItem
+        '
+        Me.OlderThan2DaysToolStripMenuItem.Name = "OlderThan2DaysToolStripMenuItem"
+        Me.OlderThan2DaysToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThan2DaysToolStripMenuItem.Text = "Older than 2 days"
+        '
+        'OlderThan3DaysToolStripMenuItem
+        '
+        Me.OlderThan3DaysToolStripMenuItem.Name = "OlderThan3DaysToolStripMenuItem"
+        Me.OlderThan3DaysToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThan3DaysToolStripMenuItem.Text = "Older than 3 days"
+        '
+        'OlderThanAWeekToolStripMenuItem
+        '
+        Me.OlderThanAWeekToolStripMenuItem.Name = "OlderThanAWeekToolStripMenuItem"
+        Me.OlderThanAWeekToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.OlderThanAWeekToolStripMenuItem.Text = "Older than a week"
+        '
+        'AlertsHistory
+        '
+        Me.AlertsHistory.Name = "AlertsHistory"
+        Me.AlertsHistory.Size = New System.Drawing.Size(239, 22)
+        Me.AlertsHistory.Text = "Alerts History"
+        '
         'BtnSaveLogsToDisk
         '
         Me.BtnSaveLogsToDisk.Enabled = False
         Me.BtnSaveLogsToDisk.Name = "BtnSaveLogsToDisk"
         Me.BtnSaveLogsToDisk.Size = New System.Drawing.Size(239, 22)
         Me.BtnSaveLogsToDisk.Text = "Save Logs to Disk"
+        '
+        'ExportAllLogsToolStripMenuItem
+        '
+        Me.ExportAllLogsToolStripMenuItem.Name = "ExportAllLogsToolStripMenuItem"
+        Me.ExportAllLogsToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
+        Me.ExportAllLogsToolStripMenuItem.Text = "Export All Logs"
         '
         'StatusStrip
         '
@@ -284,29 +281,21 @@ Partial Class Form1
         '
         Me.LblNumberOfIgnoredIncomingLogs.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.LblNumberOfIgnoredIncomingLogs.Name = "LblNumberOfIgnoredIncomingLogs"
-        Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(200, 17)
+        Me.LblNumberOfIgnoredIncomingLogs.Size = New System.Drawing.Size(203, 17)
         Me.LblNumberOfIgnoredIncomingLogs.Text = "Number of Ignored Incoming Logs: 0"
         '
         'LblAutoScrollStatus
         '
         Me.LblAutoScrollStatus.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.LblAutoScrollStatus.Name = "LblAutoScrollStatus"
-        Me.LblAutoScrollStatus.Size = New System.Drawing.Size(200, 17)
+        Me.LblAutoScrollStatus.Size = New System.Drawing.Size(151, 17)
         Me.LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
         '
-        'AskToOpenExplorerWhenSavingData
+        'lblProcessUptime
         '
-        Me.AskToOpenExplorerWhenSavingData.CheckOnClick = True
-        Me.AskToOpenExplorerWhenSavingData.Name = "AskToOpenExplorerWhenSavingData"
-        Me.AskToOpenExplorerWhenSavingData.Size = New System.Drawing.Size(319, 22)
-        Me.AskToOpenExplorerWhenSavingData.Text = "Ask to open Explorer after saving a file to disk"
-        '
-        'AutomaticallyCheckForUpdates
-        '
-        Me.AutomaticallyCheckForUpdates.CheckOnClick = True
-        Me.AutomaticallyCheckForUpdates.Name = "AutomaticallyCheckForUpdates"
-        Me.AutomaticallyCheckForUpdates.Size = New System.Drawing.Size(319, 22)
-        Me.AutomaticallyCheckForUpdates.Text = "Automatically Check for Updates"
+        Me.lblProcessUptime.Name = "lblProcessUptime"
+        Me.lblProcessUptime.Size = New System.Drawing.Size(98, 15)
+        Me.lblProcessUptime.Text = "Program Uptime:"
         '
         'ChkEnableAutoScroll
         '
@@ -321,6 +310,20 @@ Partial Class Form1
         Me.ChkDisableAutoScrollUponScrolling.Name = "ChkDisableAutoScrollUponScrolling"
         Me.ChkDisableAutoScrollUponScrolling.Size = New System.Drawing.Size(319, 22)
         Me.ChkDisableAutoScrollUponScrolling.Text = "        Disable Auto Scroll upon scrolling"
+        '
+        'AutomaticallyCheckForUpdates
+        '
+        Me.AutomaticallyCheckForUpdates.CheckOnClick = True
+        Me.AutomaticallyCheckForUpdates.Name = "AutomaticallyCheckForUpdates"
+        Me.AutomaticallyCheckForUpdates.Size = New System.Drawing.Size(319, 22)
+        Me.AutomaticallyCheckForUpdates.Text = "Automatically Check for Updates"
+        '
+        'AskToOpenExplorerWhenSavingData
+        '
+        Me.AskToOpenExplorerWhenSavingData.CheckOnClick = True
+        Me.AskToOpenExplorerWhenSavingData.Name = "AskToOpenExplorerWhenSavingData"
+        Me.AskToOpenExplorerWhenSavingData.Size = New System.Drawing.Size(319, 22)
+        Me.AskToOpenExplorerWhenSavingData.Text = "Ask to open Explorer after saving a file to disk"
         '
         'BtnCheckForUpdates
         '
@@ -350,34 +353,6 @@ Partial Class Form1
         Me.BackupOldLogsAfterClearingAtMidnight.Size = New System.Drawing.Size(319, 22)
         Me.BackupOldLogsAfterClearingAtMidnight.Text = "        Backup old logs after clearing at midnight"
         '
-        'MinimizeToClockTray
-        '
-        Me.MinimizeToClockTray.CheckOnClick = True
-        Me.MinimizeToClockTray.Name = "MinimizeToClockTray"
-        Me.MinimizeToClockTray.Size = New System.Drawing.Size(319, 22)
-        Me.MinimizeToClockTray.Text = "Minimize to Clock Tray"
-        '
-        'ChkDebug
-        '
-        Me.ChkDebug.CheckOnClick = True
-        Me.ChkDebug.Name = "ChkDebug"
-        Me.ChkDebug.Size = New System.Drawing.Size(319, 22)
-        Me.ChkDebug.Text = "Debug Mode"
-        Me.ChkDebug.ToolTipText = "Enables debug data from the program to be written to the Syslog Data."
-        '
-        'ChkDeselectItemAfterMinimizingWindow
-        '
-        Me.ChkDeselectItemAfterMinimizingWindow.CheckOnClick = True
-        Me.ChkDeselectItemAfterMinimizingWindow.Name = "ChkDeselectItemAfterMinimizingWindow"
-        Me.ChkDeselectItemAfterMinimizingWindow.Size = New System.Drawing.Size(319, 22)
-        Me.ChkDeselectItemAfterMinimizingWindow.Text = "De-Select Items When Minimizing Window"
-        '
-        'BackupFileNameDateFormatChooser
-        '
-        Me.BackupFileNameDateFormatChooser.Name = "BackupFileNameDateFormatChooser"
-        Me.BackupFileNameDateFormatChooser.Size = New System.Drawing.Size(319, 22)
-        Me.BackupFileNameDateFormatChooser.Text = "Backup File Name Date Format Chooser"
-        '
         'ChkEnableStartAtUserStartup
         '
         Me.ChkEnableStartAtUserStartup.CheckOnClick = True
@@ -394,14 +369,13 @@ Partial Class Form1
         '
         'StartUpDelay
         '
-        Me.StartUpDelay.Name = "StartUpDelay"
         Me.StartUpDelay.Enabled = False
+        Me.StartUpDelay.Name = "StartUpDelay"
         Me.StartUpDelay.Size = New System.Drawing.Size(319, 22)
         Me.StartUpDelay.Text = "        Startup Delay"
         '
         'ChkRegExSearch
         '
-        Me.ChkRegExSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkRegExSearch.AutoSize = True
         Me.ChkRegExSearch.Location = New System.Drawing.Point(239, 31)
         Me.ChkRegExSearch.Name = "ChkRegExSearch"
@@ -428,6 +402,43 @@ Partial Class Form1
         Me.MainMenuToolStripMenuItem.Size = New System.Drawing.Size(80, 20)
         Me.MainMenuToolStripMenuItem.Text = "Main Menu"
         '
+        'AboutToolStripMenuItem
+        '
+        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(338, 22)
+        Me.AboutToolStripMenuItem.Text = "About"
+        '
+        'ImportExportSettingsToolStripMenuItem
+        '
+        Me.ImportExportSettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExportToolStripMenuItem, Me.ImportToolStripMenuItem})
+        Me.ImportExportSettingsToolStripMenuItem.Name = "ImportExportSettingsToolStripMenuItem"
+        Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(338, 22)
+        Me.ImportExportSettingsToolStripMenuItem.Text = "Import/Export Program Settings"
+        '
+        'ExportToolStripMenuItem
+        '
+        Me.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem"
+        Me.ExportToolStripMenuItem.Size = New System.Drawing.Size(110, 22)
+        Me.ExportToolStripMenuItem.Text = "Export"
+        '
+        'ImportToolStripMenuItem
+        '
+        Me.ImportToolStripMenuItem.Name = "ImportToolStripMenuItem"
+        Me.ImportToolStripMenuItem.Size = New System.Drawing.Size(110, 22)
+        Me.ImportToolStripMenuItem.Text = "Import"
+        '
+        'OpenWindowsExplorerToAppConfigFile
+        '
+        Me.OpenWindowsExplorerToAppConfigFile.Name = "OpenWindowsExplorerToAppConfigFile"
+        Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(338, 22)
+        Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
+        '
+        'StopServerStripMenuItem
+        '
+        Me.StopServerStripMenuItem.Name = "StopServerStripMenuItem"
+        Me.StopServerStripMenuItem.Size = New System.Drawing.Size(338, 22)
+        Me.StopServerStripMenuItem.Text = "Stop Server"
+        '
         'ToolStripMenuSeparator
         '
         Me.ToolStripMenuSeparator.Name = "ToolStripMenuSeparator"
@@ -446,6 +457,12 @@ Partial Class Form1
         Me.LogFunctionsToolStripMenuItem.Size = New System.Drawing.Size(94, 20)
         Me.LogFunctionsToolStripMenuItem.Text = "Log Functions"
         '
+        'ClearNotificationLimits
+        '
+        Me.ClearNotificationLimits.Name = "ClearNotificationLimits"
+        Me.ClearNotificationLimits.Size = New System.Drawing.Size(239, 22)
+        Me.ClearNotificationLimits.Text = "Clear Notification Limits"
+        '
         'IgnoredLogsToolStripMenuItem
         '
         Me.IgnoredLogsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClearIgnoredLogsToolStripMenuItem, Me.ViewIgnoredLogsToolStripMenuItem})
@@ -455,8 +472,8 @@ Partial Class Form1
         '
         'ClearIgnoredLogsToolStripMenuItem
         '
-        Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
         Me.ClearIgnoredLogsToolStripMenuItem.Enabled = False
+        Me.ClearIgnoredLogsToolStripMenuItem.Name = "ClearIgnoredLogsToolStripMenuItem"
         Me.ClearIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ClearIgnoredLogsToolStripMenuItem.Text = "Clear"
         '
@@ -466,12 +483,6 @@ Partial Class Form1
         Me.ViewIgnoredLogsToolStripMenuItem.Size = New System.Drawing.Size(101, 22)
         Me.ViewIgnoredLogsToolStripMenuItem.Text = "View"
         '
-        'ZerooutIgnoredLogsCounterToolStripMenuItem
-        '
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Name = "ZerooutIgnoredLogsCounterToolStripMenuItem"
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
-        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Text = "Zero-out Ignored Logs Counter"
-        '
         'ViewLogBackups
         '
         Me.ViewLogBackups.Name = "ViewLogBackups"
@@ -479,18 +490,49 @@ Partial Class Form1
         Me.ViewLogBackups.Text = "View Log Backups"
         Me.ViewLogBackups.Visible = False
         '
+        'ZerooutIgnoredLogsCounterToolStripMenuItem
+        '
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Name = "ZerooutIgnoredLogsCounterToolStripMenuItem"
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
+        Me.ZerooutIgnoredLogsCounterToolStripMenuItem.Text = "Zero-out Ignored Logs Counter"
+        '
         'SettingsToolStripMenuItem
         '
-        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearIgnoredStatsAtMidnight, Me.CompressBackupLogFilesToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.IncludeCommasInDHMS, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowRawLogOnLogViewer})
+        Me.SettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AskToOpenExplorerWhenSavingData, Me.AutomaticallyCheckForUpdates, Me.BackupFileNameDateFormatChooser, Me.ChangeAlternatingColorToolStripMenuItem, Me.ChangeFont, Me.ChangeSyslogServerPortToolStripMenuItem, Me.ClearIgnoredStatsAtMidnight, Me.CompressBackupLogFilesToolStripMenuItem, Me.ConfigureAlertsToolStripMenuItem, Me.ConfigureHostnames, Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem, Me.ConfigureReplacementsToolStripMenuItem, Me.ConfigureSysLogMirrorServers, Me.ConfigureTimeBetweenSameNotifications, Me.ConfirmDelete, Me.ChkDebug, Me.ChkDeselectItemAfterMinimizingWindow, Me.DeleteOldLogsAtMidnight, Me.BackupOldLogsAfterClearingAtMidnight, Me.ChkEnableAutoSave, Me.ChangeLogAutosaveIntervalToolStripMenuItem, Me.ChkEnableAutoScroll, Me.ChkDisableAutoScrollUponScrolling, Me.ChkEnableConfirmCloseToolStripItem, Me.IPv6Support, Me.ChkEnableRecordingOfIgnoredLogs, Me.ChkEnableTCPSyslogServer, Me.ChkEnableStartAtUserStartup, Me.StartUpDelay, Me.IncludeButtonsOnNotifications, Me.IncludeCommasInDHMS, Me.ColLogsAutoFill, Me.MinimizeToClockTray, Me.NotificationLength, Me.OnlySaveAlertedLogs, Me.ProcessReplacementsInSyslogDataFirst, Me.RemoveNumbersFromRemoteApp, Me.SaveIgnoredLogCount, Me.ShowCloseButtonOnNotifications, Me.ShowLogAsAlertedEvenIfLimitedByTime, Me.ShowRawLogOnLogViewer})
         Me.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         Me.SettingsToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
         Me.SettingsToolStripMenuItem.Text = "Settings"
         '
-        'ClearNotificationLimits
+        'BackupFileNameDateFormatChooser
         '
-        Me.ClearNotificationLimits.Name = "ClearNotificationLimits"
-        Me.ClearNotificationLimits.Size = New System.Drawing.Size(239, 22)
-        Me.ClearNotificationLimits.Text = "Clear Notification Limits"
+        Me.BackupFileNameDateFormatChooser.Name = "BackupFileNameDateFormatChooser"
+        Me.BackupFileNameDateFormatChooser.Size = New System.Drawing.Size(319, 22)
+        Me.BackupFileNameDateFormatChooser.Text = "Backup File Name Date Format Chooser"
+        '
+        'ChangeAlternatingColorToolStripMenuItem
+        '
+        Me.ChangeAlternatingColorToolStripMenuItem.Name = "ChangeAlternatingColorToolStripMenuItem"
+        Me.ChangeAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
+        Me.ChangeAlternatingColorToolStripMenuItem.Text = "Change Alternating Row Color"
+        '
+        'ChangeFont
+        '
+        Me.ChangeFont.Name = "ChangeFont"
+        Me.ChangeFont.Size = New System.Drawing.Size(319, 22)
+        Me.ChangeFont.Text = "Change Font"
+        '
+        'ChangeSyslogServerPortToolStripMenuItem
+        '
+        Me.ChangeSyslogServerPortToolStripMenuItem.Name = "ChangeSyslogServerPortToolStripMenuItem"
+        Me.ChangeSyslogServerPortToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
+        Me.ChangeSyslogServerPortToolStripMenuItem.Text = "Change Syslog Server Port"
+        '
+        'ClearIgnoredStatsAtMidnight
+        '
+        Me.ClearIgnoredStatsAtMidnight.CheckOnClick = True
+        Me.ClearIgnoredStatsAtMidnight.Name = "ClearIgnoredStatsAtMidnight"
+        Me.ClearIgnoredStatsAtMidnight.Size = New System.Drawing.Size(319, 22)
+        Me.ClearIgnoredStatsAtMidnight.Text = "Clear Ignored Log Stats at Midnight"
         '
         'CompressBackupLogFilesToolStripMenuItem
         '
@@ -499,24 +541,29 @@ Partial Class Form1
         Me.CompressBackupLogFilesToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
         Me.CompressBackupLogFilesToolStripMenuItem.Text = "Compress Backup Log Files"
         '
-        'ColLogsAutoFill
+        'ConfigureAlertsToolStripMenuItem
         '
-        Me.ColLogsAutoFill.CheckOnClick = True
-        Me.ColLogsAutoFill.Name = "ColLogsAutoFill"
-        Me.ColLogsAutoFill.Size = New System.Drawing.Size(319, 22)
-        Me.ColLogsAutoFill.Text = "Log Column AutoFill"
+        Me.ConfigureAlertsToolStripMenuItem.Name = "ConfigureAlertsToolStripMenuItem"
+        Me.ConfigureAlertsToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
+        Me.ConfigureAlertsToolStripMenuItem.Text = "Configure Alerts"
         '
-        'ConfigureReplacementsToolStripMenuItem
+        'ConfigureHostnames
         '
-        Me.ConfigureReplacementsToolStripMenuItem.Name = "ConfigureReplacementsToolStripMenuItem"
-        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
-        Me.ConfigureReplacementsToolStripMenuItem.Text = "Configure Replacements"
+        Me.ConfigureHostnames.Name = "ConfigureHostnames"
+        Me.ConfigureHostnames.Size = New System.Drawing.Size(319, 22)
+        Me.ConfigureHostnames.Text = "Configure Custom Hostnames/Device Names"
         '
         'ConfigureIgnoredWordsAndPhrasesToolStripMenuItem
         '
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Name = "ConfigureIgnoredWordsAndPhrasesToolStripMenuItem"
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
         Me.ConfigureIgnoredWordsAndPhrasesToolStripMenuItem.Text = "Configure Ignored Words and Phrases"
+        '
+        'ConfigureReplacementsToolStripMenuItem
+        '
+        Me.ConfigureReplacementsToolStripMenuItem.Name = "ConfigureReplacementsToolStripMenuItem"
+        Me.ConfigureReplacementsToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
+        Me.ConfigureReplacementsToolStripMenuItem.Text = "Configure Replacements"
         '
         'ConfigureSysLogMirrorServers
         '
@@ -537,6 +584,41 @@ Partial Class Form1
         Me.ConfirmDelete.Size = New System.Drawing.Size(319, 22)
         Me.ConfirmDelete.Text = "Confirm Deletion of Logs"
         '
+        'ChkDebug
+        '
+        Me.ChkDebug.CheckOnClick = True
+        Me.ChkDebug.Name = "ChkDebug"
+        Me.ChkDebug.Size = New System.Drawing.Size(319, 22)
+        Me.ChkDebug.Text = "Debug Mode"
+        Me.ChkDebug.ToolTipText = "Enables debug data from the program to be written to the Syslog Data."
+        '
+        'ChkDeselectItemAfterMinimizingWindow
+        '
+        Me.ChkDeselectItemAfterMinimizingWindow.CheckOnClick = True
+        Me.ChkDeselectItemAfterMinimizingWindow.Name = "ChkDeselectItemAfterMinimizingWindow"
+        Me.ChkDeselectItemAfterMinimizingWindow.Size = New System.Drawing.Size(319, 22)
+        Me.ChkDeselectItemAfterMinimizingWindow.Text = "De-Select Items When Minimizing Window"
+        '
+        'ChangeLogAutosaveIntervalToolStripMenuItem
+        '
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Name = "ChangeLogAutosaveIntervalToolStripMenuItem"
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
+        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Text = "        Change Log Autosave Interval"
+        '
+        'ChkEnableConfirmCloseToolStripItem
+        '
+        Me.ChkEnableConfirmCloseToolStripItem.CheckOnClick = True
+        Me.ChkEnableConfirmCloseToolStripItem.Name = "ChkEnableConfirmCloseToolStripItem"
+        Me.ChkEnableConfirmCloseToolStripItem.Size = New System.Drawing.Size(319, 22)
+        Me.ChkEnableConfirmCloseToolStripItem.Text = "Enable Confirm Close"
+        '
+        'IPv6Support
+        '
+        Me.IPv6Support.CheckOnClick = True
+        Me.IPv6Support.Name = "IPv6Support"
+        Me.IPv6Support.Size = New System.Drawing.Size(319, 22)
+        Me.IPv6Support.Text = "Enable IPv6 Support"
+        '
         'ChkEnableRecordingOfIgnoredLogs
         '
         Me.ChkEnableRecordingOfIgnoredLogs.CheckOnClick = True
@@ -546,9 +628,116 @@ Partial Class Form1
         Me.ChkEnableRecordingOfIgnoredLogs.ToolTipText = "When enabled, ignored logs are only stored in the program's memory and are not wr" &
     "itten to disk."
         '
+        'IncludeButtonsOnNotifications
+        '
+        Me.IncludeButtonsOnNotifications.CheckOnClick = True
+        Me.IncludeButtonsOnNotifications.Name = "IncludeButtonsOnNotifications"
+        Me.IncludeButtonsOnNotifications.Size = New System.Drawing.Size(319, 22)
+        Me.IncludeButtonsOnNotifications.Text = "Include Buttons on Notifications"
+        '
+        'IncludeCommasInDHMS
+        '
+        Me.IncludeCommasInDHMS.CheckOnClick = True
+        Me.IncludeCommasInDHMS.Name = "IncludeCommasInDHMS"
+        Me.IncludeCommasInDHMS.Size = New System.Drawing.Size(319, 22)
+        Me.IncludeCommasInDHMS.Text = "Include Commas in DHMS Strings"
+        Me.IncludeCommasInDHMS.ToolTipText = "Changes how DHMS strings are shown." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & """d, h, m, s"" or ""d h m s"""
+        '
+        'ColLogsAutoFill
+        '
+        Me.ColLogsAutoFill.CheckOnClick = True
+        Me.ColLogsAutoFill.Name = "ColLogsAutoFill"
+        Me.ColLogsAutoFill.Size = New System.Drawing.Size(319, 22)
+        Me.ColLogsAutoFill.Text = "Log Column AutoFill"
+        '
+        'MinimizeToClockTray
+        '
+        Me.MinimizeToClockTray.CheckOnClick = True
+        Me.MinimizeToClockTray.Name = "MinimizeToClockTray"
+        Me.MinimizeToClockTray.Size = New System.Drawing.Size(319, 22)
+        Me.MinimizeToClockTray.Text = "Minimize to Clock Tray"
+        '
+        'NotificationLength
+        '
+        Me.NotificationLength.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NotificationLengthLong, Me.NotificationLengthShort})
+        Me.NotificationLength.Name = "NotificationLength"
+        Me.NotificationLength.Size = New System.Drawing.Size(319, 22)
+        Me.NotificationLength.Text = "Notification Length"
+        '
+        'NotificationLengthLong
+        '
+        Me.NotificationLengthLong.CheckOnClick = True
+        Me.NotificationLengthLong.Name = "NotificationLengthLong"
+        Me.NotificationLengthLong.Size = New System.Drawing.Size(102, 22)
+        Me.NotificationLengthLong.Text = "Long"
+        '
+        'NotificationLengthShort
+        '
+        Me.NotificationLengthShort.CheckOnClick = True
+        Me.NotificationLengthShort.Name = "NotificationLengthShort"
+        Me.NotificationLengthShort.Size = New System.Drawing.Size(102, 22)
+        Me.NotificationLengthShort.Text = "Short"
+        '
+        'OnlySaveAlertedLogs
+        '
+        Me.OnlySaveAlertedLogs.CheckOnClick = True
+        Me.OnlySaveAlertedLogs.Name = "OnlySaveAlertedLogs"
+        Me.OnlySaveAlertedLogs.Size = New System.Drawing.Size(319, 22)
+        Me.OnlySaveAlertedLogs.Text = "Only Save Alerted Logs"
+        '
+        'ProcessReplacementsInSyslogDataFirst
+        '
+        Me.ProcessReplacementsInSyslogDataFirst.CheckOnClick = True
+        Me.ProcessReplacementsInSyslogDataFirst.Name = "ProcessReplacementsInSyslogDataFirst"
+        Me.ProcessReplacementsInSyslogDataFirst.Size = New System.Drawing.Size(319, 22)
+        Me.ProcessReplacementsInSyslogDataFirst.Text = "Process Replacements in Syslog Data First"
+        '
+        'RemoveNumbersFromRemoteApp
+        '
+        Me.RemoveNumbersFromRemoteApp.CheckOnClick = True
+        Me.RemoveNumbersFromRemoteApp.Name = "RemoveNumbersFromRemoteApp"
+        Me.RemoveNumbersFromRemoteApp.Size = New System.Drawing.Size(319, 22)
+        Me.RemoveNumbersFromRemoteApp.Text = "Remove Numbers From Remote App"
+        '
+        'SaveIgnoredLogCount
+        '
+        Me.SaveIgnoredLogCount.CheckOnClick = True
+        Me.SaveIgnoredLogCount.Name = "SaveIgnoredLogCount"
+        Me.SaveIgnoredLogCount.Size = New System.Drawing.Size(319, 22)
+        Me.SaveIgnoredLogCount.Text = "Save Ignored Log Count"
+        Me.SaveIgnoredLogCount.ToolTipText = "Saves the ignored log count and ignored rule stat data to disk for historical ana" &
+    "lysis." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Before it was for the funzies, now this can be an incredible tool to hel" &
+    "p you fine tune rules."
+        '
+        'ShowCloseButtonOnNotifications
+        '
+        Me.ShowCloseButtonOnNotifications.CheckOnClick = True
+        Me.ShowCloseButtonOnNotifications.Name = "ShowCloseButtonOnNotifications"
+        Me.ShowCloseButtonOnNotifications.Size = New System.Drawing.Size(319, 22)
+        Me.ShowCloseButtonOnNotifications.Text = "Show Close Button on Notifications"
+        '
+        'ShowLogAsAlertedEvenIfLimitedByTime
+        '
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.CheckOnClick = True
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.Name = "ShowLogAsAlertedEvenIfLimitedByTime"
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.Size = New System.Drawing.Size(319, 22)
+        Me.ShowLogAsAlertedEvenIfLimitedByTime.Text = "Show Log as Alerted Even if Limited by Time"
+        '
+        'ShowRawLogOnLogViewer
+        '
+        Me.ShowRawLogOnLogViewer.CheckOnClick = True
+        Me.ShowRawLogOnLogViewer.Name = "ShowRawLogOnLogViewer"
+        Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(319, 22)
+        Me.ShowRawLogOnLogViewer.Text = "Show Raw Log on Log Viewer Window"
+        '
+        'DonationStripMenuItem
+        '
+        Me.DonationStripMenuItem.Name = "DonationStripMenuItem"
+        Me.DonationStripMenuItem.Size = New System.Drawing.Size(211, 20)
+        Me.DonationStripMenuItem.Text = "Donate to me via ""Buy Me A Coffee"""
+        '
         'LblSearchLabel
         '
-        Me.LblSearchLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LblSearchLabel.AutoSize = True
         Me.LblSearchLabel.Location = New System.Drawing.Point(12, 31)
         Me.LblSearchLabel.Name = "LblSearchLabel"
@@ -558,7 +747,6 @@ Partial Class Form1
         '
         'TxtSearchTerms
         '
-        Me.TxtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.TxtSearchTerms.Location = New System.Drawing.Point(85, 28)
         Me.TxtSearchTerms.Name = "TxtSearchTerms"
         Me.TxtSearchTerms.Size = New System.Drawing.Size(148, 20)
@@ -566,7 +754,6 @@ Partial Class Form1
         '
         'BtnSearch
         '
-        Me.BtnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.BtnSearch.Location = New System.Drawing.Point(851, 27)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(52, 23)
@@ -576,7 +763,6 @@ Partial Class Form1
         '
         'ChkCaseInsensitiveSearch
         '
-        Me.ChkCaseInsensitiveSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ChkCaseInsensitiveSearch.AutoSize = True
         Me.ChkCaseInsensitiveSearch.Checked = True
         Me.ChkCaseInsensitiveSearch.CheckState = System.Windows.Forms.CheckState.Checked
@@ -606,14 +792,6 @@ Partial Class Form1
         Me.Logs.Size = New System.Drawing.Size(1151, 369)
         Me.Logs.TabIndex = 18
         '
-        'colServerTime
-        '
-        Me.colServerTime.HeaderText = "Server Time"
-        Me.colServerTime.Name = "colServerTime"
-        Me.colServerTime.ReadOnly = True
-        Me.colServerTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.colServerTime.ToolTipText = "The time on the server at which the log entry came in."
-        '
         'ColTime
         '
         Me.ColTime.HeaderText = "Time"
@@ -622,13 +800,13 @@ Partial Class Form1
         Me.ColTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColTime.ToolTipText = "The time at which the log entry came in."
         '
-        'ColIPAddress
+        'colServerTime
         '
-        Me.ColIPAddress.HeaderText = "IP Address"
-        Me.ColIPAddress.Name = "ColIPAddress"
-        Me.ColIPAddress.ReadOnly = True
-        Me.ColIPAddress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColIPAddress.ToolTipText = "The IP address of the system from which the log came from."
+        Me.colServerTime.HeaderText = "Server Time"
+        Me.colServerTime.Name = "colServerTime"
+        Me.colServerTime.ReadOnly = True
+        Me.colServerTime.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.colServerTime.ToolTipText = "The time on the server at which the log entry came in."
         '
         'colLogType
         '
@@ -637,14 +815,13 @@ Partial Class Form1
         Me.colLogType.ReadOnly = True
         Me.colLogType.Width = 200
         '
-        'ColAlerts
+        'ColIPAddress
         '
-        Me.ColAlerts.HeaderText = "Alerted"
-        Me.ColAlerts.Name = "ColAlerts"
-        Me.ColAlerts.ReadOnly = True
-        Me.ColAlerts.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ColAlerts.Width = 50
-        Me.ColAlerts.ToolTipText = "Yes or No. Indicates if the log entry triggered an alert from this program."
+        Me.ColIPAddress.HeaderText = "IP Address"
+        Me.ColIPAddress.Name = "ColIPAddress"
+        Me.ColIPAddress.ReadOnly = True
+        Me.ColIPAddress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColIPAddress.ToolTipText = "The IP address of the system from which the log came from."
         '
         'ColHostname
         '
@@ -671,125 +848,27 @@ Partial Class Form1
         Me.ColLog.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
         Me.ColLog.ToolTipText = "The text contents of the log."
         '
-        'ConfigureAlertsToolStripMenuItem
+        'ColAlerts
         '
-        Me.ConfigureAlertsToolStripMenuItem.Name = "ConfigureAlertsToolStripMenuItem"
-        Me.ConfigureAlertsToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
-        Me.ConfigureAlertsToolStripMenuItem.Text = "Configure Alerts"
+        Me.ColAlerts.HeaderText = "Alerted"
+        Me.ColAlerts.Name = "ColAlerts"
+        Me.ColAlerts.ReadOnly = True
+        Me.ColAlerts.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.ColAlerts.ToolTipText = "Yes or No. Indicates if the log entry triggered an alert from this program."
+        Me.ColAlerts.Width = 50
         '
-        'ConfigureHostnames
+        'colDelete
         '
-        Me.ConfigureHostnames.Name = "ConfigureHostnames"
-        Me.ConfigureHostnames.Size = New System.Drawing.Size(319, 22)
-        Me.ConfigureHostnames.Text = "Configure Custom Hostnames/Device Names"
-        '
-        'ChangeAlternatingColorToolStripMenuItem
-        '
-        Me.ChangeAlternatingColorToolStripMenuItem.Name = "ChangeAlternatingColorToolStripMenuItem"
-        Me.ChangeAlternatingColorToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
-        Me.ChangeAlternatingColorToolStripMenuItem.Text = "Change Alternating Row Color"
-        '
-        'ChangeFont
-        '
-        Me.ChangeFont.Name = "ChangeFont"
-        Me.ChangeFont.Size = New System.Drawing.Size(319, 22)
-        Me.ChangeFont.Text = "Change Font"
-        '
-        'AboutToolStripMenuItem
-        '
-        Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(338, 22)
-        Me.AboutToolStripMenuItem.Text = "About"
-        '
-        'ImportExportSettingsToolStripMenuItem
-        '
-        Me.ImportExportSettingsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExportToolStripMenuItem, Me.ImportToolStripMenuItem})
-        Me.ImportExportSettingsToolStripMenuItem.Name = "ImportExportSettingsToolStripMenuItem"
-        Me.ImportExportSettingsToolStripMenuItem.Size = New System.Drawing.Size(338, 22)
-        Me.ImportExportSettingsToolStripMenuItem.Text = "Import/Export Program Settings"
-        '
-        'IncludeButtonsOnNotifications
-        '
-        Me.IncludeButtonsOnNotifications.CheckOnClick = True
-        Me.IncludeButtonsOnNotifications.Name = "IncludeButtonsOnNotifications"
-        Me.IncludeButtonsOnNotifications.Size = New System.Drawing.Size(319, 22)
-        Me.IncludeButtonsOnNotifications.Text = "Include Buttons on Notifications"
-        '
-        'IncludeCommasInDHMS
-        '
-        Me.IncludeCommasInDHMS.CheckOnClick = True
-        Me.IncludeCommasInDHMS.Name = "IncludeCommasInDHMS"
-        Me.IncludeCommasInDHMS.Size = New System.Drawing.Size(319, 22)
-        Me.IncludeCommasInDHMS.Text = "Include Commas in DHMS Strings"
-        Me.IncludeCommasInDHMS.ToolTipText = "Changes how DHMS strings are shown." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & """d, h, m, s"" or ""d h m s"""
-        '
-        'IPv6Support
-        '
-        Me.IPv6Support.CheckOnClick = True
-        Me.IPv6Support.Name = "IPv6Support"
-        Me.IPv6Support.Size = New System.Drawing.Size(319, 22)
-        Me.IPv6Support.Text = "Enable IPv6 Support"
-        '
-        'ExportToolStripMenuItem
-        '
-        Me.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem"
-        Me.ExportToolStripMenuItem.Size = New System.Drawing.Size(110, 22)
-        Me.ExportToolStripMenuItem.Text = "Export"
-        '
-        'ImportToolStripMenuItem
-        '
-        Me.ImportToolStripMenuItem.Name = "ImportToolStripMenuItem"
-        Me.ImportToolStripMenuItem.Size = New System.Drawing.Size(110, 22)
-        Me.ImportToolStripMenuItem.Text = "Import"
-        '
-        'NotifyIcon
-        '
-        Me.NotifyIcon.ContextMenuStrip = Me.IconMenu
-        Me.NotifyIcon.Text = "NotifyIcon"
-        Me.NotifyIcon.Visible = True
-        '
-        'OlderThan1DayToolStripMenuItem
-        '
-        Me.OlderThan1DayToolStripMenuItem.Name = "OlderThan1DayToolStripMenuItem"
-        Me.OlderThan1DayToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
-        Me.OlderThan1DayToolStripMenuItem.Text = "Older than 1 day"
-        '
-        'OlderThan2DaysToolStripMenuItem
-        '
-        Me.OlderThan2DaysToolStripMenuItem.Name = "OlderThan2DaysToolStripMenuItem"
-        Me.OlderThan2DaysToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
-        Me.OlderThan2DaysToolStripMenuItem.Text = "Older than 2 days"
-        '
-        'OlderThan3DaysToolStripMenuItem
-        '
-        Me.OlderThan3DaysToolStripMenuItem.Name = "OlderThan3DaysToolStripMenuItem"
-        Me.OlderThan3DaysToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
-        Me.OlderThan3DaysToolStripMenuItem.Text = "Older than 3 days"
-        '
-        'OlderThanAWeekToolStripMenuItem
-        '
-        Me.OlderThanAWeekToolStripMenuItem.Name = "OlderThanAWeekToolStripMenuItem"
-        Me.OlderThanAWeekToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
-        Me.OlderThanAWeekToolStripMenuItem.Text = "Older than a week"
-        '
-        'ChkEnableConfirmCloseToolStripItem
-        '
-        Me.ChkEnableConfirmCloseToolStripItem.CheckOnClick = True
-        Me.ChkEnableConfirmCloseToolStripItem.Name = "ChkEnableConfirmCloseToolStripItem"
-        Me.ChkEnableConfirmCloseToolStripItem.Size = New System.Drawing.Size(319, 22)
-        Me.ChkEnableConfirmCloseToolStripItem.Text = "Enable Confirm Close"
-        '
-        'LogsHeaderMenu
-        '
-        Me.LogsHeaderMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LogsMenuHideAlertsColumn, Me.LogsMenuHideHostnameColumn, Me.LogsMenuHideLogTypeColumn, Me.LogsMenuHideServerTimeColumn})
-        Me.LogsHeaderMenu.Name = "LogsHeaderMenu"
-        Me.LogsHeaderMenu.Size = New System.Drawing.Size(183, 180)
+        Me.colDelete.HeaderText = "Delete?"
+        Me.colDelete.Name = "colDelete"
+        Me.colDelete.ReadOnly = True
+        Me.colDelete.Width = 60
         '
         'LogsMenu
         '
         Me.LogsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CopyLogTextToolStripMenuItem, Me.CopyRawLogTextToolStripMenuItem, Me.CreateAlertToolStripMenuItem, Me.CreateIgnoredLogToolStripMenuItem, Me.CreateReplacementToolStripMenuItem, Me.DeleteLogsToolStripMenuItem, Me.DeleteSimilarLogsToolStripMenuItem, Me.ExportsLogsToolStripMenuItem, Me.OpenLogViewerToolStripMenuItem})
         Me.LogsMenu.Name = "LogsMenu"
-        Me.LogsMenu.Size = New System.Drawing.Size(183, 180)
+        Me.LogsMenu.Size = New System.Drawing.Size(183, 202)
         '
         'CopyLogTextToolStripMenuItem
         '
@@ -803,134 +882,11 @@ Partial Class Form1
         Me.CopyRawLogTextToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
         Me.CopyRawLogTextToolStripMenuItem.Text = "Copy Raw Log Text"
         '
-        'OpenLogViewerToolStripMenuItem
+        'CreateAlertToolStripMenuItem
         '
-        Me.OpenLogViewerToolStripMenuItem.Name = "OpenLogViewerToolStripMenuItem"
-        Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
-        Me.OpenLogViewerToolStripMenuItem.Text = "Open Log Viewer"
-        '
-        'LogsMenuHideAlertsColumn
-        '
-        Me.LogsMenuHideAlertsColumn.Name = "LogsMenuHideAlertsColumn"
-        Me.LogsMenuHideAlertsColumn.Size = New System.Drawing.Size(182, 22)
-        Me.LogsMenuHideAlertsColumn.Text = "Hide 'Alerts' Column"
-        '
-        'LogsMenuHideHostnameColumn
-        '
-        Me.LogsMenuHideHostnameColumn.Name = "LogsMenuHideHostnameColumn"
-        Me.LogsMenuHideHostnameColumn.Size = New System.Drawing.Size(182, 22)
-        Me.LogsMenuHideHostnameColumn.Text = "Hide 'Hostname' Column"
-        '
-        'LogsMenuHideLogTypeColumn
-        '
-        Me.LogsMenuHideLogTypeColumn.Name = "LogsMenuHideLogTypeColumn"
-        Me.LogsMenuHideLogTypeColumn.Size = New System.Drawing.Size(182, 22)
-        Me.LogsMenuHideLogTypeColumn.Text = "Hide 'Log Type' Column"
-        '
-        'LogsMenuHideServerTimeColumn
-        '
-        Me.LogsMenuHideServerTimeColumn.Name = "LogsMenuHideServerTimeColumn"
-        Me.LogsMenuHideServerTimeColumn.Size = New System.Drawing.Size(182, 22)
-        Me.LogsMenuHideServerTimeColumn.Text = "Hide 'Server Time' Column"
-        '
-        'DeleteSimilarLogsToolStripMenuItem
-        '
-        Me.DeleteSimilarLogsToolStripMenuItem.Name = "DeleteSimilarLogsToolStripMenuItem"
-        Me.DeleteSimilarLogsToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
-        Me.DeleteSimilarLogsToolStripMenuItem.Text = "Delete Similar Logs"
-        '
-        'DeleteLogsToolStripMenuItem
-        '
-        Me.DeleteLogsToolStripMenuItem.Name = "DeleteLogsToolStripMenuItem"
-        Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
-        Me.DeleteLogsToolStripMenuItem.Text = "Delete Selected Logs"
-        '
-        'ExportAllLogsToolStripMenuItem
-        '
-        Me.ExportAllLogsToolStripMenuItem.Name = "ExportAllLogsToolStripMenuItem"
-        Me.ExportAllLogsToolStripMenuItem.Size = New System.Drawing.Size(239, 22)
-        Me.ExportAllLogsToolStripMenuItem.Text = "Export All Logs"
-        '
-        'ExportsLogsToolStripMenuItem
-        '
-        Me.ExportsLogsToolStripMenuItem.Name = "ExportsLogsToolStripMenuItem"
-        Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
-        Me.ExportsLogsToolStripMenuItem.Text = "Export Selected Logs"
-        '
-        'DonationStripMenuItem
-        '
-        Me.DonationStripMenuItem.Name = "DonationStripMenuItem"
-        Me.DonationStripMenuItem.Size = New System.Drawing.Size(177, 20)
-        Me.DonationStripMenuItem.Text = "Donate to me via ""Buy Me A Coffee"""
-        '
-        'StopServerStripMenuItem
-        '
-        Me.StopServerStripMenuItem.Name = "StopServerStripMenuItem"
-        Me.StopServerStripMenuItem.Size = New System.Drawing.Size(338, 22)
-        Me.StopServerStripMenuItem.Text = "Stop Server"
-        '
-        'ChangeSyslogServerPortToolStripMenuItem
-        '
-        Me.ChangeSyslogServerPortToolStripMenuItem.Name = "ChangeSyslogServerPortToolStripMenuItem"
-        Me.ChangeSyslogServerPortToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
-        Me.ChangeSyslogServerPortToolStripMenuItem.Text = "Change Syslog Server Port"
-        '
-        'ClearIgnoredStatsAtMidnight
-        '
-        Me.ClearIgnoredStatsAtMidnight.CheckOnClick = True
-        Me.ClearIgnoredStatsAtMidnight.Name = "ClearIgnoredStatsAtMidnight"
-        Me.ClearIgnoredStatsAtMidnight.Size = New System.Drawing.Size(319, 22)
-        Me.ClearIgnoredStatsAtMidnight.Text = "Clear Ignored Log Stats at Midnight"
-        '
-        'ChangeLogAutosaveIntervalToolStripMenuItem
-        '
-        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Name = "ChangeLogAutosaveIntervalToolStripMenuItem"
-        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Size = New System.Drawing.Size(319, 22)
-        Me.ChangeLogAutosaveIntervalToolStripMenuItem.Text = "        Change Log Autosave Interval"
-        '
-        'OpenWindowsExplorerToAppConfigFile
-        '
-        Me.OpenWindowsExplorerToAppConfigFile.Name = "OpenWindowsExplorerToAppConfigFile"
-        Me.OpenWindowsExplorerToAppConfigFile.Size = New System.Drawing.Size(338, 22)
-        Me.OpenWindowsExplorerToAppConfigFile.Text = "Open Windows Explorer to Application Config File"
-        '
-        'RemoveNumbersFromRemoteApp
-        '
-        Me.RemoveNumbersFromRemoteApp.CheckOnClick = True
-        Me.RemoveNumbersFromRemoteApp.Name = "RemoveNumbersFromRemoteApp"
-        Me.RemoveNumbersFromRemoteApp.Size = New System.Drawing.Size(319, 22)
-        Me.RemoveNumbersFromRemoteApp.Text = "Remove Numbers From Remote App"
-        '
-        'ProcessReplacementsInSyslogDataFirst
-        '
-        Me.ProcessReplacementsInSyslogDataFirst.CheckOnClick = True
-        Me.ProcessReplacementsInSyslogDataFirst.Name = "ProcessReplacementsInSyslogDataFirst"
-        Me.ProcessReplacementsInSyslogDataFirst.Size = New System.Drawing.Size(319, 22)
-        Me.ProcessReplacementsInSyslogDataFirst.Text = "Process Replacements in Syslog Data First"
-        '
-        'ShowCloseButtonOnNotifications
-        '
-        Me.ShowCloseButtonOnNotifications.CheckOnClick = True
-        Me.ShowCloseButtonOnNotifications.Name = "ShowCloseButtonOnNotifications"
-        Me.ShowCloseButtonOnNotifications.Size = New System.Drawing.Size(319, 22)
-        Me.ShowCloseButtonOnNotifications.Text = "Show Close Button on Notifications"
-        '
-        'ShowRawLogOnLogViewer
-        '
-        Me.ShowRawLogOnLogViewer.CheckOnClick = True
-        Me.ShowRawLogOnLogViewer.Name = "ShowRawLogOnLogViewer"
-        Me.ShowRawLogOnLogViewer.Size = New System.Drawing.Size(319, 22)
-        Me.ShowRawLogOnLogViewer.Text = "Show Raw Log on Log Viewer Window"
-        '
-        'SaveIgnoredLogCount
-        '
-        Me.SaveIgnoredLogCount.CheckOnClick = True
-        Me.SaveIgnoredLogCount.Name = "SaveIgnoredLogCount"
-        Me.SaveIgnoredLogCount.Size = New System.Drawing.Size(319, 22)
-        Me.SaveIgnoredLogCount.Text = "Save Ignored Log Count"
-        Me.SaveIgnoredLogCount.ToolTipText = "Saves the ignored log count and ignored rule stat data to disk for historical ana" &
-    "lysis." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Before it was for the funzies, now this can be an incredible tool to hel" &
-    "p you fine tune rules."
+        Me.CreateAlertToolStripMenuItem.Name = "CreateAlertToolStripMenuItem"
+        Me.CreateAlertToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.CreateAlertToolStripMenuItem.Text = "Create Alert"
         '
         'CreateIgnoredLogToolStripMenuItem
         '
@@ -944,15 +900,35 @@ Partial Class Form1
         Me.CreateReplacementToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
         Me.CreateReplacementToolStripMenuItem.Text = "Create Replacement"
         '
-        'LoadingProgressBar
+        'DeleteLogsToolStripMenuItem
         '
-        Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LoadingProgressBar.Location = New System.Drawing.Point(954, 28)
-        Me.LoadingProgressBar.Name = "LoadingProgressBar"
-        Me.LoadingProgressBar.Size = New System.Drawing.Size(209, 23)
-        Me.LoadingProgressBar.TabIndex = 19
-        Me.LoadingProgressBar.Visible = False
+        Me.DeleteLogsToolStripMenuItem.Name = "DeleteLogsToolStripMenuItem"
+        Me.DeleteLogsToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.DeleteLogsToolStripMenuItem.Text = "Delete Selected Logs"
+        '
+        'DeleteSimilarLogsToolStripMenuItem
+        '
+        Me.DeleteSimilarLogsToolStripMenuItem.Name = "DeleteSimilarLogsToolStripMenuItem"
+        Me.DeleteSimilarLogsToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.DeleteSimilarLogsToolStripMenuItem.Text = "Delete Similar Logs"
+        '
+        'ExportsLogsToolStripMenuItem
+        '
+        Me.ExportsLogsToolStripMenuItem.Name = "ExportsLogsToolStripMenuItem"
+        Me.ExportsLogsToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.ExportsLogsToolStripMenuItem.Text = "Export Selected Logs"
+        '
+        'OpenLogViewerToolStripMenuItem
+        '
+        Me.OpenLogViewerToolStripMenuItem.Name = "OpenLogViewerToolStripMenuItem"
+        Me.OpenLogViewerToolStripMenuItem.Size = New System.Drawing.Size(182, 22)
+        Me.OpenLogViewerToolStripMenuItem.Text = "Open Log Viewer"
+        '
+        'NotifyIcon
+        '
+        Me.NotifyIcon.ContextMenuStrip = Me.IconMenu
+        Me.NotifyIcon.Text = "NotifyIcon"
+        Me.NotifyIcon.Visible = True
         '
         'IconMenu
         '
@@ -966,14 +942,35 @@ Partial Class Form1
         Me.ReOpenToolStripMenuItem.Size = New System.Drawing.Size(121, 22)
         Me.ReOpenToolStripMenuItem.Text = "Re-Open"
         '
-        'lblLimitBy
+        'LogsHeaderMenu
         '
-        Me.lblLimitBy.AutoSize = True
-        Me.lblLimitBy.Location = New System.Drawing.Point(423, 32)
-        Me.lblLimitBy.Name = "lblLimitBy"
-        Me.lblLimitBy.Size = New System.Drawing.Size(46, 13)
-        Me.lblLimitBy.TabIndex = 42
-        Me.lblLimitBy.Text = "Limit By:"
+        Me.LogsHeaderMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LogsMenuHideAlertsColumn, Me.LogsMenuHideHostnameColumn, Me.LogsMenuHideLogTypeColumn, Me.LogsMenuHideServerTimeColumn})
+        Me.LogsHeaderMenu.Name = "LogsHeaderMenu"
+        Me.LogsHeaderMenu.Size = New System.Drawing.Size(217, 92)
+        '
+        'LogsMenuHideAlertsColumn
+        '
+        Me.LogsMenuHideAlertsColumn.Name = "LogsMenuHideAlertsColumn"
+        Me.LogsMenuHideAlertsColumn.Size = New System.Drawing.Size(216, 22)
+        Me.LogsMenuHideAlertsColumn.Text = "Hide 'Alerts' Column"
+        '
+        'LogsMenuHideHostnameColumn
+        '
+        Me.LogsMenuHideHostnameColumn.Name = "LogsMenuHideHostnameColumn"
+        Me.LogsMenuHideHostnameColumn.Size = New System.Drawing.Size(216, 22)
+        Me.LogsMenuHideHostnameColumn.Text = "Hide 'Hostname' Column"
+        '
+        'LogsMenuHideLogTypeColumn
+        '
+        Me.LogsMenuHideLogTypeColumn.Name = "LogsMenuHideLogTypeColumn"
+        Me.LogsMenuHideLogTypeColumn.Size = New System.Drawing.Size(216, 22)
+        Me.LogsMenuHideLogTypeColumn.Text = "Hide 'Log Type' Column"
+        '
+        'LogsMenuHideServerTimeColumn
+        '
+        Me.LogsMenuHideServerTimeColumn.Name = "LogsMenuHideServerTimeColumn"
+        Me.LogsMenuHideServerTimeColumn.Size = New System.Drawing.Size(216, 22)
+        Me.LogsMenuHideServerTimeColumn.Text = "Hide 'Server Time' Column"
         '
         'btnShowLimit
         '
@@ -984,6 +981,16 @@ Partial Class Form1
         Me.btnShowLimit.TabIndex = 45
         Me.btnShowLimit.Text = "Limit"
         Me.btnShowLimit.UseVisualStyleBackColor = True
+        '
+        'LoadingProgressBar
+        '
+        Me.LoadingProgressBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LoadingProgressBar.Location = New System.Drawing.Point(954, 28)
+        Me.LoadingProgressBar.Name = "LoadingProgressBar"
+        Me.LoadingProgressBar.Size = New System.Drawing.Size(209, 23)
+        Me.LoadingProgressBar.TabIndex = 19
+        Me.LoadingProgressBar.Visible = False
         '
         'boxLimiter
         '
@@ -996,12 +1003,6 @@ Partial Class Form1
         Me.boxLimiter.Sorted = True
         Me.boxLimiter.TabIndex = 44
         '
-        'lblProcessUptime
-        '
-        Me.lblProcessUptime.Name = "lblProcessUptime"
-        Me.lblProcessUptime.Size = New System.Drawing.Size(92, 17)
-        Me.lblProcessUptime.Text = "Program Uptime:"
-        '
         'boxLimitBy
         '
         Me.boxLimitBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
@@ -1010,15 +1011,16 @@ Partial Class Form1
         Me.boxLimitBy.Location = New System.Drawing.Point(468, 29)
         Me.boxLimitBy.Name = "boxLimitBy"
         Me.boxLimitBy.Size = New System.Drawing.Size(121, 21)
-        Me.boxLimitBy.Text = "(Not Specified)"
         Me.boxLimitBy.TabIndex = 43
         '
-        'colDelete
+        'lblLimitBy
         '
-        Me.colDelete.HeaderText = "Delete?"
-        Me.colDelete.Name = "colDelete"
-        Me.colDelete.ReadOnly = True
-        Me.colDelete.Width = 60
+        Me.lblLimitBy.AutoSize = True
+        Me.lblLimitBy.Location = New System.Drawing.Point(423, 32)
+        Me.lblLimitBy.Name = "lblLimitBy"
+        Me.lblLimitBy.Size = New System.Drawing.Size(46, 13)
+        Me.lblLimitBy.TabIndex = 42
+        Me.lblLimitBy.Text = "Limit By:"
         '
         'Form1
         '
@@ -1048,8 +1050,8 @@ Partial Class Form1
         Me.MenuStrip.PerformLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.LogsMenu.ResumeLayout(False)
-        Me.LogsHeaderMenu.ResumeLayout(False)
         Me.IconMenu.ResumeLayout(False)
+        Me.LogsHeaderMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1160,6 +1162,7 @@ Partial Class Form1
     Friend WithEvents RemoveNumbersFromRemoteApp As ToolStripMenuItem
     Friend WithEvents ShowRawLogOnLogViewer As ToolStripMenuItem
     Friend WithEvents ShowCloseButtonOnNotifications As ToolStripMenuItem
+    Friend WithEvents ShowLogAsAlertedEvenIfLimitedByTime As ToolStripMenuItem
     Friend WithEvents SaveIgnoredLogCount As ToolStripMenuItem
     Friend WithEvents ConfigureSysLogMirrorServers As ToolStripMenuItem
     Friend WithEvents ConfigureTimeBetweenSameNotifications As ToolStripMenuItem

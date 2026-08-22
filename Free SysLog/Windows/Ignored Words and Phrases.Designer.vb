@@ -35,9 +35,11 @@ Partial Class IgnoredWordsAndPhrases
         Me.colDateCreated = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colDateOfLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.colSinceLastEvent = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.colRecord = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ListViewMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.EnableDisableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResetHitsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EnableDisableRecordingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BtnEdit = New System.Windows.Forms.Button()
         Me.BtnEnableDisable = New System.Windows.Forms.Button()
         Me.BtnImport = New System.Windows.Forms.Button()
@@ -62,16 +64,14 @@ Partial Class IgnoredWordsAndPhrases
         Me.btnUpdateHits = New System.Windows.Forms.Button()
         Me.ChkAutoRefresh = New System.Windows.Forms.CheckBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.ChkRefreshOnlyIfActive = New System.Windows.Forms.CheckBox()
-        Me.colRecord = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.EnableDisableRecordingToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkRecord = New System.Windows.Forms.CheckBox()
+        Me.ChkRefreshOnlyIfActive = New System.Windows.Forms.CheckBox()
         Me.StatusStrip = New System.Windows.Forms.StatusStrip()
         Me.lblTotalRules = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblActiveRules = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblInactiveRules = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.StatusStrip.SuspendLayout()
         Me.ListViewMenu.SuspendLayout()
+        Me.StatusStrip.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnAdd
@@ -157,6 +157,10 @@ Partial Class IgnoredWordsAndPhrases
         Me.colSinceLastEvent.Text = "Since Last Event"
         Me.colSinceLastEvent.Width = 100
         '
+        'colRecord
+        '
+        Me.colRecord.Text = "Record?"
+        '
         'ListViewMenu
         '
         Me.ListViewMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableDisableToolStripMenuItem, Me.ResetHitsToolStripMenuItem, Me.EnableDisableRecordingToolStripMenuItem})
@@ -174,6 +178,14 @@ Partial Class IgnoredWordsAndPhrases
         Me.ResetHitsToolStripMenuItem.Name = "ResetHitsToolStripMenuItem"
         Me.ResetHitsToolStripMenuItem.Size = New System.Drawing.Size(209, 22)
         Me.ResetHitsToolStripMenuItem.Text = "Reset Hit"
+        '
+        'EnableDisableRecordingToolStripMenuItem
+        '
+        Me.EnableDisableRecordingToolStripMenuItem.Name = "EnableDisableRecordingToolStripMenuItem"
+        Me.EnableDisableRecordingToolStripMenuItem.Size = New System.Drawing.Size(209, 22)
+        Me.EnableDisableRecordingToolStripMenuItem.Text = "Enable/Disable Recording"
+        Me.EnableDisableRecordingToolStripMenuItem.ToolTipText = "Makes it so that even if the log is ignored, the log text is still recorded in pr" &
+    "ogram memory and not written to disk."
         '
         'BtnEdit
         '
@@ -383,6 +395,13 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblCommentLabel.TabIndex = 50
         Me.lblCommentLabel.Text = "Comment"
         '
+        'lblTotalHits
+        '
+        Me.lblTotalHits.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
+        Me.lblTotalHits.Name = "lblTotalHits"
+        Me.lblTotalHits.Size = New System.Drawing.Size(113, 17)
+        Me.lblTotalHits.Text = "Total Ignored Hits: 0"
+        '
         'btnUpdateHits
         '
         Me.btnUpdateHits.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -407,21 +426,6 @@ Partial Class IgnoredWordsAndPhrases
         " pressed down.")
         Me.ChkAutoRefresh.UseVisualStyleBackColor = True
         '
-        'ChkRefreshOnlyIfActive
-        '
-        Me.ChkRefreshOnlyIfActive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ChkRefreshOnlyIfActive.AutoSize = True
-        Me.ChkRefreshOnlyIfActive.Location = New System.Drawing.Point(686, 244)
-        Me.ChkRefreshOnlyIfActive.Name = "ChkRefreshOnlyIfActive"
-        Me.ChkRefreshOnlyIfActive.Size = New System.Drawing.Size(131, 17)
-        Me.ChkRefreshOnlyIfActive.TabIndex = 54
-        Me.ChkRefreshOnlyIfActive.Text = "Only If Active Window"
-        Me.ChkRefreshOnlyIfActive.UseVisualStyleBackColor = True
-        '
-        'colRecord
-        '
-        Me.colRecord.Text = "Record?"
-        '
         'ChkRecord
         '
         Me.ChkRecord.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -435,13 +439,16 @@ Partial Class IgnoredWordsAndPhrases
         "ogram memory and not written to disk.")
         Me.ChkRecord.UseVisualStyleBackColor = True
         '
-        'EnableDisableRecordingToolStripMenuItem
+        'ChkRefreshOnlyIfActive
         '
-        Me.EnableDisableRecordingToolStripMenuItem.Name = "EnableDisableRecordingToolStripMenuItem"
-        Me.EnableDisableRecordingToolStripMenuItem.Size = New System.Drawing.Size(209, 22)
-        Me.EnableDisableRecordingToolStripMenuItem.Text = "Enable/Disable Recording"
-        Me.EnableDisableRecordingToolStripMenuItem.ToolTipText = "Makes it so that even if the log is ignored, the log text is still recorded in pr" &
-    "ogram memory and not written to disk."
+        Me.ChkRefreshOnlyIfActive.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ChkRefreshOnlyIfActive.AutoSize = True
+        Me.ChkRefreshOnlyIfActive.Location = New System.Drawing.Point(686, 244)
+        Me.ChkRefreshOnlyIfActive.Name = "ChkRefreshOnlyIfActive"
+        Me.ChkRefreshOnlyIfActive.Size = New System.Drawing.Size(131, 17)
+        Me.ChkRefreshOnlyIfActive.TabIndex = 54
+        Me.ChkRefreshOnlyIfActive.Text = "Only If Active Window"
+        Me.ChkRefreshOnlyIfActive.UseVisualStyleBackColor = True
         '
         'StatusStrip
         '
@@ -451,13 +458,6 @@ Partial Class IgnoredWordsAndPhrases
         Me.StatusStrip.Size = New System.Drawing.Size(1118, 22)
         Me.StatusStrip.TabIndex = 56
         Me.StatusStrip.Text = "StatusStrip"
-        '
-        'lblTotalHits
-        '
-        Me.lblTotalHits.Margin = New System.Windows.Forms.Padding(25, 3, 0, 2)
-        Me.lblTotalHits.Name = "lblTotalHits"
-        Me.lblTotalHits.Size = New System.Drawing.Size(113, 17)
-        Me.lblTotalHits.Text = "Total Ignored Hits: 0"
         '
         'lblTotalRules
         '

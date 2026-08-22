@@ -503,6 +503,8 @@ Namespace SyslogParser
             If Not boolIgnored Then
                 SyncLock ParentForm.dataGridLockObject
                     ParentForm.Logs.Invoke(Sub()
+                                               If Not boolAlerted Then strAlertText = Nothing
+
                                                Dim newItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
                                                              dateObject:=currentDate,
                                                              strTime:=currentDate.ToString,
@@ -744,14 +746,19 @@ Namespace SyslogParser
                     strAlertText = strAlertText.Replace("{NL}", vbCrLf, StringComparison.OrdinalIgnoreCase).Trim()
                     strAlertText = ProcessEmbeddedCommands(strAlertText)
 
+                    Dim boolAlerted As Boolean = False
+
                     If alert.BoolLimited Then
-                        NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
+                        boolAlerted = NotificationLimiter.ShowNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
+                        If My.Settings.ShowAsAlertedEvenIfLimitedByTime Then boolAlerted = True
                     Else
+                        boolAlerted = True
                         ShowToastNotification(strAlertText, ToolTipIcon, strLogText, strLogDate, strSourceIP, strRawLogText, alert.alertType, rowGUID)
                     End If
 
-                    strOutgoingAlertText = strAlertText
-                    Return True
+                    If boolAlerted Then strOutgoingAlertText = strAlertText
+
+                    Return boolAlerted
                 End If
             Next
 
