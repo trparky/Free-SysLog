@@ -131,6 +131,11 @@ Public Class IgnoredLogsAndSearchResults
         End If
     End Sub
 
+    Private Sub CenterLabel(lbl As Label, parentControl As Control)
+        lbl.Left = (parentControl.ClientSize.Width - lbl.Width) \ 2
+        lbl.Top = (parentControl.ClientSize.Height - lbl.Height) \ 2
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle = DataGridViewCellStyle
@@ -169,6 +174,8 @@ Public Class IgnoredLogsAndSearchResults
             Size = My.Settings.logFileViewerSize
             Location = VerifyWindowLocation(My.Settings.logFileViewerLocation, Me)
         End If
+
+        CenterLabel(lblPleaseWait, Me)
 
         ColTime.Width = My.Settings.columnTimeSize
         colServerTime.Width = My.Settings.ServerTimeWidth
@@ -218,6 +225,7 @@ Public Class IgnoredLogsAndSearchResults
                                                                       Logs.Visible = True
                                                                       Logs.ResumeLayout()
                                                                       SortLogsByDateObject(0, sortOrder)
+                                                                      lblPleaseWait.Visible = False
                                                                   End Sub)
                                                        End SyncLock
                                                    End Sub)
@@ -476,6 +484,7 @@ Public Class IgnoredLogsAndSearchResults
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                 Logs.Sort(Logs.Columns(0), ListSortDirection.Ascending)
                                 boolDoneLoading = True
+                                lblPleaseWait.Visible = False
                             End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException
