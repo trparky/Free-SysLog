@@ -148,6 +148,7 @@ Partial Class Form1
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.lblLimitBy = New System.Windows.Forms.Label()
+        Me.lblDataWrittenToDisk = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -241,7 +242,7 @@ Partial Class Form1
         '
         'StatusStrip
         '
-        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs, Me.LblAutoScrollStatus, Me.lblProcessUptime})
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NumberOfLogs, Me.LblItemsSelected, Me.LblAutoSaved, Me.LblLogFileSize, Me.LblNumberOfIgnoredIncomingLogs, Me.LblAutoScrollStatus, Me.lblProcessUptime, Me.lblDataWrittenToDisk})
         Me.StatusStrip.Location = New System.Drawing.Point(0, 424)
         Me.StatusStrip.Name = "StatusStrip"
         Me.StatusStrip.Size = New System.Drawing.Size(1175, 22)
@@ -293,6 +294,7 @@ Partial Class Form1
         '
         'lblProcessUptime
         '
+        Me.lblProcessUptime.Margin = New System.Windows.Forms.Padding(0, 3, 25, 2)
         Me.lblProcessUptime.Name = "lblProcessUptime"
         Me.lblProcessUptime.Size = New System.Drawing.Size(98, 15)
         Me.lblProcessUptime.Text = "Program Uptime:"
@@ -1022,6 +1024,12 @@ Partial Class Form1
         Me.lblLimitBy.TabIndex = 42
         Me.lblLimitBy.Text = "Limit By:"
         '
+        'lblDataWrittenToDisk
+        '
+        Me.lblDataWrittenToDisk.Name = "lblDataWrittenToDisk"
+        Me.lblDataWrittenToDisk.Size = New System.Drawing.Size(155, 15)
+        Me.lblDataWrittenToDisk.Text = "Data Written to Disk: 0 Bytes"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1182,4 +1190,5 @@ Partial Class Form1
     Friend WithEvents btnShowLimit As Button
     Friend WithEvents colDelete As DataGridViewCheckBoxColumn
     Friend WithEvents lblProcessUptime As ToolStripStatusLabel
+    Friend WithEvents lblDataWrittenToDisk As ToolStripStatusLabel
 End Class

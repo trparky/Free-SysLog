@@ -370,6 +370,8 @@ Public Class IgnoredLogsAndSearchResults
                 End If
             End Using
 
+            AddToBytesWrittenToDiskLock(New FileInfo(SaveFileDialog.FileName).Length)
+
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer(SaveFileDialog.FileName)
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent

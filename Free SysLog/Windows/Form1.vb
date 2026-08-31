@@ -2127,6 +2127,7 @@ Public Class Form1
         IPv6Support.Checked = My.Settings.IPv6Support
         ChkDisableAutoScrollUponScrolling.Checked = My.Settings.disableAutoScrollUponScrolling
         ChkDebug.Checked = My.Settings.boolDebug
+        lblDataWrittenToDisk.Visible = My.Settings.boolDebug
         ConfirmDelete.Checked = My.Settings.ConfirmDelete
         ProcessReplacementsInSyslogDataFirst.Checked = My.Settings.ProcessReplacementsInSyslogDataFirst
         ShowCloseButtonOnNotifications.Checked = My.Settings.ShowCloseButtonOnNotifications

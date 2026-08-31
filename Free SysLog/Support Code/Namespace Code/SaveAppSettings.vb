@@ -35,6 +35,8 @@ Namespace SaveAppSettings
             Using streamWriter As New IO.StreamWriter(strFileName)
                 streamWriter.Write(Newtonsoft.Json.JsonConvert.SerializeObject(exportedSettingsArray, Newtonsoft.Json.Formatting.Indented))
             End Using
+
+            AddToBytesWrittenToDiskLock(New IO.FileInfo(strFileName).Length)
         End Sub
 
         Private Function ParseFontFromString(fontString As String) As Font
