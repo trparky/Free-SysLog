@@ -1,8 +1,6 @@
 ﻿Imports System.IO
 Imports System.Text.RegularExpressions
 Imports System.Xml
-Imports System.Security.AccessControl
-Imports System.Security.Principal
 Imports Free_SysLog.SupportCode
 
 Namespace checkForUpdates
