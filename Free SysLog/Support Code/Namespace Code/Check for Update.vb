@@ -10,12 +10,8 @@ Namespace checkForUpdates
         Public Const strProgramName As String = "Free SysLog"
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
-        Public versionString As String
-        Public versionInfo As String() = Application.ProductVersion.Split(".")
-
-        Sub New()
-            versionString = $"{versionInfo(VersionPieces.major)}.{versionInfo(VersionPieces.minor)} Build {versionInfo(VersionPieces.build)}"
-        End Sub
+        Public ReadOnly versionInfo As New Version(Application.ProductVersion)
+        Public ReadOnly versionString As String = $"{versionInfo.Major}.{versionInfo.Minor} Build {versionInfo.Build}"
     End Module
 
     Class CheckForUpdatesClass
@@ -27,9 +23,6 @@ Namespace checkForUpdates
         ' Change these variables whenever you import this module into a program's code to handle software updates.
 
         Public windowObject As Form1
-        Private ReadOnly shortBuild As Short = Short.Parse(versionInfo(VersionPieces.build).Trim)
-        Private ReadOnly versionStringWithoutBuild As Double = Double.Parse($"{versionInfo(VersionPieces.major)}.{versionInfo(VersionPieces.minor)}")
-        Private ReadOnly intInternalVersion As Integer = Integer.Parse(versionInfo(VersionPieces.revision))
 
         Public Sub New(inputWindowObject As Form1)
             windowObject = inputWindowObject
@@ -78,11 +71,11 @@ Namespace checkForUpdates
                 Dim intInternalVersionFromXML As Integer = 0
                 If xmlNode.SelectSingleNode("internalversion") IsNot Nothing Then
                     If Integer.TryParse(xmlNode.SelectSingleNode("internalversion").InnerText.Trim, intInternalVersionFromXML) Then
-                        If intInternalVersionFromXML = intInternalVersion Then ' If the internal version from the XML file matches the internal version from the program itself, we return a noUpdateNeeded value.
+                        If intInternalVersionFromXML = versionInfo.Revision Then ' If the internal version from the XML file matches the internal version from the program itself, we return a noUpdateNeeded value.
                             Return ProcessUpdateXMLResponse.noUpdateNeeded
-                        ElseIf intInternalVersionFromXML > intInternalVersion Then ' If the internal version from the XML file is greater than the internal version from the program itself, we return a newVersion value.
+                        ElseIf intInternalVersionFromXML > versionInfo.Revision Then ' If the internal version from the XML file is greater than the internal version from the program itself, we return a newVersion value.
                             Return ProcessUpdateXMLResponse.newVersion
-                        ElseIf intInternalVersionFromXML < intInternalVersion Then
+                        ElseIf intInternalVersionFromXML < versionInfo.Revision Then
                             Return ProcessUpdateXMLResponse.newerVersionThanWebSite ' If the internal version from the XML file is less than the internal version from the program itself, we return a newerVersionThanWebSite value.
                         End If
                     Else
