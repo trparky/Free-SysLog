@@ -110,6 +110,16 @@ Namespace SupportCode
         Public DataGridViewCellStyle_ComputedCell As DataGridViewCellStyle
         Public DataGridViewCellStyle_AlertedCell As DataGridViewCellStyle
 
+        Private longBytesWrittenToDisk As Long = 0
+
+        Public Sub AddToBytesWrittenToDiskLock(intBytesWrittenToDisk As Integer)
+            Threading.Interlocked.Add(longBytesWrittenToDisk, intBytesWrittenToDisk)
+
+            If ParentForm IsNot Nothing AndAlso My.Settings.boolDebug Then
+                ParentForm.Invoke(Sub() ParentForm.lblDataWrittenToDisk.Text = $"Data Written to Disk: {FileSizeToHumanSize(longBytesWrittenToDisk)}")
+            End If
+        End Sub
+
         Public WriteOnly Property AskOpenExplorer As Boolean
             Set(value As Boolean)
                 My.Settings.AskOpenExplorer = value
@@ -199,6 +209,8 @@ Namespace SupportCode
                 End Using
             End Using
 
+            AddToBytesWrittenToDiskLock(New FileInfo(strCompressedFilePath).Length)
+
             ' Preserve timestamps (best-effort)
             Try
                 File.SetCreationTimeUtc(strCompressedFilePath, File.GetCreationTimeUtc(strFilePath))
@@ -226,6 +238,8 @@ Namespace SupportCode
                 Else
                     File.Move(tmpPath, path)
                 End If
+
+                AddToBytesWrittenToDiskLock(New FileInfo(path).Length)
             Catch
                 ' Fail silently
             Finally
@@ -248,6 +262,8 @@ Namespace SupportCode
                 Else
                     File.Move(tmpPath, path)
                 End If
+
+                AddToBytesWrittenToDiskLock(New FileInfo(path).Length)
             Catch
                 ' Fail silently
             Finally

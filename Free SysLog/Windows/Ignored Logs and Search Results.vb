@@ -131,6 +131,11 @@ Public Class IgnoredLogsAndSearchResults
         End If
     End Sub
 
+    Private Sub CenterLabel(lbl As Label, parentControl As Control)
+        lbl.Left = (parentControl.ClientSize.Width - lbl.Width) \ 2
+        lbl.Top = (parentControl.ClientSize.Height - lbl.Height) \ 2
+    End Sub
+
     Private Sub Ignored_Logs_and_Search_Results_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.font IsNot Nothing Then
             Logs.DefaultCellStyle = DataGridViewCellStyle
@@ -170,6 +175,8 @@ Public Class IgnoredLogsAndSearchResults
             Location = VerifyWindowLocation(My.Settings.logFileViewerLocation, Me)
         End If
 
+        CenterLabel(lblPleaseWait, Me)
+
         ColTime.Width = My.Settings.columnTimeSize
         colServerTime.Width = My.Settings.ServerTimeWidth
         colLogType.Width = My.Settings.LogTypeWidth
@@ -198,6 +205,7 @@ Public Class IgnoredLogsAndSearchResults
         ChkKeepIgnoredLogsPastUserLimit.Visible = _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored
 
         If _WindowDisplayMode <> IgnoreOrSearchWindowDisplayMode.viewer Then
+            Logs.Visible = False
             Logs.SuspendLayout()
 
             If _WindowDisplayMode = IgnoreOrSearchWindowDisplayMode.ignored Then
@@ -209,44 +217,15 @@ Public Class IgnoredLogsAndSearchResults
 
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-                                                           ' Dynamically calculate the batch size based on total logs
-                                                           Dim totalLogs As Integer = LogsToBeDisplayed.Count
-                                                           Dim intBatchSize As Integer
-
-                                                           ' Adjust batch size based on the number of logs to process
-                                                           If totalLogs <= 100 Then
-                                                               intBatchSize = 5  ' Small dataset: use smaller batches
-                                                           ElseIf totalLogs <= 1000 Then
-                                                               intBatchSize = 20 ' Medium dataset: use medium-sized batches
-                                                           Else
-                                                               intBatchSize = 50 ' Large dataset: use larger batches
-                                                           End If
-
-                                                           ' Number of batches based on the dynamically determined batch size
-                                                           Dim numBatches As Integer = Math.Ceiling(totalLogs / intBatchSize)
-
-                                                           ' Create ParallelOptions to control the degree of parallelism
-                                                           Dim parallelOptions As New ParallelOptions() With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
-
-                                                           ' Parallel loop to process batches
-                                                           Parallel.For(0, numBatches, parallelOptions, Sub(batchIndex As Integer)
-                                                                                                            ' Calculate the starting and ending index for the current batch
-                                                                                                            Dim startIndex As Integer = batchIndex * intBatchSize
-                                                                                                            Dim endIndex As Integer = Math.Min(startIndex + intBatchSize, totalLogs)
-
-                                                                                                            ' Get the current batch of rows
-                                                                                                            Dim batch As MyDataGridViewRow() = LogsToBeDisplayed.Skip(startIndex).Take(endIndex - startIndex).ToArray()
-
-                                                                                                            ' Ensure thread safety when updating the UI
-                                                                                                            SyncLock dataGridLockObject
-                                                                                                                Logs.Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke to update UI on the main thread
-                                                                                                            End SyncLock
-                                                                                                        End Sub)
-
+                                                           For Each item As MyDataGridViewRow In LogsToBeDisplayed
+                                                               Logs.Invoke(Sub() Logs.Rows.AddRange(item))
+                                                           Next
 
                                                            Invoke(Sub()
+                                                                      Logs.Visible = True
                                                                       Logs.ResumeLayout()
                                                                       SortLogsByDateObject(0, sortOrder)
+                                                                      lblPleaseWait.Visible = False
                                                                   End Sub)
                                                        End SyncLock
                                                    End Sub)
@@ -391,6 +370,8 @@ Public Class IgnoredLogsAndSearchResults
                 End If
             End Using
 
+            AddToBytesWrittenToDiskLock(New FileInfo(SaveFileDialog.FileName).Length)
+
             If My.Settings.AskOpenExplorer Then
                 Using OpenExplorer As New OpenExplorer(SaveFileDialog.FileName)
                     OpenExplorer.StartPosition = FormStartPosition.CenterParent
@@ -491,52 +472,21 @@ Public Class IgnoredLogsAndSearchResults
                                 Logs.Rows.Clear()
                                 Logs.SuspendLayout()
                                 LblCount.Text = $"Number of logs: {collectionOfSavedData.Count:N0}"
+                                Logs.Visible = False
                             End Sub)
 
-                Dim index As Integer = 0
-
-                ' Create ParallelOptions to control the degree of parallelism
-                Dim parallelOptions As New ParallelOptions() With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
-
-                ' Dynamically calculate the batch size based on total logs
-                Dim totalLogs As Integer = collectionOfSavedData.Count
-                Dim intBatchSize As Integer
-
-                ' Adjust batch size based on the number of logs to process
-                If totalLogs <= 100 Then
-                    intBatchSize = 5  ' Small dataset: use smaller batches
-                ElseIf totalLogs <= 1000 Then
-                    intBatchSize = 20 ' Medium dataset: use medium-sized batches
-                Else
-                    intBatchSize = 50 ' Large dataset: use larger batches
-                End If
-
-                ' Number of batches based on the dynamically determined batch size
-                Dim numBatches As Integer = Math.Ceiling(totalLogs / intBatchSize)
-
-                ' Parallel loop to process batches
-                Parallel.For(0, numBatches, parallelOptions, Sub(batchIndex As Integer)
-                                                                 ' Calculate the starting and ending index for the current batch
-                                                                 Dim startIndex As Integer = batchIndex * intBatchSize
-                                                                 Dim endIndex As Integer = Math.Min(startIndex + intBatchSize, totalLogs)
-
-                                                                 ' Process each individual item in the batch
-                                                                 For i As Integer = startIndex To endIndex - 1
-                                                                     Dim intIndex As Integer = i
-
-                                                                     ' Ensure thread safety when updating the UI
-                                                                     SyncLock dataGridLockObject
-                                                                         Logs.Invoke(Sub() Logs.Rows.Add(collectionOfSavedData(intIndex).MakeDataGridRow(Logs))) ' Invoke to update UI on the main thread
-                                                                     End SyncLock
-                                                                 Next
-                                                             End Sub)
+                For Each item As SavedData In collectionOfSavedData
+                    Logs.Invoke(Sub() Logs.Rows.Add(item.MakeDataGridRow(Logs)))
+                Next
 
                 Logs.Invoke(Sub()
+                                Logs.Visible = True
                                 Logs.ResumeLayout()
                                 LogsLoadedInLabel.Visible = True
                                 LogsLoadedInLabel.Text = $"Logs Loaded In: {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds"
                                 Logs.Sort(Logs.Columns(0), ListSortDirection.Ascending)
                                 boolDoneLoading = True
+                                lblPleaseWait.Visible = False
                             End Sub)
             End If
         Catch ex As Newtonsoft.Json.JsonSerializationException

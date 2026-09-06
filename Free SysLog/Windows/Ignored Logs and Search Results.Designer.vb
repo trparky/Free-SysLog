@@ -68,6 +68,7 @@ Partial Class IgnoredLogsAndSearchResults
         Me.LoadingProgressBar = New System.Windows.Forms.ProgressBar()
         Me.ChkAutoScroll = New System.Windows.Forms.CheckBox()
         Me.ChkKeepIgnoredLogsPastUserLimit = New System.Windows.Forms.CheckBox()
+        Me.lblPleaseWait = New System.Windows.Forms.Label()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsContextMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
@@ -377,11 +378,22 @@ Partial Class IgnoredLogsAndSearchResults
         Me.ChkKeepIgnoredLogsPastUserLimit.Text = "Keep Ignored Logs Past User-Set Limit"
         Me.ChkKeepIgnoredLogsPastUserLimit.UseVisualStyleBackColor = True
         '
+        'lblPleaseWait
+        '
+        Me.lblPleaseWait.AutoSize = True
+        Me.lblPleaseWait.Font = New System.Drawing.Font("Microsoft Sans Serif", 72.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPleaseWait.Location = New System.Drawing.Point(167, 158)
+        Me.lblPleaseWait.Name = "lblPleaseWait"
+        Me.lblPleaseWait.Size = New System.Drawing.Size(1256, 108)
+        Me.lblPleaseWait.TabIndex = 34
+        Me.lblPleaseWait.Text = "Loading Data... Please Wait."
+        '
         'IgnoredLogsAndSearchResults
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1563, 425)
+        Me.Controls.Add(Me.lblPleaseWait)
         Me.Controls.Add(Me.ChkKeepIgnoredLogsPastUserLimit)
         Me.Controls.Add(Me.ChkAutoScroll)
         Me.Controls.Add(Me.LoadingProgressBar)
@@ -443,4 +455,5 @@ Partial Class IgnoredLogsAndSearchResults
     Friend WithEvents ChkAutoScroll As CheckBox
     Friend WithEvents ChkKeepIgnoredLogsPastUserLimit As CheckBox
     Friend WithEvents ToolStripSelectedItems As ToolStripStatusLabel
+    Friend WithEvents lblPleaseWait As Label
 End Class
