@@ -783,6 +783,8 @@ Public Class Form1
             If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso SaveAppSettings.LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
                 My.Settings.Save()
 
+                WriteLogsToDisk()
+
                 Threading.Thread.Sleep(500)
 
                 MsgBox("Free SysLog will now close And restart itself For the imported settings To take effect.", MsgBoxStyle.Information, Text)
