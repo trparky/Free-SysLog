@@ -1670,7 +1670,7 @@ Public Class Form1
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
                                                                        Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
 
-                                                                       For Each item As SysLogProxyServer In serversList.GetSnapshot
+                                                                       For Each item As SysLogProxyServer In serversList.GetSnapshot.Where(Function(LINQitem As SysLogProxyServer) LINQitem.boolEnabled)
                                                                            SendMessageToSysLogServer(strDataToSend, item.ip, item.port)
                                                                        Next
 
