@@ -13,13 +13,17 @@ Namespace My
         Private _reportCrash As ReportCrash
 
         Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
+            If e.CommandLine.Count > 0 AndAlso e.CommandLine(0).Equals("/wait", StringComparison.OrdinalIgnoreCase) Then
+                Threading.Thread.Sleep(1000)
+            End If
+
             If My.Settings.FirstRun Then
                 Try
                     ' Check if backup file exists
                     If IO.File.Exists(strPathToConfigBackupFile) Then
                         ' Attempt to load the settings from the backup file
                         If Not SaveAppSettings.LoadApplicationSettingsFromFile(strPathToConfigBackupFile, "Free Syslog") Then
-	                        MsgBox("There was an error loading the previous configuration, the program will launch with a clean config.", MsgBoxStyle.Critical, "Error Loading Configuration")
+                            MsgBox("There was an error loading the previous configuration, the program will launch with a clean config.", MsgBoxStyle.Critical, "Error Loading Configuration")
                         End If
                     End If
                 Catch ex As Exception
