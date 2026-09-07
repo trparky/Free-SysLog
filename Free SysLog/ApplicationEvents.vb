@@ -12,14 +12,54 @@ Namespace My
     Partial Friend Class MyApplication
         Private _reportCrash As ReportCrash
 
+        ' This function parses the command line arguments passed to the program and returns a dictionary of key-value pairs.
+        ' The keys are the argument names and the values are the argument values. If an argument is a boolean flag
+        ' (i.e., it doesn't have a value), then the value is set to True.
+        Private Function ParseArguments(args As ObjectModel.ReadOnlyCollection(Of String)) As Dictionary(Of String, Object)
+            ' This dictionary will hold the parsed arguments. We use StringComparer.OrdinalIgnoreCase to make the keys case-insensitive.
+            Dim parsedArguments As New Dictionary(Of String, Object)(StringComparer.OrdinalIgnoreCase)
+            Dim strValue As String
+
+            ' This loops through each argument passed to the program and parses it into a key-value pair.
+            ' If the argument is a boolean flag, then the value is set to True.
+            For Each strArgument As String In args
+                ' This checks to see if the argument starts with "--". If it does then we parse it into a key-value pair.
+                If strArgument.StartsWith("--") Or strArgument.StartsWith("/") Then
+                    ' This splits the argument into a key and a value. If the argument doesn't have a value, then the value is set to True.
+                    Dim splitArg As String() = strArgument.Substring(2).Split(New Char() {"="c}, 2)
+                    Dim key As String = splitArg(0)
+
+                    If splitArg.Length = 2 Then
+                        ' Argument with a value
+                        strValue = splitArg(1)
+                        parsedArguments(key) = strValue
+                    Else
+                        ' Boolean flag
+                        parsedArguments(key) = True
+                    End If
+                Else
+                    ' This tells the user that the argument format is unrecognized and we skip it.
+                    Console.WriteLine($"Unrecognized argument format: {strArgument}")
+                End If
+            Next
+
+            Return parsedArguments
+        End Function
+
         Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
+            Dim commandLineArgs As Dictionary(Of String, Object) = ParseArguments(e.CommandLine)
+
+            If commandLineArgs.ContainsKey("wait") Then
+                Threading.Thread.Sleep(1000)
+            End If
+
             If My.Settings.FirstRun Then
                 Try
                     ' Check if backup file exists
                     If IO.File.Exists(strPathToConfigBackupFile) Then
                         ' Attempt to load the settings from the backup file
                         If Not SaveAppSettings.LoadApplicationSettingsFromFile(strPathToConfigBackupFile, "Free Syslog") Then
-	                        MsgBox("There was an error loading the previous configuration, the program will launch with a clean config.", MsgBoxStyle.Critical, "Error Loading Configuration")
+                            MsgBox("There was an error loading the previous configuration, the program will launch with a clean config.", MsgBoxStyle.Critical, "Error Loading Configuration")
                         End If
                     End If
                 Catch ex As Exception

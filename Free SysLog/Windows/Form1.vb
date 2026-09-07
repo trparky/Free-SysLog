@@ -783,15 +783,25 @@ Public Class Form1
             If OpenFileDialog.ShowDialog = DialogResult.OK AndAlso SaveAppSettings.LoadApplicationSettingsFromFile(OpenFileDialog.FileName, Text) Then
                 My.Settings.Save()
 
-                Threading.Thread.Sleep(500)
-
-                MsgBox("Free SysLog will now close And restart itself For the imported settings To take effect.", MsgBoxStyle.Information, Text)
-                Process.Start(strEXEPath)
+                WriteLogsToDisk()
 
                 Try
-                    mutex.ReleaseMutex()
+                    If boolDoWeOwnTheMutex Then
+                        mutex.ReleaseMutex()
+                        mutex.Dispose()
+
+                        SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+                        If My.Settings.EnableTCPServer Then SendMessageToTCPSysLogServer(strTerminate, My.Settings.sysLogPort)
+
+                        Threading.Thread.Sleep(500)
+                    End If
                 Catch ex As ApplicationException
                 End Try
+
+                MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
+
+                Dim myNewProcess As New Process() With {.StartInfo = New ProcessStartInfo(strEXEPath) With {.Arguments = "--wait"}}
+                myNewProcess.Start()
 
                 Process.GetCurrentProcess.Kill()
             End If
@@ -1668,7 +1678,7 @@ Public Class Form1
                                                                        ProxiedSysLogData = New ProxiedSysLogData() With {.ip = strSourceIP, .log = strReceivedData}
                                                                        Dim strDataToSend As String = strProxiedString & Newtonsoft.Json.JsonConvert.SerializeObject(ProxiedSysLogData)
 
-                                                                       For Each item As SysLogProxyServer In serversList.GetSnapshot
+                                                                       For Each item As SysLogProxyServer In serversList.GetSnapshot.Where(Function(LINQitem As SysLogProxyServer) LINQitem.boolEnabled)
                                                                            SendMessageToSysLogServer(strDataToSend, item.ip, item.port)
                                                                        Next
 
