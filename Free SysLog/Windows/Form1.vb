@@ -800,7 +800,7 @@ Public Class Form1
 
                 MsgBox("Free SysLog will now close and restart itself for the imported settings to take effect.", MsgBoxStyle.Information, Text)
 
-                Dim myNewProcess As New Process() With {.StartInfo = New ProcessStartInfo(strEXEPath) With {.Arguments = "/wait"}}
+                Dim myNewProcess As New Process() With {.StartInfo = New ProcessStartInfo(strEXEPath) With {.Arguments = "--wait"}}
                 myNewProcess.Start()
 
                 Process.GetCurrentProcess.Kill()
