@@ -152,7 +152,7 @@ Public Class ViewLogBackups
                                                                If longUnCompressedSize <> -1 Then
                                                                    If ChkShowCompressionSizeDifferencePercentage.Checked Then
                                                                        row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)}"
-                                                                       If longUnCompressedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompressedSize * 100):F2}% larger"
+                                                                       If longUnCompressedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompressedSize * 100):F2}% compression"
                                                                        row.Cells(2).Value &= ")"
                                                                    Else
                                                                        row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)})"
