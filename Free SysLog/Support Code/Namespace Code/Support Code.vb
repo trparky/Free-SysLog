@@ -162,33 +162,40 @@ Namespace SupportCode
             NotGZip
             Success
             DecompressionFailed
+            FileNotFound
         End Enum
 
         Public Function TryReadGZipFile(strPath As String, ByRef strFileContents As String) As GZipCheckResult
-            strFileContents = Nothing
+            strFileContents = String.Empty ' Initialize the output string to be empty before attempting to read the GZip file.
 
-            If Not File.Exists(strPath) Then Return GZipCheckResult.NotGZip
+            If Not File.Exists(strPath) Then Return GZipCheckResult.FileNotFound ' Check if the file exists before attempting to read it, if it doesn't exist, return FileNotFound.
 
-            Using fileStream As New FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-                If fileStream.Length < 2 Then Return GZipCheckResult.NotGZip
+            Using fileStream As New FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read) ' Open the file stream with read access and allow other processes to read the file simultaneously.
+                If fileStream.Length < 2 Then Return GZipCheckResult.NotGZip ' Check if the file is at least 2 bytes long, if not, return NotGZip.
 
-                Dim header(1) As Byte
-                If fileStream.Read(header, 0, 2) < 2 Then Return GZipCheckResult.NotGZip
+                Dim headers(1) As Byte ' Create a byte array to hold the first two bytes of the file which are used to check for the GZip signature.
+                If fileStream.Read(headers, 0, 2) < 2 Then Return GZipCheckResult.NotGZip ' Read the first two bytes of the file into the headers array, if less than 2 bytes are read, return NotGZip.
 
-                Dim isGZip As Boolean = header(0) = &H1F AndAlso header(1) = &H8B
-                If Not isGZip Then Return GZipCheckResult.NotGZip
+                Dim boolIsGZipFile As Boolean = headers(0) = &H1F AndAlso headers(1) = &H8B ' Check if the first two bytes match the GZip signature (1F 8B), if not, the variable boolIsGZipFile will be set to False.
 
-                fileStream.Position = 0
+                If Not boolIsGZipFile Then Return GZipCheckResult.NotGZip ' If the file is not a GZip file, return NotGZip.
 
+                fileStream.Position = 0 ' Reset back to the beginning of the stream for decompression.
+
+                ' Attempt to decompress the GZip file and read its contents into strFileContents, if any exception occurs during decompression, return DecompressionFailed.
                 Try
+                    ' Open a GZipStream for decompression and read the contents into strFileContents.
                     Using gzipStream As New Compression.GZipStream(fileStream, Compression.CompressionMode.Decompress)
+                        ' Read the decompressed data into a string using a StreamReader.
                         Using streamReader As New StreamReader(gzipStream)
+                            ' Read the entire decompressed content into strFileContents.
                             strFileContents = streamReader.ReadToEnd()
                         End Using
                     End Using
-                    Return GZipCheckResult.Success
+
+                    Return GZipCheckResult.Success ' If decompression is successful, return Success.
                 Catch
-                    Return GZipCheckResult.DecompressionFailed
+                    Return GZipCheckResult.DecompressionFailed ' If any exception occurs during decompression, return DecompressionFailed.
                 End Try
             End Using
         End Function
@@ -207,12 +214,17 @@ Namespace SupportCode
                 Exit Sub
             End If
 
-            Dim strCompressedFilePath As String = strFilePath & ".gz"
+            Dim strCompressedFilePath As String = strFilePath & ".gz" ' Create the compressed file path by appending ".gz" to the original file path.
 
-            ' Compress source file into .gz
+            ' Now compress source file into .gz
+
+            ' Open the source file for reading and create a new file for the compressed output. Use GZipStream to compress the data from the source file and write it to the destination file.
             Using sourceStream As FileStream = File.Open(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                ' Create the destination file for the compressed output and use GZipStream to compress the data from the source file and write it to the destination file.
                 Using destinationStream As FileStream = File.Create(strCompressedFilePath)
+                    ' Create a GZipStream for compression and copy the data from the source stream to the GZipStream, which will compress the data and write it to the destination stream.
                     Using gzipStream As New Compression.GZipStream(destinationStream, Compression.CompressionLevel.Optimal)
+                        ' Copy the data from the source stream to the GZipStream, which will compress the data and write it to the destination stream.
                         sourceStream.CopyTo(gzipStream)
                     End Using
                 End Using
