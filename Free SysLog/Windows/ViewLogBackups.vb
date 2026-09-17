@@ -43,35 +43,27 @@ Public Class ViewLogBackups
         End If
     End Sub
 
-    Private Function GetUncompressedSizeOfGZIPedLogFile(strPathToGZIPedLogFile As String) As Long
-        Using fs As New FileStream(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
-            If fs.Length < 4 Then Return -1
-
-            fs.Seek(-4, SeekOrigin.End)
-
-            Dim sizeBytes(3) As Byte
-            Dim bytesRead As Integer = fs.Read(sizeBytes, 0, 4)
-
-            If bytesRead <> 4 Then Return -1 ' Return -1 to indicate an error occurred
-
-            ' GZIP stores ISIZE as little-endian UInt32
-            Return BitConverter.ToUInt32(sizeBytes, 0)
-        End Using
-    End Function
-
-    Private Function GetEntryCount(strFileName As String) As Integer
+    Private Function GetEntryCount(strFileName As String) As (intCount As Integer, longUncompressedFileSize As Long)
         Try
-            Dim strFileContents As String = String.Empty
+            Dim strFileContents As String = String.Empty ' Initialize the variable to hold the file contents
 
+            ' Check if the file is a GZip file and read it accordingly
             If Path.GetExtension(strFileName).Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(strFileName, strFileContents) = GZipCheckResult.Success Then
-                Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles).Count
+                ' If the file is a GZip file, deserialize the contents and return the count and uncompressed size
+                Return (Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles).Count, System.Text.Encoding.UTF8.GetByteCount(strFileContents))
             Else
+                ' If the file is not a GZip file, read it normally and deserialize the contents
                 Using fileStream As New StreamReader(strFileName)
-                    Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
+                    ' Read the entire file contents and deserialize it to get the count and return an uncompressed file size of -1 since it's not a GZip file.
+                    Return (Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count, -1)
                 End Using
             End If
         Catch ex As Exception
-            Return -1
+            ' If an error occurs while reading the file or deserializing it, log the error.
+            SyslogParser.AddToLogList(Nothing, $"GetEntryCount failed for '{strFileName}': {ex.Message}")
+
+            ' Return -1 for the count and -1 for the uncompressed file size to indicate an error occurred.
+            Return (-1, -1)
         End Try
     End Function
 
@@ -110,11 +102,10 @@ Public Class ViewLogBackups
 
                                                Interlocked.Add(longUsedDiskSpace, file.Length)
 
-                                               Dim intCount As Integer = GetEntryCount(file.FullName)
-                                               Dim longUnCompressedSize As Long = -1
+                                               Dim GetEntryCountResults As (intCount As Integer, longUncompressedFileSize As Long) = GetEntryCount(file.FullName)
 
-                                               If intCount <> -1 Then
-                                                   Interlocked.Add(longTotalLogCount, intCount)
+                                               If GetEntryCountResults.intCount <> -1 Then
+                                                   Interlocked.Add(longTotalLogCount, GetEntryCountResults.intCount)
                                                    Interlocked.Increment(intFileCount)
 
                                                    Dim row As New MyDataGridViewFileRow()
@@ -123,13 +114,13 @@ Public Class ViewLogBackups
                                                        .CreateCells(FileList)
                                                        .fileDate = file.CreationTime
                                                        .fileSize = file.Length
-                                                       .entryCount = intCount
+                                                       .entryCount = GetEntryCountResults.intCount
                                                        .Cells(0).Value = file.Name
                                                        .Cells(0).Style.Alignment = DataGridViewContentAlignment.MiddleLeft
 
                                                        .Cells(1).Value = $"{file.LastWriteTime:D} {file.LastWriteTime:T}"
 
-                                                       .Cells(3).Value = $"{intCount:N0}"
+                                                       .Cells(3).Value = $"{GetEntryCountResults.intCount:N0}"
                                                        .Cells(3).Style.Alignment = DataGridViewContentAlignment.MiddleCenter
 
                                                        .Cells(4).Value = If(boolIsHidden, "Yes", "No")
@@ -148,20 +139,17 @@ Public Class ViewLogBackups
                                                        row.Cells(2).Value = FileSizeToHumanSize(file.Length)
 
                                                        Try
-                                                           If ChkShowCompressionSizeDifference.Checked Then
-                                                               longUnCompressedSize = GetUncompressedSizeOfGZIPedLogFile(file.FullName)
-
-                                                               If longUnCompressedSize <> -1 Then
-                                                                   If ChkShowCompressionSizeDifferencePercentage.Checked Then
-                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)}"
-                                                                       If longUnCompressedSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / longUnCompressedSize * 100):F2}% compression"
-                                                                       row.Cells(2).Value &= ")"
-                                                                   Else
-                                                                       row.Cells(2).Value &= $" ({FileSizeToHumanSize(longUnCompressedSize)})"
-                                                                   End If
+                                                           If ChkShowCompressionSizeDifference.Checked AndAlso GetEntryCountResults.longUncompressedFileSize <> -1 Then
+                                                               If ChkShowCompressionSizeDifferencePercentage.Checked Then
+                                                                   row.Cells(2).Value &= $" ({FileSizeToHumanSize(GetEntryCountResults.longUncompressedFileSize)}"
+                                                                   If GetEntryCountResults.longUncompressedFileSize > 0 Then row.Cells(2).Value &= $", {100 - (file.Length / GetEntryCountResults.longUncompressedFileSize * 100):F2}% compression"
+                                                                   row.Cells(2).Value &= ")"
+                                                               Else
+                                                                   row.Cells(2).Value &= $" ({FileSizeToHumanSize(GetEntryCountResults.longUncompressedFileSize)})"
                                                                End If
                                                            End If
                                                        Catch ex As Exception
+                                                           SyslogParser.AddToLogList(Nothing, $"Compression size display failed for '{file.FullName}': {ex.Message}")
                                                        End Try
 
                                                        Interlocked.Increment(intNumberOfCompressedFiles)
