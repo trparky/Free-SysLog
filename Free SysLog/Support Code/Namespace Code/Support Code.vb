@@ -158,30 +158,38 @@ Namespace SupportCode
             Return regexRemovePathFromExceptionString.Replace(strException, Function(m As Match) Path.GetFileName(m.Value))
         End Function
 
-        Public Function IsGZipFile(strPath As String) As Boolean
-            Try
-                If Not File.Exists(strPath) Then Return False
+        Public Enum GZipCheckResult
+            NotGZip
+            Success
+            DecompressionFailed
+        End Enum
 
-                Using fileStream As New FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read)
-                    If fileStream.Length < 2 Then Return False
+        Public Function TryReadGZipFile(strPath As String, ByRef strFileContents As String) As GZipCheckResult
+            strFileContents = Nothing
 
-                    Dim magicBit1 As Integer = fileStream.ReadByte()
-                    Dim magicBit2 As Integer = fileStream.ReadByte()
+            If Not File.Exists(strPath) Then Return GZipCheckResult.NotGZip
 
-                    Return magicBit1 = &H1F AndAlso magicBit2 = &H8B
-                End Using
-            Catch
-                Return False
-            End Try
-        End Function
+            Using fileStream As New FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                If fileStream.Length < 2 Then Return GZipCheckResult.NotGZip
 
-        Public Function GetTextContentsFromGZIPedLogFile(strPathToGZIPedLogFile As String) As String
-            Using sourceStream As FileStream = File.Open(strPathToGZIPedLogFile, FileMode.Open, FileAccess.Read, FileShare.Read)
-                Using gzipStream As New Compression.GZipStream(sourceStream, Compression.CompressionMode.Decompress)
-                    Using streamReader As New StreamReader(gzipStream)
-                        Return streamReader.ReadToEnd.Trim
+                Dim header(1) As Byte
+                If fileStream.Read(header, 0, 2) < 2 Then Return GZipCheckResult.NotGZip
+
+                Dim isGZip As Boolean = header(0) = &H1F AndAlso header(1) = &H8B
+                If Not isGZip Then Return GZipCheckResult.NotGZip
+
+                fileStream.Position = 0
+
+                Try
+                    Using gzipStream As New Compression.GZipStream(fileStream, Compression.CompressionMode.Decompress)
+                        Using streamReader As New StreamReader(gzipStream)
+                            strFileContents = streamReader.ReadToEnd()
+                        End Using
                     End Using
-                End Using
+                    Return GZipCheckResult.Success
+                Catch
+                    Return GZipCheckResult.DecompressionFailed
+                End Try
             End Using
         End Function
 

@@ -61,8 +61,10 @@ Public Class ViewLogBackups
 
     Private Function GetEntryCount(strFileName As String) As Integer
         Try
-            If New FileInfo(strFileName).Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(strFileName) Then
-                Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(strFileName), JSONDecoderSettingsForLogFiles).Count
+            Dim strFileContents As String = String.Empty
+
+            If Path.GetExtension(strFileName).Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(strFileName, strFileContents) = GZipCheckResult.Success Then
+                Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles).Count
             Else
                 Using fileStream As New StreamReader(strFileName)
                     Return Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles).Count
@@ -400,8 +402,10 @@ Public Class ViewLogBackups
                                                                                      Exit Sub
                                                                                  End If
 
-                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(file.FullName) Then
-                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
+                                                                                 Dim strFileContents As String = String.Empty
+
+                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(file.FullName, strFileContents) = SupportCode.GZipCheckResult.Success Then
+                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
                                                                                  Else
                                                                                      Using fileStream As New StreamReader(file.FullName)
                                                                                          dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
@@ -556,31 +560,28 @@ Public Class ViewLogBackups
     End Sub
 
     Private Sub UncompressGZIPFile(strFilePath As String)
-        If Not IsGZipFile(strFilePath) Then Exit Sub
         If String.IsNullOrWhiteSpace(strFilePath) Then Exit Sub
         If Not File.Exists(strFilePath) Then Exit Sub
 
         Try
-            If Not strFilePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
-                ' File isn't a GZIP file based on extension.
-                Exit Sub
+            Dim strUncompressedData As String = String.Empty
+
+            If strFilePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(strFilePath, strUncompressedData) = SupportCode.GZipCheckResult.Success Then
+                Dim strUncompressedFilePath As String = Path.ChangeExtension(strFilePath, Nothing)
+
+                WriteFileAtomically(strUncompressedFilePath, strUncompressedData)
+
+                ' Preserve timestamps (best-effort)
+                Try
+                    File.SetCreationTimeUtc(strUncompressedFilePath, File.GetCreationTimeUtc(strFilePath))
+                    File.SetLastWriteTimeUtc(strUncompressedFilePath, File.GetLastWriteTimeUtc(strFilePath))
+                Catch
+                    ' Ignore timestamp preservation failures
+                End Try
+
+                ' Remove the original file after successful compression
+                File.Delete(strFilePath)
             End If
-
-            Dim strUncompressedFilePath As String = strFilePath.Substring(0, strFilePath.Length - 3)
-            Dim strUncompressedData As String = GetTextContentsFromGZIPedLogFile(strFilePath)
-
-            WriteFileAtomically(strUncompressedFilePath, strUncompressedData)
-
-            ' Preserve timestamps (best-effort)
-            Try
-                File.SetCreationTimeUtc(strUncompressedFilePath, File.GetCreationTimeUtc(strFilePath))
-                File.SetLastWriteTimeUtc(strUncompressedFilePath, File.GetLastWriteTimeUtc(strFilePath))
-            Catch
-                ' Ignore timestamp preservation failures
-            End Try
-
-            ' Remove the original file after successful compression
-            File.Delete(strFilePath)
         Catch ex As Exception
             Try
                 If InvokeRequired Then
@@ -802,8 +803,10 @@ Public Class ViewLogBackups
                                                                                  Exit Sub
                                                                              End If
 
-                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(file.FullName) Then
-                                                                                 dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(file.FullName), JSONDecoderSettingsForLogFiles)
+                                                                             Dim strFileContents As String = String.Empty
+
+                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(file.FullName, strFileContents) = GZipCheckResult.Success Then
+                                                                                 dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
                                                                              Else
                                                                                  Using fileStream As New StreamReader(file.FullName)
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
