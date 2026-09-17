@@ -566,7 +566,7 @@ Public Class ViewLogBackups
         Try
             Dim strUncompressedData As String = String.Empty
 
-            If strFilePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(strFilePath, strUncompressedData) = SupportCode.GZipCheckResult.Success Then
+            If Path.GetExtension(strFilePath).Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(strFilePath, strUncompressedData) = SupportCode.GZipCheckResult.Success Then
                 Dim strUncompressedFilePath As String = Path.ChangeExtension(strFilePath, Nothing)
 
                 WriteFileAtomically(strUncompressedFilePath, strUncompressedData)
@@ -906,7 +906,7 @@ Public Class ViewLogBackups
         Dim strOldFileName As String = FileList.SelectedRows(0).Cells(0).Value.ToString()
         Dim boolIsGZIPFile As Boolean = False
 
-        If strOldFileName.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+        If Path.GetExtension(strOldFileName).Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
             boolIsGZIPFile = True
             strOldFileName = strOldFileName.Substring(0, strOldFileName.Length - 3)
         End If
@@ -934,7 +934,7 @@ Public Class ViewLogBackups
             Exit Sub
         End If
 
-        If boolIsGZIPFile AndAlso Not strNewFileName.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+        If boolIsGZIPFile AndAlso Not Path.GetExtension(strNewFileName).Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
             strNewFileName &= ".gz"
         End If
 

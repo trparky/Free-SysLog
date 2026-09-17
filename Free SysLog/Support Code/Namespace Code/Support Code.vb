@@ -201,7 +201,8 @@ Namespace SupportCode
             If String.IsNullOrWhiteSpace(strFilePath) Then Exit Sub
             If Not File.Exists(strFilePath) Then Exit Sub
 
-            If strFilePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase) Then
+            ' Check if the file is already compressed with a .gz extension
+            If Path.GetExtension(strFilePath).Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
                 ' Already compressed with .gz extension
                 Exit Sub
             End If
