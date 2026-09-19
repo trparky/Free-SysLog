@@ -456,9 +456,10 @@ Public Class IgnoredLogsAndSearchResults
 
         Try
             Dim fileInfo As New FileInfo(strFileName)
+            Dim strFileContents As String = String.Empty
 
-            If fileInfo.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso IsGZipFile(fileInfo.FullName) Then
-                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(GetTextContentsFromGZIPedLogFile(fileInfo.FullName), JSONDecoderSettingsForSettingsFiles)
+            If fileInfo.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(fileInfo.FullName, strFileContents) = GZipCheckResult.Success Then
+                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForSettingsFiles)
             Else
                 Using fileStream As New StreamReader(strFileName)
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
