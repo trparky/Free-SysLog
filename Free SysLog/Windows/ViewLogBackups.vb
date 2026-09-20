@@ -48,9 +48,25 @@ Public Class ViewLogBackups
             Dim strFileContents As String = String.Empty ' Initialize the variable to hold the file contents
 
             ' Check if the file is a GZip file and read it accordingly
-            If Path.GetExtension(strFileName).Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(strFileName, strFileContents) = GZipCheckResult.Success Then
-                ' If the file is a GZip file, deserialize the contents and return the count and uncompressed size
-                Return (Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles).Count, System.Text.Encoding.UTF8.GetByteCount(strFileContents))
+            If Path.GetExtension(strFileName).Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                Dim TryReadGZipFileResult As GZipCheckResult = TryReadGZipFile(strFileName, strFileContents)
+
+                If TryReadGZipFileResult = GZipCheckResult.Success Then
+                    ' If the file is a GZip file, deserialize the contents and return the count and uncompressed size
+                    Return (Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles).Count, System.Text.Encoding.UTF8.GetByteCount(strFileContents))
+                Else
+                    Select Case TryReadGZipFileResult
+                        Case GZipCheckResult.DecompressionFailed
+                            SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFileName}")
+                        Case GZipCheckResult.FileNotFound
+                            SyslogParser.AddToLogList(Nothing, $"File not found: {strFileName}")
+                        Case GZipCheckResult.NotGZip
+                            SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFileName}")
+                    End Select
+
+                    ' Return -1 for the count and -1 for the uncompressed file size to indicate an error occurred.
+                    Return (-1, -1)
+                End If
             Else
                 ' If the file is not a GZip file, read it normally and deserialize the contents
                 Using fileStream As New StreamReader(strFileName)

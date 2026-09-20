@@ -457,9 +457,25 @@ Public Class IgnoredLogsAndSearchResults
         Try
             Dim fileInfo As New FileInfo(strFileName)
             Dim strFileContents As String = String.Empty
+            Dim TryReadGZipFileResult As GZipCheckResult
 
-            If fileInfo.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(fileInfo.FullName, strFileContents) = GZipCheckResult.Success Then
-                collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForSettingsFiles)
+            If fileInfo.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                TryReadGZipFileResult = TryReadGZipFile(fileInfo.FullName, strFileContents)
+
+                If TryReadGZipFileResult = GZipCheckResult.Success Then
+                    collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForSettingsFiles)
+                Else
+                    Select Case TryReadGZipFileResult
+                        Case GZipCheckResult.DecompressionFailed
+                            SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFileName}")
+                        Case GZipCheckResult.FileNotFound
+                            SyslogParser.AddToLogList(Nothing, $"File not found: {strFileName}")
+                        Case GZipCheckResult.NotGZip
+                            SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFileName}")
+                    End Select
+
+                    Exit Sub
+                End If
             Else
                 Using fileStream As New StreamReader(strFileName)
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForSettingsFiles)
