@@ -49,11 +49,20 @@ Public Class ViewLogBackups
 
             ' Check if the file is a GZip file and read it accordingly
             If Path.GetExtension(strFileName).Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                If TryReadGZipFile(strFileName, strFileContents) = GZipCheckResult.Success Then
+                Dim TryReadGZipFileResult As GZipCheckResult = TryReadGZipFile(strFileName, strFileContents)
+
+                If TryReadGZipFileResult = GZipCheckResult.Success Then
                     ' If the file is a GZip file, deserialize the contents and return the count and uncompressed size
                     Return (Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles).Count, System.Text.Encoding.UTF8.GetByteCount(strFileContents))
                 Else
-                    SyslogParser.AddToLogList(Nothing, $"Failed to read GZIP file: {strFileName}")
+                    Select Case TryReadGZipFileResult
+                        Case GZipCheckResult.DecompressionFailed
+                            SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFileName}")
+                        Case GZipCheckResult.FileNotFound
+                            SyslogParser.AddToLogList(Nothing, $"File not found: {strFileName}")
+                        Case GZipCheckResult.NotGZip
+                            SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFileName}")
+                    End Select
 
                     ' Return -1 for the count and -1 for the uncompressed file size to indicate an error occurred.
                     Return (-1, -1)
