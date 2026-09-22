@@ -133,7 +133,7 @@ Namespace My
                                                                            End Using
                                                                        End If
 
-                                                                       If collectionOfSavedData IsNot Nothing Then
+                                                                       If collectionOfSavedData.Any() Then
                                                                            Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
                                                                                                                                        With uniqueObjects
                                                                                                                                            If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)

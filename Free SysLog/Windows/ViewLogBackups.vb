@@ -400,7 +400,7 @@ Public Class ViewLogBackups
                                           Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                           Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
-                                                                                 Dim dataFromFile As List(Of SavedData)
+                                                                                 Dim dataFromFile As New List(Of SavedData)
 
                                                                                  If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
                                                                                      Exit Sub
@@ -408,33 +408,48 @@ Public Class ViewLogBackups
 
                                                                                  Dim strFileContents As String = String.Empty
 
-                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(file.FullName, strFileContents) = SupportCode.GZipCheckResult.Success Then
-                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
+                                                                                 If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                                     Dim TryReadGZipFileResult As GZipCheckResult = TryReadGZipFile(file.FullName, strFileContents)
+
+                                                                                     If TryReadGZipFileResult = GZipCheckResult.Success Then
+                                                                                         dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
+                                                                                     Else
+                                                                                         Select Case TryReadGZipFileResult
+                                                                                             Case GZipCheckResult.DecompressionFailed
+                                                                                                 SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {file.FullName}")
+                                                                                             Case GZipCheckResult.FileNotFound
+                                                                                                 SyslogParser.AddToLogList(Nothing, $"File not found: {file.FullName}")
+                                                                                             Case GZipCheckResult.NotGZip
+                                                                                                 SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {file.FullName}")
+                                                                                         End Select
+                                                                                     End If
                                                                                  Else
                                                                                      Using fileStream As New StreamReader(file.FullName)
                                                                                          dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
                                                                                      End Using
                                                                                  End If
 
-                                                                                 For Each item As SavedData In dataFromFile
-                                                                                     If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                     ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                     Else
-                                                                                         boolDoesLogMatchLimitedSearch = True
-                                                                                     End If
+                                                                                 If dataFromFile.Any() Then
+                                                                                     For Each item As SavedData In dataFromFile
+                                                                                         If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                         ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                                                             boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                         Else
+                                                                                             boolDoesLogMatchLimitedSearch = True
+                                                                                         End If
 
-                                                                                     If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
-                                                                                         myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
-                                                                                         myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
-                                                                                         myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+                                                                                         If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
+                                                                                             myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
+                                                                                             myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                             myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
 
-                                                                                         SyncLock listOfSearchResults ' Ensure thread safety
-                                                                                             listOfSearchResults.Add(myDataGridRow)
-                                                                                         End SyncLock
-                                                                                     End If
-                                                                                 Next
+                                                                                             SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                                 listOfSearchResults.Add(myDataGridRow)
+                                                                                             End SyncLock
+                                                                                         End If
+                                                                                     Next
+                                                                                 End If
                                                                              End Sub)
 
                                           For Each item As MyDataGridViewRow In listOfSearchResults
@@ -570,21 +585,34 @@ Public Class ViewLogBackups
         Try
             Dim strUncompressedData As String = String.Empty
 
-            If Path.GetExtension(strFilePath).Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(strFilePath, strUncompressedData) = SupportCode.GZipCheckResult.Success Then
-                Dim strUncompressedFilePath As String = Path.ChangeExtension(strFilePath, Nothing)
+            If Path.GetExtension(strFilePath).Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                Dim TryReadGZipFileResult As GZipCheckResult = TryReadGZipFile(strFilePath, strUncompressedData)
 
-                WriteFileAtomically(strUncompressedFilePath, strUncompressedData)
+                If TryReadGZipFileResult = GZipCheckResult.Success Then
+                    Dim strUncompressedFilePath As String = Path.ChangeExtension(strFilePath, Nothing)
 
-                ' Preserve timestamps (best-effort)
-                Try
-                    File.SetCreationTimeUtc(strUncompressedFilePath, File.GetCreationTimeUtc(strFilePath))
-                    File.SetLastWriteTimeUtc(strUncompressedFilePath, File.GetLastWriteTimeUtc(strFilePath))
-                Catch
-                    ' Ignore timestamp preservation failures
-                End Try
+                    WriteFileAtomically(strUncompressedFilePath, strUncompressedData)
 
-                ' Remove the original file after successful compression
-                File.Delete(strFilePath)
+                    ' Preserve timestamps (best-effort)
+                    Try
+                        File.SetCreationTimeUtc(strUncompressedFilePath, File.GetCreationTimeUtc(strFilePath))
+                        File.SetLastWriteTimeUtc(strUncompressedFilePath, File.GetLastWriteTimeUtc(strFilePath))
+                    Catch
+                        ' Ignore timestamp preservation failures
+                    End Try
+
+                    ' Remove the original file after successful compression
+                    File.Delete(strFilePath)
+                Else
+                    Select Case TryReadGZipFileResult
+                        Case GZipCheckResult.DecompressionFailed
+                            SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFilePath}")
+                        Case GZipCheckResult.FileNotFound
+                            SyslogParser.AddToLogList(Nothing, $"File not found: {strFilePath}")
+                        Case GZipCheckResult.NotGZip
+                            SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFilePath}")
+                    End Select
+                End If
             End If
         Catch ex As Exception
             Try
@@ -797,49 +825,65 @@ Public Class ViewLogBackups
                                           filesInDirectory = New DirectoryInfo(strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
                                       End If
 
-                                      Dim dataFromFile As List(Of SavedData)
                                       Dim myDataGridRow As MyDataGridViewRow
                                       Dim boolDidWeHaveAMatch As Boolean = False
                                       Dim boolSearchByDate As Boolean = Not startDate.Equals(Date.MinValue) And Not endDate.Equals(Date.MaxValue)
 
                                       Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
+                                                                             Dim dataFromFile As New List(Of SavedData)
+
                                                                              If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
                                                                                  Exit Sub
                                                                              End If
 
                                                                              Dim strFileContents As String = String.Empty
 
-                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) AndAlso TryReadGZipFile(file.FullName, strFileContents) = GZipCheckResult.Success Then
-                                                                                 dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
+                                                                             If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                                 Dim TryReadGZipFileResult As GZipCheckResult = TryReadGZipFile(file.FullName, strFileContents)
+
+                                                                                 If TryReadGZipFileResult = GZipCheckResult.Success Then
+                                                                                     dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
+                                                                                 Else
+                                                                                     Select Case TryReadGZipFileResult
+                                                                                         Case GZipCheckResult.DecompressionFailed
+                                                                                             SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {file.FullName}")
+                                                                                         Case GZipCheckResult.FileNotFound
+                                                                                             SyslogParser.AddToLogList(Nothing, $"File not found: {file.FullName}")
+                                                                                         Case GZipCheckResult.NotGZip
+                                                                                             SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {file.FullName}")
+                                                                                     End Select
+                                                                                 End If
                                                                              Else
                                                                                  Using fileStream As New StreamReader(file.FullName)
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
                                                                                  End Using
                                                                              End If
 
-                                                                             For Each item As SavedData In dataFromFile
-                                                                                 If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                                                                     boolDidWeHaveAMatch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                 ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                                                                                     boolDidWeHaveAMatch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                 ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-                                                                                     boolDidWeHaveAMatch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                 ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-                                                                                     boolDidWeHaveAMatch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                                                 End If
+                                                                             If dataFromFile.Any() Then
+                                                                                 For Each item As SavedData In dataFromFile
+                                                                                     If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                                                         boolDidWeHaveAMatch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                     End If
 
-                                                                                 If boolDidWeHaveAMatch Then
-                                                                                     myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
-                                                                                     myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
-                                                                                     myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
+                                                                                     If boolDidWeHaveAMatch Then
+                                                                                         myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
+                                                                                         myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
+                                                                                         myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
 
-                                                                                     SyncLock listOfSearchResults ' Ensure thread safety
-                                                                                         listOfSearchResults.Add(myDataGridRow)
-                                                                                     End SyncLock
-                                                                                 End If
+                                                                                         SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                             listOfSearchResults.Add(myDataGridRow)
+                                                                                         End SyncLock
+                                                                                     End If
 
-                                                                                 boolDidWeHaveAMatch = False
-                                                                             Next
+                                                                                     boolDidWeHaveAMatch = False
+                                                                                 Next
+                                                                             End If
                                                                          End Sub)
 
                                       For Each item As MyDataGridViewRow In listOfSearchResults
