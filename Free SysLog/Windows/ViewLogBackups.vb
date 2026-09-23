@@ -55,14 +55,7 @@ Public Class ViewLogBackups
                     ' If the file is a GZip file, deserialize the contents and return the count and uncompressed size
                     Return (Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles).Count, System.Text.Encoding.UTF8.GetByteCount(strFileContents))
                 Else
-                    Select Case TryReadGZipFileResult
-                        Case GZipCheckResult.DecompressionFailed
-                            SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFileName}")
-                        Case GZipCheckResult.FileNotFound
-                            SyslogParser.AddToLogList(Nothing, $"File not found: {strFileName}")
-                        Case GZipCheckResult.NotGZip
-                            SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFileName}")
-                    End Select
+                    LogErrorFromTryReadGzipFile(TryReadGZipFileResult, strFileName)
 
                     ' Return -1 for the count and -1 for the uncompressed file size to indicate an error occurred.
                     Return (-1, -1)
@@ -414,14 +407,7 @@ Public Class ViewLogBackups
                                                                                      If TryReadGZipFileResult = GZipCheckResult.Success Then
                                                                                          dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
                                                                                      Else
-                                                                                         Select Case TryReadGZipFileResult
-                                                                                             Case GZipCheckResult.DecompressionFailed
-                                                                                                 SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {file.FullName}")
-                                                                                             Case GZipCheckResult.FileNotFound
-                                                                                                 SyslogParser.AddToLogList(Nothing, $"File not found: {file.FullName}")
-                                                                                             Case GZipCheckResult.NotGZip
-                                                                                                 SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {file.FullName}")
-                                                                                         End Select
+                                                                                         LogErrorFromTryReadGzipFile(TryReadGZipFileResult, file.FullName)
                                                                                      End If
                                                                                  Else
                                                                                      Using fileStream As New StreamReader(file.FullName)
@@ -604,14 +590,7 @@ Public Class ViewLogBackups
                     ' Remove the original file after successful compression
                     File.Delete(strFilePath)
                 Else
-                    Select Case TryReadGZipFileResult
-                        Case GZipCheckResult.DecompressionFailed
-                            SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFilePath}")
-                        Case GZipCheckResult.FileNotFound
-                            SyslogParser.AddToLogList(Nothing, $"File not found: {strFilePath}")
-                        Case GZipCheckResult.NotGZip
-                            SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFilePath}")
-                    End Select
+                    LogErrorFromTryReadGzipFile(TryReadGZipFileResult, strFilePath)
                 End If
             End If
         Catch ex As Exception
@@ -844,14 +823,7 @@ Public Class ViewLogBackups
                                                                                  If TryReadGZipFileResult = GZipCheckResult.Success Then
                                                                                      dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
                                                                                  Else
-                                                                                     Select Case TryReadGZipFileResult
-                                                                                         Case GZipCheckResult.DecompressionFailed
-                                                                                             SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {file.FullName}")
-                                                                                         Case GZipCheckResult.FileNotFound
-                                                                                             SyslogParser.AddToLogList(Nothing, $"File not found: {file.FullName}")
-                                                                                         Case GZipCheckResult.NotGZip
-                                                                                             SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {file.FullName}")
-                                                                                     End Select
+                                                                                     LogErrorFromTryReadGzipFile(TryReadGZipFileResult, file.FullName)
                                                                                  End If
                                                                              Else
                                                                                  Using fileStream As New StreamReader(file.FullName)

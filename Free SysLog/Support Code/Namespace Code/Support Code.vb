@@ -158,6 +158,17 @@ Namespace SupportCode
             Return regexRemovePathFromExceptionString.Replace(strException, Function(m As Match) Path.GetFileName(m.Value))
         End Function
 
+        Public Sub LogErrorFromTryReadGzipFile(TryReadGZipFileResult As GZipCheckResult, strFileName As String)
+            Select Case TryReadGZipFileResult
+                Case GZipCheckResult.DecompressionFailed
+                    SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFileName}")
+                Case GZipCheckResult.FileNotFound
+                    SyslogParser.AddToLogList(Nothing, $"File not found: {strFileName}")
+                Case GZipCheckResult.NotGZip
+                    SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFileName}")
+            End Select
+        End Sub
+
         Public Enum GZipCheckResult
             NotGZip
             Success
