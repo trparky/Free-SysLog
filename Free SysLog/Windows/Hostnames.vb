@@ -53,6 +53,7 @@ Public Class Hostnames
             boolEditMode = True
             BtnAddSave.Text = "Save"
             lblAddEditHostNameLabel.Text = "Edit Custom Hostname"
+            ListHostnames.Enabled = False
         End If
     End Sub
 
@@ -66,6 +67,7 @@ Public Class Hostnames
 
                 lblAddEditHostNameLabel.Text = "Add New Custom Hostname"
                 BtnAddSave.Text = "Add"
+                ListHostnames.Enabled = True
             Else
                 If SupportCode.SearchListView(txtIP.Text, ListHostnames.Items) Then
                     MsgBox("This IP Address already exists in the list.", MsgBoxStyle.Critical, Text)
