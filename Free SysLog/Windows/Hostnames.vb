@@ -281,4 +281,8 @@ Public Class Hostnames
     Private Sub ListHostnames_KeyUp(sender As Object, e As KeyEventArgs) Handles ListHostnames.KeyUp
         If e.KeyCode = Keys.Delete Then BtnDelete.PerformClick()
     End Sub
+
+    Private Sub ListHostnames_DoubleClick(sender As Object, e As EventArgs) Handles ListHostnames.DoubleClick
+        BtnEdit.PerformClick()
+    End Sub
 End Class
