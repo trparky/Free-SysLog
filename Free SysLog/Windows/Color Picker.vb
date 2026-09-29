@@ -1,8 +1,10 @@
 ﻿Public Class Color_Picker
     Public Property ChosenColor As Color
     Private ReadOnly DefaultCustomColorSlots As Integer = New Cyotek.Windows.Forms.ColorGrid().CustomColors.Count
+    Private oldColor As Color = Color.Empty
 
     Private Sub ColorGrid1_Click(sender As Object, e As EventArgs) Handles ColorGrid1.Click
+        oldColor = ColorGrid1.Color
         ColorEditor1.Color = ColorGrid1.Color
         ColorWheel1.Color = ColorGrid1.Color
         lblColorShower.BackColor = ColorGrid1.Color
@@ -26,6 +28,8 @@
         ColorWheel1.Color = ChosenColor
         ColorGrid1.Color = ChosenColor
         lblColorShower.BackColor = ChosenColor
+
+        oldColor = ChosenColor
     End Sub
 
     Private Sub Color_Picker_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -138,6 +142,8 @@
             For i As Integer = colorsToKeep.Count To DefaultCustomColorSlots - 1
                 ColorGrid1.CustomColors.Add(Color.White)
             Next
+
+            lblColorShower.BackColor = oldColor
 
             ColorGrid1.Invalidate()
         End If
