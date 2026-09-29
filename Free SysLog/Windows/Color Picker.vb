@@ -121,11 +121,7 @@
             Close()
         ElseIf e.KeyCode = Keys.Escape Then
             Close()
-        End If
-    End Sub
-
-    Private Sub ColorGrid1_KeyUp(sender As Object, e As KeyEventArgs) Handles ColorGrid1.KeyUp
-        If e.KeyCode = Keys.Delete Then
+        ElseIf e.KeyCode = Keys.Delete Then
             Dim colorToBeDeleted As Integer = ColorGrid1.Color.ToArgb()
             Dim colorsToKeep As New List(Of Color)
 
