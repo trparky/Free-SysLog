@@ -430,7 +430,6 @@ Namespace SyslogParser
             Dim strFailedPattern As String = Nothing
             Dim matchFound As Boolean = False
             Dim _strIgnoredPattern As String = Nothing
-            Dim parallelOptions As New ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
             Dim boolInternalRecordLog As Boolean = False
 
             Try
@@ -439,42 +438,42 @@ Namespace SyslogParser
                 Dim lockObj As New Object()
 
                 ' Parallel loop to check each pattern concurrently
-                Parallel.ForEach(ignoredList.GetSnapshot, parallelOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
-                                                                               If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
-                                                                                   Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
-                                                                                   strFailedPattern = strRegexPattern
+                Parallel.ForEach(ignoredList.GetSnapshot, parallelForEachLoopOptions, Sub(ignoredClassInstance As IgnoredClass, state As ParallelLoopState)
+                                                                                          If Not matchFound Then ' Check this flag to prevent unnecessary checks after a match
+                                                                                              Dim strRegexPattern As String = ignoredClassInstance.StrIgnore
+                                                                                              strFailedPattern = strRegexPattern
 
-                                                                                   Dim boolDidWeMatch As Boolean = False
-                                                                                   Dim strInput As String
+                                                                                              Dim boolDidWeMatch As Boolean = False
+                                                                                              Dim strInput As String
 
-                                                                                   If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
-                                                                                       strInput = remoteProcess
-                                                                                   Else
-                                                                                       strInput = message
-                                                                                   End If
+                                                                                              If ignoredClassInstance.IgnoreType = IgnoreType.RemoteApp AndAlso Not String.IsNullOrWhiteSpace(remoteProcess) Then
+                                                                                                  strInput = remoteProcess
+                                                                                              Else
+                                                                                                  strInput = message
+                                                                                              End If
 
-                                                                                   If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
-                                                                                       ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
-                                                                                       SyncLock lockObj
-                                                                                           If Not matchFound Then
-                                                                                               _strIgnoredPattern = strRegexPattern
-                                                                                               matchFound = True
+                                                                                              If MatchPattern(strInput, strRegexPattern, ignoredClassInstance.BoolRegex, ignoredClassInstance.BoolCaseSensitive) Then
+                                                                                                  ' Use lock to safely update shared state (_strIgnoredPattern and ParentForm.longNumberOfIgnoredLogs)
+                                                                                                  SyncLock lockObj
+                                                                                                      If Not matchFound Then
+                                                                                                          _strIgnoredPattern = strRegexPattern
+                                                                                                          matchFound = True
 
-                                                                                               boolInternalRecordLog = ignoredClassInstance.BoolRecordLog
+                                                                                                          boolInternalRecordLog = ignoredClassInstance.BoolRecordLog
 
-                                                                                               IgnoredStats.AddOrUpdate(strRegexPattern, Function(key As String) New IgnoredStatsEntry With {.Hits = 1, .LastEvent = Now}, Function(key As String, oldValue As IgnoredStatsEntry)
-                                                                                                                                                                                                                               Interlocked.Increment(oldValue.Hits)
-                                                                                                                                                                                                                               oldValue.LastEvent = Now
-                                                                                                                                                                                                                               Return oldValue
-                                                                                                                                                                                                                           End Function)
+                                                                                                          IgnoredStats.AddOrUpdate(strRegexPattern, Function(key As String) New IgnoredStatsEntry With {.Hits = 1, .LastEvent = Now}, Function(key As String, oldValue As IgnoredStatsEntry)
+                                                                                                                                                                                                                                          Interlocked.Increment(oldValue.Hits)
+                                                                                                                                                                                                                                          oldValue.LastEvent = Now
+                                                                                                                                                                                                                                          Return oldValue
+                                                                                                                                                                                                                                      End Function)
 
-                                                                                               state.Stop()
-                                                                                               If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(longNumberOfIgnoredLogs))
-                                                                                           End If
-                                                                                       End SyncLock
-                                                                                   End If
-                                                                               End If
-                                                                           End Sub)
+                                                                                                          state.Stop()
+                                                                                                          If ParentForm IsNot Nothing Then ParentForm.Invoke(Sub() Interlocked.Increment(longNumberOfIgnoredLogs))
+                                                                                                      End If
+                                                                                                  End SyncLock
+                                                                                              End If
+                                                                                          End If
+                                                                                      End Sub)
 
                 If matchFound Then strIgnoredPattern = _strIgnoredPattern
                 boolRecordIgnoredLog = boolInternalRecordLog

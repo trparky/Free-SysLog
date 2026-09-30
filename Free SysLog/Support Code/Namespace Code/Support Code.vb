@@ -86,6 +86,7 @@ Namespace SupportCode
         Public Const strOpenSysLog As String = "opensyslog"
         Public Const strRestore As String = "restore"
         Public Const strTerminate As String = "terminate"
+        Public ReadOnly parallelForEachLoopOptions As New Threading.Tasks.ParallelOptions With {.MaxDegreeOfParallelism = Environment.ProcessorCount}
 
         Public Const ColumnIndex_ComputedTime As Integer = 0
         Public Const ColumnIndex_ServerTime As Integer = 1

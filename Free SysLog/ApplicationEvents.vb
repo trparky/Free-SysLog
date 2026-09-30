@@ -119,31 +119,31 @@ Namespace My
             Dim uniqueObjects As New uniqueObjectsClass
 
             If boolProcessAllFiles Then
-                Threading.Tasks.Parallel.ForEach(filesInDirectory, Sub(file As IO.FileInfo)
-                                                                       Dim collectionOfSavedData As New List(Of SavedData)
-                                                                       Dim strFileContents As String = String.Empty
+                Threading.Tasks.Parallel.ForEach(filesInDirectory, parallelForEachLoopOptions, Sub(file As IO.FileInfo)
+                                                                                                   Dim collectionOfSavedData As New List(Of SavedData)
+                                                                                                   Dim strFileContents As String = String.Empty
 
-                                                                       If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                                           If TryReadGZipFile(file.FullName, strFileContents) = GZipCheckResult.Success Then
-                                                                               collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
-                                                                           End If
-                                                                       Else
-                                                                           Using fileStream As New IO.StreamReader(file.FullName)
-                                                                               collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
-                                                                           End Using
-                                                                       End If
+                                                                                                   If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                                                       If TryReadGZipFile(file.FullName, strFileContents) = GZipCheckResult.Success Then
+                                                                                                           collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForLogFiles)
+                                                                                                       End If
+                                                                                                   Else
+                                                                                                       Using fileStream As New IO.StreamReader(file.FullName)
+                                                                                                           collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
+                                                                                                       End Using
+                                                                                                   End If
 
-                                                                       If collectionOfSavedData.Any() Then
-                                                                           Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
-                                                                                                                                       With uniqueObjects
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
-                                                                                                                                           If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
-                                                                                                                                       End With
-                                                                                                                                   End Sub)
-                                                                       End If
-                                                                   End Sub)
+                                                                                                   If collectionOfSavedData.Any() Then
+                                                                                                       Threading.Tasks.Parallel.ForEach(collectionOfSavedData, parallelForEachLoopOptions, Sub(savedData As SavedData)
+                                                                                                                                                                                               With uniqueObjects
+                                                                                                                                                                                                   If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                                                                                                                                   If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                                                                                                                                   If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                                                                                                                                   If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                                                                                                                               End With
+                                                                                                                                                                                           End Sub)
+                                                                                                   End If
+                                                                                               End Sub)
             End If
 
             If IO.File.Exists(strPathToDataFile) Then
@@ -152,14 +152,14 @@ Namespace My
                 Using fileStream As New IO.StreamReader(strPathToDataFile)
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, JSONDecoderSettingsForLogFiles)
 
-                    Threading.Tasks.Parallel.ForEach(collectionOfSavedData, Sub(savedData As SavedData)
-                                                                                With uniqueObjects
-                                                                                    If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
-                                                                                    If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
-                                                                                    If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
-                                                                                    If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
-                                                                                End With
-                                                                            End Sub)
+                    Threading.Tasks.Parallel.ForEach(collectionOfSavedData, parallelForEachLoopOptions, Sub(savedData As SavedData)
+                                                                                                            With uniqueObjects
+                                                                                                                If Not String.IsNullOrWhiteSpace(savedData.logType) Then .logTypes.Add(savedData.logType)
+                                                                                                                If Not String.IsNullOrWhiteSpace(savedData.appName) Then .processes.Add(savedData.appName)
+                                                                                                                If Not String.IsNullOrWhiteSpace(savedData.hostname) Then .hostNames.Add(savedData.hostname)
+                                                                                                                If Not String.IsNullOrWhiteSpace(savedData.ip) Then .ipAddresses.Add(savedData.ip)
+                                                                                                            End With
+                                                                                                        End Sub)
                 End Using
             End If
 
