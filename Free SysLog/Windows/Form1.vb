@@ -1731,7 +1731,7 @@ Public Class Form1
         Await Threading.Tasks.Task.Delay(100)
 
         If boolDebugBuild Or ChkDebug.Checked Then
-            Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Restore command received.", Logs))
+            Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Restore command received.", Logs)))
             SelectLatestLogEntry()
             UpdateLogCount()
             BtnSaveLogsToDisk.Enabled = True
@@ -1947,10 +1947,10 @@ Public Class Form1
 
                 Logs.SuspendLayout()
                 Logs.Rows.Clear()
-                Logs.Rows.AddRange(newListOfLogs.ToArray)
+                Invoke(Sub() Logs.Rows.AddRange(newListOfLogs.ToArray))
 
                 Dim intCountDifference As Integer = intOldCount - Logs.Rows.Count
-                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs))
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intCountDifference:N0} log {If(intCountDifference = 1, "entry", "entries")}.", Logs)))
 
                 Logs.ResumeLayout()
 
@@ -2468,7 +2468,7 @@ Public Class Form1
                 Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
 
                 SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs)))
                 End SyncLock
 
                 MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
@@ -2479,25 +2479,25 @@ Public Class Form1
             ' Delete the backup file if it exists
             If File.Exists(strPathToConfigBackupFile) Then
                 SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs))
+                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs)))
                 End SyncLock
 
                 File.Delete(strPathToConfigBackupFile)
 
                 SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs))
+                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs)))
                 End SyncLock
             End If
         Catch ex As Exception
             SyncLock dataGridLockObject
-                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the temporary settings backup file.", Logs))
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the temporary settings backup file.", Logs)))
             End SyncLock
         End Try
 
         Try
             If File.Exists(strUpdaterEXE) Then
                 SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs))
+                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs)))
                 End SyncLock
 
                 ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
@@ -2505,12 +2505,12 @@ Public Class Form1
                 If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
 
                 SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs))
+                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs)))
                 End SyncLock
             End If
         Catch ex As Exception
             SyncLock dataGridLockObject
-                Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the updater module.", Logs))
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the updater module.", Logs)))
             End SyncLock
         End Try
     End Sub
