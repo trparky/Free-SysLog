@@ -121,48 +121,41 @@ Public Class Alerts_History
                         filesInDirectory = New DirectoryInfo(SupportCode.strPathToDataBackupFolder).GetFiles().Where(Function(fileinfo As FileInfo) (fileinfo.Attributes And FileAttributes.Hidden) <> FileAttributes.Hidden).ToArray
                     End If
 
-                    Parallel.ForEach(filesInDirectory, Sub(file As FileInfo)
-                                                           Dim dataFromFile As New List(Of SavedData)
-                                                           Dim strFileContents As String = String.Empty
+                    Parallel.ForEach(filesInDirectory, SupportCode.parallelForEachLoopOptions, Sub(file As FileInfo)
+                                                                                                   Dim dataFromFile As New List(Of SavedData)
+                                                                                                   Dim strFileContents As String = String.Empty
 
-                                                           If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
-                                                               Dim TryReadGZipFileResult As SupportCode.GZipCheckResult = SupportCode.TryReadGZipFile(file.FullName, strFileContents)
+                                                                                                   If file.Extension.Equals(".gz", StringComparison.OrdinalIgnoreCase) Then
+                                                                                                       Dim TryReadGZipFileResult As SupportCode.GZipCheckResult = SupportCode.TryReadGZipFile(file.FullName, strFileContents)
 
-                                                               If TryReadGZipFileResult = SupportCode.GZipCheckResult.Success Then
-                                                                   dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, SupportCode.JSONDecoderSettingsForLogFiles)
-                                                               Else
-                                                                   Select Case TryReadGZipFileResult
-                                                                       Case SupportCode.GZipCheckResult.DecompressionFailed
-                                                                           SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {file.FullName}")
-                                                                       Case SupportCode.GZipCheckResult.FileNotFound
-                                                                           SyslogParser.AddToLogList(Nothing, $"File not found: {file.FullName}")
-                                                                       Case SupportCode.GZipCheckResult.NotGZip
-                                                                           SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {file.FullName}")
-                                                                   End Select
-                                                               End If
-                                                           Else
-                                                               Using fileStream As New StreamReader(file.FullName)
-                                                                   dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, SupportCode.JSONDecoderSettingsForLogFiles)
-                                                               End Using
-                                                           End If
+                                                                                                       If TryReadGZipFileResult = SupportCode.GZipCheckResult.Success Then
+                                                                                                           dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, SupportCode.JSONDecoderSettingsForLogFiles)
+                                                                                                       Else
+                                                                                                           SupportCode.LogErrorFromTryReadGzipFile(TryReadGZipFileResult, file.FullName)
+                                                                                                       End If
+                                                                                                   Else
+                                                                                                       Using fileStream As New StreamReader(file.FullName)
+                                                                                                           dataFromFile = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(fileStream.ReadToEnd.Trim, SupportCode.JSONDecoderSettingsForLogFiles)
+                                                                                                       End Using
+                                                                                                   End If
 
-                                                           If dataFromFile.Any() Then
-                                                               Parallel.ForEach(dataFromFile, Sub(SavedData As SavedData)
-                                                                                                  If SavedData.BoolAlerted Then
-                                                                                                      data.Add(New AlertsHistory With {
-                                                                                                         .strTime = SavedData.time,
-                                                                                                         .alertType = SavedData.alertType,
-                                                                                                         .strAlertText = SavedData.alertText,
-                                                                                                         .strIP = SavedData.ip,
-                                                                                                         .strLog = SavedData.log,
-                                                                                                         .strRawLog = SavedData.rawLogData,
-                                                                                                         .strFileName = file.Name,
-                                                                                                         .alertDate = SavedData.DateObject
-                                                                                                      }.MakeDataGridRow(AlertHistoryList))
-                                                                                                  End If
-                                                                                              End Sub)
-                                                           End If
-                                                       End Sub)
+                                                                                                   If dataFromFile.Any() Then
+                                                                                                       Parallel.ForEach(dataFromFile, SupportCode.parallelForEachLoopOptions, Sub(SavedData As SavedData)
+                                                                                                                                                                                  If SavedData.BoolAlerted Then
+                                                                                                                                                                                      data.Add(New AlertsHistory With {
+                                                                                                                                                                                          .strTime = SavedData.time,
+                                                                                                                                                                                          .alertType = SavedData.alertType,
+                                                                                                                                                                                          .strAlertText = SavedData.alertText,
+                                                                                                                                                                                          .strIP = SavedData.ip,
+                                                                                                                                                                                          .strLog = SavedData.log,
+                                                                                                                                                                                          .strRawLog = SavedData.rawLogData,
+                                                                                                                                                                                          .strFileName = file.Name,
+                                                                                                                                                                                          .alertDate = SavedData.DateObject
+                                                                                                                                                                                      }.MakeDataGridRow(AlertHistoryList))
+                                                                                                                                                                                  End If
+                                                                                                                                                                              End Sub)
+                                                                                                   End If
+                                                                                    End Sub)
                 End If
 
                 data.Sort(Function(x As AlertsHistoryDataGridViewRow, y As AlertsHistoryDataGridViewRow) y.alertDate.CompareTo(x.alertDate))

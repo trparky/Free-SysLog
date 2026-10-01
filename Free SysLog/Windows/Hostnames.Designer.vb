@@ -38,6 +38,7 @@ Partial Class Hostnames
         Me.BtnImport = New System.Windows.Forms.Button()
         Me.BtnExport = New System.Windows.Forms.Button()
         Me.SeparatingLine = New System.Windows.Forms.Label()
+        Me.BtnCancel = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ListHostnames
@@ -196,11 +197,22 @@ Partial Class Hostnames
         Me.SeparatingLine.Size = New System.Drawing.Size(618, 1)
         Me.SeparatingLine.TabIndex = 24
         '
+        'BtnCancel
+        '
+        Me.BtnCancel.Location = New System.Drawing.Point(96, 326)
+        Me.BtnCancel.Name = "BtnCancel"
+        Me.BtnCancel.Size = New System.Drawing.Size(75, 23)
+        Me.BtnCancel.TabIndex = 25
+        Me.BtnCancel.Text = "Cancel"
+        Me.BtnCancel.UseVisualStyleBackColor = True
+        Me.BtnCancel.Visible = False
+        '
         'Hostnames
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(614, 356)
+        Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.SeparatingLine)
         Me.Controls.Add(Me.BtnExport)
         Me.Controls.Add(Me.BtnImport)
@@ -242,4 +254,5 @@ Partial Class Hostnames
     Friend WithEvents BtnImport As Button
     Friend WithEvents BtnExport As Button
     Friend WithEvents SeparatingLine As Label
+    Friend WithEvents BtnCancel As Button
 End Class

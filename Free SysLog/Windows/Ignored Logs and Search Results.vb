@@ -462,15 +462,7 @@ Public Class IgnoredLogsAndSearchResults
                 If TryReadGZipFileResult = GZipCheckResult.Success Then
                     collectionOfSavedData = Newtonsoft.Json.JsonConvert.DeserializeObject(Of List(Of SavedData))(strFileContents, JSONDecoderSettingsForSettingsFiles)
                 Else
-                    Select Case TryReadGZipFileResult
-                        Case GZipCheckResult.DecompressionFailed
-                            SyslogParser.AddToLogList(Nothing, $"Unable to decompress GZIP file: {strFileName}")
-                        Case GZipCheckResult.FileNotFound
-                            SyslogParser.AddToLogList(Nothing, $"File not found: {strFileName}")
-                        Case GZipCheckResult.NotGZip
-                            SyslogParser.AddToLogList(Nothing, $"File is not a GZIP file: {strFileName}")
-                    End Select
-
+                    LogErrorFromTryReadGzipFile(TryReadGZipFileResult, strFileName)
                     Exit Sub
                 End If
             Else

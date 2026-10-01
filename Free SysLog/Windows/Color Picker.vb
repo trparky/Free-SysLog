@@ -1,7 +1,10 @@
 ﻿Public Class Color_Picker
     Public Property ChosenColor As Color
+    Private ReadOnly DefaultCustomColorSlots As Integer = New Cyotek.Windows.Forms.ColorGrid().CustomColors.Count
+    Private oldColor As Color = Color.Empty
 
     Private Sub ColorGrid1_Click(sender As Object, e As EventArgs) Handles ColorGrid1.Click
+        oldColor = ColorGrid1.Color
         ColorEditor1.Color = ColorGrid1.Color
         ColorWheel1.Color = ColorGrid1.Color
         lblColorShower.BackColor = ColorGrid1.Color
@@ -17,12 +20,16 @@
     End Sub
 
     Private Sub Color_Picker_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ColorGrid1.AutoAddColors = False
+
         LoadCustomColors()
 
         ColorEditor1.Color = ChosenColor
         ColorWheel1.Color = ChosenColor
         ColorGrid1.Color = ChosenColor
         lblColorShower.BackColor = ChosenColor
+
+        oldColor = ChosenColor
     End Sub
 
     Private Sub Color_Picker_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -118,6 +125,27 @@
             Close()
         ElseIf e.KeyCode = Keys.Escape Then
             Close()
+        ElseIf e.KeyCode = Keys.Delete Then
+            Dim colorToBeDeleted As Integer = ColorGrid1.Color.ToArgb()
+            Dim colorsToKeep As New List(Of Color)
+
+            For Each color As Color In ColorGrid1.CustomColors
+                If color.ToArgb() <> colorToBeDeleted AndAlso Not IsEmptyCustomColor(color) Then colorsToKeep.Add(color)
+            Next
+
+            ColorGrid1.CustomColors.Clear()
+
+            For Each c As Color In colorsToKeep
+                ColorGrid1.CustomColors.Add(c)
+            Next
+
+            For i As Integer = colorsToKeep.Count To DefaultCustomColorSlots - 1
+                ColorGrid1.CustomColors.Add(Color.White)
+            Next
+
+            lblColorShower.BackColor = oldColor
+
+            ColorGrid1.Invalidate()
         End If
     End Sub
 End Class
