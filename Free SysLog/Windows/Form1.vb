@@ -2478,10 +2478,14 @@ Public Class Form1
         Try
             ' Delete the backup file if it exists
             If File.Exists(strPathToConfigBackupFile) Then
+                SyncLock dataGridLockObject
+                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs))
+                End SyncLock
+
                 File.Delete(strPathToConfigBackupFile)
 
                 SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Deleting temporary settings backup file.", Logs))
+                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs))
                 End SyncLock
             End If
         Catch ex As Exception
@@ -2492,12 +2496,16 @@ Public Class Form1
 
         Try
             If File.Exists(strUpdaterEXE) Then
+                SyncLock dataGridLockObject
+                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs))
+                End SyncLock
+
                 ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
                 File.Delete(strUpdaterEXE)
                 If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
 
                 SyncLock dataGridLockObject
-                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Deleting updater module.", Logs))
+                    Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs))
                 End SyncLock
             End If
         Catch ex As Exception
