@@ -106,6 +106,8 @@ Public Class AlertsHistory
             .alertType = alertType
             .strFileName = strFileName
             .alertDate = alertDate
+
+            .Resizable = DataGridViewTriState.False
         End With
 
         Return AlertsHistoryDataGridViewRow
