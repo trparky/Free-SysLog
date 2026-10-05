@@ -34,7 +34,7 @@ Public Class Alerts_History
 
         SupportCode.SetDoubleBufferingFlag(AlertHistoryList)
 
-        AlertHistoryList.RowsDefaultCellStyle.Padding = New Padding(0, 0, 0, 0)
+        AlertHistoryList.RowsDefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
 
         AlertHistoryList.AlternatingRowsDefaultCellStyle = New DataGridViewCellStyle() With {.BackColor = My.Settings.searchColor, .ForeColor = SupportCode.GetGoodTextColorBasedUponBackgroundColor(My.Settings.searchColor)}
         Location = SupportCode.VerifyWindowLocation(My.Settings.AlertHistoryLocation, Me)
@@ -166,6 +166,7 @@ Public Class Alerts_History
                     AlertHistoryList.SuspendLayout()
                     AlertHistoryList.Rows.Clear()
                     AlertHistoryList.Rows.AddRange(data.GetSnapshot.ToArray)
+                    AlertHistoryList.AutoResizeRows()
                     AlertHistoryList.ResumeLayout()
                 End If
 
