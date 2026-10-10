@@ -2475,44 +2475,34 @@ Public Class Form1
             End If
         End If
 
-        Try
-            ' Delete the backup file if it exists
-            If File.Exists(strPathToConfigBackupFile) Then
-                SyncLock dataGridLockObject
+        SyncLock dataGridLockObject
+            Try
+                ' Delete the backup file if it exists
+                If File.Exists(strPathToConfigBackupFile) Then
                     Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs)))
-                End SyncLock
 
-                File.Delete(strPathToConfigBackupFile)
+                    File.Delete(strPathToConfigBackupFile)
 
-                SyncLock dataGridLockObject
                     Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs)))
-                End SyncLock
-            End If
-        Catch ex As Exception
-            SyncLock dataGridLockObject
+                End If
+            Catch ex As Exception
                 Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the temporary settings backup file.", Logs)))
-            End SyncLock
-        End Try
+            End Try
 
-        Try
-            If File.Exists(strUpdaterEXE) Then
-                SyncLock dataGridLockObject
+            Try
+                If File.Exists(strUpdaterEXE) Then
                     Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs)))
-                End SyncLock
 
-                ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
-                File.Delete(strUpdaterEXE)
-                If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
+                    ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
+                    File.Delete(strUpdaterEXE)
+                    If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
 
-                SyncLock dataGridLockObject
                     Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs)))
-                End SyncLock
-            End If
-        Catch ex As Exception
-            SyncLock dataGridLockObject
+                End If
+            Catch ex As Exception
                 Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the updater module.", Logs)))
-            End SyncLock
-        End Try
+            End Try
+        End SyncLock
     End Sub
 #End Region
 End Class
