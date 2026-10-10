@@ -166,6 +166,7 @@ Public Class Alerts_History
                     AlertHistoryList.SuspendLayout()
                     AlertHistoryList.Rows.Clear()
                     AlertHistoryList.Rows.AddRange(data.GetSnapshot.ToArray)
+                    AlertHistoryList.AutoResizeRows()
                     AlertHistoryList.ResumeLayout()
                 End If
 
