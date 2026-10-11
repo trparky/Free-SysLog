@@ -416,7 +416,7 @@ Public Class IgnoredLogsAndSearchResults
                 If selectedItem IsNot Nothing Then CopyRawLogTextToolStripMenuItem.Visible = Not String.IsNullOrEmpty(selectedItem.RawLogData)
 
                 ExportSelectedLogsToolStripMenuItem.Visible = True
-                CopyLogTextToolStripMenuItem.Visible = False
+                CopyLogTextToolStripMenuItem.Visible = True
                 CreateAlertToolStripMenuItem.Visible = False
                 OpenLogFileForViewingToolStripMenuItem.Visible = False
             Else
