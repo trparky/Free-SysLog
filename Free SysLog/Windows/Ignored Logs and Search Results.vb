@@ -428,8 +428,20 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click
-        Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
-        CopyTextToWindowsClipboard(selectedRow.Cells(ColumnIndex_LogText).Value, Text)
+        If Logs.SelectedRows.Count <> 0 Then
+            If Logs.SelectedCells.Count > 1 Then
+                Dim logsToBeCopiedToTheWindowsClipboard As New Text.StringBuilder
+
+                For Each row As MyDataGridViewRow In Logs.SelectedRows
+                    logsToBeCopiedToTheWindowsClipboard.AppendLine(row.Cells(ColumnIndex_LogText).Value)
+                Next
+
+                CopyTextToWindowsClipboard(logsToBeCopiedToTheWindowsClipboard.ToString.Trim, Text)
+            Else
+                Dim selectedRow As MyDataGridViewRow = Logs.Rows(Logs.SelectedCells(0).RowIndex)
+                CopyTextToWindowsClipboard(selectedRow.Cells(ColumnIndex_LogText).Value, Text)
+            End If
+        End If
     End Sub
 
     Private Function MakeDataGridRow(dateObject As Date, strLog As String, ByRef dataGrid As DataGridView) As MyDataGridViewRow
@@ -639,9 +651,19 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub CopyRawLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyRawLogTextToolStripMenuItem.Click
-        If Logs.SelectedRows().Count <> 0 Then
-            Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
-            If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+        If Logs.SelectedRows.Count <> 0 Then
+            If Logs.SelectedCells.Count > 1 Then
+                Dim logsToBeCopiedToTheWindowsClipboard As New Text.StringBuilder
+
+                For Each row As MyDataGridViewRow In Logs.SelectedRows
+                    logsToBeCopiedToTheWindowsClipboard.AppendLine(row.RawLogData)
+                Next
+
+                CopyTextToWindowsClipboard(logsToBeCopiedToTheWindowsClipboard.ToString.Trim, Text)
+            Else
+                Dim selectedItem As MyDataGridViewRow = TryCast(Logs.SelectedRows(0), MyDataGridViewRow)
+                If selectedItem IsNot Nothing Then CopyTextToWindowsClipboard(selectedItem.RawLogData, Text)
+            End If
         End If
     End Sub
 
