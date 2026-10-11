@@ -620,7 +620,6 @@ Public Class Form1
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
 
-                longNumberOfIgnoredLogs = 0
                 ClearIgnoredLogsToolStripMenuItem.Enabled = False
 
                 If My.Settings.recordIgnoredLogs Then
