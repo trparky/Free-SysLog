@@ -614,7 +614,6 @@ Public Class Form1
                 IgnoredLogs.Clear()
 
                 GC.Collect()
-                GC.WaitForPendingFinalizers()
 
                 ClearIgnoredLogsToolStripMenuItem.Enabled = False
 
