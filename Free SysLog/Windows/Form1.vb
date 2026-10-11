@@ -611,10 +611,6 @@ Public Class Form1
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
         If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             SyncLock IgnoredLogsLockObject
-                For Each item As MyDataGridViewRow In IgnoredLogs.GetSnapshot()
-                    item.Dispose()
-                Next
-
                 IgnoredLogs.Clear()
 
                 GC.Collect()
