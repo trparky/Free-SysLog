@@ -13,6 +13,7 @@ Public Class IgnoredWordsAndPhrases
     Private Const strWindowTitle As String = "Ignored Words and Phrases"
     Private strOldRuleText As String
     Private StatUpdateCancellation As Threading.CancellationTokenSource
+    Private balloonInstance As BalloonControl
 
     Private Async Sub StartStatUpdater()
         Dim cts As New Threading.CancellationTokenSource()
@@ -373,15 +374,24 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredListView_Click(sender As Object, e As EventArgs) Handles IgnoredListView.Click
+        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
+
         If IgnoredListView.SelectedItems.Count > 0 Then
             BtnDelete.Enabled = True
             BtnEdit.Enabled = IgnoredListView.SelectedItems.Count = 1
-            BtnEnableDisable.Enabled = True
 
-            BtnEnableDisable.Text = If(DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem).BoolEnabled, "Disable", "Enable")
+            Dim selectedItem As MyIgnoredListViewItem = TryCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
+
+            BtnEnableDisable.Enabled = selectedItem IsNot Nothing
+            If selectedItem IsNot Nothing Then BtnEnableDisable.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
 
             BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
             BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+
+            If IgnoredListView.SelectedItems.Count = 1 AndAlso selectedItem IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(selectedItem.strComment) Then
+                balloonInstance = New BalloonControl(selectedItem.strComment, 4000)
+                balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
+            End If
         Else
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
