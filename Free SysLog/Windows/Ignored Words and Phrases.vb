@@ -396,6 +396,8 @@ Public Class IgnoredWordsAndPhrases
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
             BtnEnableDisable.Enabled = False
+            BtnUp.Enabled = False
+            BtnDown.Enabled = False
         End If
     End Sub
 
