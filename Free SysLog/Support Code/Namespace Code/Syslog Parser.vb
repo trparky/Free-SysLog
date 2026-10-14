@@ -629,6 +629,8 @@ Namespace SyslogParser
                         strInnerValue = strInnerValue.Trim()
                     Case "NSLOOKUP"
                         strInnerValue = IpToHostname(strInnerValue)
+                    Case "SECONDSTOTIME"
+                        strInnerValue = SecondsToTime(strInnerValue)
                 End Select
 
                 strBefore = strInput
@@ -643,6 +645,26 @@ Namespace SyslogParser
             End While
 
             Return strInput
+        End Function
+
+        Private Function SecondsToTime(strInput As String) As String
+            Dim totalSeconds As Long
+            If Not Long.TryParse(strInput, totalSeconds) Then Return strInput
+            If totalSeconds = 0 Then Return "0s"
+
+            Dim maxSeconds As Long = TimeSpan.MaxValue.Ticks \ TimeSpan.TicksPerSecond
+            If totalSeconds < -maxSeconds OrElse totalSeconds > maxSeconds Then Return strInput
+
+            Dim isNegative As Boolean = totalSeconds < 0
+            Dim duration As TimeSpan = TimeSpan.FromSeconds(Math.Abs(totalSeconds))
+            Dim parts As New List(Of String)(4)
+
+            If duration.Days > 0 Then parts.Add($"{duration.Days}d")
+            If duration.Hours > 0 Then parts.Add($"{duration.Hours}h")
+            If duration.Minutes > 0 Then parts.Add($"{duration.Minutes}m")
+            If duration.Seconds > 0 Then parts.Add($"{duration.Seconds}s")
+
+            Return If(isNegative, "-", "") & String.Join(" ", parts)
         End Function
 
         Private Function ProcessReplacements(input As String) As String
