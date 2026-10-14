@@ -664,7 +664,9 @@ Namespace SyslogParser
             If duration.Minutes > 0 Then parts.Add($"{duration.Minutes}m")
             If duration.Seconds > 0 Then parts.Add($"{duration.Seconds}s")
 
-            Return If(isNegative, "-", "") & String.Join(" ", parts)
+            Dim strPartsSplitter As String = If(My.Settings.IncludeCommasInDHMS, ", ", " ")
+
+            Return If(isNegative, "-", "") & String.Join(strPartsSplitter, parts)
         End Function
 
         Private Function ProcessReplacements(input As String) As String
