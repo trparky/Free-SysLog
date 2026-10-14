@@ -147,11 +147,9 @@ Namespace SupportCode
 
             If parts.Count() = 0 Then parts.Add($"{timeSpan.Milliseconds}ms")
 
-            If My.Settings.IncludeCommasInDHMS Then
-                Return String.Join(", ", parts)
-            Else
-                Return String.Join(" ", parts)
-            End If
+            Dim strPartsSplitter As String = If(My.Settings.IncludeCommasInDHMS, ", ", " ")
+
+            Return String.Join(strPartsSplitter, parts)
         End Function
 
         Public Function RemovePathFromExceptionString(strException As String) As String
