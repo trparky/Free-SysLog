@@ -1,4 +1,5 @@
 ﻿Imports Free_SysLog.SupportCode
+Imports Windows.UI.Xaml.Controls.Primitives
 
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
@@ -889,5 +890,32 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub ChkRefreshOnlyIfActive_Click(sender As Object, e As EventArgs) Handles ChkRefreshOnlyIfActive.Click
         My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases = ChkRefreshOnlyIfActive.Checked
+    End Sub
+
+    Private Sub ShowBalloonForControl(sender As Object, message As String, duration As Integer)
+        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
+
+        balloonInstance = New BalloonControl(message, duration)
+        balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
+    End Sub
+
+    Private Sub ChkRecord_MouseHover(sender As Object, e As EventArgs) Handles ChkRecord.MouseHover
+        ShowBalloonForControl(sender, "Makes it so that even if the log is ignored, the log text is still recorded in program memory and not written to disk.", 4000)
+    End Sub
+
+    Private Sub txtComment_MouseHover(sender As Object, e As EventArgs) Handles txtComment.MouseHover
+        ShowBalloonForControl(sender, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
+    End Sub
+
+    Private Sub TxtIgnored_MouseHover(sender As Object, e As EventArgs) Handles TxtIgnored.MouseHover
+        ShowBalloonForControl(sender, "This is your actual rule.", 4000)
+    End Sub
+
+    Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
+        ShowBalloonForControl(sender, "Use this checkbox to enable or disable the ignored word or phrase rule.", 4000)
+    End Sub
+
+    Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
+        ShowBalloonForControl(sender, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
     End Sub
 End Class

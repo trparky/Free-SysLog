@@ -374,8 +374,6 @@ Partial Class Alerts
         Me.ChkLimited.Size = New System.Drawing.Size(65, 17)
         Me.ChkLimited.TabIndex = 40
         Me.ChkLimited.Text = "Limited?"
-        Me.ToolTip.SetToolTip(Me.ChkLimited, "Tells the program if this alert type should be limited by the notification limite" &
-        "r.")
         Me.ChkLimited.UseVisualStyleBackColor = True
         '
         'Alerts
