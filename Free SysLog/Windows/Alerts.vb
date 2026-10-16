@@ -532,8 +532,15 @@ Public Class Alerts
         balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
     End Sub
 
+    Private Sub ShowBalloonForControl(control As Control, message As String, duration As Integer)
+        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
+
+        balloonInstance = New BalloonControl(message, duration)
+        balloonInstance.ShowFor(control)
+    End Sub
+
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
-        ShowBalloonForControl(sender, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+        ShowBalloonForControl(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
     End Sub
 
     Private Sub TxtAlertText_MouseHover(sender As Object, e As EventArgs) Handles TxtAlertText.MouseHover
@@ -541,10 +548,10 @@ Public Class Alerts
     End Sub
 
     Private Sub ChkLimited_MouseHover(sender As Object, e As EventArgs) Handles ChkLimited.MouseHover
-        ShowBalloonForControl(sender, "Setting an alert to be limited means it will only be triggered once within the specified time period.", 4000)
+        ShowBalloonForControl(ChkLimited, "Setting an alert to be limited means it will only be triggered once within the specified time period.", 4000)
     End Sub
 
     Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
-        ShowBalloonForControl(sender, "This allows you to enable or disable the alert rule.", 4000)
+        ShowBalloonForControl(ChkEnabled, "This allows you to enable or disable the alert rule.", 4000)
     End Sub
 End Class
