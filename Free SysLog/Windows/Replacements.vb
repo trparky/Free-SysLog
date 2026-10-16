@@ -448,14 +448,14 @@ Public Class Replacements
         SortByClickedColumn(ReplacementsListView, e.Column, m_SortingColumn)
     End Sub
 
-    Private Sub ShowBalloonForControl(sender As Object, message As String, duration As Integer)
+    Private Sub ShowBalloonAtCursor(sender As Object, message As String, duration As Integer)
         If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
 
         balloonInstance = New BalloonControl(message, duration)
         balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
     End Sub
 
-    Private Sub ShowBalloonForControl(control As Control, message As String, duration As Integer)
+    Private Sub ShowBalloonFor(control As Control, message As String, duration As Integer)
         If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
 
         balloonInstance = New BalloonControl(message, duration)
@@ -463,10 +463,10 @@ Public Class Replacements
     End Sub
 
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
-        ShowBalloonForControl(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
     End Sub
 
     Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
-        ShowBalloonForControl(ChkEnabled, "This allows you to enable or disable the text replacement rule.", 4000)
+        ShowBalloonFor(ChkEnabled, "This allows you to enable or disable the text replacement rule.", 4000)
     End Sub
 End Class
