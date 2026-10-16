@@ -525,18 +525,18 @@ Public Class Alerts
         SortByClickedColumn(AlertsListView, e.Column, m_SortingColumn)
     End Sub
 
-    Private Sub ShowBalloonAtCursor(sender As Object, message As String, duration As Integer)
+    Private Function NewBalloon(message As String, duration As Integer) As BalloonControl
         If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
-
         balloonInstance = New BalloonControl(message, duration)
-        balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
+        Return balloonInstance
+    End Function
+
+    Private Sub ShowBalloonAtCursor(host As Form, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowAtCursor(host)
     End Sub
 
-    Private Sub ShowBalloonFor(control As Control, message As String, duration As Integer)
-        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
-
-        balloonInstance = New BalloonControl(message, duration)
-        balloonInstance.ShowFor(control)
+    Private Sub ShowBalloonFor(target As Control, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowFor(target)
     End Sub
 
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
@@ -544,7 +544,7 @@ Public Class Alerts
     End Sub
 
     Private Sub TxtAlertText_MouseHover(sender As Object, e As EventArgs) Handles TxtAlertText.MouseHover
-        ShowBalloonAtCursor(sender, "Enter the alert text goes here.", 4000)
+        ShowBalloonAtCursor(Me, "Enter the alert text goes here.", 4000)
     End Sub
 
     Private Sub ChkLimited_MouseHover(sender As Object, e As EventArgs) Handles ChkLimited.MouseHover

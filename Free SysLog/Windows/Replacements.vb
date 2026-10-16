@@ -448,18 +448,18 @@ Public Class Replacements
         SortByClickedColumn(ReplacementsListView, e.Column, m_SortingColumn)
     End Sub
 
-    Private Sub ShowBalloonAtCursor(sender As Object, message As String, duration As Integer)
+    Private Function NewBalloon(message As String, duration As Integer) As BalloonControl
         If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
-
         balloonInstance = New BalloonControl(message, duration)
-        balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
+        Return balloonInstance
+    End Function
+
+    Private Sub ShowBalloonAtCursor(host As Form, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowAtCursor(host)
     End Sub
 
-    Private Sub ShowBalloonFor(control As Control, message As String, duration As Integer)
-        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
-
-        balloonInstance = New BalloonControl(message, duration)
-        balloonInstance.ShowFor(control)
+    Private Sub ShowBalloonFor(target As Control, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowFor(target)
     End Sub
 
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover

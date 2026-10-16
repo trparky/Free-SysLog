@@ -892,18 +892,18 @@ Public Class IgnoredWordsAndPhrases
         My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases = ChkRefreshOnlyIfActive.Checked
     End Sub
 
-    Private Sub ShowBalloonAtCursor(sender As Object, message As String, duration As Integer)
+    Private Function NewBalloon(message As String, duration As Integer) As BalloonControl
         If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
-
         balloonInstance = New BalloonControl(message, duration)
-        balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
+        Return balloonInstance
+    End Function
+
+    Private Sub ShowBalloonAtCursor(host As Form, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowAtCursor(host)
     End Sub
 
-    Private Sub ShowBalloonFor(control As Control, message As String, duration As Integer)
-        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
-
-        balloonInstance = New BalloonControl(message, duration)
-        balloonInstance.ShowFor(control)
+    Private Sub ShowBalloonFor(target As Control, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowFor(target)
     End Sub
 
     Private Sub ChkRecord_MouseHover(sender As Object, e As EventArgs) Handles ChkRecord.MouseHover
@@ -911,11 +911,11 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub txtComment_MouseHover(sender As Object, e As EventArgs) Handles txtComment.MouseHover
-        ShowBalloonAtCursor(sender, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
+        ShowBalloonAtCursor(Me, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
     End Sub
 
     Private Sub TxtIgnored_MouseHover(sender As Object, e As EventArgs) Handles TxtIgnored.MouseHover
-        ShowBalloonAtCursor(sender, "This is your actual rule.", 4000)
+        ShowBalloonAtCursor(Me, "This is your actual rule.", 4000)
     End Sub
 
     Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
