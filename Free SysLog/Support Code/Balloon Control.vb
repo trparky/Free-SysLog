@@ -13,6 +13,7 @@ Public Class BalloonControl
     Private Const CornerRadius As Integer = 10
     Private Const Pad As Integer = 10
     Private Const MaxTextWidth As Integer = 260
+    Private Const BorderWidth As Single = 2.0F
 
     Private ReadOnly _timer As New Timer()
     Private _tailX As Integer
@@ -129,7 +130,8 @@ Public Class BalloonControl
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias
 
-        Using path = BuildPath(), fill As New SolidBrush(BackColor), border As New Pen(Color.FromArgb(118, 118, 118))
+        Using path = BuildPath(), fill As New SolidBrush(BackColor), border As New Pen(Color.FromArgb(118, 118, 118), BorderWidth * 2)
+            border.LineJoin = LineJoin.Round   ' avoids a spiky miter at the tail tip
             e.Graphics.FillPath(fill, path)
             e.Graphics.DrawPath(border, path)
         End Using
