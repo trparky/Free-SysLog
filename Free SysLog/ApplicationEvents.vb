@@ -53,6 +53,9 @@ Namespace My
                 Threading.Thread.Sleep(1000)
             End If
 
+            ' Since under Wine, binding to ports below 1024 may require elevated privileges, we set the default sysLogPort to 5514 if it's less than 1024.
+            If WineSupport.IsRunningUnderWine() AndAlso My.Settings.sysLogPort < 1024 Then My.Settings.sysLogPort = 5514
+
             If My.Settings.FirstRun Then
                 Try
                     ' Check if backup file exists
