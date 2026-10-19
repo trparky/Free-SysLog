@@ -1,4 +1,5 @@
 ﻿Imports Free_SysLog.SupportCode
+Imports Windows.UI.Xaml.Controls.Primitives
 
 Public Class IgnoredWordsAndPhrases
     Private boolDoneLoading As Boolean = False
@@ -13,6 +14,7 @@ Public Class IgnoredWordsAndPhrases
     Private Const strWindowTitle As String = "Ignored Words and Phrases"
     Private strOldRuleText As String
     Private StatUpdateCancellation As Threading.CancellationTokenSource
+    Private balloonInstance As BalloonControl
 
     Private Async Sub StartStatUpdater()
         Dim cts As New Threading.CancellationTokenSource()
@@ -373,19 +375,30 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub IgnoredListView_Click(sender As Object, e As EventArgs) Handles IgnoredListView.Click
+        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
+
         If IgnoredListView.SelectedItems.Count > 0 Then
             BtnDelete.Enabled = True
             BtnEdit.Enabled = IgnoredListView.SelectedItems.Count = 1
-            BtnEnableDisable.Enabled = True
 
-            BtnEnableDisable.Text = If(DirectCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem).BoolEnabled, "Disable", "Enable")
+            Dim selectedItem As MyIgnoredListViewItem = TryCast(IgnoredListView.SelectedItems(0), MyIgnoredListViewItem)
+
+            BtnEnableDisable.Enabled = selectedItem IsNot Nothing
+            If selectedItem IsNot Nothing Then BtnEnableDisable.Text = If(selectedItem.BoolEnabled, "Disable", "Enable")
 
             BtnUp.Enabled = IgnoredListView.SelectedIndices(0) <> 0
             BtnDown.Enabled = IgnoredListView.SelectedIndices(0) <> IgnoredListView.Items.Count - 1
+
+            If IgnoredListView.SelectedItems.Count = 1 AndAlso selectedItem IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(selectedItem.strComment) Then
+                balloonInstance = New BalloonControl(selectedItem.strComment, 4000)
+                balloonInstance.ShowAtCursor(DirectCast(sender, Control).FindForm())
+            End If
         Else
             BtnDelete.Enabled = False
             BtnEdit.Enabled = False
             BtnEnableDisable.Enabled = False
+            BtnUp.Enabled = False
+            BtnDown.Enabled = False
         End If
     End Sub
 
@@ -877,5 +890,39 @@ Public Class IgnoredWordsAndPhrases
 
     Private Sub ChkRefreshOnlyIfActive_Click(sender As Object, e As EventArgs) Handles ChkRefreshOnlyIfActive.Click
         My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases = ChkRefreshOnlyIfActive.Checked
+    End Sub
+
+    Private Function NewBalloon(message As String, duration As Integer) As BalloonControl
+        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
+        balloonInstance = New BalloonControl(message, duration)
+        Return balloonInstance
+    End Function
+
+    Private Sub ShowBalloonAtCursor(host As Form, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowAtCursor(host)
+    End Sub
+
+    Private Sub ShowBalloonFor(target As Control, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowFor(target)
+    End Sub
+
+    Private Sub ChkRecord_MouseHover(sender As Object, e As EventArgs) Handles ChkRecord.MouseHover
+        ShowBalloonFor(ChkRecord, "Makes it so that even if the log is ignored, the log text is still recorded in program memory and not written to disk.", 4000)
+    End Sub
+
+    Private Sub txtComment_MouseHover(sender As Object, e As EventArgs) Handles txtComment.MouseHover
+        ShowBalloonAtCursor(Me, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
+    End Sub
+
+    Private Sub TxtIgnored_MouseHover(sender As Object, e As EventArgs) Handles TxtIgnored.MouseHover
+        ShowBalloonAtCursor(Me, "This is your actual rule.", 4000)
+    End Sub
+
+    Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
+        ShowBalloonFor(ChkEnabled, "Use this checkbox to enable or disable the ignored word or phrase rule.", 4000)
+    End Sub
+
+    Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
+        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
     End Sub
 End Class

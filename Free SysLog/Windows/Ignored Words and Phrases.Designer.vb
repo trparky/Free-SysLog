@@ -421,9 +421,6 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkAutoRefresh.Size = New System.Drawing.Size(88, 17)
         Me.ChkAutoRefresh.TabIndex = 53
         Me.ChkAutoRefresh.Text = "Auto Refresh"
-        Me.ToolTip.SetToolTip(Me.ChkAutoRefresh, "Enabling this makes it so that the data is refreshed every five seconds." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Holding" &
-        " down the F1 key on the keyboard disables auto-refresh for as long as the key is" &
-        " pressed down.")
         Me.ChkAutoRefresh.UseVisualStyleBackColor = True
         '
         'ChkRecord
@@ -435,8 +432,6 @@ Partial Class IgnoredWordsAndPhrases
         Me.ChkRecord.Size = New System.Drawing.Size(67, 17)
         Me.ChkRecord.TabIndex = 55
         Me.ChkRecord.Text = "Record?"
-        Me.ToolTip.SetToolTip(Me.ChkRecord, "Makes it so that even if the log is ignored, the log text is still recorded in pr" &
-        "ogram memory and not written to disk.")
         Me.ChkRecord.UseVisualStyleBackColor = True
         '
         'ChkRefreshOnlyIfActive

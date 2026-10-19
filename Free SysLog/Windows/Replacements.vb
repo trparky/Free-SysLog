@@ -7,6 +7,7 @@ Public Class Replacements
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
     Private boolColumnOrderChanged As Boolean = False
+    Private balloonInstance As BalloonControl
 
     Private Sub ReplacementsListView_ColumnReordered(sender As Object, e As ColumnReorderedEventArgs) Handles ReplacementsListView.ColumnReordered
         boolColumnOrderChanged = True
@@ -445,5 +446,27 @@ Public Class Replacements
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles ReplacementsListView.ColumnClick
         SortByClickedColumn(ReplacementsListView, e.Column, m_SortingColumn)
+    End Sub
+
+    Private Function NewBalloon(message As String, duration As Integer) As BalloonControl
+        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
+        balloonInstance = New BalloonControl(message, duration)
+        Return balloonInstance
+    End Function
+
+    Private Sub ShowBalloonAtCursor(host As Form, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowAtCursor(host)
+    End Sub
+
+    Private Sub ShowBalloonFor(target As Control, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowFor(target)
+    End Sub
+
+    Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
+        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+    End Sub
+
+    Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
+        ShowBalloonFor(ChkEnabled, "This allows you to enable or disable the text replacement rule.", 4000)
     End Sub
 End Class

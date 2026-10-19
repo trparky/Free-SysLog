@@ -94,36 +94,16 @@ Namespace checkForUpdates
         End Function
 
         Private Function CanWriteToFolder(folderPath As String) As Boolean
-            ' Checks to see if the specified folder exists.
-            If Directory.Exists(folderPath) Then
-                Dim strTestFilePath As String = Nothing
+            ' We make sure we get valid folder path by taking off the leading slash.
+            If folderPath.EndsWith("\") Then folderPath = folderPath.Substring(0, folderPath.Length - 1)
+            If String.IsNullOrEmpty(folderPath) OrElse Not Directory.Exists(folderPath) Then Return False
 
-                Try
-                    ' Create the path for the temporary file
-                    strTestFilePath = Path.Combine(folderPath, Guid.NewGuid().ToString() & ".tmp")
-
-                    ' Try writing a test message to the file
-                    File.WriteAllText(strTestFilePath, "test")
-
-                    ' If writing succeeds, return true
-                    Return True
-                Catch ex As Exception
-                    ' Something went wrong, we return false.
-                    Return False
-                Finally
-                    ' Ensure the temporary file is deleted if it was created
-                    If Not String.IsNullOrWhiteSpace(strTestFilePath) AndAlso File.Exists(strTestFilePath) Then
-                        Try
-                            File.Delete(strTestFilePath) ' Delete it.
-                        Catch ex As Exception
-                            ' Handle any exceptions that occur during file deletion.
-                        End Try
-                    End If
-                End Try
-            Else
-                ' The directory doesn't exist, so we return false.
+            Try
+                File.Create(Path.Combine(folderPath, Guid.NewGuid().ToString() & ".tmp"), 1, FileOptions.DeleteOnClose).Close()
+                Return True
+            Catch ex As Exception
                 Return False
-            End If
+            End Try
         End Function
 
         Public Shared Function CreateNewHTTPHelperObject() As HttpHelper

@@ -184,6 +184,8 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ChkEnableStartAtUserStartup.Visible = Not WineSupport.IsRunningUnderWine()
+
         SupportCode.ParentForm = Me
 
         TaskHandling.ConvertRegistryRunCommandToTask()
@@ -611,16 +613,10 @@ Public Class Form1
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
         If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
             SyncLock IgnoredLogsLockObject
-                For Each item As MyDataGridViewRow In IgnoredLogs.GetSnapshot()
-                    item.Dispose()
-                Next
-
                 IgnoredLogs.Clear()
 
                 GC.Collect()
-                GC.WaitForPendingFinalizers()
 
-                longNumberOfIgnoredLogs = 0
                 ClearIgnoredLogsToolStripMenuItem.Enabled = False
 
                 If My.Settings.recordIgnoredLogs Then
@@ -1052,7 +1048,10 @@ Public Class Form1
 
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
         If boolDoWeOwnTheMutex Then
-            Using IntegerInputForm As New IntegerInputForm(1, 65535) With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent}
+            ' If running under Wine, the minimum port number is set to 1024, otherwise it is set to 1.
+            Dim intMinPort As Integer = If(WineSupport.IsRunningUnderWine(), 1024, 1)
+
+            Using IntegerInputForm As New IntegerInputForm(intMinPort, 65535) With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent}
                 IntegerInputForm.lblSetting.Text = "Server Port"
                 IntegerInputForm.TxtSetting.Text = My.Settings.sysLogPort
 

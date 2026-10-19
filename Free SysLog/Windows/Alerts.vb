@@ -8,6 +8,7 @@ Public Class Alerts
     Private draggedItem As ListViewItem
     Private m_SortingColumn As ColumnHeader
     Private boolColumnOrderChanged As Boolean = False
+    Private balloonInstance As BalloonControl
 
     Private Sub IgnoredListView_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles AlertsListView.ItemDrag
         draggedItem = CType(e.Item, ListViewItem)
@@ -522,5 +523,35 @@ Public Class Alerts
 
     Private Sub IgnoredListView_ColumnClick(sender As Object, e As ColumnClickEventArgs) Handles AlertsListView.ColumnClick
         SortByClickedColumn(AlertsListView, e.Column, m_SortingColumn)
+    End Sub
+
+    Private Function NewBalloon(message As String, duration As Integer) As BalloonControl
+        If balloonInstance IsNot Nothing AndAlso Not balloonInstance.IsDisposed Then balloonInstance.Dismiss()
+        balloonInstance = New BalloonControl(message, duration)
+        Return balloonInstance
+    End Function
+
+    Private Sub ShowBalloonAtCursor(host As Form, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowAtCursor(host)
+    End Sub
+
+    Private Sub ShowBalloonFor(target As Control, message As String, duration As Integer)
+        NewBalloon(message, duration).ShowFor(target)
+    End Sub
+
+    Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
+        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+    End Sub
+
+    Private Sub TxtAlertText_MouseHover(sender As Object, e As EventArgs) Handles TxtAlertText.MouseHover
+        ShowBalloonAtCursor(Me, "Enter the alert text goes here.", 4000)
+    End Sub
+
+    Private Sub ChkLimited_MouseHover(sender As Object, e As EventArgs) Handles ChkLimited.MouseHover
+        ShowBalloonFor(ChkLimited, "Setting an alert to be limited means it will only be triggered once within the specified time period.", 4000)
+    End Sub
+
+    Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
+        ShowBalloonFor(ChkEnabled, "This allows you to enable or disable the alert rule.", 4000)
     End Sub
 End Class
