@@ -14,7 +14,7 @@ Namespace TaskHandling
             End Try
         End Function
 
-        Public Function DoesTaskExist()
+        Public Function DoesTaskExist() As Boolean
             Try
                 Using taskService As New TaskService
                     Dim task As Task = Nothing
