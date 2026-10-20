@@ -29,11 +29,15 @@ Namespace TaskHandling
                             Dim trigger As Trigger = task.Definition.Triggers(0)
 
                             If trigger.TriggerType = TaskTriggerType.Logon Then
-                                Dim dblSeconds As Double = DirectCast(trigger, LogonTrigger).Delay.TotalSeconds
+                                Dim LogonTriggerObject As LogonTrigger = TryCast(trigger, LogonTrigger)
 
-                                If dblSeconds > 0 Then
-                                    ParentForm.StartUpDelay.Checked = True
-                                    ParentForm.StartUpDelay.Text = $"        Startup Delay ({dblSeconds} {If(dblSeconds = 1, "Second", "Seconds")})"
+                                If LogonTriggerObject IsNot Nothing Then
+                                    Dim dblSeconds As Double = LogonTriggerObject.Delay.TotalSeconds
+
+                                    If dblSeconds > 0 Then
+                                        ParentForm.StartUpDelay.Checked = True
+                                        ParentForm.StartUpDelay.Text = $"        Startup Delay ({dblSeconds} {If(dblSeconds = 1, "Second", "Seconds")})"
+                                    End If
                                 End If
                             End If
                         End If
@@ -43,7 +47,9 @@ Namespace TaskHandling
                                 Dim action As Action = task.Definition.Actions(0)
 
                                 If action.ActionType = TaskActionType.Execute Then
-                                    If Not DirectCast(action, ExecAction).Path.Replace(strQuote, "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
+                                    Dim execActionObject As ExecAction = TryCast(action, ExecAction)
+
+                                    If execActionObject IsNot Nothing AndAlso Not execActionObject.Path.Replace(strQuote, "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
                                         task.Definition.Actions.Remove(action)
 
                                         Dim exeFileInfo As New FileInfo(strEXEPath)
