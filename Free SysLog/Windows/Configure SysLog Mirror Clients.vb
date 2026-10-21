@@ -120,6 +120,7 @@ Public Class ConfigureSysLogMirrorClients
                     .SubItems(2).Text = If(chkEnabled.Checked, "Yes", "No")
                     .SubItems(3).Text = txtName.Text
                     .BoolEnabled = chkEnabled.Checked
+                    .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                 End With
 
                 servers.Enabled = True
@@ -136,6 +137,7 @@ Public Class ConfigureSysLogMirrorClients
                         .SubItems.Add(If(chkEnabled.Checked, "Yes", "No"))
                         .SubItems.Add(txtName.Text)
                         .BoolEnabled = chkEnabled.Checked
+                        .BackColor = If(.BoolEnabled, Color.LightGreen, Color.Pink)
                     End With
 
                     servers.Items.Add(ServerListView)

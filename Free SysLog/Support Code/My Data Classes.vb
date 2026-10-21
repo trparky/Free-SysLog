@@ -292,6 +292,7 @@ Public Class SysLogProxyServer
             .SubItems.Add(name)
             .StrName = name
             .BoolEnabled = boolEnabled
+            .BackColor = If(boolEnabled, Color.LightGreen, Color.Pink)
             If My.Settings.font IsNot Nothing Then ServerListView.Font = My.Settings.font
         End With
 
