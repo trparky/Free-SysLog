@@ -89,8 +89,10 @@ Public Class ViewLogBackups
         startDate = Date.MinValue
         endDate = Date.MaxValue
 
-        btnClearDateLimit.Enabled = False
-        ToolTip.SetToolTip(btnLimitByDate, "")
+        btnClearDateLimit.Invoke(Sub()
+                                     btnClearDateLimit.Enabled = False
+                                     ToolTip.SetToolTip(btnLimitByDate, "")
+                                 End Sub)
 
         Parallel.ForEach(filesInDirectory, parallelForEachLoopOptions, Sub(file As FileInfo)
                                                                            Interlocked.Add(longUsedDiskSpaceIncludingHidden, file.Length)
