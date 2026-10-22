@@ -1007,7 +1007,7 @@ Public Class ViewLogBackups
 
         If startDate <> Date.MinValue AndAlso endDate <> Date.MaxValue Then frmCalendar.setRange(startDate, endDate)
 
-        frmCalendar.setMinAndMaxDateRange(dateMinimumFromLoadingFiles, Date.Now.AddDays(-1))
+        frmCalendar.setMinAndMaxDateRange(dateMinimumFromLoadingFiles, Date.Now)
 
         frmCalendar.ShowDialog(Me)
 
