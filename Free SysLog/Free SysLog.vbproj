@@ -116,7 +116,7 @@
   <ItemGroup>
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Support Code\AlertsHistoryDataGridViewRow.vb" />
-    <Compile Include="Support Code\Balloon Control.vb">
+    <Compile Include="Controls\Balloon Control.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Support Code\My Custom ListViews.vb" />
