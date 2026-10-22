@@ -1002,10 +1002,12 @@ Public Class ViewLogBackups
             .StartPosition = FormStartPosition.CenterParent,
             .Icon = Icon,
             .Text = "Select Date Range",
-            .startDate = If(startDate.Equals(Date.MinValue), dateMinimumFromLoadingFiles, startDate),
-            .endDate = If(endDate.Equals(Date.MaxValue), Date.Now.AddDays(-1), endDate),
-            .minDate = dateMinimumFromLoadingFiles
+            .startDate = dateMinimumFromLoadingFiles
         }
+
+        If startDate <> Date.MinValue AndAlso endDate <> Date.MaxValue Then frmCalendar.setRange(startDate, endDate)
+
+        frmCalendar.setMinAndMaxDateRange(dateMinimumFromLoadingFiles, Date.Now.AddDays(-1))
 
         frmCalendar.ShowDialog(Me)
 
