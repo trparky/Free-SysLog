@@ -21,4 +21,12 @@
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
         Close()
     End Sub
+
+    Private Sub DateRangeCalendar_RangeChanged(sender As Object, e As EventArgs) Handles DateRangeCalendar.RangeChanged
+        btnOK.Enabled = True
+    End Sub
+
+    Private Sub frmCalendar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        btnOK.Enabled = False
+    End Sub
 End Class
