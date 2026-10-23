@@ -64,7 +64,6 @@
     End Property
 
     Public Sub SetRange(startDate As Date, endDate As Date)
-
         startDate = startDate.Date
         endDate = endDate.Date
 
@@ -89,17 +88,14 @@
 
     Private Sub Calendar_DateChanged(sender As Object, e As DateRangeEventArgs)
         If _updating Then Return
-
         UpdateLabels()
-
         RaiseEvent RangeChanged(Me, EventArgs.Empty)
     End Sub
 
     Private Sub UpdateLabels()
-        _startLabel.Text = "Start: " & StartDate.ToShortDateString()
-        _endLabel.Text = "End: " & EndDate.ToShortDateString()
+        _startLabel.Text = $"Start: {StartDate.ToShortDateString()}"
+        _endLabel.Text = $"End: {EndDate.ToShortDateString()}"
     End Sub
-
 
     Public Property MinDate As Date
         Get
@@ -120,7 +116,6 @@
     End Property
 
     Private Sub ApplyDateLimit(value As Date, isMinimum As Boolean)
-
         Dim oldStart As Date = StartDate
         Dim oldEnd As Date = EndDate
 
@@ -138,26 +133,18 @@
             Dim newEnd As Date = ClampDate(oldEnd)
 
             _calendar.SetSelectionRange(newStart, newEnd)
-
         Finally
             _updating = False
         End Try
 
         UpdateLabels()
 
-        If oldStart <> StartDate OrElse oldEnd <> EndDate Then
-            RaiseEvent RangeChanged(Me, EventArgs.Empty)
-        End If
+        If oldStart <> StartDate OrElse oldEnd <> EndDate Then RaiseEvent RangeChanged(Me, EventArgs.Empty)
     End Sub
 
     Private Function ClampDate(value As Date) As Date
-        If value < _calendar.MinDate Then
-            Return _calendar.MinDate.Date
-        End If
-
-        If value > _calendar.MaxDate Then
-            Return _calendar.MaxDate.Date
-        End If
+        If value < _calendar.MinDate Then Return _calendar.MinDate.Date
+        If value > _calendar.MaxDate Then Return _calendar.MaxDate.Date
 
         Return value.Date
     End Function
