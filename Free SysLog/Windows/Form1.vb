@@ -53,6 +53,10 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub LblAutoScrollStatus_MouseUp(sender As Object, e As MouseEventArgs) Handles LblAutoScrollStatus.MouseUp
+        If e.Button = MouseButtons.Right Then BottomMenu.Show(Cursor.Position)
+    End Sub
+
     Private Sub Form1_ResizeBegin(sender As Object, e As EventArgs) Handles Me.ResizeBegin
         Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
     End Sub
@@ -384,8 +388,18 @@ Public Class Form1
 
     Private Sub ChkAutoScroll_Click(sender As Object, e As EventArgs) Handles ChkEnableAutoScroll.Click
         My.Settings.autoScroll = ChkEnableAutoScroll.Checked
+        EnableAutoScrollToolStripMenuItem.Checked = ChkEnableAutoScroll.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
         LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
+        EnableAutoScrollToolStripMenuItem.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
+    End Sub
+
+    Private Sub EnableAutoScrollToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableAutoScrollToolStripMenuItem.Click
+        My.Settings.autoScroll = EnableAutoScrollToolStripMenuItem.Checked
+        ChkEnableAutoScroll.Checked = EnableAutoScrollToolStripMenuItem.Checked
+        ChkDisableAutoScrollUponScrolling.Enabled = EnableAutoScrollToolStripMenuItem.Checked
+        LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
+        EnableAutoScrollToolStripMenuItem.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
@@ -1414,6 +1428,7 @@ Public Class Form1
         If ChkDisableAutoScrollUponScrolling.Checked AndAlso Not boolIsProgrammaticScroll AndAlso ChkEnableAutoScroll.Checked AndAlso e.NewValue < e.OldValue Then
             My.Settings.autoScroll = False
             ChkEnableAutoScroll.Checked = False
+            EnableAutoScrollToolStripMenuItem.Checked = False
             LblAutoScrollStatus.Text = "Auto Scroll Status: Disabled"
         End If
 
@@ -2116,6 +2131,7 @@ Public Class Form1
         IgnoredLogsToolStripMenuItem.Visible = ChkEnableRecordingOfIgnoredLogs.Checked
         ZerooutIgnoredLogsCounterToolStripMenuItem.Visible = Not ChkEnableRecordingOfIgnoredLogs.Checked
         ChkEnableAutoScroll.Checked = My.Settings.autoScroll
+        EnableAutoScrollToolStripMenuItem.Checked = My.Settings.autoScroll
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
         ChkEnableAutoSave.Checked = My.Settings.autoSave
         ChkEnableConfirmCloseToolStripItem.Checked = My.Settings.boolConfirmClose
