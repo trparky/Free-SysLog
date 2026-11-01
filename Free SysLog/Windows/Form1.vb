@@ -184,7 +184,7 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ChkEnableStartAtUserStartup.Visible = Not WineSupport.IsRunningUnderWine()
+        ChkEnableStartAtUserStartup.Visible = Not boolIsRunningUnderWine
 
         SupportCode.ParentForm = Me
 
@@ -1049,7 +1049,7 @@ Public Class Form1
     Private Sub ChangeSyslogServerPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ChangeSyslogServerPortToolStripMenuItem.Click
         If boolDoWeOwnTheMutex Then
             ' If running under Wine, the minimum port number is set to 1024, otherwise it is set to 1.
-            Dim intMinPort As Integer = If(WineSupport.IsRunningUnderWine(), 1024, 1)
+            Dim intMinPort As Integer = If(boolIsRunningUnderWine, 1024, 1)
 
             Using IntegerInputForm As New IntegerInputForm(intMinPort, 65535) With {.Icon = Icon, .Text = "Change Syslog Server Port", .StartPosition = FormStartPosition.CenterParent}
                 IntegerInputForm.lblSetting.Text = "Server Port"
