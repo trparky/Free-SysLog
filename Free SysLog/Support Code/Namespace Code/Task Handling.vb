@@ -52,14 +52,12 @@ Namespace TaskHandling
                                     If execActionObject IsNot Nothing AndAlso Not execActionObject.Path.Replace(strQuote, "").Equals(strEXEPath, StringComparison.OrdinalIgnoreCase) Then
                                         task.Definition.Actions.Remove(action)
 
-                                        Dim exeFileInfo As New FileInfo(strEXEPath)
-                                        task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
+                                        task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, New FileInfo(strEXEPath).DirectoryName))
                                         task.RegisterChanges()
                                     End If
                                 End If
                             Else
-                                Dim exeFileInfo As New FileInfo(strEXEPath)
-                                task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, exeFileInfo.DirectoryName))
+                                task.Definition.Actions.Add(New ExecAction($"{strQuote}{strEXEPath}{strQuote}", Nothing, New FileInfo(strEXEPath).DirectoryName))
                                 task.RegisterChanges()
                             End If
                         End If
