@@ -391,7 +391,6 @@ Public Class Form1
         EnableAutoScrollToolStripMenuItem.Checked = ChkEnableAutoScroll.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = ChkEnableAutoScroll.Checked
         LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
-        EnableAutoScrollToolStripMenuItem.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
     End Sub
 
     Private Sub EnableAutoScrollToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableAutoScrollToolStripMenuItem.Click
@@ -399,7 +398,6 @@ Public Class Form1
         ChkEnableAutoScroll.Checked = EnableAutoScrollToolStripMenuItem.Checked
         ChkDisableAutoScrollUponScrolling.Enabled = EnableAutoScrollToolStripMenuItem.Checked
         LblAutoScrollStatus.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
-        EnableAutoScrollToolStripMenuItem.Text = $"Auto Scroll Status: {If(ChkEnableAutoScroll.Checked, "Enabled", "Disabled")}"
     End Sub
 
     Private Sub Logs_ColumnWidthChanged(sender As Object, e As DataGridViewColumnEventArgs) Handles Logs.ColumnWidthChanged
