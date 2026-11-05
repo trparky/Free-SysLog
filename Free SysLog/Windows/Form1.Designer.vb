@@ -1041,6 +1041,7 @@ Partial Class Form1
         '
         'EnableAutoScrollToolStripMenuItem
         '
+        Me.EnableAutoScrollToolStripMenuItem.CheckOnClick = True
         Me.EnableAutoScrollToolStripMenuItem.Name = "EnableAutoScrollToolStripMenuItem"
         Me.EnableAutoScrollToolStripMenuItem.Size = New System.Drawing.Size(170, 22)
         Me.EnableAutoScrollToolStripMenuItem.Text = "Enable Auto Scroll"
