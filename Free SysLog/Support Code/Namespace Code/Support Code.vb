@@ -113,6 +113,8 @@ Namespace SupportCode
 
         Private longBytesWrittenToDisk As Long = 0
 
+        Public boolIsRunningUnderWine As Boolean = WineSupport.IsRunningUnderWine()
+
         Public Sub AddToBytesWrittenToDiskLock(intBytesWrittenToDisk As Integer)
             Threading.Interlocked.Add(longBytesWrittenToDisk, intBytesWrittenToDisk)
 

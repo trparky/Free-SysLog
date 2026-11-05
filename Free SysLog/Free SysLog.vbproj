@@ -114,9 +114,12 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Date Picker.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="GlobalSuppressions.vb" />
     <Compile Include="Support Code\AlertsHistoryDataGridViewRow.vb" />
-    <Compile Include="Support Code\Balloon Control.vb">
+    <Compile Include="Controls\Balloon Control.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Support Code\My Custom ListViews.vb" />

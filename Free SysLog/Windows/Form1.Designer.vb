@@ -149,12 +149,15 @@ Partial Class Form1
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.lblLimitBy = New System.Windows.Forms.Label()
         Me.lblDataWrittenToDisk = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.BottomMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.EnableAutoScrollToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
         Me.MenuStrip.SuspendLayout()
         CType(Me.Logs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.LogsMenu.SuspendLayout()
         Me.IconMenu.SuspendLayout()
         Me.LogsHeaderMenu.SuspendLayout()
+        Me.BottomMenu.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnOpenLogLocation
@@ -1030,6 +1033,18 @@ Partial Class Form1
         Me.lblDataWrittenToDisk.Size = New System.Drawing.Size(155, 15)
         Me.lblDataWrittenToDisk.Text = "Data Written to Disk: 0 Bytes"
         '
+        'BottomMenu
+        '
+        Me.BottomMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EnableAutoScrollToolStripMenuItem})
+        Me.BottomMenu.Name = "BottomMenu"
+        Me.BottomMenu.Size = New System.Drawing.Size(171, 26)
+        '
+        'EnableAutoScrollToolStripMenuItem
+        '
+        Me.EnableAutoScrollToolStripMenuItem.Name = "EnableAutoScrollToolStripMenuItem"
+        Me.EnableAutoScrollToolStripMenuItem.Size = New System.Drawing.Size(170, 22)
+        Me.EnableAutoScrollToolStripMenuItem.Text = "Enable Auto Scroll"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1060,6 +1075,7 @@ Partial Class Form1
         Me.LogsMenu.ResumeLayout(False)
         Me.IconMenu.ResumeLayout(False)
         Me.LogsHeaderMenu.ResumeLayout(False)
+        Me.BottomMenu.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1191,4 +1207,6 @@ Partial Class Form1
     Friend WithEvents colDelete As DataGridViewCheckBoxColumn
     Friend WithEvents lblProcessUptime As ToolStripStatusLabel
     Friend WithEvents lblDataWrittenToDisk As ToolStripStatusLabel
+    Friend WithEvents BottomMenu As ContextMenuStrip
+    Friend WithEvents EnableAutoScrollToolStripMenuItem As ToolStripMenuItem
 End Class
