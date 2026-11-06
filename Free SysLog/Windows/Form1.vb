@@ -1712,21 +1712,22 @@ Public Class Form1
         Catch e As Exception
             Invoke(Sub()
                        Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp, My.Settings.sysLogPort)
+                       Dim strLogText As String = Nothing
 
                        If activeProcess Is Nothing Then
-                           MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                           strLogText = "Unable to start syslog server, perhaps another instance of this program is running on your system."
                        Else
-                           Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
-
-                           SyncLock dataGridLockObject
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(e.StackTrace)}", Logs))
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
-                               SelectLatestLogEntry()
-                               UpdateLogCount()
-                           End SyncLock
-
-                           MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                           strLogText = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
                        End If
+
+                       SyncLock dataGridLockObject
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"Exception Type: {e.GetType}{vbCrLf}Exception Message: {e.Message}{vbCrLf}{vbCrLf}Exception Stack Trace{vbCrLf}{RemovePathFromExceptionString(e.StackTrace)}", Logs))
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                           SelectLatestLogEntry()
+                           UpdateLogCount()
+                       End SyncLock
+
+                       MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
                    End Sub)
         End Try
     End Sub
@@ -2474,18 +2475,19 @@ Public Class Form1
             boolServerRunning = True
         Else
             Dim activeProcess As Process = GetProcessByPort(ProtocolType.Udp, My.Settings.sysLogPort)
+            Dim strLogText As String = Nothing
 
             If activeProcess Is Nothing Then
-                MsgBox("Unable to start syslog server, perhaps another instance of this program is running on your system.", MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                strLogText = "Unable to start syslog server, perhaps another instance of this program is running on your system."
             Else
-                Dim strLogText As String = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
-
-                SyncLock dataGridLockObject
-                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs)))
-                End SyncLock
-
-                MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                strLogText = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
             End If
+
+            SyncLock dataGridLockObject
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs)))
+            End SyncLock
+
+            MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
         End If
 
         SyncLock dataGridLockObject
