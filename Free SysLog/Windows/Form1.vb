@@ -1727,7 +1727,20 @@ Public Class Form1
                            UpdateLogCount()
                        End SyncLock
 
-                       MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       If boolDoWeOwnTheMutex Then
+                           SendMessageToSysLogServer(strTerminate, My.Settings.sysLogPort)
+
+                           serverThread = New Threading.Thread(AddressOf SysLogThread) With {.Name = "UDP Server Thread", .Priority = Threading.ThreadPriority.Normal}
+                           serverThread.Start()
+
+                           SyncLock dataGridLockObject
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Free SysLog Server Started.", Logs))
+                               SelectLatestLogEntry()
+                               UpdateLogCount()
+                           End SyncLock
+                       Else
+                           MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
+                       End If
                    End Sub)
         End Try
     End Sub
