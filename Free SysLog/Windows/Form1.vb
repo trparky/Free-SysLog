@@ -264,7 +264,11 @@ Public Class Form1
         boolDoneLoading = True
 
         Dim worker As New BackgroundWorker()
-        AddHandler worker.DoWork, Sub() LoadDataFile()
+        AddHandler worker.DoWork, Sub()
+                                      SyncLock dataGridLockObject
+                                          LoadDataFile()
+                                      End SyncLock
+                                  End Sub
         AddHandler worker.RunWorkerCompleted, AddressOf RunWorkerCompleted
         worker.RunWorkerAsync()
 
@@ -282,46 +286,46 @@ Public Class Form1
 
     Private Sub Logs_KeyUp(sender As Object, e As KeyEventArgs) Handles Logs.KeyUp
         If e.KeyValue = Keys.Delete Then
-            SyncLock dataGridLockObject
-                Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
-                Dim intNumberOfSelectedLogs As Integer = Logs.SelectedRows.Count
+            Dim intNumberOfCheckedLogs As Integer = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+            Dim intNumberOfSelectedLogs As Integer = Logs.SelectedRows.Count
 
-                If intNumberOfCheckedLogs <> 0 And intNumberOfCheckedLogs <> 1 And intNumberOfSelectedLogs <> 0 And intNumberOfSelectedLogs <> 1 AndAlso intNumberOfCheckedLogs <> intNumberOfSelectedLogs AndAlso MsgBox("The checked logs does not match the selected logs, do you want to make the checked logs match the selected logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
-                    For Each item As MyDataGridViewRow In Logs.SelectedRows
-                        item.CheckRow()
-                    Next
+            If intNumberOfCheckedLogs <> 0 And intNumberOfCheckedLogs <> 1 And intNumberOfSelectedLogs <> 0 And intNumberOfSelectedLogs <> 1 AndAlso intNumberOfCheckedLogs <> intNumberOfSelectedLogs AndAlso MsgBox("The checked logs does not match the selected logs, do you want to make the checked logs match the selected logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.Yes Then
+                For Each item As MyDataGridViewRow In Logs.SelectedRows
+                    item.CheckRow()
+                Next
 
-                    intNumberOfCheckedLogs = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
-                    intNumberOfSelectedLogs = Logs.SelectedRows.Count
-                End If
+                intNumberOfCheckedLogs = Logs.Rows.Cast(Of DataGridViewRow).Where(Function(row As MyDataGridViewRow) row.Cells(colDelete.Index).Value).Count()
+                intNumberOfSelectedLogs = Logs.SelectedRows.Count
+            End If
 
-                If ConfirmDelete.Checked Then
-                    Dim choice As Confirm_Delete.UserChoice
+            If ConfirmDelete.Checked Then
+                Dim choice As Confirm_Delete.UserChoice
 
-                    Using Confirm_Delete As New Confirm_Delete(intNumberOfSelectedLogs) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-                        If intNumberOfCheckedLogs > 0 Then
-                            Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfCheckedLogs} checked {If(intNumberOfCheckedLogs = 1, "log", "logs")}?"
-                        Else
-                            Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfSelectedLogs} selected {If(intNumberOfSelectedLogs = 1, "log", "logs")}?"
-                        End If
-
-                        Confirm_Delete.ShowDialog(Me)
-                        choice = Confirm_Delete.choice
-                    End Using
-
-                    If choice = Confirm_Delete.UserChoice.NoDelete Then
-                        If intNumberOfCheckedLogs > 0 Then
-                            MsgBox($"{If(intNumberOfCheckedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
-                        Else
-                            MsgBox($"{If(intNumberOfSelectedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
-                        End If
-
-                        Exit Sub
-                    ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
-                        MakeLogBackup()
+                Using Confirm_Delete As New Confirm_Delete(intNumberOfSelectedLogs) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+                    If intNumberOfCheckedLogs > 0 Then
+                        Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfCheckedLogs} checked {If(intNumberOfCheckedLogs = 1, "log", "logs")}?"
+                    Else
+                        Confirm_Delete.lblMainLabel.Text = $"Are you sure you want to delete the {intNumberOfSelectedLogs} selected {If(intNumberOfSelectedLogs = 1, "log", "logs")}?"
                     End If
-                End If
 
+                    Confirm_Delete.ShowDialog(Me)
+                    choice = Confirm_Delete.choice
+                End Using
+
+                If choice = Confirm_Delete.UserChoice.NoDelete Then
+                    If intNumberOfCheckedLogs > 0 Then
+                        MsgBox($"{If(intNumberOfCheckedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                    Else
+                        MsgBox($"{If(intNumberOfSelectedLogs = 1, "Log", "Logs")} not deleted.", MsgBoxStyle.Information, Text)
+                    End If
+
+                    Exit Sub
+                ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
+                    MakeLogBackup()
+                End If
+            End If
+
+            SyncLock dataGridLockObject
                 ' Create a list to store rows that need to be removed
                 Dim rowsToDelete As New List(Of MyDataGridViewRow)
 
@@ -415,9 +419,9 @@ Public Class Form1
 
     Private Sub BtnClearAllLogs_Click(sender As Object, e As EventArgs) Handles BtnClearAllLogs.Click
         If MsgBox("Are you sure you want to clear the logs?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
-            SyncLock dataGridLockObject
-                If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+            If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
 
+            SyncLock dataGridLockObject
                 Dim intOldCount As Integer = Logs.Rows.Count
                 Logs.Rows.Clear()
                 Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry($"The user deleted {intOldCount:N0} log {If(intOldCount = 1, "entry", "entries")}.", Logs))
@@ -673,25 +677,26 @@ Public Class Form1
             If ClearLogsOlderThanInstance.DialogResult = DialogResult.OK Then
                 Try
                     Dim dateChosenDate As Date = ClearLogsOlderThanInstance.dateChosenDate
+                    Logs.AllowUserToOrderColumns = False
+                    Logs.Enabled = False
+
+                    Dim intOldCount As Integer = Logs.Rows.Count
+                    Dim newListOfLogs As New List(Of MyDataGridViewRow)
 
                     SyncLock dataGridLockObject
-                        Logs.AllowUserToOrderColumns = False
-                        Logs.Enabled = False
-
-                        Dim intOldCount As Integer = Logs.Rows.Count
-                        Dim newListOfLogs As New List(Of MyDataGridViewRow)
-
                         For Each item As MyDataGridViewRow In Logs.Rows
                             If item.DateObject.Date >= dateChosenDate.Date Then
                                 newListOfLogs.Add(item.Clone())
                             End If
                         Next
+                    End SyncLock
 
-                        Logs.Enabled = True
-                        Logs.AllowUserToOrderColumns = True
+                    Logs.Enabled = True
+                    Logs.AllowUserToOrderColumns = True
 
-                        If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
+                    If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
 
+                    SyncLock dataGridLockObject
                         Logs.SuspendLayout()
                         Logs.Rows.Clear()
                         Logs.Rows.AddRange(newListOfLogs.ToArray)
@@ -967,23 +972,23 @@ Public Class Form1
     End Sub
 
     Private Sub DeleteLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteLogsToolStripMenuItem.Click
+        Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
+        Dim choice As Confirm_Delete.UserChoice
+
+        Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
+            Confirm_Delete.lblMainLabel.Text = $"Are you sure you want To delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
+            Confirm_Delete.ShowDialog(Me)
+            choice = Confirm_Delete.choice
+        End Using
+
+        If choice = Confirm_Delete.UserChoice.NoDelete Then
+            MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} Not deleted.", MsgBoxStyle.Information, Text)
+            Exit Sub
+        ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
+            MakeLogBackup()
+        End If
+
         SyncLock dataGridLockObject
-            Dim intNumberOfLogsDeleted As Integer = Logs.SelectedRows.Count
-            Dim choice As Confirm_Delete.UserChoice
-
-            Using Confirm_Delete As New Confirm_Delete(intNumberOfLogsDeleted) With {.Icon = Icon, .StartPosition = FormStartPosition.CenterParent}
-                Confirm_Delete.lblMainLabel.Text = $"Are you sure you want To delete the {intNumberOfLogsDeleted} selected {If(intNumberOfLogsDeleted = 1, "log", "logs")}?"
-                Confirm_Delete.ShowDialog(Me)
-                choice = Confirm_Delete.choice
-            End Using
-
-            If choice = Confirm_Delete.UserChoice.NoDelete Then
-                MsgBox($"{If(intNumberOfLogsDeleted = 1, "Log", "Logs")} Not deleted.", MsgBoxStyle.Information, Text)
-                Exit Sub
-            ElseIf choice = Confirm_Delete.UserChoice.YesDeleteYesBackup Then
-                MakeLogBackup()
-            End If
-
             ' Create a list to store rows that need to be removed
             Dim rowsToDelete As New List(Of MyDataGridViewRow)
 
@@ -1462,10 +1467,8 @@ Public Class Form1
     End Sub
 
     Private Sub LogFunctionsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles LogFunctionsToolStripMenuItem.DropDownOpening
-        SyncLock dataGridLockObject
-            AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
-            IgnoredLogsToolStripMenuItem.Visible = IgnoredLogs.Count > 0 Or My.Settings.recordIgnoredLogs
-        End SyncLock
+        AlertsHistory.Enabled = Logs.Rows.Cast(Of MyDataGridViewRow).Any(Function(row As MyDataGridViewRow) Not String.IsNullOrWhiteSpace(row.AlertText))
+        IgnoredLogsToolStripMenuItem.Visible = IgnoredLogs.Count > 0 Or My.Settings.recordIgnoredLogs
     End Sub
 
     Private Sub DeleteSimilarLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteSimilarLogsToolStripMenuItem.Click
@@ -1817,41 +1820,39 @@ Public Class Form1
                     listOfLogEntries.Add(SyslogParser.MakeLocalDataGridRowEntry($"Free SysLog Server Started. Data loaded in {MyRoundingFunction(stopwatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", Logs))
                 End If
 
-                SyncLock dataGridLockObject
-                    Invoke(Sub()
-                               Logs.SuspendLayout()
-                               Logs.Rows.Clear()
+                Invoke(Sub()
+                           Logs.SuspendLayout()
+                           Logs.Rows.Clear()
 
-                               If listOfLogEntries.Count > 2000 Then
-                                   Dim intBatchSize As Integer = 250
+                           If listOfLogEntries.Count > 2000 Then
+                               Dim intBatchSize As Integer = 250
 
-                                   Threading.Tasks.Task.Run(Sub()
-                                                                For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
-                                                                    Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
-                                                                    Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
-                                                                Next
+                               Threading.Tasks.Task.Run(Sub()
+                                                            For index As Integer = 0 To listOfLogEntries.Count - 1 Step intBatchSize
+                                                                Dim batch As MyDataGridViewRow() = listOfLogEntries.Skip(index).Take(intBatchSize).ToArray()
+                                                                Invoke(Sub() Logs.Rows.AddRange(batch)) ' Invoke needed for UI updates
+                                                            Next
 
-                                                                Invoke(Sub()
-                                                                           SelectLatestLogEntry()
+                                                            Invoke(Sub()
+                                                                       SelectLatestLogEntry()
 
-                                                                           Logs.SelectedRows(0).Selected = False
-                                                                           UpdateLogCount()
-                                                                           Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
-                                                                           Logs.ResumeLayout()
-                                                                       End Sub)
-                                                            End Sub)
-                               Else
-                                   Logs.Rows.AddRange(listOfLogEntries.ToArray)
-                                   Logs.ResumeLayout()
+                                                                       Logs.SelectedRows(0).Selected = False
+                                                                       UpdateLogCount()
+                                                                       Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                                                                       Logs.ResumeLayout()
+                                                                   End Sub)
+                                                        End Sub)
+                           Else
+                               Logs.Rows.AddRange(listOfLogEntries.ToArray)
+                               Logs.ResumeLayout()
 
-                                   SelectLatestLogEntry()
+                               SelectLatestLogEntry()
 
-                                   Logs.SelectedRows(0).Selected = False
-                                   UpdateLogCount()
-                                   Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
-                               End If
-                           End Sub)
-                End SyncLock
+                               Logs.SelectedRows(0).Selected = False
+                               UpdateLogCount()
+                               Logs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                           End If
+                       End Sub)
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 HandleLogFileLoadException(ex)
             Catch ex As Newtonsoft.Json.JsonReaderException
@@ -2368,9 +2369,9 @@ Public Class Form1
     End Sub
 
     Private Sub RunMidnightWorkSubRoutine()
-        SyncLock dataGridLockObject
-            If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
+        If My.Settings.BackupOldLogsAfterClearingAtMidnight Then MakeLogBackup()
 
+        SyncLock dataGridLockObject
             If My.Settings.ClearIgnoredStatsAtMidnight Then
                 IgnoredStats.Clear()
                 longNumberOfIgnoredLogs = 0
@@ -2496,41 +2497,65 @@ Public Class Form1
                 strLogText = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
             End If
 
-            SyncLock dataGridLockObject
-                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs)))
-            End SyncLock
+            Invoke(Sub()
+                       SyncLock dataGridLockObject
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
+                       End SyncLock
+                   End Sub)
 
             MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
         End If
 
-        SyncLock dataGridLockObject
-            Try
-                ' Delete the backup file if it exists
-                If File.Exists(strPathToConfigBackupFile) Then
-                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs)))
+        Try
+            ' Delete the backup file if it exists
+            If File.Exists(strPathToConfigBackupFile) Then
+                Invoke(Sub()
+                           SyncLock dataGridLockObject
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs))
+                           End SyncLock
+                       End Sub)
 
-                    File.Delete(strPathToConfigBackupFile)
+                File.Delete(strPathToConfigBackupFile)
 
-                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs)))
-                End If
-            Catch ex As Exception
-                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the temporary settings backup file.", Logs)))
-            End Try
+                Invoke(Sub()
+                           SyncLock dataGridLockObject
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs))
+                           End SyncLock
+                       End Sub)
+            End If
+        Catch ex As Exception
+            Invoke(Sub()
+                       SyncLock dataGridLockObject
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the temporary settings backup file.", Logs))
+                       End SyncLock
+                   End Sub)
+        End Try
 
-            Try
-                If File.Exists(strUpdaterEXE) Then
-                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs)))
+        Try
+            If File.Exists(strUpdaterEXE) Then
+                Invoke(Sub()
+                           SyncLock dataGridLockObject
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs))
+                           End SyncLock
+                       End Sub)
 
-                    ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
-                    File.Delete(strUpdaterEXE)
-                    If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
+                ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
+                File.Delete(strUpdaterEXE)
+                If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
 
-                    Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs)))
-                End If
-            Catch ex As Exception
-                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the updater module.", Logs)))
-            End Try
-        End SyncLock
+                Invoke(Sub()
+                           SyncLock dataGridLockObject
+                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs))
+                           End SyncLock
+                       End Sub)
+            End If
+        Catch ex As Exception
+            Invoke(Sub()
+                       SyncLock dataGridLockObject
+                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the updater module.", Logs))
+                       End SyncLock
+                   End Sub)
+        End Try
     End Sub
 #End Region
 End Class
