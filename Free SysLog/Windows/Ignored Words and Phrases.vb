@@ -325,6 +325,7 @@ Public Class IgnoredWordsAndPhrases
         ChkAutoRefresh.Checked = My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Checked = My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
+        chkShowTipPopups.Checked = My.Settings.ShowTipPopupsOnIgnoredWordsAndPhrasesWindow
 
         Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
 
@@ -907,22 +908,26 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub ChkRecord_MouseHover(sender As Object, e As EventArgs) Handles ChkRecord.MouseHover
-        ShowBalloonFor(ChkRecord, "Makes it so that even if the log is ignored, the log text is still recorded in program memory and not written to disk.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkRecord, "Makes it so that even if the log is ignored, the log text is still recorded in program memory and not written to disk.", 4000)
     End Sub
 
     Private Sub txtComment_MouseHover(sender As Object, e As EventArgs) Handles txtComment.MouseHover
-        ShowBalloonAtCursor(Me, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonAtCursor(Me, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
     End Sub
 
     Private Sub TxtIgnored_MouseHover(sender As Object, e As EventArgs) Handles TxtIgnored.MouseHover
-        ShowBalloonAtCursor(Me, "This is your actual rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonAtCursor(Me, "This is your actual rule.", 4000)
     End Sub
 
     Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
-        ShowBalloonFor(ChkEnabled, "Use this checkbox to enable or disable the ignored word or phrase rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkEnabled, "Use this checkbox to enable or disable the ignored word or phrase rule.", 4000)
     End Sub
 
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
-        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+    End Sub
+
+    Private Sub chkShowTipPopups_Click(sender As Object, e As EventArgs) Handles chkShowTipPopups.Click
+        My.Settings.ShowTipPopupsOnIgnoredWordsAndPhrasesWindow = chkShowTipPopups.Checked
     End Sub
 End Class
