@@ -129,20 +129,24 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
 
                     If Not strOldRuleText.Equals(TxtIgnored.Text, StringComparison.OrdinalIgnoreCase) Then
-                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
-                        .intHits = 0
-                        .dateOfLastOccurrence = Date.MinValue
-                        .timeSpanOfLastOccurrence = TimeSpan.MinValue
-                        .SubItems(colHits.Index).Text = "0"
-                        .SubItems(colDateOfLastEvent.Index).Text = ""
-                        .SubItems(colSinceLastEvent.Index).Text = ""
-                        .intHits = 0
+                        Dim data As IgnoredStatsEntry = Nothing
+                        Dim sinceLastEvent As TimeSpan
+
+                        If IgnoredStats.TryGetValue(strOldRuleText, data) Then IgnoredStats.TryAdd(TxtIgnored.Text, data)
+                        sinceLastEvent = Now - data.LastEvent
+
+                        IgnoredStats.TryRemove(strOldRuleText, Nothing)
+
+                        .intHits = data.Hits
+                        .dateOfLastOccurrence = data.LastEvent
+                        .timeSpanOfLastOccurrence = sinceLastEvent
+                        .SubItems(colHits.Index).Text = .intHits.ToString("N0")
+                        .SubItems(colDateOfLastEvent.Index).Text = $"{data.LastEvent.ToLocalTime:D} {data.LastEvent.ToLocalTime:T}"
+                        .SubItems(colSinceLastEvent.Index).Text = TimespanToHMS(sinceLastEvent)
                     End If
 
                     If .BoolEnabled Then
                         .BackColor = Color.LightGreen
-                        .SubItems(colHits.Index).Text = "0"
-                        .intHits = 0
                     Else
                         .BackColor = Color.Pink
                         .SubItems(colHits.Index).Text = ""
@@ -151,7 +155,7 @@ Public Class IgnoredWordsAndPhrases
                         .intHits = 0
                         .dateOfLastOccurrence = Date.MinValue
                         .timeSpanOfLastOccurrence = TimeSpan.MinValue
-                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
+                        IgnoredStats.TryRemove(strOldRuleText, Nothing)
                     End If
                 End With
 
