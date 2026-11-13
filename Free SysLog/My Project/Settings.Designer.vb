@@ -1531,6 +1531,30 @@ Namespace My
                 Me("ShowTipPopupsOnIgnoredWordsAndPhrasesWindow") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property ShowTipPopupsOnAlertsWindow() As Boolean
+            Get
+                Return CType(Me("ShowTipPopupsOnAlertsWindow"),Boolean)
+            End Get
+            Set
+                Me("ShowTipPopupsOnAlertsWindow") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property ShowTipPopupsOnReplacementsWindow() As Boolean
+            Get
+                Return CType(Me("ShowTipPopupsOnReplacementsWindow"),Boolean)
+            End Get
+            Set
+                Me("ShowTipPopupsOnReplacementsWindow") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -93,6 +93,7 @@ Public Class Alerts
         CaseSensitive.Width = My.Settings.colAlertsCaseSensitive
         AlertTypeColumn.Width = My.Settings.colAlertsType
         ColEnabled.Width = My.Settings.colAlertsEnabled
+        chkShowTipPopups.Checked = My.Settings.ShowTipPopupsOnAlertsWindow
 
         Size = My.Settings.ConfigureAlertsSize
 
@@ -540,18 +541,22 @@ Public Class Alerts
     End Sub
 
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
-        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
     End Sub
 
     Private Sub TxtAlertText_MouseHover(sender As Object, e As EventArgs) Handles TxtAlertText.MouseHover
-        ShowBalloonAtCursor(Me, "Enter the alert text goes here.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonAtCursor(Me, "Enter the alert text goes here.", 4000)
     End Sub
 
     Private Sub ChkLimited_MouseHover(sender As Object, e As EventArgs) Handles ChkLimited.MouseHover
-        ShowBalloonFor(ChkLimited, "Setting an alert to be limited means it will only be triggered once within the specified time period.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkLimited, "Setting an alert to be limited means it will only be triggered once within the specified time period.", 4000)
     End Sub
 
     Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
-        ShowBalloonFor(ChkEnabled, "This allows you to enable or disable the alert rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkEnabled, "This allows you to enable or disable the alert rule.", 4000)
+    End Sub
+
+    Private Sub chkShowTipPopups_Click(sender As Object, e As EventArgs) Handles chkShowTipPopups.Click
+        My.Settings.ShowTipPopupsOnAlertsWindow = chkShowTipPopups.Checked
     End Sub
 End Class

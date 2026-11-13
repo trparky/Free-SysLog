@@ -52,6 +52,7 @@ Partial Class Replacements
         Me.Label3 = New System.Windows.Forms.Label()
         Me.BtnCancel = New System.Windows.Forms.Button()
         Me.lblReplacementNotes = New System.Windows.Forms.Label()
+        Me.chkShowTipPopups = New System.Windows.Forms.CheckBox()
         Me.ListViewMenu.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -315,11 +316,23 @@ Partial Class Replacements
         Me.lblReplacementNotes.TabIndex = 47
         Me.lblReplacementNotes.Text = resources.GetString("lblReplacementNotes.Text")
         '
+        'chkShowTipPopups
+        '
+        Me.chkShowTipPopups.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.chkShowTipPopups.AutoSize = True
+        Me.chkShowTipPopups.Location = New System.Drawing.Point(336, 356)
+        Me.chkShowTipPopups.Name = "chkShowTipPopups"
+        Me.chkShowTipPopups.Size = New System.Drawing.Size(110, 17)
+        Me.chkShowTipPopups.TabIndex = 59
+        Me.chkShowTipPopups.Text = "Show Tip Popups"
+        Me.chkShowTipPopups.UseVisualStyleBackColor = True
+        '
         'Replacements
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(994, 553)
+        Me.Controls.Add(Me.chkShowTipPopups)
         Me.Controls.Add(Me.lblReplacementNotes)
         Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.Label3)
@@ -379,4 +392,5 @@ Partial Class Replacements
     Friend WithEvents Label3 As Label
     Friend WithEvents BtnCancel As Button
     Friend WithEvents lblReplacementNotes As Label
+    Friend WithEvents chkShowTipPopups As CheckBox
 End Class

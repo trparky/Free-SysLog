@@ -144,6 +144,7 @@ Public Class Replacements
         Regex.Width = My.Settings.colReplacementsRegex
         CaseSensitive.Width = My.Settings.colReplacementsCaseSensitive
         ColEnabled.Width = My.Settings.colReplacementsEnabled
+        chkShowTipPopups.Checked = My.Settings.ShowTipPopupsOnReplacementsWindow
 
         Size = My.Settings.ConfigureReplacementsSize
 
@@ -463,10 +464,14 @@ Public Class Replacements
     End Sub
 
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
-        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
     End Sub
 
     Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
-        ShowBalloonFor(ChkEnabled, "This allows you to enable or disable the text replacement rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkEnabled, "This allows you to enable or disable the text replacement rule.", 4000)
+    End Sub
+
+    Private Sub chkShowTipPopups_Click(sender As Object, e As EventArgs) Handles chkShowTipPopups.Click
+        My.Settings.ShowTipPopupsOnReplacementsWindow = chkShowTipPopups.Checked
     End Sub
 End Class
