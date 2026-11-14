@@ -629,13 +629,14 @@ Public Class IgnoredWordsAndPhrases
                 My.Settings.ignored2 = tempIgnored
                 My.Settings.Save()
 
-                MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
+                MsgBox("Data imported successfully, the window will now close.", MsgBoxStyle.Information, Text)
                 boolChanged = True
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             Finally
                 UpdateRuleLabels()
                 boolCurrentlyEditing = False
+                Close()
             End Try
         End If
     End Sub
