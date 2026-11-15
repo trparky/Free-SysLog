@@ -2497,11 +2497,7 @@ Public Class Form1
                 strLogText = $"Unable to start UDP syslog server. A process with a PID of {activeProcess.Id} already has the UDP port open."
             End If
 
-            Invoke(Sub()
-                       SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs))
-                       End SyncLock
-                   End Sub)
+            Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, Logs)))
 
             MsgBox(strLogText, MsgBoxStyle.Critical + MsgBoxStyle.ApplicationModal, Text)
         End If
@@ -2509,52 +2505,28 @@ Public Class Form1
         Try
             ' Delete the backup file if it exists
             If File.Exists(strPathToConfigBackupFile) Then
-                Invoke(Sub()
-                           SyncLock dataGridLockObject
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs))
-                           End SyncLock
-                       End Sub)
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file detected, attempting to delete it.", Logs)))
 
                 File.Delete(strPathToConfigBackupFile)
 
-                Invoke(Sub()
-                           SyncLock dataGridLockObject
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs))
-                           End SyncLock
-                       End Sub)
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Temporary settings backup file deleted.", Logs)))
             End If
         Catch ex As Exception
-            Invoke(Sub()
-                       SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the temporary settings backup file.", Logs))
-                       End SyncLock
-                   End Sub)
+            Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the temporary settings backup file.", Logs)))
         End Try
 
         Try
             If File.Exists(strUpdaterEXE) Then
-                Invoke(Sub()
-                           SyncLock dataGridLockObject
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs))
-                           End SyncLock
-                       End Sub)
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module detected, attempting to delete it.", Logs)))
 
                 ProcessHandling.SearchForProcessAndKillIt(strUpdaterEXE, False)
                 File.Delete(strUpdaterEXE)
                 If File.Exists(strUpdaterPDB) Then File.Delete(strUpdaterPDB)
 
-                Invoke(Sub()
-                           SyncLock dataGridLockObject
-                               Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs))
-                           End SyncLock
-                       End Sub)
+                Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Updater module deleted.", Logs)))
             End If
         Catch ex As Exception
-            Invoke(Sub()
-                       SyncLock dataGridLockObject
-                           Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the updater module.", Logs))
-                       End SyncLock
-                   End Sub)
+            Invoke(Sub() Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry("Unable to delete the updater module.", Logs)))
         End Try
     End Sub
 #End Region
