@@ -59,6 +59,7 @@ Partial Class Alerts
         Me.BtnCancel = New System.Windows.Forms.Button()
         Me.ChkLimited = New System.Windows.Forms.CheckBox()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
+        Me.chkShowTipPopups = New System.Windows.Forms.CheckBox()
         Me.ListViewMenu.SuspendLayout()
         CType(Me.IconPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -376,11 +377,23 @@ Partial Class Alerts
         Me.ChkLimited.Text = "Limited?"
         Me.ChkLimited.UseVisualStyleBackColor = True
         '
+        'chkShowTipPopups
+        '
+        Me.chkShowTipPopups.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.chkShowTipPopups.AutoSize = True
+        Me.chkShowTipPopups.Location = New System.Drawing.Point(326, 203)
+        Me.chkShowTipPopups.Name = "chkShowTipPopups"
+        Me.chkShowTipPopups.Size = New System.Drawing.Size(110, 17)
+        Me.chkShowTipPopups.TabIndex = 59
+        Me.chkShowTipPopups.Text = "Show Tip Popups"
+        Me.chkShowTipPopups.UseVisualStyleBackColor = True
+        '
         'Alerts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(987, 458)
+        Me.Controls.Add(Me.chkShowTipPopups)
         Me.Controls.Add(Me.ChkLimited)
         Me.Controls.Add(Me.BtnCancel)
         Me.Controls.Add(Me.Label4)
@@ -452,4 +465,5 @@ Partial Class Alerts
     Friend WithEvents colLimit As ColumnHeader
     Friend WithEvents ChkLimited As CheckBox
     Friend WithEvents ToolTip As ToolTip
+    Friend WithEvents chkShowTipPopups As CheckBox
 End Class

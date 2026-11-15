@@ -129,20 +129,24 @@ Public Class IgnoredWordsAndPhrases
                     .SubItems(colDateCreated.Index).Text = Date.Now.ToLongDateString
 
                     If Not strOldRuleText.Equals(TxtIgnored.Text, StringComparison.OrdinalIgnoreCase) Then
-                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
-                        .intHits = 0
-                        .dateOfLastOccurrence = Date.MinValue
-                        .timeSpanOfLastOccurrence = TimeSpan.MinValue
-                        .SubItems(colHits.Index).Text = "0"
-                        .SubItems(colDateOfLastEvent.Index).Text = ""
-                        .SubItems(colSinceLastEvent.Index).Text = ""
-                        .intHits = 0
+                        Dim data As IgnoredStatsEntry = Nothing
+                        Dim sinceLastEvent As TimeSpan
+
+                        If IgnoredStats.TryGetValue(strOldRuleText, data) Then IgnoredStats.TryAdd(TxtIgnored.Text, data)
+                        sinceLastEvent = Now - data.LastEvent
+
+                        IgnoredStats.TryRemove(strOldRuleText, Nothing)
+
+                        .intHits = data.Hits
+                        .dateOfLastOccurrence = data.LastEvent
+                        .timeSpanOfLastOccurrence = sinceLastEvent
+                        .SubItems(colHits.Index).Text = .intHits.ToString("N0")
+                        .SubItems(colDateOfLastEvent.Index).Text = $"{data.LastEvent.ToLocalTime:D} {data.LastEvent.ToLocalTime:T}"
+                        .SubItems(colSinceLastEvent.Index).Text = TimespanToHMS(sinceLastEvent)
                     End If
 
                     If .BoolEnabled Then
                         .BackColor = Color.LightGreen
-                        .SubItems(colHits.Index).Text = "0"
-                        .intHits = 0
                     Else
                         .BackColor = Color.Pink
                         .SubItems(colHits.Index).Text = ""
@@ -151,7 +155,7 @@ Public Class IgnoredWordsAndPhrases
                         .intHits = 0
                         .dateOfLastOccurrence = Date.MinValue
                         .timeSpanOfLastOccurrence = TimeSpan.MinValue
-                        IgnoredStats.TryRemove(.SubItems(Ignored.Index).Text, Nothing)
+                        IgnoredStats.TryRemove(strOldRuleText, Nothing)
                     End If
                 End With
 
@@ -325,6 +329,7 @@ Public Class IgnoredWordsAndPhrases
         ChkAutoRefresh.Checked = My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Checked = My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
+        chkShowTipPopups.Checked = My.Settings.ShowTipBalloons
 
         Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
 
@@ -624,13 +629,14 @@ Public Class IgnoredWordsAndPhrases
                 My.Settings.ignored2 = tempIgnored
                 My.Settings.Save()
 
-                MsgBox("Data imported successfully.", MsgBoxStyle.Information, Text)
+                MsgBox("Data imported successfully, the window will now close.", MsgBoxStyle.Information, Text)
                 boolChanged = True
             Catch ex As Newtonsoft.Json.JsonSerializationException
                 MsgBox("There was an error decoding the JSON data.", MsgBoxStyle.Critical, Text)
             Finally
                 UpdateRuleLabels()
                 boolCurrentlyEditing = False
+                Close()
             End Try
         End If
     End Sub
@@ -907,22 +913,26 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub ChkRecord_MouseHover(sender As Object, e As EventArgs) Handles ChkRecord.MouseHover
-        ShowBalloonFor(ChkRecord, "Makes it so that even if the log is ignored, the log text is still recorded in program memory and not written to disk.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkRecord, "Makes it so that even if the log is ignored, the log text is still recorded in program memory and not written to disk.", 4000)
     End Sub
 
     Private Sub txtComment_MouseHover(sender As Object, e As EventArgs) Handles txtComment.MouseHover
-        ShowBalloonAtCursor(Me, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonAtCursor(Me, "A comment about the ignored word or phrase, that way if you come back in a year, you can understand the context of your rule.", 4000)
     End Sub
 
     Private Sub TxtIgnored_MouseHover(sender As Object, e As EventArgs) Handles TxtIgnored.MouseHover
-        ShowBalloonAtCursor(Me, "This is your actual rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonAtCursor(Me, "This is your actual rule.", 4000)
     End Sub
 
     Private Sub ChkEnabled_MouseHover(sender As Object, e As EventArgs) Handles ChkEnabled.MouseHover
-        ShowBalloonFor(ChkEnabled, "Use this checkbox to enable or disable the ignored word or phrase rule.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkEnabled, "Use this checkbox to enable or disable the ignored word or phrase rule.", 4000)
     End Sub
 
     Private Sub ChkRegex_MouseHover(sender As Object, e As EventArgs) Handles ChkRegex.MouseHover
-        ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+        If chkShowTipPopups.Checked Then ShowBalloonFor(ChkRegex, "Regular expressions are very powerful, yet can be complex to create and maintain. With great power comes great responsibility.", 4000)
+    End Sub
+
+    Private Sub chkShowTipPopups_Click(sender As Object, e As EventArgs) Handles chkShowTipPopups.Click
+        My.Settings.ShowTipBalloons = chkShowTipPopups.Checked
     End Sub
 End Class

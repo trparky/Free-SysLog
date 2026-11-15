@@ -70,6 +70,7 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblTotalRules = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblActiveRules = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblInactiveRules = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.chkShowTipPopups = New System.Windows.Forms.CheckBox()
         Me.ListViewMenu.SuspendLayout()
         Me.StatusStrip.SuspendLayout()
         Me.SuspendLayout()
@@ -474,11 +475,23 @@ Partial Class IgnoredWordsAndPhrases
         Me.lblInactiveRules.Size = New System.Drawing.Size(91, 17)
         Me.lblInactiveRules.Text = "Inactive Rules: 0"
         '
+        'chkShowTipPopups
+        '
+        Me.chkShowTipPopups.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.chkShowTipPopups.AutoSize = True
+        Me.chkShowTipPopups.Location = New System.Drawing.Point(823, 244)
+        Me.chkShowTipPopups.Name = "chkShowTipPopups"
+        Me.chkShowTipPopups.Size = New System.Drawing.Size(110, 17)
+        Me.chkShowTipPopups.TabIndex = 58
+        Me.chkShowTipPopups.Text = "Show Tip Popups"
+        Me.chkShowTipPopups.UseVisualStyleBackColor = True
+        '
         'IgnoredWordsAndPhrases
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1118, 437)
+        Me.Controls.Add(Me.chkShowTipPopups)
         Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.ChkRecord)
         Me.Controls.Add(Me.ChkRefreshOnlyIfActive)
@@ -565,4 +578,5 @@ Partial Class IgnoredWordsAndPhrases
     Friend WithEvents lblTotalRules As ToolStripStatusLabel
     Friend WithEvents lblActiveRules As ToolStripStatusLabel
     Friend WithEvents lblInactiveRules As ToolStripStatusLabel
+    Friend WithEvents chkShowTipPopups As CheckBox
 End Class
