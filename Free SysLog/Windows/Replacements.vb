@@ -144,7 +144,7 @@ Public Class Replacements
         Regex.Width = My.Settings.colReplacementsRegex
         CaseSensitive.Width = My.Settings.colReplacementsCaseSensitive
         ColEnabled.Width = My.Settings.colReplacementsEnabled
-        chkShowTipPopups.Checked = My.Settings.ShowTipPopupsOnReplacementsWindow
+        chkShowTipPopups.Checked = My.Settings.ShowTipBalloons
 
         Size = My.Settings.ConfigureReplacementsSize
 
@@ -472,6 +472,6 @@ Public Class Replacements
     End Sub
 
     Private Sub chkShowTipPopups_Click(sender As Object, e As EventArgs) Handles chkShowTipPopups.Click
-        My.Settings.ShowTipPopupsOnReplacementsWindow = chkShowTipPopups.Checked
+        My.Settings.ShowTipBalloons = chkShowTipPopups.Checked
     End Sub
 End Class

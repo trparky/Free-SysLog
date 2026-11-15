@@ -371,13 +371,7 @@
     <Setting Name="ShowAsAlertedEvenIfLimitedByTime" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="ShowTipPopupsOnIgnoredWordsAndPhrasesWindow" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="ShowTipPopupsOnAlertsWindow" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="ShowTipPopupsOnReplacementsWindow" Type="System.Boolean" Scope="User">
+    <Setting Name="ShowTipBalloons" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

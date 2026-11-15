@@ -93,7 +93,7 @@ Public Class Alerts
         CaseSensitive.Width = My.Settings.colAlertsCaseSensitive
         AlertTypeColumn.Width = My.Settings.colAlertsType
         ColEnabled.Width = My.Settings.colAlertsEnabled
-        chkShowTipPopups.Checked = My.Settings.ShowTipPopupsOnAlertsWindow
+        chkShowTipPopups.Checked = My.Settings.ShowTipBalloons
 
         Size = My.Settings.ConfigureAlertsSize
 
@@ -557,6 +557,6 @@ Public Class Alerts
     End Sub
 
     Private Sub chkShowTipPopups_Click(sender As Object, e As EventArgs) Handles chkShowTipPopups.Click
-        My.Settings.ShowTipPopupsOnAlertsWindow = chkShowTipPopups.Checked
+        My.Settings.ShowTipBalloons = chkShowTipPopups.Checked
     End Sub
 End Class

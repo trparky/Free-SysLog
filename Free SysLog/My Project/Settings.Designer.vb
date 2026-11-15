@@ -1523,36 +1523,12 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-        Public Property ShowTipPopupsOnIgnoredWordsAndPhrasesWindow() As Boolean
+        Public Property ShowTipBalloons() As Boolean
             Get
-                Return CType(Me("ShowTipPopupsOnIgnoredWordsAndPhrasesWindow"),Boolean)
+                Return CType(Me("ShowTipBalloons"),Boolean)
             End Get
             Set
-                Me("ShowTipPopupsOnIgnoredWordsAndPhrasesWindow") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-        Public Property ShowTipPopupsOnAlertsWindow() As Boolean
-            Get
-                Return CType(Me("ShowTipPopupsOnAlertsWindow"),Boolean)
-            End Get
-            Set
-                Me("ShowTipPopupsOnAlertsWindow") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
-        Public Property ShowTipPopupsOnReplacementsWindow() As Boolean
-            Get
-                Return CType(Me("ShowTipPopupsOnReplacementsWindow"),Boolean)
-            End Get
-            Set
-                Me("ShowTipPopupsOnReplacementsWindow") = value
+                Me("ShowTipBalloons") = value
             End Set
         End Property
     End Class

@@ -329,7 +329,7 @@ Public Class IgnoredWordsAndPhrases
         ChkAutoRefresh.Checked = My.Settings.AutomaticStatRefreshOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Checked = My.Settings.AutomaticStatRefreshOnIfActiveOnIgnoredWordsAndPhrases
         ChkRefreshOnlyIfActive.Enabled = ChkAutoRefresh.Checked
-        chkShowTipPopups.Checked = My.Settings.ShowTipPopupsOnIgnoredWordsAndPhrasesWindow
+        chkShowTipPopups.Checked = My.Settings.ShowTipBalloons
 
         Text = If(ChkAutoRefresh.Checked, $"{strWindowTitle} — Auto Refresh Enabled", $"{strWindowTitle} — Auto Refresh Paused")
 
@@ -933,6 +933,6 @@ Public Class IgnoredWordsAndPhrases
     End Sub
 
     Private Sub chkShowTipPopups_Click(sender As Object, e As EventArgs) Handles chkShowTipPopups.Click
-        My.Settings.ShowTipPopupsOnIgnoredWordsAndPhrasesWindow = chkShowTipPopups.Checked
+        My.Settings.ShowTipBalloons = chkShowTipPopups.Checked
     End Sub
 End Class
