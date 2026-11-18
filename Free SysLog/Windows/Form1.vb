@@ -1834,9 +1834,10 @@ Public Class Form1
     Public Sub WriteLogsToDisk()
         Dim collectionOfSavedData As New List(Of SavedData)
         Dim myItem As MyDataGridViewRow
+        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
         Try
-            For Each item As DataGridViewRow In Logs.Rows
+            For Each item As DataGridViewRow In snapshotOfLogs
                 If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                     myItem = DirectCast(item, MyDataGridViewRow)
 
