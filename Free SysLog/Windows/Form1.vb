@@ -557,7 +557,7 @@ Public Class Form1
                                                       MsgBox($"Search terms not found.{vbCrLf}{vbCrLf}The search took {MyRoundingFunction(stopWatch.Elapsed.TotalMilliseconds / 1000, 2)} seconds.", MsgBoxStyle.Information, Text)
                                                   End If
 
-                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                                  BtnSearch.Enabled = True
                                               End Sub
 
         worker.RunWorkerAsync()
@@ -1523,7 +1523,7 @@ Public Class Form1
                                                       MsgBox("No logs match the limit you set.", MsgBoxStyle.Information, Text)
                                                   End If
 
-                                                  Invoke(Sub() BtnSearch.Enabled = True)
+                                                  BtnSearch.Enabled = True
                                               End Sub
 
         worker.RunWorkerAsync()
