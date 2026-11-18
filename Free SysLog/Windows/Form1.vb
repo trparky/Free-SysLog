@@ -508,42 +508,40 @@ Public Class Form1
 
         Dim worker As New BackgroundWorker()
 
+        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = Logs.Rows.Cast(Of MyDataGridViewRow).Select(Function(row As MyDataGridViewRow) DirectCast(row.Clone(), MyDataGridViewRow)).ToList()
+
         AddHandler worker.DoWork, Sub()
-                                      Try
-                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+                                      Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
 
-                                          If ChkRegExSearch.Checked Then
-                                              regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                          Else
-                                              regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                          End If
+                                      If ChkRegExSearch.Checked Then
+                                          regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
+                                      Else
+                                          regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
+                                      End If
 
-                                          For Each item As DataGridViewRow In Logs.Rows
-                                              MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
+                                      For Each item As DataGridViewRow In snapshotOfLogs
+                                          MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
 
-                                              If MyDataGridRowItem IsNot Nothing Then
-                                                  strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
+                                          If MyDataGridRowItem IsNot Nothing Then
+                                              strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
 
-                                                  If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                                      boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                  ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                                                      boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                  ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-                                                      boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                  ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-                                                      boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
-                                                  Else
-                                                      boolDoesLogMatchLimitedSearch = True
-                                                  End If
-
-                                                  If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
-                                                      listOfSearchResults.Add(MyDataGridRowItem.Clone())
-                                                  End If
+                                              If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                              Else
+                                                  boolDoesLogMatchLimitedSearch = True
                                               End If
-                                          Next
-                                      Catch ex As ArgumentException
-                                          MsgBox("Malformed RegEx pattern detected, search aborted.", MsgBoxStyle.Critical, Text)
-                                      End Try
+
+                                              If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
+                                                  listOfSearchResults.Add(MyDataGridRowItem)
+                                              End If
+                                          End If
+                                      Next
                                   End Sub
 
         AddHandler worker.RunWorkerCompleted, Sub()
@@ -1488,26 +1486,28 @@ Public Class Form1
 
         If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
 
+        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = Logs.Rows.Cast(Of MyDataGridViewRow).Select(Function(row As MyDataGridViewRow) DirectCast(row.Clone(), MyDataGridViewRow)).ToList()
+
         AddHandler worker.DoWork, Sub()
-                                      Threading.Tasks.Parallel.ForEach(Logs.Rows.Cast(Of MyDataGridViewRow), parallelForEachLoopOptions, Sub(item As MyDataGridViewRow)
-                                                                                                                                             If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                                                                                 SyncLock listOfSearchResults
-                                                                                                                                                     listOfSearchResults.Add(item.Clone)
-                                                                                                                                                 End SyncLock
-                                                                                                                                             ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                                                                                 SyncLock listOfSearchResults
-                                                                                                                                                     listOfSearchResults.Add(item.Clone)
-                                                                                                                                                 End SyncLock
-                                                                                                                                             ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                                                                                 SyncLock listOfSearchResults
-                                                                                                                                                     listOfSearchResults.Add(item.Clone)
-                                                                                                                                                 End SyncLock
-                                                                                                                                             ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
-                                                                                                                                                 SyncLock listOfSearchResults
-                                                                                                                                                     listOfSearchResults.Add(item.Clone)
-                                                                                                                                                 End SyncLock
-                                                                                                                                             End If
-                                                                                                                                         End Sub)
+                                      Threading.Tasks.Parallel.ForEach(snapshotOfLogs, parallelForEachLoopOptions, Sub(item As MyDataGridViewRow)
+                                                                                                                       If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                           SyncLock listOfSearchResults
+                                                                                                                               listOfSearchResults.Add(item)
+                                                                                                                           End SyncLock
+                                                                                                                       ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                           SyncLock listOfSearchResults
+                                                                                                                               listOfSearchResults.Add(item)
+                                                                                                                           End SyncLock
+                                                                                                                       ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                           SyncLock listOfSearchResults
+                                                                                                                               listOfSearchResults.Add(item)
+                                                                                                                           End SyncLock
+                                                                                                                       ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) AndAlso String.Equals(item.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                           SyncLock listOfSearchResults
+                                                                                                                               listOfSearchResults.Add(item)
+                                                                                                                           End SyncLock
+                                                                                                                       End If
+                                                                                                                   End Sub)
                                   End Sub
 
 
