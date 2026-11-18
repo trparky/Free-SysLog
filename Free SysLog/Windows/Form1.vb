@@ -549,6 +549,8 @@ Public Class Form1
                                   End Sub
 
         AddHandler worker.RunWorkerCompleted, Sub()
+                                                  snapshotOfLogs.Clear()
+
                                                   If listOfSearchResults.Any() Then
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                       searchResultsWindow.LogsLoadedInLabel.Visible = True
@@ -1517,6 +1519,8 @@ Public Class Form1
 
 
         AddHandler worker.RunWorkerCompleted, Sub()
+                                                  snapshotOfLogs.Clear()
+
                                                   If listOfSearchResults.Any() Then
                                                       Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = Me, .Icon = Icon, .LogsToBeDisplayed = listOfSearchResults, .Text = "Search Results"}
                                                       searchResultsWindow.LogsLoadedInLabel.Visible = True
@@ -1857,6 +1861,8 @@ Public Class Form1
                                           })
                 End If
             Next
+
+            snapshotOfLogs.Clear()
 
             WriteFileAtomically(strPathToDataFile, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
 
