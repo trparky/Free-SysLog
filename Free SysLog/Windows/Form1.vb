@@ -499,29 +499,28 @@ Public Class Form1
             Exit Sub
         End If
 
+        Dim boolIsRegexSearch As Boolean = ChkRegExSearch.Checked
+        Dim boolIsCaseInsensitiveSearch As Boolean = ChkCaseInsensitiveSearch.Checked
         Dim strLimitBy As String = boxLimitBy.Text
         Dim strLimiter As String = boxLimiter.Text
+        Dim strSearchTerms As String = TxtSearchTerms.Text
         Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim strLogText As String
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
-        Dim regexCompiledObject As Regex = Nothing
         Dim MyDataGridRowItem As MyDataGridViewRow
         Dim stopWatch As Stopwatch = Stopwatch.StartNew
 
         BtnSearch.Enabled = False
+
+        If Not boolIsRegexSearch Then strSearchTerms = Regex.Escape(strSearchTerms)
 
         Dim worker As New BackgroundWorker()
 
         Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
         AddHandler worker.DoWork, Sub()
-                                      Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
-
-                                      If ChkRegExSearch.Checked Then
-                                          regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                      Else
-                                          regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                      End If
+                                      Dim regExOptions As RegexOptions = If(boolIsCaseInsensitiveSearch, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+                                      Dim regexCompiledObject As Regex = New Regex(strSearchTerms, regExOptions)
 
                                       For Each item As DataGridViewRow In snapshotOfLogs
                                           MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
