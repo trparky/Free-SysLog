@@ -18,7 +18,6 @@ Public Class Form1
     Public IgnoredLogs As New ThreadSafeList(Of MyDataGridViewRow)
     Public intSortColumnIndex As Integer = 0 ' Define intColumnNumber at class level
     Public sortOrder As SortOrder = SortOrder.Ascending ' Define soSortOrder at class level
-    Public ReadOnly IgnoredLogsLockObject As New Object
     Private Const strBuyMeACoffee As String = "https://buymeacoffee.com/trparky"
     Private serverThread As Threading.Thread
     Private SyslogTcpServer As SyslogTcpServer.SyslogTcpServer
@@ -617,19 +616,17 @@ Public Class Form1
 
     Private Sub ClearIgnoredLogsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearIgnoredLogsToolStripMenuItem.Click
         If MsgBox("Are you sure you want to clear the ignored logs stored in system memory?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then
-            SyncLock IgnoredLogsLockObject
-                IgnoredLogs.Clear()
+            IgnoredLogs.Clear()
 
-                GC.Collect()
+            GC.Collect()
 
-                ClearIgnoredLogsToolStripMenuItem.Enabled = False
+            ClearIgnoredLogsToolStripMenuItem.Enabled = False
 
-                If My.Settings.recordIgnoredLogs Then
-                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {IgnoredLogs.Count:N0}"
-                Else
-                    LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
-                End If
-            End SyncLock
+            If My.Settings.recordIgnoredLogs Then
+                LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {IgnoredLogs.Count:N0}"
+            Else
+                LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
+            End If
         End If
     End Sub
 

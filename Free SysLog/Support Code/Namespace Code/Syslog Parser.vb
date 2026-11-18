@@ -529,46 +529,44 @@ Namespace SyslogParser
                                   End Sub)
             ElseIf boolIgnored Then
                 If My.Settings.recordIgnoredLogs Or boolRecordIgnoredLog Then
-                    SyncLock ParentForm.IgnoredLogsLockObject
-                        Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
-                                                                                  dateObject:=currentDate,
-                                                                                  strTime:=currentDate.ToString,
-                                                                                  strSourceAddress:=strSourceIP,
-                                                                                  strHostname:=strHostname,
-                                                                                  strRemoteProcess:=strRemoteProcess,
-                                                                                  strLog:=strLogText,
-                                                                                  strLogType:=strPriorityString,
-                                                                                  boolAlerted:=boolAlerted,
-                                                                                  strRawLogText:=strRawLogText.Trim,
-                                                                                  strAlertText:=strAlertText,
-                                                                                  AlertType:=alertType,
-                                                                                  dataGrid:=ParentForm.Logs
-                                                                                 )
-                        NewIgnoredItem.IgnoredPattern = strIgnoredPattern
+                    Dim NewIgnoredItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                                              dateObject:=currentDate,
+                                                                              strTime:=currentDate.ToString,
+                                                                              strSourceAddress:=strSourceIP,
+                                                                              strHostname:=strHostname,
+                                                                              strRemoteProcess:=strRemoteProcess,
+                                                                              strLog:=strLogText,
+                                                                              strLogType:=strPriorityString,
+                                                                              boolAlerted:=boolAlerted,
+                                                                              strRawLogText:=strRawLogText.Trim,
+                                                                              strAlertText:=strAlertText,
+                                                                              AlertType:=alertType,
+                                                                              dataGrid:=ParentForm.Logs
+                                                                             )
+                    NewIgnoredItem.IgnoredPattern = strIgnoredPattern
 
-                        If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
-                            ParentForm.IgnoredLogs.Add(NewIgnoredItem)
-                        Else
-                            While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                                ParentForm.IgnoredLogs.TryRemoveAt(0)
-                            End While
+                    If ParentForm.IgnoredLogs.Count < My.Settings.LimitNumberOfIgnoredLogs Then
+                        ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                    Else
+                        While ParentForm.IgnoredLogs.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                            ParentForm.IgnoredLogs.TryRemoveAt(0)
+                        End While
 
-                            ParentForm.IgnoredLogs.Add(NewIgnoredItem)
-                        End If
+                        ParentForm.IgnoredLogs.Add(NewIgnoredItem)
+                    End If
 
-                        If My.Settings.recordIgnoredLogs Then
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {ParentForm.IgnoredLogs.Count:N0}"
-                        Else
-                            ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
-                            ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
-                        End If
+                    If My.Settings.recordIgnoredLogs Then
+                        ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {ParentForm.IgnoredLogs.Count:N0}"
+                    Else
+                        ParentForm.ZerooutIgnoredLogsCounterToolStripMenuItem.Enabled = True
+                        ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
+                    End If
 
-                        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
-                            If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)
-                        End SyncLock
-
-                        ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
+                    SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
+                        If IgnoredLogsAndSearchResultsInstance IsNot Nothing Then IgnoredLogsAndSearchResultsInstance.AddIgnoredDatagrid(NewIgnoredItem)
                     End SyncLock
+
+                    ParentForm.Invoke(Sub() ParentForm.ClearIgnoredLogsToolStripMenuItem.Enabled = True)
                 Else
                     ParentForm.LblNumberOfIgnoredIncomingLogs.Text = $"Number of Ignored Incoming Logs: {longNumberOfIgnoredLogs:N0}"
                 End If
