@@ -489,6 +489,10 @@ Public Class Form1
         Process.GetCurrentProcess.Kill()
     End Sub
 
+    Private Function GetLogsSnapshot() As List(Of MyDataGridViewRow)
+        Return Logs.Rows.Cast(Of MyDataGridViewRow).Select(Function(row As MyDataGridViewRow) DirectCast(row.Clone(), MyDataGridViewRow)).ToList()
+    End Function
+
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
         If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
             MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
@@ -508,7 +512,7 @@ Public Class Form1
 
         Dim worker As New BackgroundWorker()
 
-        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = Logs.Rows.Cast(Of MyDataGridViewRow).Select(Function(row As MyDataGridViewRow) DirectCast(row.Clone(), MyDataGridViewRow)).ToList()
+        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
         AddHandler worker.DoWork, Sub()
                                       Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
@@ -1486,7 +1490,7 @@ Public Class Form1
 
         If strLimiter.Equals(strBlank, StringComparison.OrdinalIgnoreCase) Then strLimiter = ""
 
-        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = Logs.Rows.Cast(Of MyDataGridViewRow).Select(Function(row As MyDataGridViewRow) DirectCast(row.Clone(), MyDataGridViewRow)).ToList()
+        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
         AddHandler worker.DoWork, Sub()
                                       Threading.Tasks.Parallel.ForEach(snapshotOfLogs, parallelForEachLoopOptions, Sub(item As MyDataGridViewRow)
