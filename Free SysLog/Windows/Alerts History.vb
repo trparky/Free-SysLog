@@ -95,22 +95,20 @@ Public Class Alerts_History
                 Dim stopwatch As Stopwatch = Stopwatch.StartNew()
                 Dim data As New ThreadSafeList(Of AlertsHistoryDataGridViewRow)
 
-                SyncLock ParentForm.dataGridLockObject
-                    For Each item As MyDataGridViewRow In ParentForm.Logs.Rows
-                        If item.BoolAlerted Then
-                            data.Add(New AlertsHistory With {
-                                     .strTime = item.Cells(SupportCode.ColumnIndex_ComputedTime).Value,
-                                     .alertType = item.alertType,
-                                     .strAlertText = item.AlertText,
-                                     .strIP = item.Cells(SupportCode.ColumnIndex_IPAddress).Value,
-                                     .strLog = item.Cells(SupportCode.ColumnIndex_LogText).Value,
-                                     .strRawLog = item.RawLogData,
-                                     .strFileName = "(Current Logs)",
-                                     .alertDate = item.DateObject
-                                    }.MakeDataGridRow(AlertHistoryList))
-                        End If
-                    Next
-                End SyncLock
+                For Each item As MyDataGridViewRow In ParentForm.Logs.Rows
+                    If item.BoolAlerted Then
+                        data.Add(New AlertsHistory With {
+                                    .strTime = item.Cells(SupportCode.ColumnIndex_ComputedTime).Value,
+                                    .alertType = item.alertType,
+                                    .strAlertText = item.AlertText,
+                                    .strIP = item.Cells(SupportCode.ColumnIndex_IPAddress).Value,
+                                    .strLog = item.Cells(SupportCode.ColumnIndex_LogText).Value,
+                                    .strRawLog = item.RawLogData,
+                                    .strFileName = "(Current Logs)",
+                                    .alertDate = item.DateObject
+                                }.MakeDataGridRow(AlertHistoryList))
+                    End If
+                Next
 
                 If chkShowAlertsFromAllFiles.Checked Then
                     Dim filesInDirectory As FileInfo()

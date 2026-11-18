@@ -89,13 +89,11 @@ Namespace SyslogParser
             End If
 
             ParentForm.Invoke(Sub()
-                                  SyncLock ParentForm.dataGridLockObject
-                                      ParentForm.Logs.Rows.Add(MakeLocalDataGridRowEntry(strLogText, ParentForm.Logs))
-                                      ParentForm.UpdateLogCount()
-                                      ParentForm.SelectLatestLogEntry()
-                                      ParentForm.BtnSaveLogsToDisk.Enabled = True
-                                      If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(ParentForm.Logs, ParentForm.intSortColumnIndex, ListSortDirection.Descending)
-                                  End SyncLock
+                                  ParentForm.Logs.Rows.Add(MakeLocalDataGridRowEntry(strLogText, ParentForm.Logs))
+                                  ParentForm.UpdateLogCount()
+                                  ParentForm.SelectLatestLogEntry()
+                                  ParentForm.BtnSaveLogsToDisk.Enabled = True
+                                  If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(ParentForm.Logs, ParentForm.intSortColumnIndex, ListSortDirection.Descending)
 
                                   ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
                                   ParentForm.UpdateLogCount()
@@ -500,29 +498,27 @@ Namespace SyslogParser
             End If
 
             If Not boolIgnored Then
-                SyncLock ParentForm.dataGridLockObject
-                    ParentForm.Logs.Invoke(Sub()
-                                               If Not boolAlerted Then strAlertText = Nothing
+                ParentForm.Logs.Invoke(Sub()
+                                           If Not boolAlerted Then strAlertText = Nothing
 
-                                               Dim newItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
-                                                             dateObject:=currentDate,
-                                                             strTime:=currentDate.ToString,
-                                                             strSourceAddress:=strSourceIP,
-                                                             strHostname:=strHostname,
-                                                             strRemoteProcess:=strRemoteProcess,
-                                                             strLog:=strLogText,
-                                                             strLogType:=strPriorityString,
-                                                             boolAlerted:=boolAlerted,
-                                                             strRawLogText:=strRawLogText.Trim,
-                                                             strAlertText:=strAlertText,
-                                                             AlertType:=alertType,
-                                                             dataGrid:=ParentForm.Logs)
+                                           Dim newItem As MyDataGridViewRow = MakeDataGridRow(serverTimeStamp:=serverDate,
+                                                         dateObject:=currentDate,
+                                                         strTime:=currentDate.ToString,
+                                                         strSourceAddress:=strSourceIP,
+                                                         strHostname:=strHostname,
+                                                         strRemoteProcess:=strRemoteProcess,
+                                                         strLog:=strLogText,
+                                                         strLogType:=strPriorityString,
+                                                         boolAlerted:=boolAlerted,
+                                                         strRawLogText:=strRawLogText.Trim,
+                                                         strAlertText:=strAlertText,
+                                                         AlertType:=alertType,
+                                                         dataGrid:=ParentForm.Logs)
 
-                                               newItem.GUID = rowGUID
-                                               ParentForm.Logs.Rows.Add(newItem)
-                                           End Sub)
-                    If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(ParentForm.Logs, ParentForm.intSortColumnIndex, ListSortDirection.Descending)
-                End SyncLock
+                                           newItem.GUID = rowGUID
+                                           ParentForm.Logs.Rows.Add(newItem)
+                                       End Sub)
+                If ParentForm.intSortColumnIndex = 0 And ParentForm.sortOrder = SortOrder.Descending Then InitializeMyDataGridViewRowComparer.InitializeMyDataGridViewRowComparer(ParentForm.Logs, ParentForm.intSortColumnIndex, ListSortDirection.Descending)
 
                 ParentForm.NotifyIcon.Text = $"Free SysLog{vbCrLf}Last log received at {currentDate}."
                 ParentForm.UpdateLogCount()
