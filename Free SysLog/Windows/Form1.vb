@@ -668,12 +668,15 @@ Public Class Form1
 
                     Dim intOldCount As Integer = Logs.Rows.Count
                     Dim newListOfLogs As New List(Of MyDataGridViewRow)
+                    Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
-                    For Each item As MyDataGridViewRow In Logs.Rows
+                    For Each item As MyDataGridViewRow In snapshotOfLogs
                         If item.DateObject.Date >= dateChosenDate.Date Then
-                            newListOfLogs.Add(item.Clone())
+                            newListOfLogs.Add(item)
                         End If
                     Next
+
+                    snapshotOfLogs.Clear()
 
                     Logs.Enabled = True
                     Logs.AllowUserToOrderColumns = True
@@ -1175,8 +1178,9 @@ Public Class Form1
         Dim collectionOfSavedData As New List(Of SavedData)
 
         Dim myItem As MyDataGridViewRow
+        Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
-        For Each item As DataGridViewRow In Logs.Rows
+        For Each item As MyDataGridViewRow In snapshotOfLogs
             If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
                 myItem = DirectCast(item, MyDataGridViewRow)
 
@@ -1189,6 +1193,8 @@ Public Class Form1
                                           })
             End If
         Next
+
+        snapshotOfLogs.Clear()
 
         Dim ViewLogBackups As New ViewLogBackups With {.Icon = Icon, .MyParentForm = Me, .currentLogs = collectionOfSavedData}
         ViewLogBackups.Show(Me)
@@ -1928,12 +1934,15 @@ Public Class Form1
             Dim intOldCount As Integer = Logs.Rows.Count
             Dim newListOfLogs As New List(Of MyDataGridViewRow)
             Dim dateChosenDate As Date = Now.AddDays(daysToKeep * -1)
+            Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
-            For Each item As MyDataGridViewRow In Logs.Rows
+            For Each item As MyDataGridViewRow In snapshotOfLogs
                 If item.DateObject.Date >= dateChosenDate Then
-                    newListOfLogs.Add(item.Clone())
+                    newListOfLogs.Add(item)
                 End If
             Next
+
+            snapshotOfLogs.Clear()
 
             If MsgBox("Do you want to make a backup of the logs before deleting them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo + vbDefaultButton2, Text) = MsgBoxResult.Yes Then MakeLogBackup()
 
