@@ -350,6 +350,15 @@ Public Class ViewLogBackups
         If boolDoneLoading Then My.Settings.ViewLogBackupsSize = Size
     End Sub
 
+    Private Function ShowMessageOnUIThread(message As String, style As MsgBoxStyle, title As String) As MsgBoxResult
+        If InvokeRequired Then
+            Dim showMessage As Func(Of MsgBoxResult) = Function() ShowMessageOnUIThread(message, style, title)
+            Return Invoke(showMessage)
+        End If
+
+        Return MsgBox(message, style, title)
+    End Function
+
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
         If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
             MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
@@ -466,11 +475,11 @@ Public Class ViewLogBackups
 
                                           If listOfSearchResults.Count > 4000 Then
                                               If Not My.Settings.IgnoreSearchResultLimits Then
-                                                  MsgBox($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information, Text)
+                                                  ShowMessageOnUIThread($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information + MsgBoxStyle.ApplicationModal, Text)
                                                   boolShowSearchResults = False
                                                   Exit Sub
                                               Else
-                                                  If MsgBox("There are more than 4000 search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
+                                                  If ShowMessageOnUIThread("There are more than 4000 search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
                                                       boolShowSearchResults = False
                                                       Exit Sub
                                                   End If
