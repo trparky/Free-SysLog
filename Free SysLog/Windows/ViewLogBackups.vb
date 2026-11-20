@@ -432,16 +432,16 @@ Public Class ViewLogBackups
                                                                                                                          myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
 
                                                                                                                          SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                                                             If My.Settings.font IsNot Nothing Then
+                                                                                                                                 myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
+                                                                                                                             End If
+
                                                                                                                              listOfSearchResults.Add(myDataGridRow)
                                                                                                                          End SyncLock
                                                                                                                      End If
                                                                                                                  Next
                                                                                                              End If
                                                                                                          End Sub)
-
-                                          For Each item As MyDataGridViewRow In listOfSearchResults
-                                              If My.Settings.font IsNot Nothing Then item.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
-                                          Next
 
                                           For Each item As SavedData In currentLogs
                                               If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
