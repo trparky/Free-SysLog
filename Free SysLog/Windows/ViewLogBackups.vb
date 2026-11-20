@@ -356,13 +356,15 @@ Public Class ViewLogBackups
             Exit Sub
         End If
 
+        Dim boolIsRegexSearch As Boolean = ChkRegExSearch.Checked
+        Dim boolIsCaseInsensitiveSearch As Boolean = ChkCaseInsensitiveSearch.Checked
         Dim strLimitBy As String = boxLimitBy.Text
         Dim strLimiter As String = boxLimiter.Text
+        Dim strSearchTerms As String = TxtSearchTerms.Text
         Dim boolShowSearchResults As Boolean = True
         Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
-        Dim regexCompiledObject As Regex = Nothing
         Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results"}
         searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
 
@@ -370,18 +372,15 @@ Public Class ViewLogBackups
 
         BtnSearch.Enabled = False
 
+        If Not boolIsRegexSearch Then strSearchTerms = Regex.Escape(strSearchTerms)
+
         Dim worker As New BackgroundWorker()
         Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
         AddHandler worker.DoWork, Sub()
                                       Try
-                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
-
-                                          If ChkRegExSearch.Checked Then
-                                              regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                          Else
-                                              regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                          End If
+                                          Dim regExOptions As RegexOptions = If(boolIsCaseInsensitiveSearch, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+                                          Dim regexCompiledObject As Regex = New Regex(strSearchTerms, regExOptions)
 
                                           Dim filesInDirectory As FileInfo()
 
