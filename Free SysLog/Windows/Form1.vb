@@ -507,7 +507,6 @@ Public Class Form1
         Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim strLogText As String
         Dim listOfSearchResults As New List(Of MyDataGridViewRow)
-        Dim MyDataGridRowItem As MyDataGridViewRow
         Dim stopWatch As Stopwatch = Stopwatch.StartNew
 
         BtnSearch.Enabled = False
@@ -522,26 +521,24 @@ Public Class Form1
                                       Dim regExOptions As RegexOptions = If(boolIsCaseInsensitiveSearch, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
                                       Dim regexCompiledObject As Regex = New Regex(strSearchTerms, regExOptions)
 
-                                      For Each item As DataGridViewRow In snapshotOfLogs
-                                          MyDataGridRowItem = TryCast(item, MyDataGridViewRow)
-
-                                          If MyDataGridRowItem IsNot Nothing Then
-                                              strLogText = MyDataGridRowItem.Cells(ColumnIndex_LogText).Value
+                                      For Each item As MyDataGridViewRow In snapshotOfLogs
+                                          If item IsNot Nothing Then
+                                              strLogText = item.Cells(ColumnIndex_LogText).Value
 
                                               If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
-                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.Cells(ColumnIndex_LogType).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
                                               ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
-                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.Cells(ColumnIndex_RemoteProcess).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
                                               ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
-                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.Cells(ColumnIndex_Hostname).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
                                               ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
-                                                  boolDoesLogMatchLimitedSearch = String.Equals(MyDataGridRowItem.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                  boolDoesLogMatchLimitedSearch = String.Equals(item.Cells(ColumnIndex_IPAddress).Value, strLimiter, StringComparison.OrdinalIgnoreCase)
                                               Else
                                                   boolDoesLogMatchLimitedSearch = True
                                               End If
 
                                               If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(strLogText) AndAlso regexCompiledObject.IsMatch(strLogText) Then
-                                                  listOfSearchResults.Add(MyDataGridRowItem)
+                                                  listOfSearchResults.Add(item)
                                               End If
                                           End If
                                       Next
