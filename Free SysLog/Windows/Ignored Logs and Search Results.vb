@@ -215,7 +215,7 @@ Public Class IgnoredLogsAndSearchResults
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
                                                            For Each item As MyDataGridViewRow In LogsToBeDisplayed
-                                                               Logs.Invoke(Sub() Logs.Rows.AddRange(item))
+                                                               Logs.Invoke(Sub() Logs.Rows.Add(item))
                                                            Next
 
                                                            Invoke(Sub()
