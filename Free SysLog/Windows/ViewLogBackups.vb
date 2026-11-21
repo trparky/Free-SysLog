@@ -475,11 +475,11 @@ Public Class ViewLogBackups
 
                                           If listOfSearchResults.Count > 4000 Then
                                               If Not My.Settings.IgnoreSearchResultLimits Then
-                                                  ShowMessageOnUIThread($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information + MsgBoxStyle.ApplicationModal, Text)
+                                                  ShowMessageOnUIThread($"Your search results contains more than {4000:N0} results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information + MsgBoxStyle.ApplicationModal, Text)
                                                   boolShowSearchResults = False
                                                   Exit Sub
                                               Else
-                                                  If ShowMessageOnUIThread("There are more than 4000 search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
+                                                  If ShowMessageOnUIThread($"There are more than {4000:N0} search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
                                                       boolShowSearchResults = False
                                                       Exit Sub
                                                   End If
