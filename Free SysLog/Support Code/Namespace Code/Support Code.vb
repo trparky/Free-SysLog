@@ -771,7 +771,7 @@ Namespace SupportCode
             Else
                 If input.Contains(strQuote) Then input = input.Replace(strQuote, strQuote & strQuote)
                 If input.Contains(",") OrElse input.Contains(" ") OrElse input.Contains(strQuote) Then input = $"{strQuote}{input}{strQuote}"
-                input = input.Replace(vbCrLf, "\n")
+                input = input.Replace(vbCrLf, "\n").Replace(vbCr, "\n").Replace(vbLf, "\n")
                 Return input
             End If
         End Function
