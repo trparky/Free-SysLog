@@ -770,7 +770,7 @@ Namespace SupportCode
                 Return ""
             Else
                 If input.Contains(strQuote) Then input = input.Replace(strQuote, strQuote & strQuote)
-                If input.Contains(",") Then input = $"{strQuote}{input}{strQuote}"
+                If input.Contains(",") Or input.Contains(" ") Then input = $"{strQuote}{input}{strQuote}"
                 input = input.Replace(vbCrLf, "\n")
                 Return input
             End If
