@@ -221,7 +221,6 @@ Public Class IgnoredLogsAndSearchResults
                                                            Invoke(Sub()
                                                                       Logs.Visible = True
                                                                       Logs.ResumeLayout()
-                                                                      SortLogsByDateObject(0, sortOrder)
                                                                       lblPleaseWait.Visible = False
                                                                   End Sub)
                                                        End SyncLock
