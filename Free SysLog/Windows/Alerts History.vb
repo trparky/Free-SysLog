@@ -233,4 +233,37 @@ Public Class Alerts_History
     Public Sub SortLogsByDateObjectNoLocking(columnIndex As Integer, order As SortOrder)
         InitializeAlertsHistoryDataGridViewRowComparer.InitializeAlertsHistoryDataGridViewRowComparer(AlertHistoryList, columnIndex, order)
     End Sub
+
+    Private Sub btnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
+        If btnSearch.Text.Equals("Search", StringComparison.OrdinalIgnoreCase) Then
+            btnSearch.Text = "Clear Search"
+
+            Dim listOfSearchResults As New List(Of AlertsHistoryDataGridViewRow)
+            Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+
+            For Each item As AlertsHistoryDataGridViewRow In AlertHistoryList.Rows
+                If item.strAlertText.CaseInsensitiveContains(txtSearchTerms.Text) Then
+                    listOfSearchResults.Add(item.Clone())
+                End If
+            Next
+
+            If listOfSearchResults.Any() Then
+                AlertHistoryList.SuspendLayout()
+                AlertHistoryList.Rows.Clear()
+                AlertHistoryList.Rows.AddRange(listOfSearchResults.ToArray())
+                AlertHistoryList.AutoResizeRows()
+                AlertHistoryList.ResumeLayout()
+
+                lblNumberOfAlerts.Text = $"Number of Alerts: {listOfSearchResults.Count:N0}"
+                lblTimeTakenToLoadData.Text = $"Time Taken to Load Data: {Stopwatch.ElapsedMilliseconds}ms"
+            End If
+        Else
+            btnSearch.Text = "Search"
+            RefreshData()
+        End If
+    End Sub
+
+    Private Sub txtSearchTerms_KeyUp(sender As Object, e As KeyEventArgs) Handles txtSearchTerms.KeyUp
+        If e.KeyCode = Keys.Enter Then btnSearch.PerformClick()
+    End Sub
 End Class
