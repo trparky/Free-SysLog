@@ -376,6 +376,8 @@ Public Class ViewLogBackups
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
         Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results"}
         searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+        Dim boolSearchLogText As Boolean = radSearchLogText.Checked
+        Dim strDataToSearch2 As String = String.Empty
 
         If My.Settings.font IsNot Nothing Then searchResultsWindow.Logs.DefaultCellStyle.Font = My.Settings.font
 
@@ -404,6 +406,7 @@ Public Class ViewLogBackups
 
                                           Parallel.ForEach(filesInDirectory, parallelForEachLoopOptions, Sub(file As FileInfo)
                                                                                                              Dim dataFromFile As New List(Of SavedData)
+                                                                                                             Dim strDataToSearch As String = String.Empty
 
                                                                                                              If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
                                                                                                                  Exit Sub
@@ -439,7 +442,13 @@ Public Class ViewLogBackups
                                                                                                                          boolDoesLogMatchLimitedSearch = True
                                                                                                                      End If
 
-                                                                                                                     If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
+                                                                                                                     If boolSearchLogText Then
+                                                                                                                         strDataToSearch = item.log
+                                                                                                                     Else
+                                                                                                                         strDataToSearch = item.alertText
+                                                                                                                     End If
+
+                                                                                                                     If Not String.IsNullOrEmpty(strDataToSearch) AndAlso regexCompiledObject.IsMatch(strDataToSearch) And boolDoesLogMatchLimitedSearch Then
                                                                                                                          myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                                                          myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                                                          myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
@@ -469,7 +478,13 @@ Public Class ViewLogBackups
                                                   boolDoesLogMatchLimitedSearch = True
                                               End If
 
-                                              If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(item.log) AndAlso regexCompiledObject.IsMatch(item.log) Then
+                                              If boolSearchLogText Then
+                                                  strDataToSearch2 = item.log
+                                              Else
+                                                  strDataToSearch2 = item.alertText
+                                              End If
+
+                                              If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(strDataToSearch2) AndAlso regexCompiledObject.IsMatch(strDataToSearch2) Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
