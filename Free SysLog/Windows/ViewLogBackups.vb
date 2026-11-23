@@ -431,6 +431,10 @@ Public Class ViewLogBackups
                                                                                                                          boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                                                                                      ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
                                                                                                                          boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                                                     ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                                                     ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                                                                                      Else
                                                                                                                          boolDoesLogMatchLimitedSearch = True
                                                                                                                      End If
