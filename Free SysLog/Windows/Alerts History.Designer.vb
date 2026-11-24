@@ -34,6 +34,8 @@ Partial Class Alerts_History
         Me.chkAlertTextColumnAutoFill = New System.Windows.Forms.CheckBox()
         Me.lblTimeTakenToLoadData = New System.Windows.Forms.ToolStripStatusLabel()
         Me.chkIncludeHiddenFiles = New System.Windows.Forms.CheckBox()
+        Me.txtSearchTerms = New System.Windows.Forms.TextBox()
+        Me.btnSearch = New System.Windows.Forms.Button()
         CType(Me.AlertHistoryList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -147,6 +149,24 @@ Partial Class Alerts_History
         Me.chkIncludeHiddenFiles.Text = "Include Hidden Files"
         Me.chkIncludeHiddenFiles.UseVisualStyleBackColor = True
         '
+        'txtSearchTerms
+        '
+        Me.txtSearchTerms.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.txtSearchTerms.Location = New System.Drawing.Point(12, 399)
+        Me.txtSearchTerms.Name = "txtSearchTerms"
+        Me.txtSearchTerms.Size = New System.Drawing.Size(193, 20)
+        Me.txtSearchTerms.TabIndex = 6
+        '
+        'btnSearch
+        '
+        Me.btnSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnSearch.Location = New System.Drawing.Point(211, 397)
+        Me.btnSearch.Name = "btnSearch"
+        Me.btnSearch.Size = New System.Drawing.Size(118, 23)
+        Me.btnSearch.TabIndex = 7
+        Me.btnSearch.Text = "Search"
+        Me.btnSearch.UseVisualStyleBackColor = True
+        '
         'Alerts_History
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -158,6 +178,8 @@ Partial Class Alerts_History
         Me.Controls.Add(Me.BtnRefresh)
         Me.Controls.Add(Me.AlertHistoryList)
         Me.Controls.Add(Me.chkIncludeHiddenFiles)
+        Me.Controls.Add(Me.btnSearch)
+        Me.Controls.Add(Me.txtSearchTerms)
         Me.KeyPreview = True
         Me.MinimumSize = New System.Drawing.Size(1267, 489)
         Me.Name = "Alerts_History"
@@ -182,4 +204,6 @@ Partial Class Alerts_History
     Friend WithEvents chkShowAlertsFromAllFiles As CheckBox
     Friend WithEvents lblTimeTakenToLoadData As ToolStripStatusLabel
     Friend WithEvents chkIncludeHiddenFiles As CheckBox
+    Friend WithEvents txtSearchTerms As TextBox
+    Friend WithEvents btnSearch As Button
 End Class

@@ -174,16 +174,14 @@ Namespace checkForUpdates
         End Function
 
         Private Sub MakeLogEntry(strLogText As String, Optional boolSaveLogData As Boolean = False)
-            SyncLock windowObject.dataGridLockObject
-                windowObject.Invoke(Sub()
-                                        windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, windowObject.Logs))
-                                        windowObject.UpdateLogCount()
-                                        windowObject.SelectLatestLogEntry()
-                                        windowObject.BtnSaveLogsToDisk.Enabled = True
+            windowObject.Invoke(Sub()
+                                    windowObject.Logs.Rows.Add(SyslogParser.MakeLocalDataGridRowEntry(strLogText, windowObject.Logs))
+                                    windowObject.UpdateLogCount()
+                                    windowObject.SelectLatestLogEntry()
+                                    windowObject.BtnSaveLogsToDisk.Enabled = True
 
-                                        If boolSaveLogData Then windowObject.SaveLogsToDiskSub()
-                                    End Sub)
-            End SyncLock
+                                    If boolSaveLogData Then windowObject.SaveLogsToDiskSub()
+                                End Sub)
         End Sub
 
         Private Sub DownloadAndPerformUpdate()
@@ -226,9 +224,7 @@ Namespace checkForUpdates
                     MakeLogEntry("Launching updater module.")
                 End If
 
-                SyncLock windowObject.dataGridLockObject
-                    windowObject.SaveLogsToDiskSub()
-                End SyncLock
+                windowObject.SaveLogsToDiskSub()
 
                 Dim startInfo As New ProcessStartInfo With {
                     .FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strUpdaterEXE),

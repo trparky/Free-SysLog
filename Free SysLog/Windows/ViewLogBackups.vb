@@ -350,38 +350,48 @@ Public Class ViewLogBackups
         If boolDoneLoading Then My.Settings.ViewLogBackupsSize = Size
     End Sub
 
+    Private Function ShowMessageOnUIThread(message As String, style As MsgBoxStyle, title As String) As MsgBoxResult
+        If InvokeRequired Then
+            Dim showMessage As Func(Of MsgBoxResult) = Function() ShowMessageOnUIThread(message, style, title)
+            Return Invoke(showMessage)
+        End If
+
+        Return MsgBox(message, style, title)
+    End Function
+
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles BtnSearch.Click
         If String.IsNullOrWhiteSpace(TxtSearchTerms.Text) Then
             MsgBox("You must provide something to search for.", MsgBoxStyle.Critical, Text)
             Exit Sub
         End If
 
+        Dim boolIsRegexSearch As Boolean = ChkRegExSearch.Checked
+        Dim boolIsCaseInsensitiveSearch As Boolean = ChkCaseInsensitiveSearch.Checked
         Dim strLimitBy As String = boxLimitBy.Text
         Dim strLimiter As String = boxLimiter.Text
+        Dim strSearchTerms As String = TxtSearchTerms.Text
         Dim boolShowSearchResults As Boolean = True
         Dim boolDoesLogMatchLimitedSearch As Boolean = True
         Dim listOfSearchResults As New HashSet(Of MyDataGridViewRow)()
         Dim listOfSearchResults2 As New List(Of MyDataGridViewRow)
-        Dim regexCompiledObject As Regex = Nothing
         Dim searchResultsWindow As New IgnoredLogsAndSearchResults(Me, IgnoreOrSearchWindowDisplayMode.search) With {.MainProgramForm = MyParentForm, .Icon = Icon, .Text = "Search Results"}
         searchResultsWindow.ChkColLogsAutoFill.Checked = My.Settings.colLogAutoFill
+        Dim boolSearchLogText As Boolean = radSearchLogText.Checked
+        Dim strDataToSearch2 As String = String.Empty
 
         If My.Settings.font IsNot Nothing Then searchResultsWindow.Logs.DefaultCellStyle.Font = My.Settings.font
 
         BtnSearch.Enabled = False
+
+        If Not boolIsRegexSearch Then strSearchTerms = Regex.Escape(strSearchTerms)
 
         Dim worker As New BackgroundWorker()
         Dim stopwatch As Stopwatch = Stopwatch.StartNew
 
         AddHandler worker.DoWork, Sub()
                                       Try
-                                          Dim regExOptions As RegexOptions = If(ChkCaseInsensitiveSearch.Checked, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
-
-                                          If ChkRegExSearch.Checked Then
-                                              regexCompiledObject = New Regex(TxtSearchTerms.Text, regExOptions)
-                                          Else
-                                              regexCompiledObject = New Regex(Regex.Escape(TxtSearchTerms.Text), regExOptions)
-                                          End If
+                                          Dim regExOptions As RegexOptions = If(boolIsCaseInsensitiveSearch, RegexOptions.Compiled + RegexOptions.IgnoreCase, RegexOptions.Compiled)
+                                          Dim regexCompiledObject As Regex = New Regex(strSearchTerms, regExOptions)
 
                                           Dim filesInDirectory As FileInfo()
 
@@ -396,6 +406,7 @@ Public Class ViewLogBackups
 
                                           Parallel.ForEach(filesInDirectory, parallelForEachLoopOptions, Sub(file As FileInfo)
                                                                                                              Dim dataFromFile As New List(Of SavedData)
+                                                                                                             Dim strDataToSearch As String = String.Empty
 
                                                                                                              If boolSearchByDate AndAlso (file.LastWriteTime < startDate OrElse file.LastWriteTime > endDate) Then
                                                                                                                  Exit Sub
@@ -423,26 +434,36 @@ Public Class ViewLogBackups
                                                                                                                          boolDoesLogMatchLimitedSearch = String.Equals(item.logType, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                                                                                      ElseIf strLimitBy.Equals("Remote Process", StringComparison.OrdinalIgnoreCase) Then
                                                                                                                          boolDoesLogMatchLimitedSearch = String.Equals(item.appName, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                                                     ElseIf strLimitBy.Equals("Source Hostname", StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.hostname, strLimiter, StringComparison.OrdinalIgnoreCase)
+                                                                                                                     ElseIf strLimitBy.Equals("Source IP Address", StringComparison.OrdinalIgnoreCase) Then
+                                                                                                                         boolDoesLogMatchLimitedSearch = String.Equals(item.ip, strLimiter, StringComparison.OrdinalIgnoreCase)
                                                                                                                      Else
                                                                                                                          boolDoesLogMatchLimitedSearch = True
                                                                                                                      End If
 
-                                                                                                                     If regexCompiledObject.IsMatch(item.log) And boolDoesLogMatchLimitedSearch Then
+                                                                                                                     If boolSearchLogText Then
+                                                                                                                         strDataToSearch = item.log
+                                                                                                                     Else
+                                                                                                                         strDataToSearch = item.alertText
+                                                                                                                     End If
+
+                                                                                                                     If Not String.IsNullOrEmpty(strDataToSearch) AndAlso regexCompiledObject.IsMatch(strDataToSearch) And boolDoesLogMatchLimitedSearch Then
                                                                                                                          myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                                                                                          myDataGridRow.Cells(ColumnIndex_FileName).Value = file.Name
                                                                                                                          myDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
 
                                                                                                                          SyncLock listOfSearchResults ' Ensure thread safety
+                                                                                                                             If My.Settings.font IsNot Nothing Then
+                                                                                                                                 myDataGridRow.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
+                                                                                                                             End If
+
                                                                                                                              listOfSearchResults.Add(myDataGridRow)
                                                                                                                          End SyncLock
                                                                                                                      End If
                                                                                                                  Next
                                                                                                              End If
                                                                                                          End Sub)
-
-                                          For Each item As MyDataGridViewRow In listOfSearchResults
-                                              If My.Settings.font IsNot Nothing Then item.Cells(ColumnIndex_FileName).Style.Font = My.Settings.font
-                                          Next
 
                                           For Each item As SavedData In currentLogs
                                               If strLimitBy.Equals("Log Type", StringComparison.OrdinalIgnoreCase) Then
@@ -457,7 +478,13 @@ Public Class ViewLogBackups
                                                   boolDoesLogMatchLimitedSearch = True
                                               End If
 
-                                              If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(item.log) AndAlso regexCompiledObject.IsMatch(item.log) Then
+                                              If boolSearchLogText Then
+                                                  strDataToSearch2 = item.log
+                                              Else
+                                                  strDataToSearch2 = item.alertText
+                                              End If
+
+                                              If boolDoesLogMatchLimitedSearch AndAlso Not String.IsNullOrWhiteSpace(strDataToSearch2) AndAlso regexCompiledObject.IsMatch(strDataToSearch2) Then
                                                   myDataGridRow = item.MakeDataGridRow(searchResultsWindow.Logs)
                                                   myDataGridRow.Cells(ColumnIndex_FileName).Value = "Current Log Data"
                                                   listOfSearchResults.Add(myDataGridRow)
@@ -467,11 +494,11 @@ Public Class ViewLogBackups
 
                                           If listOfSearchResults.Count > 4000 Then
                                               If Not My.Settings.IgnoreSearchResultLimits Then
-                                                  MsgBox($"Your search results contains more than four thousand results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information, Text)
+                                                  ShowMessageOnUIThread($"Your search results contains more than {4000:N0} results. It's highly recommended that you narrow your search terms.{vbCrLf}{vbCrLf}Search aborted.", MsgBoxStyle.Information + MsgBoxStyle.ApplicationModal, Text)
                                                   boolShowSearchResults = False
                                                   Exit Sub
                                               Else
-                                                  If MsgBox("There are more than 4000 search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
+                                                  If ShowMessageOnUIThread($"There are more than {4000:N0} search results, are you sure you want to display them?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, Text) = MsgBoxResult.No Then
                                                       boolShowSearchResults = False
                                                       Exit Sub
                                                   End If

@@ -46,6 +46,7 @@ Partial Class Form1
         Me.LblNumberOfIgnoredIncomingLogs = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LblAutoScrollStatus = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblProcessUptime = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblDataWrittenToDisk = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ChkEnableAutoScroll = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChkDisableAutoScrollUponScrolling = New System.Windows.Forms.ToolStripMenuItem()
         Me.AutomaticallyCheckForUpdates = New System.Windows.Forms.ToolStripMenuItem()
@@ -148,7 +149,6 @@ Partial Class Form1
         Me.boxLimiter = New System.Windows.Forms.ComboBox()
         Me.boxLimitBy = New System.Windows.Forms.ComboBox()
         Me.lblLimitBy = New System.Windows.Forms.Label()
-        Me.lblDataWrittenToDisk = New System.Windows.Forms.ToolStripStatusLabel()
         Me.BottomMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.EnableAutoScrollToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip.SuspendLayout()
@@ -301,6 +301,12 @@ Partial Class Form1
         Me.lblProcessUptime.Name = "lblProcessUptime"
         Me.lblProcessUptime.Size = New System.Drawing.Size(98, 15)
         Me.lblProcessUptime.Text = "Program Uptime:"
+        '
+        'lblDataWrittenToDisk
+        '
+        Me.lblDataWrittenToDisk.Name = "lblDataWrittenToDisk"
+        Me.lblDataWrittenToDisk.Size = New System.Drawing.Size(155, 15)
+        Me.lblDataWrittenToDisk.Text = "Data Written to Disk: 0 Bytes"
         '
         'ChkEnableAutoScroll
         '
@@ -1026,12 +1032,6 @@ Partial Class Form1
         Me.lblLimitBy.Size = New System.Drawing.Size(46, 13)
         Me.lblLimitBy.TabIndex = 42
         Me.lblLimitBy.Text = "Limit By:"
-        '
-        'lblDataWrittenToDisk
-        '
-        Me.lblDataWrittenToDisk.Name = "lblDataWrittenToDisk"
-        Me.lblDataWrittenToDisk.Size = New System.Drawing.Size(155, 15)
-        Me.lblDataWrittenToDisk.Text = "Data Written to Disk: 0 Bytes"
         '
         'BottomMenu
         '

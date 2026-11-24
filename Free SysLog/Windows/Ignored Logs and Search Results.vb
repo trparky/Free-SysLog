@@ -10,7 +10,6 @@ Public Class IgnoredLogsAndSearchResults
     Private m_SortingColumn1, m_SortingColumn2 As ColumnHeader
     Private boolDoneLoading As Boolean = False
     Public MainProgramForm As Form1
-    Private logsLockObject As New Object
 
     Public boolLoadExternalData As Boolean = False
     Public strFileToLoad As String
@@ -216,13 +215,12 @@ Public Class IgnoredLogsAndSearchResults
             Threading.ThreadPool.QueueUserWorkItem(Sub()
                                                        SyncLock IgnoredLogsAndSearchResultsInstanceLockObject
                                                            For Each item As MyDataGridViewRow In LogsToBeDisplayed
-                                                               Logs.Invoke(Sub() Logs.Rows.AddRange(item))
+                                                               Logs.Invoke(Sub() Logs.Rows.Add(item))
                                                            Next
 
                                                            Invoke(Sub()
                                                                       Logs.Visible = True
                                                                       Logs.ResumeLayout()
-                                                                      SortLogsByDateObject(0, sortOrder)
                                                                       lblPleaseWait.Visible = False
                                                                   End Sub)
                                                        End SyncLock
@@ -237,21 +235,19 @@ Public Class IgnoredLogsAndSearchResults
     Public Sub AddIgnoredDatagrid(ItemToAdd As MyDataGridViewRow)
         Invoke(Sub()
                    Try
-                       SyncLock logsLockObject
-                           If ChkKeepIgnoredLogsPastUserLimit.Checked Then
+                       If ChkKeepIgnoredLogsPastUserLimit.Checked Then
+                           Logs.Rows.Add(ItemToAdd)
+                       Else
+                           If Logs.Rows.Count < My.Settings.LimitNumberOfIgnoredLogs Then
                                Logs.Rows.Add(ItemToAdd)
                            Else
-                               If Logs.Rows.Count < My.Settings.LimitNumberOfIgnoredLogs Then
-                                   Logs.Rows.Add(ItemToAdd)
-                               Else
-                                   While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                                       Logs.Rows.RemoveAt(0)
-                                   End While
+                               While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                                   Logs.Rows.RemoveAt(0)
+                               End While
 
-                                   Logs.Rows.Add(ItemToAdd)
-                               End If
+                               Logs.Rows.Add(ItemToAdd)
                            End If
-                       End SyncLock
+                       End If
 
                        If ChkAutoScroll.Checked Then Logs.FirstDisplayedScrollingRowIndex = Logs.Rows.Count - 1
                        LblCount.Text = $"Number of ignored logs: {Logs.Rows.Count:N0}"
@@ -642,11 +638,9 @@ Public Class IgnoredLogsAndSearchResults
 
     Private Sub ChkKeepIgnoredLogsPastUserLimit_Click(sender As Object, e As EventArgs) Handles ChkKeepIgnoredLogsPastUserLimit.Click
         If Not ChkKeepIgnoredLogsPastUserLimit.Checked AndAlso Logs.Rows.Count > My.Settings.LimitNumberOfIgnoredLogs Then
-            SyncLock logsLockObject
-                While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
-                    Logs.Rows.RemoveAt(0)
-                End While
-            End SyncLock
+            While Logs.Rows.Count >= My.Settings.LimitNumberOfIgnoredLogs
+                Logs.Rows.RemoveAt(0)
+            End While
         End If
     End Sub
 
