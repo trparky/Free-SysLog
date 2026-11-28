@@ -5,7 +5,7 @@ Imports Free_SysLog.SupportCode
 Namespace DataHandling
     Public Module DataHandling
         Public Sub ExportSelectedLogs(selectedRows As DataGridViewSelectedRowCollection)
-            Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}
+            Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml|Text File|*.txt"}
 
             If saveFileDialog.ShowDialog() = DialogResult.OK Then
                 Dim fileInfo As New FileInfo(saveFileDialog.FileName)
@@ -35,6 +35,8 @@ Namespace DataHandling
                             strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
                             csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted},{strRawLog},{strAlertText}")
+                        ElseIf fileInfo.Extension.Equals(".txt", StringComparison.OrdinalIgnoreCase) Then
+                            csvStringBuilder.AppendLine(myItem.RawLogData)
                         Else
                             collectionOfSavedData.Add(myItem.ToSavedDataClass())
                         End If
@@ -50,6 +52,8 @@ Namespace DataHandling
                 ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
                     WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                 ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                    WriteFileAtomically(saveFileDialog.FileName, csvStringBuilder.ToString.Trim)
+                ElseIf fileInfo.Extension.Equals(".txt", StringComparison.OrdinalIgnoreCase) Then
                     WriteFileAtomically(saveFileDialog.FileName, csvStringBuilder.ToString.Trim)
                 End If
 
@@ -73,7 +77,7 @@ Namespace DataHandling
         End Sub
 
         Public Sub ExportAllLogs(rows As DataGridViewRowCollection)
-            Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"}
+            Dim saveFileDialog As New SaveFileDialog With {.Title = "Export Data...", .Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml|Text File|*.txt"}
 
             If saveFileDialog.ShowDialog() = DialogResult.OK Then
                 Dim fileInfo As New FileInfo(saveFileDialog.FileName)
@@ -103,6 +107,8 @@ Namespace DataHandling
                             strAlerted = If(myItem.BoolAlerted, "Yes", "No")
 
                             csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted},{strRawLog},{strAlertText}")
+                        ElseIf fileInfo.Extension.Equals(".txt", StringComparison.OrdinalIgnoreCase) Then
+                            csvStringBuilder.AppendLine(myItem.RawLogData)
                         Else
                             collectionOfSavedData.Add(myItem.ToSavedDataClass())
                         End If
@@ -118,6 +124,8 @@ Namespace DataHandling
                 ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
                     WriteFileAtomically(saveFileDialog.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                 ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                    WriteFileAtomically(saveFileDialog.FileName, csvStringBuilder.ToString.Trim)
+                ElseIf fileInfo.Extension.Equals(".txt", StringComparison.OrdinalIgnoreCase) Then
                     WriteFileAtomically(saveFileDialog.FileName, csvStringBuilder.ToString.Trim)
                 End If
 

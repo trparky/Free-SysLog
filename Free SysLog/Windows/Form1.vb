@@ -886,7 +886,7 @@ Public Class Form1
         End If
 
         DeleteLogsToolStripMenuItem.Text = "Delete Selected " & If(Logs.SelectedRows.Count = 1, "Log", "Logs")
-        ExportsLogsToolStripMenuItem.Text = "Delete Selected " & If(Logs.SelectedRows.Count = 1, "Log", "Logs")
+        ExportsLogsToolStripMenuItem.Text = "Export Selected " & If(Logs.SelectedRows.Count = 1, "Log", "Logs")
     End Sub
 
     Private Sub CopyLogTextToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyLogTextToolStripMenuItem.Click

@@ -281,7 +281,7 @@ Public Class IgnoredLogsAndSearchResults
     End Sub
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles BtnExport.Click
-        SaveFileDialog.Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml"
+        SaveFileDialog.Filter = "CSV (Comma Separated Value)|*.csv|JSON File|*.json|XML File|*.xml|Text File|*.txt"
         SaveFileDialog.Title = "Export Data..."
 
         If SaveFileDialog.ShowDialog() = DialogResult.OK Then
@@ -332,6 +332,8 @@ Public Class IgnoredLogsAndSearchResults
                         Else
                             csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted}")
                         End If
+                    ElseIf fileInfo.Extension.Equals(".txt", StringComparison.OrdinalIgnoreCase) Then
+                        csvStringBuilder.AppendLine(myItem.RawLogData)
                     Else
                         savedData = myItem.ToSavedDataClass()
                         If ColFileName.Visible Then savedData.fileName = myItem.Cells(ColumnIndex_FileName).Value
@@ -347,6 +349,8 @@ Public Class IgnoredLogsAndSearchResults
                 ElseIf fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase) Then
                     fileStream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(collectionOfSavedData, Newtonsoft.Json.Formatting.Indented))
                 ElseIf fileInfo.Extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) Then
+                    fileStream.Write(csvStringBuilder.ToString.Trim)
+                ElseIf fileInfo.Extension.Equals(".txt", StringComparison.OrdinalIgnoreCase) Then
                     fileStream.Write(csvStringBuilder.ToString.Trim)
                 End If
             End Using
