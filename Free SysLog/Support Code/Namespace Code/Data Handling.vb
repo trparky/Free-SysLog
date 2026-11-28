@@ -36,19 +36,7 @@ Namespace DataHandling
 
                             csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted},{strRawLog},{strAlertText}")
                         Else
-                            collectionOfSavedData.Add(New SavedData With {
-                                                    .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                    .ServerDate = myItem.ServerDate,
-                                                    .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                                    .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                    .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                                    .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                                    .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                                    .DateObject = myItem.DateObject,
-                                                    .BoolAlerted = myItem.BoolAlerted,
-                                                    .rawLogData = myItem.RawLogData,
-                                                    .alertText = myItem.AlertText
-                                                  })
+                            collectionOfSavedData.Add(myItem.ToSavedDataClass())
                         End If
                     End If
                 Next
@@ -116,19 +104,7 @@ Namespace DataHandling
 
                             csvStringBuilder.AppendLine($"{strTime},{strServerTime},{strLogType},{strSourceIP},{strHostname},{strRemoteProcess},{strLogText},{strAlerted},{strRawLog},{strAlertText}")
                         Else
-                            collectionOfSavedData.Add(New SavedData With {
-                                                   .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                                   .ServerDate = myItem.ServerDate,
-                                                   .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                                   .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                                   .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                                   .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                                   .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                                   .DateObject = myItem.DateObject,
-                                                   .BoolAlerted = myItem.BoolAlerted,
-                                                   .rawLogData = myItem.RawLogData,
-                                                   .alertText = myItem.AlertText
-                                                  })
+                            collectionOfSavedData.Add(myItem.ToSavedDataClass())
                         End If
                     End If
                 Next

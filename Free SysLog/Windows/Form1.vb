@@ -1176,21 +1176,11 @@ Public Class Form1
 
     Private Sub ViewLogBackups_Click(sender As Object, e As EventArgs) Handles ViewLogBackups.Click
         Dim collectionOfSavedData As New List(Of SavedData)
-
-        Dim myItem As MyDataGridViewRow
         Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
         For Each item As MyDataGridViewRow In snapshotOfLogs
             If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                myItem = DirectCast(item, MyDataGridViewRow)
-
-                collectionOfSavedData.Add(New SavedData With {
-                                            .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                            .ip = myItem.Cells(ColumnIndex_LogType).Value,
-                                            .log = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                            .DateObject = myItem.DateObject,
-                                            .BoolAlerted = myItem.BoolAlerted
-                                          })
+                collectionOfSavedData.Add(item.ToSavedDataClass())
             End If
         Next
 
@@ -1839,28 +1829,12 @@ Public Class Form1
 
     Public Sub WriteLogsToDisk()
         Dim collectionOfSavedData As New List(Of SavedData)
-        Dim myItem As MyDataGridViewRow
         Dim snapshotOfLogs As List(Of MyDataGridViewRow) = GetLogsSnapshot()
 
         Try
             For Each item As DataGridViewRow In snapshotOfLogs
                 If Not String.IsNullOrWhiteSpace(item.Cells(ColumnIndex_ComputedTime).Value) Then
-                    myItem = DirectCast(item, MyDataGridViewRow)
-
-                    collectionOfSavedData.Add(New SavedData With {
-                                            .time = myItem.Cells(ColumnIndex_ComputedTime).Value,
-                                            .logType = myItem.Cells(ColumnIndex_LogType).Value,
-                                            .ip = myItem.Cells(ColumnIndex_IPAddress).Value,
-                                            .appName = myItem.Cells(ColumnIndex_RemoteProcess).Value,
-                                            .log = myItem.Cells(ColumnIndex_LogText).Value,
-                                            .hostname = myItem.Cells(ColumnIndex_Hostname).Value,
-                                            .DateObject = myItem.DateObject,
-                                            .BoolAlerted = myItem.BoolAlerted,
-                                            .ServerDate = myItem.ServerDate,
-                                            .rawLogData = myItem.RawLogData,
-                                            .alertText = myItem.AlertText,
-                                            .alertType = myItem.alertType
-                                          })
+                    collectionOfSavedData.Add(DirectCast(item, MyDataGridViewRow).ToSavedDataClass())
                 End If
             Next
 

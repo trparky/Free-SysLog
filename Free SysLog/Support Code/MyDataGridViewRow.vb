@@ -1,4 +1,6 @@
-﻿Public Class MyDataGridViewRow
+﻿Imports Free_SysLog.SupportCode
+
+Public Class MyDataGridViewRow
     Inherits DataGridViewRow
     Implements ICloneable
     Public Property DateObject As Date
@@ -44,6 +46,22 @@
 
         newDataGridRow.DefaultCellStyle.Padding = New Padding(0, 2, 0, 2)
         Return newDataGridRow
+    End Function
+
+    Public Function ToSavedDataClass() As SavedData
+        Return New SavedData() With {
+            .time = Cells(ColumnIndex_ComputedTime).Value,
+            .ServerDate = ServerDate,
+            .logType = Cells(ColumnIndex_LogType).Value,
+            .ip = Cells(ColumnIndex_IPAddress).Value,
+            .hostname = Cells(ColumnIndex_Hostname).Value,
+            .appName = Cells(ColumnIndex_RemoteProcess).Value,
+            .log = Cells(ColumnIndex_LogText).Value,
+            .DateObject = DateObject,
+            .BoolAlerted = BoolAlerted,
+            .rawLogData = RawLogData,
+            .alertText = AlertText
+        }
     End Function
 End Class
 
